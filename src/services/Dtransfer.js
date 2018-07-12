@@ -89,6 +89,15 @@ class DTransfer {
       xhr.send();
     });
   }
+
+  decryptWallet(walletJSON, password) {
+    var r = EthereumJSWallet.fromV3(walletJSON, password, true);
+    return {
+      address: r.getAddress().toString('hex'),
+      publicKey: r.getPublicKey().toString('hex'),
+      privateKey: r.getPrivateKey().toString('hex')
+    }
+  }
 }
 
 export default DTransfer;

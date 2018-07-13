@@ -9,9 +9,12 @@ class App extends Component {
     this.state = {
       fileShouldEncrypt: false
     };
+
+    this.toggleFileShouldEncrypt = this.toggleFileShouldEncrypt.bind(this);
   }
 
-  toggleFileShouldEncrypt() {
+  toggleFileShouldEncrypt(e) {
+    e.preventDefault();    
     this.setState({fileShouldEncrypt: !this.state.fileShouldEncrypt});
   }
 
@@ -20,9 +23,9 @@ class App extends Component {
       <div className="dt-wrapper">
         <div className="dt-toggle-is-encrypted">
           <div className="dt-formgroup">
-            <button className="dt-toggle-button" onClick={this.toggleFileShouldEncrypt} /><label>Encrypt the file using your Ethereum wallet.</label>
+            <button id="dt-toggle-is-encrypted-button" className="dt-toggle-button" onClick={this.toggleFileShouldEncrypt} /><label>Encrypt the file using your Ethereum wallet.</label>
           </div>
-          {this.fileShouldEncrypt &&
+          {this.state.fileShouldEncrypt &&
             <DWallet/>
           }
         </div>

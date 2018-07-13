@@ -17,18 +17,25 @@ it('should have initial states', ()=>{
   expect(component.state().fileShouldEncrypt).toEqual(false);
 })
 
-describe('#toggleFileShouldEncrypt', ()=>{
-    it('should toggle state',()=>{
-      const component = shallow(
+describe('#dt-toggle-is-encrypted-button', ()=>{
+    it('should fire toggleFileShouldEncrypt event',()=>{
+
+      const spy = jest.spyOn(App.prototype, 'toggleFileShouldEncrypt');
+
+      const component = mount(
         <App />,
       );
 
-      let app = component.instance();
+      component.update();
 
-      expect(app.state.fileShouldEncrypt).toEqual(false);
+      component.find('#dt-toggle-is-encrypted-button').simulate('click');
 
-      app.toggleFileShouldEncrypt();
+      expect(spy).toHaveBeenCalled();
+      expect(component.state().fileShouldEncrypt).toEqual(true);
 
-      expect(app.state.fileShouldEncrypt).toEqual(true);
+      component.find('#dt-toggle-is-encrypted-button').simulate('click');
+
+      expect(spy).toHaveBeenCalled();
+      expect(component.state().fileShouldEncrypt).toEqual(false);
     });
 })

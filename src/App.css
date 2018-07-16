@@ -22,7 +22,7 @@
 
 .dt-select-file-header{
   height: 50vh;
-  width: 100vh;
+  width: 100vw;
   background: #2E332F;
   transition: transform 2s;
   display: table;

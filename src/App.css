@@ -28,7 +28,7 @@
   display: table;
 }
 
-.dt-select-file-header.is-selected{
+.dt-select-file-header.is-selecting{
   transform: translateY(-50vh); 
   transition: transform 1s;
 }
@@ -40,7 +40,7 @@
   opacity: 1;
 }
 
-.dt-select-file-header.is-selected h1{
+.dt-select-file-header.is-selecting h1{
   opacity: 0;
   transition: opacity 1s;
 }
@@ -51,7 +51,7 @@
   transition: height 1s;
 }
 
-.dt-select-file-main.is-selected{
+.dt-select-file-main.is-selecting{
   height: 100vh;
   transform: translateY(-50vh);
   transition: transform 1s;
@@ -68,7 +68,7 @@
   transition: transform 1s;  
 }
 
-.dt-select-file-instruction.is-selected{
+.dt-select-file-instruction.is-selecting{
   transform: translateY(25vh);
   transition: transform 1s;
 }

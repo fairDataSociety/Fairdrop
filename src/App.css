@@ -24,13 +24,13 @@
   height: 50vh;
   width: 100vw;
   background: #2E332F;
-  transition: transform 2s;
+  transition: transform 1s;
   display: table;
 }
 
 .dt-select-file-header.is-selected{
   transform: translateY(-50vh); 
-  transition: transform 2s;
+  transition: transform 1s;
 }
 
 .dt-select-file-header h1{
@@ -42,20 +42,20 @@
 
 .dt-select-file-header.is-selected h1{
   opacity: 0;
-  transition: opacity 2s;
+  transition: opacity 1s;
 }
 
 .dt-select-file-main{
   height: 50vh;
-  transition: transform 2s;  
-  transition: height 2s;
+  transition: transform 1s;  
+  transition: height 1s;
 }
 
 .dt-select-file-main.is-selected{
   height: 100vh;
   transform: translateY(-50vh);
-  transition: transform 2s;
-  transition: height 2s;
+  transition: transform 1s;
+  transition: height 1s;
 }
 
 .dt-select-file-instruction{
@@ -65,12 +65,12 @@
   position: absolute;
   top: 0;
   transform: translateY(50vh);
-  transition: transform 2s;  
+  transition: transform 1s;  
 }
 
 .dt-select-file-instruction.is-selected{
   transform: translateY(25vh);
-  transition: transform 2s;
+  transition: transform 1s;
 }
 
 .dt-select-file-instruction h2{

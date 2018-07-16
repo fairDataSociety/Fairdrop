@@ -8,34 +8,55 @@ class App extends Component {
     super(props);
     
     this.state = {
-      fileShouldEncryptAsym: false,
-      selectedWallet: false
+      fileIsSelecting: false,
     };
 
-    this.toggleFileShouldEncryptAsym = this.toggleFileShouldEncryptAsym.bind(this);
-    this.setDecryptedWallet = this.setDecryptedWallet.bind(this);
+    this.handleSelectFileForUpload = this.handleSelectFileForUpload.bind(this);
 
   }
 
-  toggleFileShouldEncryptAsym(e) {
+  handleSelectFileForUpload(e){
     e.preventDefault();    
-    this.setState({fileShouldEncryptAsym: !this.state.fileShouldEncryptAsym});
-  }
-
-  setDecryptedWallet(wallet){
-    this.setState({selectedWallet: wallet});
+    this.setState({fileIsSelecting: true});
   }
 
   render() {
     return (
       <div className="dt-wrapper">
-        <div className="dt-toggle-is-encrypted">
-          <div className="dt-formgroup">
-            <button id="dt-toggle-is-encrypted-button" className="dt-toggle-button" onClick={this.toggleFileShouldEncryptAsym} /><label>Encrypt the file using your Ethereum wallet.</label>
+        <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
+          <div className="dt-logo">
           </div>
-          {this.state.fileShouldEncryptAsym &&
-            <DWallet setDecryptedWallet={this.setDecryptedWallet} />
-          }
+        </div>
+        <div className="dt-select-file" onClick={this.handleSelectFileForUpload}> 
+          <div className={"dt-select-file-header " + (this.state.fileIsSelecting && "is-selected")}> {/* this bit should slide up out of view using transform */}
+
+          </div> {/* dt-header */}
+          <div className={"dt-select-file-main " + (this.state.fileIsSelecting && "is-selected")} > {/* this bit should expand to fill the viewport */}
+
+          </div> {/* dt-select-file-main */}
+          <div className={"dt-select-file-instruction " + (this.state.fileIsSelecting && "is-selected")}> {/* this bit should be centered vertically in the surrounding div */}
+            <h2>choose or drag and drop a file</h2>
+          </div> {/* dt-select-file-instruction */}
+        </div> {/* dt-select-file */}
+        <div className="dt-info"> {/* this bit could slide in from left over the top of dt-select-file */}
+          <div className="dt-info-content">
+            <img/>
+            <div className="dt-info-filename">filename</div>
+            <div className="dt-info-filesize">100kb</div>
+            <div className="dt-info-is-encrytped">unencrypted</div>
+            <div className="dt-network-status">...</div>
+          </div>
+        </div> {/* dt-info */}
+        <div className="dt-ui"> {/* this bit could slide in from right over the top of dt-select-file */}
+
+        </div> {/* dt-ui */}
+        <div className="dt-network-status">
+          <div className="dt-network-status-ethereum">
+            
+          </div> {/* dt-network-status-ethereum */}
+          <div className="dt-network-status-swarm">
+            
+          </div> {/* dt-network-status-swarm */}
         </div>
       </div>
     );

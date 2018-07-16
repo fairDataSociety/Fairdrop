@@ -1,5 +1,8 @@
 import Crypto from 'crypto';
-import EthereumJSWallet from 'ethereumjs-wallet';
+import ConsenSysLightWallet from 'eth-lightwallet';
+import Buffer from 'buffer';
+import toBuffer from 'blob-to-buffer';
+import b64toBlob from 'b64-to-blob';
 
 class DTransfer {
 
@@ -11,37 +14,53 @@ class DTransfer {
     this.gateway = gateway;
   }
 
-  encrypt(text, password){
+  encryptBuffer(buffer, password){
     var cipher = Crypto.createCipher('aes-256-ctr', password);
-    var crypted = cipher.update(text,'utf8','hex');
+    var crypted = cipher.update(buffer, null, 'hex');
     crypted += cipher.final('hex');
     return crypted;
   }
 
-  decrypt(text, password){
-    var decipher = Crypto.createDecipher('aes-256-ctr', password);
-    var dec = decipher.update(text,'hex','utf8');
-    dec += decipher.final('utf8');
-    return dec;
+  blobToBuffer(blob) {
+    return new Promise((resolve, reject)=>{
+      toBuffer(blob, function (err, buffer) {
+        if (err) {
+          reject(err);
+        }else{
+          resolve(buffer);
+        }
+      })
+    })    
   }
 
-  encryptFile(file, password) {
-    return new Promise((resolve, reject)=>{
-      var fr = new FileReader();
-      fr.onload = (e)=>{
-          var crypted = this.encrypt(fr.result, password);
-          var f = new File([crypted], file.name + ".encrypted");
-          resolve(f);
-          }
+  encryptBlob(blob, password) {
+    return this.blobToBuffer(blob).then((buffer)=>{
+      var crypted = this.encryptBuffer(buffer, password);
+      var f = new File([crypted], blob.name + ".encrypted", {type: blob.type});
+      return f;
+    });
+  }
 
-      fr.readAsText(file); 
-    })
-  }  
+  decryptBuffer(buffer, password){
+    var decipher = Crypto.createDecipher('aes-256-ctr', password);
+    var dec = decipher.update(buffer,'hex','base64');
+    dec += decipher.final('base64');
+    return b64toBlob(dec);
+  }
 
   decryptedFile(encryptedFile, password, decryptedFileName) {
-    let decryptedFile = this.decrypt(encryptedFile, password);
-    return new File([decryptedFile], decryptedFileName, {type: "text/plain;charset=utf-8"});
+    let decryptedFile = this.decryptBuffer(encryptedFile, password);
+    let blob = new Blob([decryptedFile], { name: decryptedFileName, type: "image/png" });
+    blob.name = decryptedFileName;
+    return blob;
   }  
+
+  createPassword(){
+    let newWallet = ConsenSysLightWallet;
+    return newWallet
+            .keystore
+            .generateRandomSeed();
+  }
 
   postFile(encryptedFile){
     return new Promise((resolve, reject)=>{
@@ -49,8 +68,10 @@ class DTransfer {
       formData.append('file', encryptedFile);
 
       var xhr = new XMLHttpRequest();
+
+
       xhr.open("POST", this.gateway, true);
-      
+
       xhr.onload = ()=>{
         if (xhr.status === 200) {
           resolve(xhr.responseText);
@@ -70,6 +91,7 @@ class DTransfer {
   getFile(swarmHash, fileName){
     return new Promise((resolve,reject)=>{
       var xhr = new XMLHttpRequest();
+
       xhr.open("GET", this.gateway + swarmHash + "/" + fileName, true);
 
       xhr.onload = ()=>{
@@ -88,22 +110,6 @@ class DTransfer {
 
       xhr.send();
     });
-  }
-
-  decryptWallet(walletJSON, password) {
-    try {
-      var r = EthereumJSWallet.fromV3(walletJSON, password, true);
-      return {
-        address: r.getAddress().toString('hex'),
-        publicKey: r.getPublicKey().toString('hex'),
-        privateKey: r.getPrivateKey().toString('hex')
-      };    
-    }
-    catch(err) {
-      return {
-        error: err.message
-      };
-    }
   }
 }
 

@@ -82,21 +82,43 @@
 }
 
 .dt-info{
+  top:0;
   background: #FF6F58;
   height:100vh;
   width:50vw;
   position: absolute;
   left:0px;
   transform: translateX(-50vw);
-  z-index: 3;
+  transition: transform 1s;
+  z-index: 5;
+  border-right: 1px #2E332F;
+  display:table;
+}
+
+.dt-info.is-selected{
+  transform: translateX(0);
+  transition: transform 1s;
+}
+
+.dt-info-content{
+  display:table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .dt-ui{
+  top:0;
   background: #2E332F;
   width:100vw;
   position: absolute;
   left:50vw;
   height:100vh;
-  z-index: 2;
+  z-index: 5;
   transform: translateX(50vw);
+  transition: transform 1s;  
+}
+
+.dt-ui.is-selected{
+  transform: translateX(0);
+  transition: transform 1s;
 }

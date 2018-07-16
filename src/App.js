@@ -8,18 +8,18 @@ class App extends Component {
     super(props);
     
     this.state = {
-      fileShouldEncrypt: false,
+      fileShouldEncryptAsym: false,
       selectedWallet: false
     };
 
-    this.toggleFileShouldEncrypt = this.toggleFileShouldEncrypt.bind(this);
+    this.toggleFileShouldEncryptAsym = this.toggleFileShouldEncryptAsym.bind(this);
     this.setDecryptedWallet = this.setDecryptedWallet.bind(this);
 
   }
 
-  toggleFileShouldEncrypt(e) {
+  toggleFileShouldEncryptAsym(e) {
     e.preventDefault();    
-    this.setState({fileShouldEncrypt: !this.state.fileShouldEncrypt});
+    this.setState({fileShouldEncryptAsym: !this.state.fileShouldEncryptAsym});
   }
 
   setDecryptedWallet(wallet){
@@ -31,9 +31,9 @@ class App extends Component {
       <div className="dt-wrapper">
         <div className="dt-toggle-is-encrypted">
           <div className="dt-formgroup">
-            <button id="dt-toggle-is-encrypted-button" className="dt-toggle-button" onClick={this.toggleFileShouldEncrypt} /><label>Encrypt the file using your Ethereum wallet.</label>
+            <button id="dt-toggle-is-encrypted-button" className="dt-toggle-button" onClick={this.toggleFileShouldEncryptAsym} /><label>Encrypt the file using your Ethereum wallet.</label>
           </div>
-          {this.state.fileShouldEncrypt &&
+          {this.state.fileShouldEncryptAsym &&
             <DWallet setDecryptedWallet={this.setDecryptedWallet} />
           }
         </div>

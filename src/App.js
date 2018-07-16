@@ -17,7 +17,7 @@ class App extends Component {
 
   handleSelectFileForUpload(e){
     e.preventDefault();    
-    this.setState({fileIsSelecting: true});
+    this.setState({fileIsSelecting: !this.state.fileIsSelecting});
   }
 
   render() {
@@ -29,12 +29,12 @@ class App extends Component {
         </div>
         <div className="dt-select-file" onClick={this.handleSelectFileForUpload}> 
           <div className={"dt-select-file-header " + (this.state.fileIsSelecting && "is-selected")}> {/* this bit should slide up out of view using transform */}
-
+            <h1>Send and store files securely and privately<br/>that's how we do on the decentralised web 3.0</h1>
           </div> {/* dt-header */}
           <div className={"dt-select-file-main " + (this.state.fileIsSelecting && "is-selected")} > {/* this bit should expand to fill the viewport */}
 
           </div> {/* dt-select-file-main */}
-          <div className={"dt-select-file-instruction " + (this.state.fileIsSelecting && "is-selected")}> {/* this bit should be centered vertically in the surrounding div */}
+          <div className={"dt-select-file-instruction " + (this.state.fileIsSelecting && "is-selected")}> {/* this bit should be centered vertically in the surrounding div which overlays the other two siblings */}
             <h2>choose or drag and drop a file</h2>
           </div> {/* dt-select-file-instruction */}
         </div> {/* dt-select-file */}

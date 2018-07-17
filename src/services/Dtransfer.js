@@ -1,5 +1,4 @@
 import Crypto from 'crypto';
-import ConsenSysLightWallet from 'eth-lightwallet';
 import Buffer from 'buffer';
 import toBuffer from 'blob-to-buffer';
 import b64toBlob from 'b64-to-blob';
@@ -15,10 +14,20 @@ class DTransfer {
   }
 
   encryptBuffer(buffer, password){
+    if(!password) throw 'You must supply a password.'
     var cipher = Crypto.createCipher('aes-256-ctr', password);
     var crypted = cipher.update(buffer, null, 'hex');
     crypted += cipher.final('hex');
     return crypted;
+  }
+
+  arrayBufferToBuffer(arrayBuffer){
+    return Buffer.from(arrayBuffer);
+  }
+
+  bufferToBlob(buffer, fileName, mimeType){
+    var f = new File([buffer], fileName, {type: mimeType});
+    return f;
   }
 
   blobToBuffer(blob) {
@@ -48,18 +57,11 @@ class DTransfer {
     return b64toBlob(dec);
   }
 
-  decryptedFile(encryptedFile, password, decryptedFileName) {
+  decryptedFile(encryptedFile, password, decryptedFileName, mimeType) {
     let decryptedFile = this.decryptBuffer(encryptedFile, password);
-    let blob = new Blob([decryptedFile], { name: decryptedFileName, type: "image/png" });
+    let blob = new Blob([decryptedFile], { name: decryptedFileName, type: mimeType });
     blob.name = decryptedFileName;
     return blob;
-  }  
-
-  createPassword(){
-    let newWallet = ConsenSysLightWallet;
-    return newWallet
-            .keystore
-            .generateRandomSeed();
   }
 
   postFile(encryptedFile){
@@ -92,7 +94,9 @@ class DTransfer {
     return new Promise((resolve,reject)=>{
       var xhr = new XMLHttpRequest();
 
-      xhr.open("GET", this.gateway + swarmHash + "/" + fileName, true);
+      let url = this.gateway + swarmHash + "/" + fileName;
+
+      xhr.open("GET", url, true);
 
       xhr.onload = ()=>{
         if (xhr.status === 200) {

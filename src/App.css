@@ -109,16 +109,23 @@
 .dt-ui{
   top:0;
   background: #2E332F;
-  width:100vw;
+  width:50vw;
   position: absolute;
   left:50vw;
   height:100vh;
   z-index: 5;
   transform: translateX(50vw);
-  transition: transform 1s;  
+  transition: transform 1s;
+  display:table;
 }
 
 .dt-ui.is-selected{
   transform: translateX(0);
   transition: transform 1s;
+}
+
+.dt-ui .dt-ui-wrapper{
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }

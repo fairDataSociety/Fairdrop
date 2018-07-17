@@ -316,7 +316,7 @@ class App extends Component {
                 <div className="dt-feedback">
                   <div>
                     <p>Hash: {this.state.uploadedFileHash}</p>
-                    <p>dTransferLink: {this.state.dTransferLink}</p>
+                    <p>dTransferLink: <a href={this.state.dTransferLink} target="_blank">{this.state.uploadedFileHash}</a></p>
                   {this.state.emails && this.state.emails.count > 0 && 
                     <div>
                     <p>Sent to: </p>

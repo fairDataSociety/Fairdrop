@@ -7,8 +7,8 @@ import FileSaver from 'file-saver';
 
 import './App.css';
 
-// let gateway = 'http://swarm-gateways.net/bzz:/';
-let gateway = 'http://localhost:8500/bzz:/'
+let gateway = 'http://swarm-gateways.net/bzz:/';
+// let gateway = 'http://localhost:8500/bzz:/'
 
 let dTransferURL = 'http://localhost:3000/';
 
@@ -293,21 +293,34 @@ class App extends Component {
             {!this.state.fileWasUploaded &&
               <div className="dt-ui-wrapper">
                 <div className="dt-sym-enc">
-                  <p>choose and confirm your password to encrypt</p>
-                  <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" autoComplete="off" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.calculateEntropy}/>
-                  <p>{this.state.entropyMessage}</p>
-                  <p>{this.state.passwordsMatchError}</p>
-                  <button id="dt-generate-password" className="dt-generate-password" onClick={this.generatePassword}>Generate</button>
-                  <button id="dt-copy-password" className="dt-copy-password" onClick={this.copyPassword}>Copy</button>
-                  <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input-confirm" autoComplete="off" className="dt-sym-enc-password-input-confirm" type="password" ref="dtSymEncPasswordInputConfirm" />              
-                  <button id="dt-sym-enc-password-button" className="dt-toggle-button" onClick={this.handleSymEncryptToggle}>{this.state.shouldEncrypt ? "Will Encrypt" : "Encrypt"}</button>
+                  <div class="dt-form-group dt-toggle">
+                    <input type="radio"/>
+                    <p>Choose and confirm your password to encrypt</p>
+                  </div>
+                  <div class="dt-content-wrap">
+                    <p>{this.state.entropyMessage}</p>
+                    <p>{this.state.passwordsMatchError}</p>
+                    <div class="dt-form-group dt-form-two-inputs">
+                      <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" autoComplete="off" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.calculateEntropy} placeholder="Password" />
+                      <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input-confirm" autoComplete="off" className="dt-sym-enc-password-input-confirm" type="password" ref="dtSymEncPasswordInputConfirm" placeholder="Confirm password" />  
+                    </div>
+                    <button id="dt-generate-password" className="dt-btn dt-btn-sm dt-generate-password" onClick={this.generatePassword}>Generate</button>
+                    <button id="dt-copy-password" className="dt-btn dt-btn-sm dt-copy-password" onClick={this.copyPassword}>Copy</button>             
+                    <button id="dt-sym-enc-password-button" className="dt-btn dt-btn-sm dt-toggle-button" onClick={this.handleSymEncryptToggle}>{this.state.shouldEncrypt ? "Will Encrypt" : "Encrypt"}</button>
+                    <a href="" className="dt-btn dt-btn-link">This is a link</a>
+                  </div>
                 </div>
                 <div className="dt-send-mail">
-                  <p>add emails to send</p>
-                  <input id="dt-send-mail-mails-input" autoComplete="off" className="dt-send-mail-mails-input" type="text" placeholder="info@datafund.io, hi@datafund.io" onChange={this.refreshEmails}/>
+                  <div class="dt-form-group dt-toggle">
+                    <input type="radio"/>
+                    <p>Add emails to send</p>
+                  </div>
+                  <div class="dt-content-wrap">
+                    <input id="dt-send-mail-mails-input" autoComplete="off" className="dt-send-mail-mails-input" type="text" placeholder="info@datafund.io, hi@datafund.io" onChange={this.refreshEmails}/>
+                  </div>
                 </div>
                 <div className="dt-ui-footer">
-                  <button id="dt-send" className="dt-send-button" onClick={this.handleUpload}>{this.state.sendButtonMessage}</button>
+                  <button id="dt-send" className="dt-btn dt-btn-lg dt-send-button dt-btn-green" onClick={this.handleUpload}>{this.state.sendButtonMessage}</button>
                 </div>
               </div>
             }

@@ -4,6 +4,13 @@ import b64toBlob from 'b64-to-blob';
 
 let DT = new DTransfer('http://swarm-gateway.net/bzz:/');
 
+it('should generate password', (done)=>{
+  let generatedPassword = DT.generatePassword().then((password)=>{
+    expect(password.length).toEqual('24');
+    done();
+  });
+})
+
 it('should encrypt string', ()=>{
   let encryptedFile = DT.encryptBuffer('test','password');
   expect(encryptedFile).toEqual('df60c4f2');

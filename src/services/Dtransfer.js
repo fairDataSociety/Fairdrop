@@ -13,6 +13,14 @@ class DTransfer {
     this.gateway = gateway;
   }
 
+  generatePassword(){
+    return new Promise((resolve, reject)=>{
+      Crypto.randomBytes(48, function(err, buffer) {
+        resolve(buffer.toString('hex'));
+      });
+    })
+  }
+
   encryptBuffer(buffer, password){
     if(!password) throw 'You must supply a password.'
     var cipher = Crypto.createCipher('aes-256-ctr', password);

@@ -6,7 +6,7 @@ let DT = new DTransfer('http://swarm-gateway.net/bzz:/');
 
 it('should generate password', (done)=>{
   let generatedPassword = DT.generatePassword().then((password)=>{
-    expect(password.length).toEqual('24');
+    expect(password.length).toEqual(96);
     done();
   });
 })

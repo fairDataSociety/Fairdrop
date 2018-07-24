@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import DWallet from "./components/DWallet";
 import DTransfer from "./services/Dtransfer";
-import Dropzone from 'dropzone'
-import zxcvbn from 'zxcvbn'
+import Dropzone from 'dropzone';
+import zxcvbn from 'zxcvbn';
 import FileSaver from 'file-saver';
+
+
+import { connect } from 'react-redux';
 
 import './App.css';
 

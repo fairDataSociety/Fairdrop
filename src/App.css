@@ -130,7 +130,26 @@ input {
 
 .dt-nav-header{
   position:absolute;
+  width:100vw;
+  height:15vh;
+  display:table;
+  z-index:10;
+  margin:0 5vw;
+  pointer-events: none;
 }
+
+.dt-nav-header .dt-nav-header-item{
+  display: table-cell;
+  vertical-align: middle;
+  pointer-events: auto;
+  width: 10vw;
+}
+
+.dt-nav-header .dt-nav-header-item .dt-df-logo{
+  height: 4vh;
+  color: #fff;
+}
+
 
 .dt-select-file{
   position: absolute;

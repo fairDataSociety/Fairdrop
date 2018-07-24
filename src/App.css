@@ -44,7 +44,7 @@ input[type='text'], input[type='password'] {
   border: 1px solid #6E716E;
   background-color: transparent;
   color: #939393;
-  font-size: 1.2vw;
+  font-size: 0.9vw;
   padding: 10px 20px;
   padding-bottom: 8px;
   padding-right: 0;
@@ -75,6 +75,10 @@ input {
 
 .dt-form-two-inputs input {
   width: 40%;
+}
+
+.dt-send-mail-mails-input{
+  width:87%;
 }
 
 /* Buttons */
@@ -120,7 +124,7 @@ input {
 }
 
 .dt-wrapper{
-  background: #FF6F58;  
+  background: #000;  
   height:100vh;
   width:100vw;
   position: relative;
@@ -158,6 +162,11 @@ input {
   width:100vw;
   position: absolute;
   z-index: 2;
+}
+
+.dt-select-file.is-selected{
+  opacity: 0;
+  transition: opacity 1s;
 }
 
 .dt-select-file-header{
@@ -242,9 +251,30 @@ input {
 }
 
 .dt-info-content{
+  color:white;
   display:table-cell;
   vertical-align: middle;
   text-align: center;
+}
+
+.dt-info-content .dt-file-icon{
+  width:8vw;
+  margin-bottom: 4.5vh;
+}
+
+.dt-info-content .dt-info-filename{
+  font-size: 2.4vw;
+  margin-bottom: 1.5vh;
+}
+
+.dt-info-content .dt-info-filesize{
+  font-size: 1.8vw;
+  margin-bottom: 6vh;
+}
+
+.dt-info-content .dt-info-is-encrypted{
+  font-size: 1.8vw;
+  margin-bottom: 6vh;
 }
 
 .dt-ui{
@@ -269,4 +299,8 @@ input {
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+}
+
+.dt-ui a.dt-file-link{
+  color: #fff;
 }

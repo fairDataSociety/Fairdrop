@@ -10,7 +10,8 @@ import './App.css';
 let gateway = 'http://swarm-gateways.net/bzz:/';
 // let gateway = 'http://localhost:8500/bzz:/'
 
-let dTransferURL = 'http://localhost:3000/';
+// let dTransferURL = 'http://localhost:3000/';
+let dTransferURL = 'http://dtransfer-staging.s3-website.eu-central-1.amazonaws.com/';
 
 class App extends Component {
 
@@ -55,28 +56,34 @@ class App extends Component {
     this.handleSymEncryptToggle = this.handleSymEncryptToggle.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.resetToInitialState = this.resetToInitialState.bind(this);
-    this.calculateEntropy = this.calculateEntropy.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.generatePassword = this.generatePassword.bind(this);
+    this.copyPassword = this.copyPassword.bind(this);
     this.refreshEmails = this.refreshEmails.bind(this);
 
     this.fireSelectFile = this.fireSelectFile.bind(this);
 
   }
 
-  retrieveFile(swarmHash, fileName, mimeType){
-    return this.DT.getFile(swarmHash, fileName).then((encryptedFile)=>{
-      this.setState({findFileFeedBackMessage: "Decrypting file..."});      
-      setTimeout(()=>{
-        let password = prompt('Please enter your file\'s passphrase');
-        if(password){
-          let decryptedFileName = fileName.replace(/\.encrypted$/,'');          
-          let decryptedFile = this.DT.decryptedFile(encryptedFile, password, decryptedFileName, mimeType);
-          this.setState({findFileFeedBackMessage: "Downloading file..."}); 
-          FileSaver.saveAs(decryptedFile);
-        }else{
-          alert('Sorry, you must provide a password to download your file!');
-          this.retrieveFile(swarmHash, fileName, mimeType);
-        }
-      },500);
+  retrieveFile(swarmHash, fileName, mimeType, isEncrypted){
+    return this.DT.getFile(swarmHash, fileName).then((retrievedFile)=>{
+      this.setState({findFileFeedBackMessage: "Decrypting file..."});
+      if(isEncrypted){
+        setTimeout(()=>{
+          let password = prompt('Please enter your file\'s passphrase');
+          if(password){
+            let decryptedFileName = fileName.replace(/\.encrypted$/,'');          
+            let decryptedFile = this.DT.decryptedFile(retrievedFile, password, decryptedFileName, mimeType);
+            this.setState({findFileFeedBackMessage: "Downloading file..."}); 
+            FileSaver.saveAs(decryptedFile);
+          }else{
+            alert('Sorry, you must provide a password to download your file!');
+            this.retrieveFile(swarmHash, fileName, mimeType);
+          }
+        },500);
+      }else{
+        FileSaver.saveAs(new File([retrievedFile], fileName, {type: mimeType}));
+      }
     }).catch((error)=>{
       this.setState({findFileFeedBackMessage: "Sorry, we couldn't find that hash."});      
     })
@@ -95,10 +102,32 @@ class App extends Component {
     this.refs.dtSelectFile.click();
   }
 
-  calculateEntropy(e){
-    let entropyMessage = zxcvbn(e.target.value).crack_times_display.offline_fast_hashing_1e10_per_second;
-
+  calculateEntropy(password){
+    let entropyMessage = zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
     this.setState({entropyMessage: "Estimated time to crack - " + entropyMessage});
+  }
+
+  handleChangePassword(e){
+    this.calculateEntropy(e.target.value);
+  }
+
+  generatePassword(e){
+    this.DT.generatePassword().then((password)=>{
+      this.refs.dtSymEncPasswordInput.value = password;
+      this.refs.dtSymEncPasswordInputConfirm.value = password;
+      this.calculateEntropy(password);
+    })
+  }
+
+  copyPassword(e){
+    if(this.refs.dtSymEncPasswordInput.value == this.refs.dtSymEncPasswordInputConfirm.value){
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(this.refs.dtSymEncPasswordInput.value);
+        this.setState({passwordMessage: 'Password copied to clipboard.'}); 
+      }
+    }else{
+      this.setState({passwordMessage: 'Passwords must match.'});
+    }
   }
 
   refreshEmails(e){
@@ -124,7 +153,7 @@ class App extends Component {
     }else{
       if(this.refs.dtSymEncPasswordInput.value === ""){
           this.setState({
-            passwordsMatchError: 'You must enter a password.',
+            passwordMessage: 'You must enter a password.',
             shouldEncrypt: false
           });
           return false; 
@@ -132,7 +161,7 @@ class App extends Component {
 
       if(this.refs.dtSymEncPasswordInput.value !== this.refs.dtSymEncPasswordInputConfirm.value){
         this.setState({
-          passwordsMatchError: 'Passwords must match.',
+          passwordMessage: 'Passwords must match.',
           shouldEncrypt: false        
         });
         return false
@@ -140,11 +169,11 @@ class App extends Component {
 
       if(this.refs.dtSymEncPasswordInput.value == this.refs.dtSymEncPasswordInputConfirm.value){
         this.setState({
-          passwordsMatchError: '',
+          passwordMessage: '',
           password: this.refs.dtSymEncPasswordInput.value,
-          encryptMessage: 'will encrypt',
+          encryptMessage: 'Will Encrypt',
           sendButtonMessage: 'Upload Encrypted',
-          shouldEncrypt: true
+          shouldEncrypt: true,
         });
       }
     }
@@ -158,18 +187,18 @@ class App extends Component {
       window.selectedFileArrayBuffer.byteLength > 0
       )
     {
-      this.setState({fileWasEncrypted: false});              
+
       if(this.state.shouldEncrypt){
-        this.setState({fileWasEncrypted: false});
-        this.setState({encryptMessage: 'encrypting...'});
+        this.setState({encryptMessage: 'Encrypting...'});
         this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), this.state.password).then((encryptedBuffer)=>{
           let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
-          this.setState({encryptMessage: 'encrypted'});
+          this.setState({encryptMessage: 'Encrypted'});
           this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
-          
+          this.setState({fileWasEncrypted: true});
+
           return this.DT.postFile(encryptedFile).then((response)=>{
             let timeEnd = new Date();
-            let dTransferLink = dTransferURL + "download?swarmHash="+response+"&fileName="+this.state.selectedFileName+"&mimeType="+this.state.selectedFileType;
+            let dTransferLink = dTransferURL + "?swarmHash="+response+"&fileName="+encodeURI(this.state.selectedFileName)+"&mimeType="+this.state.selectedFileType+"&isEncrypted=true";
             this.setState({fileWasUploaded: true});
             this.setState({dTransferLink: dTransferLink});
             this.setState({uploadedFileHash: response});
@@ -184,7 +213,7 @@ class App extends Component {
         if(isSure){
           return this.DT.postFile(new File([window.selectedFileArrayBuffer], this.state.selectedFileName, { type: this.state.selectedFileType })).then((response)=>{
             let timeEnd = new Date();
-            let dTransferLink = dTransferURL + "download?swarmHash="+response+"&fileName="+this.state.selectedFileName+"&mimeType="+this.state.selectedFileType;
+            let dTransferLink = dTransferURL + "?swarmHash="+response+"&fileName="+encodeURI(this.state.selectedFileName)+"&mimeType="+this.state.selectedFileType+"&isEncrypted=false";
             this.setState({
               fileWasUploaded: true,
               dTransferLink: dTransferLink, 
@@ -207,7 +236,7 @@ class App extends Component {
 
   humanFileSize(size) {
       var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'kB', 'MB', 'GB', 'TB'][i];
+      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'KB', 'MB', 'GB', 'TB'][i];
   }
 
   dropZone(){
@@ -246,6 +275,7 @@ class App extends Component {
     let swarmHash = urlParams.get('swarmHash');      
     let fileName = urlParams.get('fileName'); 
     let mimeType = urlParams.get('mimeType'); 
+    let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
 
     if(swarmHash && fileName){
       this.setState({
@@ -256,7 +286,7 @@ class App extends Component {
         findingFile: true,
         fileIsDecrypting: false
       });
-      this.retrieveFile(swarmHash, fileName, mimeType);
+      this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
     }else{
       this.dropZone();
     }
@@ -266,10 +296,11 @@ class App extends Component {
     return (
       <div className="dt-wrapper">
         <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
-          <div className="dt-logo">
+          <div className="dt-nav-header-item">
+            <a href="/"><img className="dt-df-logo" src="/assets/images/datafund-logo.svg" alt="Datafund Logo"/></a>
           </div>
         </div>
-        <div id="dt-select-file" className="dt-select-file" ref="dtSelectFile" > 
+        <div id="dt-select-file" className={"dt-select-file " + (this.state.fileIsSelected && "is-selected")} ref="dtSelectFile" > 
           <div className={"dt-select-file-header " + (this.state.fileIsSelecting && "is-selecting")} onClick={this.fireSelectFile}> {/* this bit should slide up out of view using transform */}
             <h1>Send and store files securely and privately<br/>that's how we do on the decentralised web 3.0</h1>
           </div> {/* dt-header */}
@@ -282,10 +313,10 @@ class App extends Component {
         </div> {/* dt-select-file */}
         <div className={"dt-info " + (this.state.fileIsSelected && "is-selected")}> {/* this bit could slide in from left over the top of dt-select-file */}
           <div className="dt-info-content">
-            <img/>
+            <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
             <div className="dt-info-filename">{this.state.selectedFileName}</div>
             <div className="dt-info-filesize">{this.state.selectedFileSize}</div>
-            <div className="dt-info-is-encrytped">{this.state.encryptMessage}</div>
+            <div className="dt-info-is-encrypted">{this.state.encryptMessage}</div>
             <div className="dt-feedback-message">{this.state.feedBackMessage}</div>
           </div>
         </div> {/* dt-info */}
@@ -293,29 +324,29 @@ class App extends Component {
             {!this.state.fileWasUploaded &&
               <div className="dt-ui-wrapper">
                 <div className="dt-sym-enc">
-                  <div class="dt-form-group dt-toggle">
-                    <input type="radio"/>
+                  <div className="dt-form-group dt-toggle">
+                    <input type="radio" disabled="disabled"/>
                     <p>Choose and confirm your password to encrypt</p>
                   </div>
-                  <div class="dt-content-wrap">
+                  <div className="dt-content-wrap">
                     <p>{this.state.entropyMessage}</p>
-                    <p>{this.state.passwordsMatchError}</p>
-                    <div class="dt-form-group dt-form-two-inputs">
-                      <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" autoComplete="off" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.calculateEntropy} placeholder="Password" />
+                    <p>{this.state.passwordMessage}</p>
+                    <div className="dt-form-group dt-form-two-inputs">
+                      <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" autoComplete="off" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.handleChangePassword} placeholder="Password" />
                       <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input-confirm" autoComplete="off" className="dt-sym-enc-password-input-confirm" type="password" ref="dtSymEncPasswordInputConfirm" placeholder="Confirm password" />  
                     </div>
                     <button id="dt-generate-password" className="dt-btn dt-btn-sm dt-generate-password" onClick={this.generatePassword}>Generate</button>
                     <button id="dt-copy-password" className="dt-btn dt-btn-sm dt-copy-password" onClick={this.copyPassword}>Copy</button>             
                     <button id="dt-sym-enc-password-button" className="dt-btn dt-btn-sm dt-toggle-button" onClick={this.handleSymEncryptToggle}>{this.state.shouldEncrypt ? "Will Encrypt" : "Encrypt"}</button>
-                    <a href="" className="dt-btn dt-btn-link">This is a link</a>
+                    { /* <a href="" className="dt-btn dt-btn-link">This is a link</a> */ }
                   </div>
                 </div>
                 <div className="dt-send-mail">
-                  <div class="dt-form-group dt-toggle">
-                    <input type="radio"/>
+                  <div className="dt-form-group dt-toggle">
+                    <input type="radio" disabled="disabled"/>
                     <p>Add emails to send</p>
                   </div>
-                  <div class="dt-content-wrap">
+                  <div className="dt-content-wrap">
                     <input id="dt-send-mail-mails-input" autoComplete="off" className="dt-send-mail-mails-input" type="text" placeholder="info@datafund.io, hi@datafund.io" onChange={this.refreshEmails}/>
                   </div>
                 </div>
@@ -328,8 +359,14 @@ class App extends Component {
               <div className="dt-ui-wrapper">
                 <div className="dt-feedback">
                   <div>
-                    <p>Hash: {this.state.uploadedFileHash}</p>
-                    <p>dTransferLink: <a href={this.state.dTransferLink} target="_blank">{this.state.uploadedFileHash}</a></p>
+                    <p>Swarmhash: <input type="text" value={this.state.uploadedFileHash} readOnly="true"/></p>
+                    {this.state.fileWasEncrypted && 
+                      <p>Password: <input type="text" value={this.state.password} readOnly="true"/></p>
+                    }
+                    <p>
+                      <a href={this.state.dTransferLink} target="_blank" className="dt-file-link">DTransferLink: </a>
+                      <input type="text" value={this.state.dTransferLink} readOnly="true"/>
+                    </p>
                   {this.state.emails && this.state.emails.count > 0 && 
                     <div>
                     <p>Sent to: </p>
@@ -339,7 +376,7 @@ class App extends Component {
                     </div>
                   }
                   </div>
-                  <button id="dt-send-another-button" className="dt-send-another-button" onClick={this.resetToInitialState}>Send Another</button>
+                  <button id="dt-send-another-button" className="dt-btn dt-btn-lg dt-btn-green dt-send-another-button" onClick={this.resetToInitialState}>Send Another</button>
                 </div>
               </div>
             }

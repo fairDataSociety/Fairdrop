@@ -26,13 +26,10 @@ class DWallet extends Component {
     switch(message) {
       case 0:
           return "Please select your wallet V3 json file then enter your password to link your wallet.";
-          break;
       case 1:
           return "Please enter your password to finish linking your wallet.";
-          break;
       case 2:
           return "Wallet unlocked.";
-          break;
       default:
           return message;
     }

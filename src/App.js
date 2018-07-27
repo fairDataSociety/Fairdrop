@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
-import DWallet from "./components/DWallet";
 import DTransfer from "./services/Dtransfer";
 import Dropzone from 'dropzone';
-import zxcvbn from 'zxcvbn';
 import FileSaver from 'file-saver';
 
 
-import { connect } from 'react-redux';
-
 import './App.css';
 
+// let gateway = 'http://swarm.datafund.net/bzz:/';
 let gateway = 'http://swarm-gateways.net/bzz:/';
 // let gateway = 'http://localhost:8500/bzz:/'
 
-// let dTransferURL = 'http://localhost:3000/';
-let dTransferURL = 'http://dtransfer-staging.s3-website.eu-central-1.amazonaws.com/';
+let dTransferURL = 'http://localhost:3000/';
+// let dTransferURL = 'http://dtransfer-staging.s3-website.eu-central-1.amazonaws.com/';
 
 class App extends Component {
 
@@ -24,20 +21,25 @@ class App extends Component {
       shouldEncrypt: false,
       fileIsSelecting: false,
       fileIsSelected: false,
+
       selectedFileName: null,
       selectedFileSize: null,
+
       passwordsMatch: false,
+
       fileWasEncrypted: false,
       feedBackMessage: false,
+
       isSending: false,
       sendToEmails: [],
-      dTransferLink: null,
-      uploadedFileHash: null,
-      feedBackMessage: "",
+
+      dTransferLink: false,
+      uploadedFileHash: false,
       fileWasUploaded: false,
-      encryptMessage: 'Unencrypted',      
+
+      encryptMessage: 'Unencrypted', 
       sendButtonMessage: 'Upload Unencrypted',
-      //find file
+      // download file
       findFileFeedBackMessage: 'Trying to find your file...',
       findingFile: true,
       fileIsDecrypting: false
@@ -63,9 +65,7 @@ class App extends Component {
     this.generatePassword = this.generatePassword.bind(this);
     this.copyPassword = this.copyPassword.bind(this);
     this.refreshEmails = this.refreshEmails.bind(this);
-
     this.fireSelectFile = this.fireSelectFile.bind(this);
-
   }
 
   retrieveFile(swarmHash, fileName, mimeType, isEncrypted){
@@ -105,25 +105,23 @@ class App extends Component {
     this.refs.dtSelectFile.click();
   }
 
-  calculateEntropy(password){
-    let entropyMessage = zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
-    this.setState({entropyMessage: "Estimated time to crack - " + entropyMessage});
-  }
 
-  handleChangePassword(e){
-    this.calculateEntropy(e.target.value);
+  handleChangePassword(){
+    let password = this.refs.dtSymEncPasswordInput.value;
+    let entropyMessage = "Estimated time to crack - " + this.DT.humanEntropy(password)
+    this.setState({entropyMessage: entropyMessage});
   }
 
   generatePassword(e){
     this.DT.generatePassword().then((password)=>{
       this.refs.dtSymEncPasswordInput.value = password;
       this.refs.dtSymEncPasswordInputConfirm.value = password;
-      this.calculateEntropy(password);
+      this.handleChangePassword(password);
     })
   }
 
   copyPassword(e){
-    if(this.refs.dtSymEncPasswordInput.value == this.refs.dtSymEncPasswordInputConfirm.value){
+    if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
       if(navigator.clipboard){
         navigator.clipboard.writeText(this.refs.dtSymEncPasswordInput.value);
         this.setState({passwordMessage: 'Password copied to clipboard.'}); 
@@ -170,7 +168,7 @@ class App extends Component {
         return false
       }
 
-      if(this.refs.dtSymEncPasswordInput.value == this.refs.dtSymEncPasswordInputConfirm.value){
+      if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
         this.setState({
           passwordMessage: '',
           password: this.refs.dtSymEncPasswordInput.value,
@@ -185,12 +183,11 @@ class App extends Component {
 
   handleUpload(){
     let timeStart = new Date();
-    if(
+    if( // ensure that we have a file saved from dropzone
       window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
       window.selectedFileArrayBuffer.byteLength > 0
       )
     {
-
       if(this.state.shouldEncrypt){
         this.setState({encryptMessage: 'Encrypting...'});
         this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), this.state.password).then((encryptedBuffer)=>{
@@ -210,7 +207,6 @@ class App extends Component {
             this.setState({feedBackMessage: "Upload failed, please try again..."});
           });
         });
-
       }else{
         let isSure = window.confirm('This will expose your file to the public - are you sure?');
         if(isSure){
@@ -235,11 +231,6 @@ class App extends Component {
       return false;
     }
 
-  }
-
-  humanFileSize(size) {
-      var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'KB', 'MB', 'GB', 'TB'][i];
   }
 
   dropZone(){
@@ -268,7 +259,7 @@ class App extends Component {
         fileIsSelected: true,
         selectedFileName: file.name,  
         selectedFileType: file.type,        
-        selectedFileSize: this.humanFileSize(file.size)
+        selectedFileSize: this.DT.humanFileSize(file.size)
       });
     });
   }
@@ -374,7 +365,7 @@ class App extends Component {
                     <div>
                     <p>Sent to: </p>
                     <ul>
-                      {this.state.emails.map((email, i) => { <li>email</li>})}
+                      {this.state.emails.map((email, i) => <li>email</li>)}
                     </ul>
                     </div>
                   }

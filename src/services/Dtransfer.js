@@ -2,6 +2,7 @@ import Crypto from 'crypto';
 import Buffer from 'buffer';
 import toBuffer from 'blob-to-buffer';
 import b64toBlob from 'b64-to-blob';
+import zxcvbn from 'zxcvbn';
 
 class DTransfer {
 
@@ -22,7 +23,7 @@ class DTransfer {
   }
 
   encryptBuffer(buffer, password){
-    if(!password) throw 'You must supply a password.'
+    if(!password) throw new Error('You must supply a password.');
     var cipher = Crypto.createCipher('aes-256-ctr', password);
     var crypted = cipher.update(buffer, null, 'hex');
     crypted += cipher.final('hex');
@@ -123,6 +124,16 @@ class DTransfer {
       xhr.send();
     });
   }
+
+  humanFileSize(size) {
+      var i = Math.floor( Math.log(size) / Math.log(1024) );
+      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'KB', 'MB', 'GB', 'TB'][i];
+  }
+
+  humanEntropy(password){
+    return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
+  }
+
 }
 
 export default DTransfer;

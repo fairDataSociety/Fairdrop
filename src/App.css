@@ -115,7 +115,6 @@ input {
   color: #fff;
 }
 
-
 /* Shared */
 
 .dt-content-wrap {
@@ -154,6 +153,40 @@ input {
   color: #fff;
 }
 
+.dt-page-wrapper{
+  display: table;
+  height:100vh;
+  width:100vw;
+  top:0;
+  left:0;
+  position: absolute;
+}
+
+.dt-page-inner-centered{
+  display: table-cell;
+  vertical-align: middle;
+  margin: auto;
+  text-align: center;
+}
+
+.dt-hidden{
+  opacity: 0;
+  display: none;
+}
+
+.dt-fade-in{
+  opacity: 1;
+  display: table;
+  transition: opacity 4s;  
+}
+
+  /*slide backgrounds*/
+
+  .dt-green{
+    background: green;
+  }
+
+/* select file */
 
 .dt-select-file{
   position: absolute;
@@ -230,6 +263,20 @@ input {
   text-align: center;
   vertical-align: middle;
 }
+
+/* select encryption */
+
+.dt-select-encryption {
+  z-index: 5;
+}
+
+/* select encryption */
+
+.dt-select-mailbox {
+  z-index: 6;
+}
+
+/* info feedback */
 
 .dt-info{
   top:0;

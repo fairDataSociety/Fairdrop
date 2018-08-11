@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import DTransfer from '../services/Dtransfer';
-import Dropzone from 'dropzone';
+
+import ASelectFile from '../components/up/ASelectFile';
+import BSelectEncryption from '../components/up/BSelectEncryption';
+import CSelectMailbox from '../components/up/CSelectMailbox';
+
 
 class DTransferUp extends Component{
 
@@ -20,14 +24,19 @@ class DTransferUp extends Component{
       fileWasEncrypted: false,
       feedBackMessage: false,
 
+      isSignedIn: false,
+
       isSending: false,
       sendToEmails: [],
+
+      uiState: 0,
 
       dTransferLink: null,
       uploadedFileHash: null,
       fileWasUploaded: false,
       encryptMessage: 'Unencrypted',      
       sendButtonMessage: 'Upload Unencrypted',
+
     };
   }
 
@@ -50,7 +59,6 @@ class DTransferUp extends Component{
     this.generatePassword = this.generatePassword.bind(this);
     this.copyPassword = this.copyPassword.bind(this);
     this.refreshEmails = this.refreshEmails.bind(this);
-    this.fireSelectFile = this.fireSelectFile.bind(this);
   }
 
   componentDidMount(){
@@ -71,7 +79,7 @@ class DTransferUp extends Component{
       });
       this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
     }else{
-      this.dropZone();
+      // this.dropZone();
     }
   }
 
@@ -80,11 +88,6 @@ class DTransferUp extends Component{
   handleSelectFileForUpload(e){
     e.preventDefault();    
     this.setState({fileIsSelecting: !this.state.fileIsSelecting});
-  }
-
-  fireSelectFile(e){
-    this.setState({fileIsSelecting: true});
-    this.refs.dtSelectFile.click();
   }
 
 
@@ -215,56 +218,15 @@ class DTransferUp extends Component{
 
   }
 
-  // dropzone config and events
-
-  dropZone(){
-    this.dropzone = new Dropzone(this.refs.dtSelectFile, { 
-      url: 'dummy://', //dropzone requires a url even if we're not using it
-      accept: (file, done) => {
-        var reader = new FileReader();
-        reader.addEventListener("loadend", 
-          function(event) { 
-            // for now, todo -> encrypt this into local file system!
-            window.selectedFileArrayBuffer = event.target.result;
-          });
-        reader.readAsArrayBuffer(file);
-      }
-    });
-    this.dropzone.on("dragenter", (event) => {
-     this.setState({fileIsSelecting: true});
-    });
-    this.dropzone.on("dragleave", (event) => {
-      if(event.fromElement === null){
-        this.setState({fileIsSelecting: false});
-      }
-    });
-    this.dropzone.on("addedfile", (file) => {
-      this.setState({
-        fileIsSelected: true,
-        selectedFileName: file.name,  
-        selectedFileType: file.type,        
-        selectedFileSize: this.DT.humanFileSize(file.size)
-      });
-    });
-  }
-
-  // render html
-
   render() {
     return (
         <div className="dt-upload">
-          <div id="dt-select-file" className={"dt-select-file " + (this.state.fileIsSelected && "is-selected")} ref="dtSelectFile" > 
-            <div className={"dt-select-file-header " + (this.state.fileIsSelecting && "is-selecting")} onClick={this.fireSelectFile}> {/* this bit slides up out of view using transform */}
-              <h1>Send and store files securely and privately<br/>that's how we do on the decentralised web 3.0</h1>
-            </div> {/* dt-header */}
-            <div className={"dt-select-file-main " + (this.state.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
-
-            </div> {/* dt-select-file-main */}
-            <div className={"dt-select-file-instruction " + (this.state.fileIsSelecting && "is-selecting")} onClick={this.fireSelectFile}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
-              <h2>choose or drag and drop a file</h2>
-            </div> {/* dt-select-file-instruction */}
-          </div> {/* dt-select-file */}
-          <div className={"dt-info " + (this.state.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}
+          <ASelectFile parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <BSelectEncryption parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <CSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
+          { true === false && 
+            <div>
+              <div className={"dt-info " + (this.state.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}
             <div className="dt-info-content">
               <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
               <div className="dt-info-filename">{this.state.selectedFileName}</div>
@@ -334,6 +296,8 @@ class DTransferUp extends Component{
                 </div>
               }
           </div> {/* dt-ui */}
+            </div>
+          }
         </div>
     );
   }

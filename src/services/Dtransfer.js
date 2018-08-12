@@ -2,7 +2,6 @@ import Crypto from 'crypto';
 import Buffer from 'buffer';
 import toBuffer from 'blob-to-buffer';
 import b64toBlob from 'b64-to-blob';
-import zxcvbn from 'zxcvbn';
 
 class DTransfer {
 
@@ -12,14 +11,6 @@ class DTransfer {
     }
 
     this.gateway = gateway;
-  }
-
-  generatePassword(){
-    return new Promise((resolve, reject)=>{
-      Crypto.randomBytes(48, function(err, buffer) {
-        resolve(buffer.toString('hex'));
-      });
-    })
   }
 
   encryptBuffer(buffer, password){
@@ -123,15 +114,6 @@ class DTransfer {
 
       xhr.send();
     });
-  }
-
-  humanFileSize(size) {
-      var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'KB', 'MB', 'GB', 'TB'][i];
-  }
-
-  humanEntropy(password){
-    return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
   }
 
 }

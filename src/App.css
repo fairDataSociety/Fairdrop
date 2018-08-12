@@ -43,8 +43,7 @@ input[type='text'], input[type='password'] {
   border-radius: 20px;
   border: 1px solid #6E716E;
   background-color: transparent;
-  color: #939393;
-  font-size: 0.9vw;
+  color: #fff;
   padding: 10px 20px;
   padding-bottom: 8px;
   padding-right: 0;
@@ -200,6 +199,7 @@ input {
 .dt-select-file.is-selected{
   opacity: 0;
   transition: opacity 1s;
+  display:none;
 }
 
 .dt-select-file-header{

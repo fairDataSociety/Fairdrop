@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DTransfer from '../../services/Dtransfer';
 import Dropzone from 'dropzone';
+import Utils from '../../services/DTransferUtils';
+
 
 class ASelectFile extends Component{
   
@@ -40,7 +42,7 @@ class ASelectFile extends Component{
         fileIsSelected: true,
         selectedFileName: file.name,  
         selectedFileType: file.type,        
-        selectedFileSize: this.DT.humanFileSize(file.size),
+        selectedFileSize: Utils.humanFileSize(file.size),
         uiState: 1
       });
     });

@@ -19,8 +19,6 @@ class DTransferUp extends Component{
       selectedFileName: null,
       selectedFileSize: null,
 
-      passwordsMatch: false,
-
       fileWasEncrypted: false,
       feedBackMessage: false,
 

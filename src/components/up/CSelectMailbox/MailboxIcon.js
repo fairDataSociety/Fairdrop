@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DTransfer from '../../../services/Dtransfer';
-import Dropzone from 'dropzone';
 
 class ASelectFile extends Component{
   
@@ -11,7 +10,7 @@ class ASelectFile extends Component{
 
   render(){
     return (
-      <div className="dt-mailbox-add">
+      <div className="dt-mailbox-icon">
         <button onClick={this.props.mailboxAction}>
           <div className="dt-mailbox">
             <div className="dt-mailbox-name">

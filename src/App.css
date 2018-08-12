@@ -276,6 +276,13 @@ input {
   z-index: 6;
 }
 
+/* select recipient */
+
+.dt-select-recipient {
+  z-index: 7;
+}
+
+
 /* info feedback */
 
 .dt-info{

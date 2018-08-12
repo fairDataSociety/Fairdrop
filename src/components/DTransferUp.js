@@ -4,6 +4,7 @@ import DTransfer from '../services/Dtransfer';
 import ASelectFile from '../components/up/ASelectFile';
 import BSelectEncryption from '../components/up/BSelectEncryption';
 import CSelectMailbox from '../components/up/CSelectMailbox';
+import DSelectRecipient from '../components/up/DSelectRecipient';
 
 
 class DTransferUp extends Component{
@@ -28,6 +29,12 @@ class DTransferUp extends Component{
       sendToEmails: [],
 
       uiState: 0,
+
+      selectedMailbox: false,
+      selectedWallet: false,
+
+      mailboxPassword: false,
+
 
       dTransferLink: null,
       uploadedFileHash: null,
@@ -222,6 +229,7 @@ class DTransferUp extends Component{
           <ASelectFile parentState={this.state} setParentState={this.setState.bind(this)}/>
           <BSelectEncryption parentState={this.state} setParentState={this.setState.bind(this)}/>
           <CSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <DSelectRecipient parentState={this.state} setParentState={this.setState.bind(this)}/>
           { true === false && 
             <div>
               <div className={"dt-info " + (this.state.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}

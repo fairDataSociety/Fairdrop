@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import DTransfer from '../../services/Dtransfer';
-import Dropzone from 'dropzone';
 
-class ASelectFile extends Component{
+class BSelectEncryption extends Component{
   
   constructor(props) {
     super(props);
@@ -49,4 +48,4 @@ class ASelectFile extends Component{
   }
 }
 
-export default ASelectFile;
+export default BSelectEncryption;

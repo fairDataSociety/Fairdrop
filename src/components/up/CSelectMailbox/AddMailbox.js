@@ -6,7 +6,6 @@ class ASelectFile extends Component{
   
   constructor(props) {
     super(props);
-    this.DM = new DMailbox();
 
     this.state = {
       feedbackMessage: "",
@@ -22,8 +21,8 @@ class ASelectFile extends Component{
 
   processMailboxName(){
     let mailboxName = this.refs.dtSelectMailboxName.value;
-    if(this.DM.isMailboxNameValid(mailboxName)){
-      this.DM.isMailboxNameAvailable(mailboxName).then((result) => {
+    if(DMailbox.isMailboxNameValid(mailboxName)){
+      DMailbox.isMailboxNameAvailable(mailboxName).then((result) => {
         if(result === true){
           this.setState({
             mailboxName: mailboxName,
@@ -101,9 +100,8 @@ class ASelectFile extends Component{
       this.proceessMailboxPassword();
     }else{
       //add the mailbox and select it
+      let newMailBox = DMailbox.create(this.state.mailboxName);
     }
-    //or add the mailbox and update the mailboxes in parent component
-    e.preventDefault();
   }
 
   render(){

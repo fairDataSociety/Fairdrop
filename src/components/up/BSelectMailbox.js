@@ -77,7 +77,7 @@ class ASelectFile extends Component{
             <h1 className="dt-select-account-header">Select Mailbox</h1>
             <div className="dt-select-mailbox-mailboxes">
               <div className="dt-select-mailbox-mailboxes-existing">
-                {this.state.mailboxes.map(
+                {this.state.mailboxes && this.state.mailboxes.map(
                   (mailbox)=>{
                     return <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailbox={mailbox} mailboxAction={this.unlockMailbox} mailboxName={mailbox.subdomain} mailboxDescription="Unlock Mailbox"/>
                   }

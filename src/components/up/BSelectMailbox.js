@@ -4,9 +4,9 @@ import DMailbox from '../../services/DMailbox';
 
 import Dropzone from 'dropzone';
 
-import MailboxIcon from '../up/CSelectMailbox/MailboxIcon'
-import AddMailbox from '../up/CSelectMailbox/AddMailbox'
-import UnlockMailbox from '../up/CSelectMailbox/UnlockMailbox'
+import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
+import AddMailbox from '../up/BSelectMailbox/AddMailbox'
+import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
 
 class ASelectFile extends Component{
   
@@ -22,6 +22,7 @@ class ASelectFile extends Component{
     this.addMailbox = this.addMailbox.bind(this);    
     this.unlockMailbox = this.unlockMailbox.bind(this);    
     this.handleSelectRecipient = this.handleSelectRecipient.bind(this);    
+    this.handleUploadUnencrypted = this.handleUploadUnencrypted.bind(this);
 
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
   }
@@ -45,7 +46,7 @@ class ASelectFile extends Component{
 
   handleSelectRecipient(e){
     this.props.setParentState({
-      uiState: 3
+      uiState: 2
     });
   }
 
@@ -60,9 +61,17 @@ class ASelectFile extends Component{
     return this.props.parentState.selectedWallet !== false;
   }
 
+  handleUploadUnencrypted(){
+    this.props.setParentState({
+      uiState: 3,
+      shouldEncrypt: false
+    });     
+  }
+
+
   render(){
     return (
-      <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "")}> 
+      <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 1 ? "dt-fade-in" : "")}> 
         <div className="dt-select-mailbox-ui dt-page-inner-centered">
           <div className="dt-select-mailbox">
             <h1 className="dt-select-account-header">Select Mailbox</h1>
@@ -86,6 +95,7 @@ class ASelectFile extends Component{
           {this.mailboxUnlocked() !== false &&
             <button className="dt-select-recipient dt-btn dt-btn-lg dt-btn-green" onClick={this.handleSelectRecipient}>Select Recipient</button>
           }
+          <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green" onClick={this.handleUploadUnencrypted}>upload unencrypted</button>
         </div>
       </div>
     )

@@ -3,12 +3,11 @@ import DTransfer from '../services/Dtransfer';
 import DEns from '../services/DEns';
 
 import ASelectFile from '../components/up/ASelectFile';
-import BSelectEncryption from '../components/up/BSelectEncryption';
-import CSelectMailbox from '../components/up/CSelectMailbox';
-import DSelectRecipient from '../components/up/DSelectRecipient';
-import EConfirm from '../components/up/EConfirm';
-import FInProgress from '../components/up/FInProgress';
-import GCompleted from '../components/up/GCompleted';
+import BSelectMailbox from '../components/up/BSelectMailbox';
+import CSelectRecipient from '../components/up/CSelectRecipient';
+import DConfirm from '../components/up/DConfirm';
+import EInProgress from '../components/up/EInProgress';
+import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
 
@@ -145,12 +144,11 @@ class DTransferUp extends Component{
     return (
         <div className="dt-upload">
           <ASelectFile parentState={this.state} setParentState={this.setState.bind(this)}/>
-          <BSelectEncryption parentState={this.state} setParentState={this.setState.bind(this)}/>
-          <CSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
-          <DSelectRecipient parentState={this.state} setParentState={this.setState.bind(this)}/>
-          <EConfirm parentState={this.state} setParentState={this.setState.bind(this)} handleUpload={this.handleUpload.bind(this)}/>
-          <FInProgress parentState={this.state} setParentState={this.setState.bind(this)}/>
-          <GCompleted parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <BSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <CSelectRecipient parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <DConfirm parentState={this.state} setParentState={this.setState.bind(this)} handleUpload={this.handleUpload.bind(this)}/>
+          <EInProgress parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <FCompleted parentState={this.state} setParentState={this.setState.bind(this)}/>
           <ProgressBar parentState={this.state} setParentState={this.setState.bind(this)}/>
         </div>
     );

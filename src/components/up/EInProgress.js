@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class FInProgress extends Component{
+class EInProgress extends Component{
   
   constructor(props) {
     super(props);
@@ -8,7 +8,7 @@ class FInProgress extends Component{
 
   render(){
     return (
-      <div id="dt-in-progress" className={"dt-confirm dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 5 ? "dt-fade-in" : "")}> 
+      <div id="dt-in-progress" className={"dt-confirm dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "")}> 
           <div className="dt-in-progress-ui dt-page-inner-centered">
             <h1 className="dt-in-progress-header">Progress</h1>
             { !this.props.parentState.fileWasEncrypted &&
@@ -23,4 +23,4 @@ class FInProgress extends Component{
   }
 }
 
-export default FInProgress;
+export default EInProgress;

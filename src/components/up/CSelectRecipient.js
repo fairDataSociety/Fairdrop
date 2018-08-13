@@ -5,11 +5,11 @@ import DEns from '../../services/DEns';
 
 import Dropzone from 'dropzone';
 
-import MailboxIcon from '../up/CSelectMailbox/MailboxIcon'
-import AddMailbox from '../up/CSelectMailbox/AddMailbox'
-import UnlockMailbox from '../up/CSelectMailbox/UnlockMailbox'
+import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
+import AddMailbox from '../up/BSelectMailbox/AddMailbox'
+import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
 
-class ASelectFile extends Component{
+class CSelectRecipient extends Component{
   
   constructor(props) {
     super(props);
@@ -33,13 +33,14 @@ class ASelectFile extends Component{
 
   handleUploadAndEncrypt(){
     this.props.setParentState({
-      uiState: 4,
+      uiState: 3,
+      shouldEncrypt: true
     }); 
   }
 
   render(){
     return (
-      <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 3 ? "dt-fade-in" : "")}> 
+      <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "")}> 
         <div className="dt-select-recipient-ui dt-page-inner-centered">
           <div className="dt-select-recipient">
             <h1 className="dt-select-account-header">Select Recipient</h1>
@@ -63,4 +64,4 @@ class ASelectFile extends Component{
   }
 }
 
-export default ASelectFile;
+export default CSelectRecipient;

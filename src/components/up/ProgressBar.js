@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class GCompleted extends Component{
+class FCompleted extends Component{
   
   constructor(props) {
     super(props);
@@ -15,4 +15,4 @@ class GCompleted extends Component{
   }
 }
 
-export default GCompleted;
+export default FCompleted;

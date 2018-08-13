@@ -20,13 +20,12 @@ class EConfirm extends Component{
   handleEncryptAndSend(){
     this.props.setParentState({
       uiState: 5,
-    }); 
-    //temporary
-    setTimeout(()=>{
-      this.props.setParentState({
+    });
+    this.props.handleUpload().then(()=>{
+       this.props.setParentState({
         uiState: 6
-      });
-    },3000);
+      });     
+    })
   }
 
   render(){

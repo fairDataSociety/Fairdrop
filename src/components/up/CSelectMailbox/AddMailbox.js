@@ -91,6 +91,26 @@ class ASelectFile extends Component{
     e.preventDefault();
   }
 
+  // copyPassword(e){
+  //   if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
+  //     if(navigator.clipboard){
+  //       navigator.clipboard.writeText(this.refs.dtSymEncPasswordInput.value);
+  //       this.setState({passwordMessage: 'Password copied to clipboard.'}); 
+  //     }
+  //   }else{
+  //     this.setState({passwordMessage: 'Passwords must match.'});
+  //   }
+  // }
+
+  // generatePassword(e){
+  //   this.DT.generatePassword().then((password)=>{
+  //     this.refs.dtSymEncPasswordInput.value = password;
+  //     this.refs.dtSymEncPasswordInputConfirm.value = password;
+  //     this.handleChangePassword(password);
+  //   })
+  // }
+
+
   addMailbox(e){
     //check to see if any errors and return (first?)
     if(this.state.mailboxName === false){

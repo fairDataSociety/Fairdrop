@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DTransfer from '../services/Dtransfer';
+import DEns from '../services/DEns';
 
 import ASelectFile from '../components/up/ASelectFile';
 import BSelectEncryption from '../components/up/BSelectEncryption';
@@ -23,7 +24,6 @@ class DTransferUp extends Component{
       selectedFileName: null,
       selectedFileSize: null,
 
-      fileWasEncrypted: false,
       feedBackMessage: false,
 
       isSignedIn: false,
@@ -40,10 +40,11 @@ class DTransferUp extends Component{
 
       mailboxPassword: false,
 
+      fileWasEncrypted: false,
+      fileWasUploaded: false,
 
       dTransferLink: null,
       uploadedFileHash: null,
-      fileWasUploaded: false,
       encryptMessage: 'Unencrypted',      
       sendButtonMessage: 'Upload Unencrypted',
 
@@ -60,15 +61,6 @@ class DTransferUp extends Component{
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
 
     this.state = this.getInitialState();
-
-    this.handleSelectFileForUpload = this.handleSelectFileForUpload.bind(this);
-    this.handleSymEncryptToggle = this.handleSymEncryptToggle.bind(this);
-    this.handleUpload = this.handleUpload.bind(this);
-    this.resetToInitialState = this.resetToInitialState.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.generatePassword = this.generatePassword.bind(this);
-    this.copyPassword = this.copyPassword.bind(this);
-    this.refreshEmails = this.refreshEmails.bind(this);
   }
 
   componentDidMount(){
@@ -93,89 +85,6 @@ class DTransferUp extends Component{
     }
   }
 
-  // event handlers
-
-  handleSelectFileForUpload(e){
-    e.preventDefault();    
-    this.setState({fileIsSelecting: !this.state.fileIsSelecting});
-  }
-
-
-  handleChangePassword(){
-    let password = this.refs.dtSymEncPasswordInput.value;
-    let entropyMessage = "Estimated time to crack - " + this.DT.humanEntropy(password)
-    this.setState({entropyMessage: entropyMessage});
-  }
-
-  generatePassword(e){
-    this.DT.generatePassword().then((password)=>{
-      this.refs.dtSymEncPasswordInput.value = password;
-      this.refs.dtSymEncPasswordInputConfirm.value = password;
-      this.handleChangePassword(password);
-    })
-  }
-
-  copyPassword(e){
-    if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
-      if(navigator.clipboard){
-        navigator.clipboard.writeText(this.refs.dtSymEncPasswordInput.value);
-        this.setState({passwordMessage: 'Password copied to clipboard.'}); 
-      }
-    }else{
-      this.setState({passwordMessage: 'Passwords must match.'});
-    }
-  }
-
-  refreshEmails(e){
-    var re = /([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)/ig;
-    let emails = e.target.value.match(re);
-    let isSending = (emails && emails.count > 0);
-    this.setState({
-      sendToEmails: emails,
-      isSending: isSending
-    });
-  }
-
-  handleSymEncryptToggle(e){
-
-    if(this.state.shouldEncrypt){
-      //reset
-      this.setState({
-        shouldEncrypt: false,
-        encryptMessage: 'Unencrypted',
-        sendButtonMessage: 'Upload Unencrypted',          
-      });
-      return false; 
-    }else{
-      if(this.refs.dtSymEncPasswordInput.value === ""){
-          this.setState({
-            passwordMessage: 'You must enter a password.',
-            shouldEncrypt: false
-          });
-          return false; 
-      }
-
-      if(this.refs.dtSymEncPasswordInput.value !== this.refs.dtSymEncPasswordInputConfirm.value){
-        this.setState({
-          passwordMessage: 'Passwords must match.',
-          shouldEncrypt: false        
-        });
-        return false
-      }
-
-      if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
-        this.setState({
-          passwordMessage: '',
-          password: this.refs.dtSymEncPasswordInput.value,
-          encryptMessage: 'Will Encrypt',
-          sendButtonMessage: 'Upload Encrypted',
-          shouldEncrypt: true,
-        });
-      }
-    }
-
-  }
-
   handleUpload(){
     let timeStart = new Date();
     if( // ensure that we have a file saved from dropzone
@@ -184,8 +93,12 @@ class DTransferUp extends Component{
       )
     {
       if(this.state.shouldEncrypt){
+        let senderWallet = this.state.selectedWallet;
+        let senderMailbox = this.state.senderMailbox;
+        let addressee = this.state.addressee;
+        let sharedSecret = DEns.createSharedSecret(senderMailbox, addressee);
         this.setState({encryptMessage: 'Encrypting...'});
-        this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), this.state.password).then((encryptedBuffer)=>{
+        return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
           let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
           this.setState({encryptMessage: 'Encrypted'});
           this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
@@ -225,7 +138,6 @@ class DTransferUp extends Component{
       this.setState({feedBackMessage: "There was an error, please try again..."});
       return false;
     }
-
   }
 
   render() {
@@ -235,83 +147,9 @@ class DTransferUp extends Component{
           <BSelectEncryption parentState={this.state} setParentState={this.setState.bind(this)}/>
           <CSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
           <DSelectRecipient parentState={this.state} setParentState={this.setState.bind(this)}/>
-          <EConfirm parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <EConfirm parentState={this.state} setParentState={this.setState.bind(this)} handleUpload={this.handleUpload.bind(this)}/>
           <FInProgress parentState={this.state} setParentState={this.setState.bind(this)}/>
           <GCompleted parentState={this.state} setParentState={this.setState.bind(this)}/>
-          { true === false && 
-            <div>
-              <div className={"dt-info " + (this.state.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}
-            <div className="dt-info-content">
-              <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
-              <div className="dt-info-filename">{this.state.selectedFileName}</div>
-              <div className="dt-info-filesize">{this.state.selectedFileSize}</div>
-              <div className="dt-info-is-encrypted">{this.state.encryptMessage}</div>
-              <div className="dt-feedback-message">{this.state.feedBackMessage}</div>
-            </div>
-          </div> {/* dt-info */}
-          <div className={"dt-ui " + (this.state.fileIsSelected && "is-selected")}> {/* this bit slides in from right over the top of dt-select-file */}
-              {!this.state.fileWasUploaded &&
-                <div className="dt-ui-wrapper">
-                  <div className="dt-sym-enc">
-                    <div className="dt-form-group dt-toggle">
-                      <input type="radio" disabled="disabled"/>
-                      <p>Choose and confirm your password to encrypt</p>
-                    </div> {/* dt-ui-wrapper */}
-                    <div className="dt-content-wrap">
-                      <p>{this.state.entropyMessage}</p>
-                      <p>{this.state.passwordMessage}</p>
-                      <div className="dt-form-group dt-form-two-inputs">
-                        <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.handleChangePassword} placeholder="Password" />
-                        <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input-confirm" className="dt-sym-enc-password-input-confirm" type="password" ref="dtSymEncPasswordInputConfirm" placeholder="Confirm password" />  
-                      </div>
-                      <button id="dt-generate-password" className="dt-btn dt-btn-sm dt-generate-password" onClick={this.generatePassword}>Generate</button>
-                      <button id="dt-copy-password" className="dt-btn dt-btn-sm dt-copy-password" onClick={this.copyPassword}>Copy</button>             
-                      <button id="dt-sym-enc-password-button" className="dt-btn dt-btn-sm dt-toggle-button" onClick={this.handleSymEncryptToggle}>{this.state.shouldEncrypt ? "Will Encrypt" : "Encrypt"}</button>
-                      { /* <a href="" className="dt-btn dt-btn-link">This is a link</a> */ }
-                    </div> {/* dt-content-wrap */}
-                  </div>
-                  <div className="dt-send-mail">
-                    <div className="dt-form-group dt-toggle">
-                      <input type="radio" disabled="disabled"/>
-                      <p>Add emails to send</p>
-                    </div>
-                    <div className="dt-content-wrap">
-                      <input id="dt-send-mail-mails-input" autoComplete="off" className="dt-send-mail-mails-input" type="text" placeholder="info@datafund.io, hi@datafund.io" onChange={this.refreshEmails}/>
-                    </div>
-                  </div> {/* dt-send-mail */}
-                  <div className="dt-ui-footer">
-                    <button id="dt-send" className="dt-btn dt-btn-lg dt-send-button dt-btn-green" onClick={this.handleUpload}>{this.state.sendButtonMessage}</button>
-                  </div>
-                </div>
-              }
-              {this.state.fileWasUploaded &&
-                <div className="dt-ui-wrapper">
-                  <div className="dt-feedback">
-                    <div>
-                      <p>Swarmhash: <input type="text" value={this.state.uploadedFileHash} readOnly="true"/></p>
-                      {this.state.fileWasEncrypted && 
-                        <p>Password: <input type="text" value={this.state.password} readOnly="true"/></p>
-                      }
-                      <p>
-                        <a href={this.state.dTransferLink} target="_blank" className="dt-file-link">DTransferLink: </a>
-                        <input type="text" value={this.state.dTransferLink} readOnly="true"/>
-                      </p>
-                    {this.state.emails && this.state.emails.count > 0 && 
-                      <div>
-                      <p>Sent to: </p>
-                      <ul>
-                        {this.state.emails.map((email, i) => <li>email</li> )}
-                      </ul>
-                      </div>
-                    }
-                    </div>
-                    <button id="dt-send-another-button" className="dt-btn dt-btn-lg dt-btn-green dt-send-another-button" onClick={this.resetToInitialState}>Send Another</button>
-                  </div>
-                </div>
-              }
-          </div> {/* dt-ui */}
-            </div>
-          }
         </div>
     );
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DTransfer from '../../services/Dtransfer';
 import DMailbox from '../../services/DMailbox';
+import DEns from '../../services/DEns';
 
 import Dropzone from 'dropzone';
 
@@ -23,8 +24,10 @@ class ASelectFile extends Component{
   }
 
   handleSelectRecipient(){
+    let sharedSecret = DEns.createSharedSecret();
     this.props.setParentState({
       addressee: this.refs.dtSelectRecipient.value,
+      sharedSecret: sharedSecret
     });
   }
 

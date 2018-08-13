@@ -9,6 +9,7 @@ import DSelectRecipient from '../components/up/DSelectRecipient';
 import EConfirm from '../components/up/EConfirm';
 import FInProgress from '../components/up/FInProgress';
 import GCompleted from '../components/up/GCompleted';
+import ProgressBar from '../components/up/ProgressBar';
 
 
 class DTransferUp extends Component{
@@ -150,6 +151,7 @@ class DTransferUp extends Component{
           <EConfirm parentState={this.state} setParentState={this.setState.bind(this)} handleUpload={this.handleUpload.bind(this)}/>
           <FInProgress parentState={this.state} setParentState={this.setState.bind(this)}/>
           <GCompleted parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <ProgressBar parentState={this.state} setParentState={this.setState.bind(this)}/>
         </div>
     );
   }

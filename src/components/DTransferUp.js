@@ -5,6 +5,9 @@ import ASelectFile from '../components/up/ASelectFile';
 import BSelectEncryption from '../components/up/BSelectEncryption';
 import CSelectMailbox from '../components/up/CSelectMailbox';
 import DSelectRecipient from '../components/up/DSelectRecipient';
+import EConfirm from '../components/up/EConfirm';
+import FInProgress from '../components/up/FInProgress';
+import GCompleted from '../components/up/GCompleted';
 
 
 class DTransferUp extends Component{
@@ -32,6 +35,8 @@ class DTransferUp extends Component{
 
       selectedMailbox: false,
       selectedWallet: false,
+
+      addressee: false,
 
       mailboxPassword: false,
 
@@ -230,6 +235,9 @@ class DTransferUp extends Component{
           <BSelectEncryption parentState={this.state} setParentState={this.setState.bind(this)}/>
           <CSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
           <DSelectRecipient parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <EConfirm parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <FInProgress parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <GCompleted parentState={this.state} setParentState={this.setState.bind(this)}/>
           { true === false && 
             <div>
               <div className={"dt-info " + (this.state.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}
@@ -253,8 +261,8 @@ class DTransferUp extends Component{
                       <p>{this.state.entropyMessage}</p>
                       <p>{this.state.passwordMessage}</p>
                       <div className="dt-form-group dt-form-two-inputs">
-                        <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" autoComplete="off" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.handleChangePassword} placeholder="Password" />
-                        <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input-confirm" autoComplete="off" className="dt-sym-enc-password-input-confirm" type="password" ref="dtSymEncPasswordInputConfirm" placeholder="Confirm password" />  
+                        <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input" className="dt-sym-enc-password-input" type="password" ref="dtSymEncPasswordInput" onChange={this.handleChangePassword} placeholder="Password" />
+                        <input disabled={this.state.shouldEncrypt ? "disabled" : false} id="dt-sym-enc-password-input-confirm" className="dt-sym-enc-password-input-confirm" type="password" ref="dtSymEncPasswordInputConfirm" placeholder="Confirm password" />  
                       </div>
                       <button id="dt-generate-password" className="dt-btn dt-btn-sm dt-generate-password" onClick={this.generatePassword}>Generate</button>
                       <button id="dt-copy-password" className="dt-btn dt-btn-sm dt-copy-password" onClick={this.copyPassword}>Copy</button>             

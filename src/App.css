@@ -282,6 +282,24 @@ input {
   z-index: 7;
 }
 
+/* confirm */
+
+.dt-confirm {
+  z-index: 8;
+}
+
+/* progress */
+
+.dt-in-progress {
+  z-index: 8;
+}
+
+/* completed */
+
+.dt-in-progress {
+  z-index: 9;
+}
+
 
 /* info feedback */
 

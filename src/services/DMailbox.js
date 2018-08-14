@@ -20,13 +20,12 @@ class DMailbox {
     this.mailboxes = this.getAll();
   }
 
-  create(subdomain){
+  create(subdomain, password){
     if(
       this.isMailboxNameValid(subdomain) === true
     ){
       return this.isMailboxNameAvailable(subdomain).then((response)=>{
-        //todo - create mailbox using DEns service
-        DEns.mockWallet().then((wallet)=>{
+        return DEns.createSubdomain(password).then((wallet)=>{
           let mailbox = new Mailbox({
             // order: this.getAll().length + 1,
             subdomain: subdomain,
@@ -35,10 +34,10 @@ class DMailbox {
           this.mailboxes.push(mailbox);
           this.saveAll();
           return mailbox;
-        })
+        });
       })
     }else{
-      return false;
+      return new Promise((resolve, reject)=>reject(false));
     }
   }
 
@@ -54,7 +53,7 @@ class DMailbox {
   }
 
   getAll(){
-    if(localStorage.getItem('mailboxes') === undefined){
+    if(localStorage.getItem('mailboxes') === null){
       return [];
     }else{
       return JSON.parse(localStorage.getItem('mailboxes'));
@@ -100,4 +99,4 @@ class DMailbox {
 
 }
 
-export default new DMailbox;
+export default new DMailbox();

@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import DTransfer from '../../services/Dtransfer';
-import DMailbox from '../../services/DMailbox';
 import DEns from '../../services/DEns';
-
-import Dropzone from 'dropzone';
-
-import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
-import AddMailbox from '../up/BSelectMailbox/AddMailbox'
-import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
 
 class CSelectRecipient extends Component{
   
@@ -24,10 +16,8 @@ class CSelectRecipient extends Component{
   }
 
   handleSelectRecipient(){
-    let sharedSecret = DEns.createSharedSecret();
     this.props.setParentState({
       addressee: this.refs.dtSelectRecipient.value,
-      sharedSecret: sharedSecret
     });
   }
 

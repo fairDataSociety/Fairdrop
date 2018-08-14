@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import DTransfer from '../../../services/Dtransfer';
 
 class MailboxIcon extends Component{
   

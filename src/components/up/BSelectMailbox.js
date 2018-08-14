@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import DTransfer from '../../services/Dtransfer';
 import DMailbox from '../../services/DMailbox';
+import DWallet from '../../services/DWallet';
+
 
 import Dropzone from 'dropzone';
 
 import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
 import AddMailbox from '../up/BSelectMailbox/AddMailbox'
 import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
+window.DWallet = DWallet;
 
 class ASelectFile extends Component{
   
@@ -25,15 +28,6 @@ class ASelectFile extends Component{
     this.handleUploadUnencrypted = this.handleUploadUnencrypted.bind(this);
 
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
-  }
-
-  unlockMailbox(e, mailbox){
-    this.setState({
-      unlockingMailbox: mailbox,
-      isUnlockingMailbox: true,
-      isAddingMailbox: false
-    })
-    e.preventDefault();
   }
 
   addMailbox(e){
@@ -57,6 +51,32 @@ class ASelectFile extends Component{
     });
   }
 
+  unlockMailbox(e, mailbox){
+    this.setState({
+      unlockingMailbox: mailbox,
+      isUnlockingMailbox: true,
+      isAddingMailbox: false
+    });
+    e.preventDefault();
+  }
+
+  unlockMailboxWallet(mailbox, password){
+    let dWallet = new DWallet();
+    let wallet = dWallet.fromJSON(mailbox.wallet.walletV3, password).then((wallet)=>{
+        this.setSelectedMailbox(mailbox, wallet);
+        this.setState({
+          feedbackMessage: 'Mailbox unlocked.',
+          mailboxIsUnlocked: true
+        });
+      }).catch((error)=>{
+        this.setSelectedMailbox(false, false);
+        this.setState({
+          feedbackMessage: 'Password invalid, please try again.',
+          mailboxIsUnlocked: false
+        });
+      });
+  }
+
   mailboxUnlocked(){
     return this.props.parentState.selectedWallet !== false;
   }
@@ -77,19 +97,24 @@ class ASelectFile extends Component{
             <h1 className="dt-select-account-header">Select Mailbox</h1>
             <div className="dt-select-mailbox-mailboxes">
               <div className="dt-select-mailbox-mailboxes-existing">
-                {this.state.mailboxes && this.state.mailboxes.map(
+                {this.state.mailboxes.map(
                   (mailbox)=>{
-                    return <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailbox={mailbox} mailboxAction={this.unlockMailbox} mailboxName={mailbox.subdomain} mailboxDescription="Unlock Mailbox"/>
+                    return <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailbox={mailbox} mailboxAction={this.unlockMailbox.bind(this)} mailboxName={mailbox.subdomain} mailboxDescription="Unlock Mailbox"/>
                   }
                 )}
               </div>
               <MailboxIcon mailboxAction={this.addMailbox} mailboxName="+" mailboxDescription="Add Mailbox"/>
             </div>
             {this.state.isAddingMailbox && 
-              <AddMailbox/>
+              <AddMailbox 
+                setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+              />
             }
             {this.state.isUnlockingMailbox && 
-              <UnlockMailbox mailbox={this.state.unlockingMailbox} setSelectedMailbox={this.setSelectedMailbox.bind(this)}/>
+              <UnlockMailbox 
+                mailbox={this.state.unlockingMailbox} 
+                setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+              />
             }
           </div>
           {this.mailboxUnlocked() !== false &&

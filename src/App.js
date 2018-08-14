@@ -68,6 +68,7 @@ class App extends Component {
         findingFile: true,
         fileIsDecrypting: false
       });
+      
       this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
     }
   }

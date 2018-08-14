@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DMailbox from '../../../services/DMailbox';
-import Utils from '../../../services/DTransferUtils';
+window.DMailbox = DMailbox;
 
 class ASelectFile extends Component{
   
@@ -52,7 +52,7 @@ class ASelectFile extends Component{
     e.preventDefault();
   }
 
-  proceessMailboxPassword(){
+  processMailboxPassword(){
     let password = this.refs.dtSelectPassword.value;
     let passwordVerification = this.refs.dtSelectPasswordVerification.value;    
 
@@ -82,12 +82,12 @@ class ASelectFile extends Component{
   }
 
   handleSelectPassword(e){
-    this.proceessMailboxPassword();
+    this.processMailboxPassword();
     e.preventDefault();
   }
 
   handleSelectPasswordVerification(e){
-    this.proceessMailboxPassword();
+    this.processMailboxPassword();
     e.preventDefault();
   }
 
@@ -112,15 +112,19 @@ class ASelectFile extends Component{
 
 
   addMailbox(e){
-    //check to see if any errors and return (first?)
+    window.DMailbox = DMailbox;
     if(this.state.mailboxName === false){
       this.processMailboxName();
     }
     if(this.state.password === false){
-      this.proceessMailboxPassword();
+      this.processMailboxPassword();
     }else{
       //add the mailbox and select it
-      let newMailBox = DMailbox.create(this.state.mailboxName);
+      this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
+      DMailbox.create(this.state.mailboxName, this.state.password).then((newMailBox)=>{
+        this.setState({feedbackMessage: 'mailbox generated...'});        
+        this.props.setSelectedMailbox(newMailBox);
+      });
     }
   }
 
@@ -136,6 +140,7 @@ class ASelectFile extends Component{
             onChange={this.handleSelectMailboxName}
             name="selectMailboxName"             
             ref="dtSelectMailboxName"
+            value="bobby"
           />
           <input 
             id="dt-mailbox-add-password" 
@@ -146,6 +151,7 @@ class ASelectFile extends Component{
             onChange={this.handleSelectPassword}
             name="dtSelectPassword"
             ref="dtSelectPassword"
+            value="test"
           />
           <input 
             id="dt-mailbox-add-password-verification" 
@@ -155,7 +161,8 @@ class ASelectFile extends Component{
             placeholder="password verification" 
             onChange={this.handleSelectPasswordVerification}
             name="dtSelectPasswordVerification"            
-            ref="dtSelectPasswordVerification"            
+            ref="dtSelectPasswordVerification"  
+            value="test"          
           />
         </div>
         <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>

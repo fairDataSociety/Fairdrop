@@ -63,27 +63,27 @@ class DTransferUp extends Component{
     this.state = this.getInitialState();
   }
 
-  componentDidMount(){
-    var urlParams = new URLSearchParams(window.location.search);
-    let swarmHash = urlParams.get('swarmHash');      
-    let fileName = urlParams.get('fileName'); 
-    let mimeType = urlParams.get('mimeType'); 
-    let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
+  // componentDidMount(){
+  //   var urlParams = new URLSearchParams(window.location.search);
+  //   let swarmHash = urlParams.get('swarmHash');      
+  //   let fileName = urlParams.get('fileName'); 
+  //   let mimeType = urlParams.get('mimeType'); 
+  //   let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
 
-    if(swarmHash && fileName){
-      this.setState({
-        isDownloading: true,
-        swarmHash: swarmHash,
-        fileName: fileName,
-        mimeType: mimeType,
-        findingFile: true,
-        fileIsDecrypting: false
-      });
-      this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
-    }else{
-      // this.dropZone();
-    }
-  }
+  //   if(swarmHash && fileName){
+  //     this.setState({
+  //       isDownloading: true,
+  //       swarmHash: swarmHash,
+  //       fileName: fileName,
+  //       mimeType: mimeType,
+  //       findingFile: true,
+  //       fileIsDecrypting: false
+  //     });
+  //     this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
+  //   }else{
+  //     // this.dropZone();
+  //   }
+  // }
 
   handleUpload(){
     let timeStart = new Date();
@@ -93,8 +93,7 @@ class DTransferUp extends Component{
       )
     {
       if(this.state.shouldEncrypt){
-        let senderWallet = this.state.selectedWallet;
-        let senderMailbox = this.state.senderMailbox;
+        let senderMailbox = this.state.selectedMailbox;
         let addressee = this.state.addressee;
         let sharedSecret = DEns.createSharedSecret(senderMailbox, addressee);
         this.setState({encryptMessage: 'Encrypting...'});

@@ -13,7 +13,7 @@ import ProgressBar from '../components/up/ProgressBar';
 
 class DTransferUp extends Component{
 
-  // intialise
+  // initialise
 
   getInitialState() {
     return {

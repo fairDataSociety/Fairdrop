@@ -9,7 +9,6 @@ import Dropzone from 'dropzone';
 import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
 import AddMailbox from '../up/BSelectMailbox/AddMailbox'
 import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
-window.DWallet = DWallet;
 
 class ASelectFile extends Component{
   

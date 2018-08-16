@@ -120,7 +120,7 @@ class ASelectFile extends Component{
                 setSelectedMailbox={this.setSelectedMailbox.bind(this)}
               />
             }
-            {this.state.isUnlockingMailbox && 
+            {this.state.isUnlockingMailbox && this.props.parentState.selectedWallet == false &&
               <UnlockMailbox 
                 mailbox={this.state.unlockingMailbox} 
                 setSelectedMailbox={this.setSelectedMailbox.bind(this)}

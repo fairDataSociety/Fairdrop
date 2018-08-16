@@ -142,7 +142,7 @@ class DTransferUp extends Component{
   render() {
     return (
         <div className="dt-upload">
-          <ASelectFile parentState={this.state} setParentState={this.setState.bind(this)}/>
+          <ASelectFile parentState={this.state} setParentState={this.setState.bind(this)} setIsSelecting={this.props.setIsSelecting}/>
           <BSelectMailbox parentState={this.state} setParentState={this.setState.bind(this)}/>
           <CSelectRecipient parentState={this.state} setParentState={this.setState.bind(this)}/>
           <DConfirm parentState={this.state} setParentState={this.setState.bind(this)} handleUpload={this.handleUpload.bind(this)}/>

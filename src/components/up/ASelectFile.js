@@ -30,6 +30,7 @@ class ASelectFile extends Component{
       }
     });
     this.dropzone.on("dragenter", (event) => {
+     this.props.setIsSelecting();      
      this.props.setParentState({fileIsSelecting: true});
     });
     this.dropzone.on("dragleave", (event) => {
@@ -50,7 +51,8 @@ class ASelectFile extends Component{
 
 
   handleClickSelectFile(e){
-    e.preventDefault();    
+    e.preventDefault();
+    this.props.setIsSelecting();
     this.props.setParentState({fileIsSelecting: true});
     this.refs.dtSelectFile.click();
   }  
@@ -59,13 +61,13 @@ class ASelectFile extends Component{
     return (
       <div id="dt-select-file" className={"dt-select-file " + (this.props.parentState.fileIsSelected && "is-selected")} ref="dtSelectFile" > 
         <div className={"dt-select-file-header " + (this.props.parentState.fileIsSelecting && "is-selecting")} onClick={this.handleClickSelectFile}> {/* this bit slides up out of view using transform */}
-          <h1>Send and store files securely and privately</h1>
+          <h1><span className="dt-select-file-header-inverted">FAIR</span> WAY TO STORE AND SEND DATA</h1>
         </div> {/* dt-header */}
         <div className={"dt-select-file-main " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
 
         </div> {/* dt-select-file-main */}
         <div className={"dt-select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting")} onClick={this.handleClickSelectFile}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
-          <h2>choose or drag and drop a file</h2>
+          <h2><span className="dt-select-file-header-underlined">select</span> or drop a file</h2>
         </div> {/* dt-select-file-instruction */}
       </div>
     )

@@ -30,19 +30,22 @@ class UnlockMailbox extends Component{
       feedbackMessage: 'Hard maths takes a long time...',
       mailboxIsUnlocked: false
     });
-    let wallet = dWallet.fromJSON(mailbox.wallet.walletV3, password).then((wallet)=>{
+    setTimeout(()=>{
+      let wallet = dWallet.fromJSON(mailbox.wallet.walletV3, password).then((wallet)=>{
         this.props.setSelectedMailbox(mailbox, wallet);
         this.setState({
           feedbackMessage: 'Mailbox unlocked.',
-          mailboxIsUnlocked: true
+          mailboxIsUnlocked: true,
         });
+        this.props.hideUnlockMailbox();
       }).catch((error)=>{
         this.props.setSelectedMailbox(false, false);
         this.setState({
           feedbackMessage: 'Password invalid, please try again.',
           mailboxIsUnlocked: false
         });
-      });
+      });      
+    })
   }
 
 

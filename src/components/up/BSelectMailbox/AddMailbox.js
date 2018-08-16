@@ -16,6 +16,7 @@ class ASelectFile extends Component{
     this.handleSelectMailboxName = this.handleSelectMailboxName.bind(this);
     this.handleSelectPassword = this.handleSelectPassword.bind(this);
     this.handleSelectPasswordVerification = this.handleSelectPasswordVerification.bind(this);
+    this.handleRemoveValueAndArm = this.handleRemoveValueAndArm.bind(this);
     this.addMailbox = this.addMailbox.bind(this);    
   }
 
@@ -91,6 +92,10 @@ class ASelectFile extends Component{
     e.preventDefault();
   }
 
+  handleRemoveValueAndArm(e){
+    debugger
+  }
+
   // copyPassword(e){
   //   if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
   //     if(navigator.clipboard){
@@ -136,23 +141,23 @@ class ASelectFile extends Component{
             id="dt-mailbox-add-name" 
             className="dt-mailbox-add-name" 
             type="text" 
+            autoComplete="new-name"    
             placeholder="mailbox name" 
             onChange={this.handleSelectMailboxName}
             name="selectMailboxName"             
             ref="dtSelectMailboxName"
-            value="bobby"
-          />
+          /><br/>
           <input 
             id="dt-mailbox-add-password" 
             autoComplete="off" 
             className="dt-mailbox-add-password" 
             type="password" 
-            placeholder="password" 
+            placeholder="password"
+            autoComplete="new-password"            
             onChange={this.handleSelectPassword}
             name="dtSelectPassword"
             ref="dtSelectPassword"
-            value="test"
-          />
+          /><br/>
           <input 
             id="dt-mailbox-add-password-verification" 
             autoComplete="off" 
@@ -162,8 +167,7 @@ class ASelectFile extends Component{
             onChange={this.handleSelectPasswordVerification}
             name="dtSelectPasswordVerification"            
             ref="dtSelectPasswordVerification"  
-            value="test"          
-          />
+          /><br/>
         </div>
         <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>
         <p>{this.state.feedbackMessage}</p>

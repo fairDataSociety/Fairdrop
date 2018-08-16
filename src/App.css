@@ -16,6 +16,10 @@
     font-style: normal;
 }
 
+button:focus, textarea:focus, input:focus{
+    outline: none;
+}
+
 * {
   font-family: 'Berthold Akzidenz-Grotesk Extended';
 }
@@ -40,8 +44,8 @@ p{
 /* Form */
 
 input[type='text'], input[type='password'] {
-  border-radius: 20px;
-  border: 1px solid #6E716E;
+  border-radius: 50px;
+  border: 1px solid #fff;
   background-color: transparent;
   color: #fff;
   padding: 10px 20px;
@@ -49,10 +53,16 @@ input[type='text'], input[type='password'] {
   padding-right: 0;
   line-height: 1.4vw;
   margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 1.6vw;
 }
 
 input {
   color:#000;
+}
+
+input::placeholder{
+  color:#A8DABE;
 }
 
 .dt-sym-enc,
@@ -83,14 +93,12 @@ input {
 /* Buttons */
 
 .dt-btn.dt-btn-lg {
-  /*height: 100px;*/
   border-radius: 100px;
-  font-size: 2vw;
-  padding: 20px;
-  padding-bottom: 16px;
-  background-color: #58CC8C;
+  font-size: 1.5vw;
+  padding: 8px 35px;
   border: none;
   margin-right: 10px;
+  padding-bottom: 5px;
 }
 
 .dt-btn.dt-btn-sm {
@@ -104,14 +112,22 @@ input {
   margin-right: 10px;
 }
 
-.dt-btn.dt-btn-green {
-  background-color: #58CC8C;
-  color: #fff;
+.dt-btn.dt-btn-black {
+  background-color: #ffffff;
+  color: #000;
 }
 
 .dt-btn.dt-btn-link {
   background-color: transparent;
   color: #fff;
+}
+
+.dt-btn-float-left {
+  float: left;
+}
+
+.dt-btn-float-right {
+  float: right;
 }
 
 /* Shared */
@@ -132,13 +148,46 @@ input {
 
 .dt-nav-header{
   position:absolute;
-  width:100vw;
+  width: 88%;
   height:15vh;
   display:table;
   z-index:10;
   margin:0 5vw;
   pointer-events: none;
 }
+
+.dt-nav-header-item{
+  display: table-cell;
+  vertical-align: middle;
+  pointer-events: auto;
+  width: 10vw;
+  text-align: left;
+}
+
+.file-is-selecting svg{
+  fill: #fff;
+  transition: fill 1s
+}
+
+.dt-nav-key-wrapper{
+  position: absolute;
+  height: 15vh;
+  display: table;
+  z-index: 10;
+  margin: 0 5vw;
+  pointer-events: none;
+  right: 0;
+}
+
+.dt-nav-key{
+  display: table-cell;
+  vertical-align: middle;
+  pointer-events: auto;
+  width: 10vw;
+  text-align: right;
+}
+
+.is-selected
 
 .dt-nav-header .dt-nav-header-item{
   display: table-cell;
@@ -148,8 +197,12 @@ input {
 }
 
 .dt-nav-header .dt-nav-header-item .dt-df-logo{
-  height: 4vh;
+  height: 7.4vh;
   color: #fff;
+}
+
+.dt-nav-header .dt-nav-key .dt-df-logo path{
+  fill: black;
 }
 
 .dt-page-wrapper{
@@ -182,7 +235,7 @@ input {
   /*slide backgrounds*/
 
   .dt-green{
-    background: green;
+    background: #57C989;
   }
 
 /* select file */
@@ -205,10 +258,9 @@ input {
 .dt-select-file-header{
   height: 50vh;
   width: 100vw;
-  background: #2E332F;
   transition: transform 1s;
   display: table;
-  background-image:url('assets/images/bg.png');
+  background-color: #fff;
 }
 
 .dt-select-file-header.is-selecting{
@@ -217,10 +269,19 @@ input {
 }
 
 .dt-select-file-header h1{
+  color: #000;  
   display: table-cell;
   vertical-align: middle;
   text-align: center;
   opacity: 1;
+}
+
+.dt-select-file-header h1 span.dt-select-file-header-inverted{
+  background: #000;
+  color: #FFF;
+  background: #000;
+  color: #FFF;
+  padding: 9px;  
 }
 
 .dt-select-file-header.is-selecting h1{
@@ -242,6 +303,7 @@ input {
 }
 
 .dt-select-file-instruction{
+  font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
   height: 50vh;
   width: 100vw;
   display: table;
@@ -262,18 +324,56 @@ input {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
+  font-size: 2.3vw;
 }
 
-/* select encryption */
-
-.dt-select-encryption {
-  z-index: 5;
+.dt-select-file-instruction h2 .dt-select-file-header-underlined{
+  text-decoration: underline;
 }
 
-/* select encryption */
+/* select mailbox */
 
 .dt-select-mailbox {
   z-index: 6;
+}
+
+.dt-mailbox-icon{
+  display: inline-block;
+  margin-right:2vw;
+}
+
+.dt-mailbox-icon button{
+  border: 0px;
+  border-radius: 3vw;
+  background: transparent;
+  display: table;
+  margin: auto;
+}
+
+.dt-select-mailbox-mailboxes{
+  margin-bottom: 3vw;
+}
+
+.dt-mailbox-name{
+  color: white;
+  border: 1px solid white;
+  height: 6vw;
+  width: 6vw;
+  border-radius: 4vw;
+  display: table-cell;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.1vw;
+  font-size: 2vw;
+  padding-top: 0.2vw;
+  padding-left: 0.1vw;
+  padding-right: 0.1vw;
+}
+
+.dt-mailbox-description{
+  color:#fff;
+  padding: 0;
+  padding-top: 1vw;  
 }
 
 /* select recipient */
@@ -286,6 +386,30 @@ input {
 
 .dt-confirm {
   z-index: 8;
+}
+
+.dt-confirm-ui .dt-confirm-ui-group{
+  width: 60vw;
+  margin: auto;
+}
+
+.dt-confirm .dt-confirm-ui table{
+  color: #fff;
+  margin: auto;
+  margin-bottom: 2vh;
+}
+
+.dt-confirm .dt-confirm-ui table td{
+  text-align: left;
+  padding-right: 1vw;
+}
+
+.dt-confirm .dt-confirm-upload-unencrypted{
+  float:left;
+}
+
+.dt-confirm .dt-confirm-upload-unencrypted{
+  float:left;
 }
 
 /* progress */

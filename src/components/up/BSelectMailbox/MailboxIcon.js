@@ -19,13 +19,13 @@ class MailboxIcon extends Component{
         <button onClick={ (e) => {this.props.mailboxAction(e, this.props.mailbox)} }>
           <div className="dt-mailbox">
             <div className="dt-mailbox-name">
-              {this.props.mailboxName} {this.isSelected() ? "Selected" : ""}
-            </div>
-            <div className="dt-mailbox-description">
-              {this.props.mailboxDescription}
+              {this.props.mailboxName.substring(0,1)} {this.isSelected() ? "Selected" : ""}
             </div>
           </div>
         </button>
+        <div onClick={ (e) => {this.props.mailboxAction(e, this.props.mailbox)} } className="dt-mailbox-description">
+          {this.props.mailboxDescription}
+        </div>
       </div>
     )
   }

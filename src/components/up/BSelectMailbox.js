@@ -66,13 +66,15 @@ class ASelectFile extends Component{
         this.setSelectedMailbox(mailbox, wallet);
         this.setState({
           feedbackMessage: 'Mailbox unlocked.',
-          mailboxIsUnlocked: true
+          mailboxIsUnlocked: true,
+          isUnlockingMailbox: true,
         });
       }).catch((error)=>{
         this.setSelectedMailbox(false, false);
         this.setState({
           feedbackMessage: 'Password invalid, please try again.',
-          mailboxIsUnlocked: false
+          mailboxIsUnlocked: false,
+          isUnlockingMailbox: true,
         });
       });
   }
@@ -85,7 +87,11 @@ class ASelectFile extends Component{
     this.props.setParentState({
       uiState: 3,
       shouldEncrypt: false
-    });     
+    });
+  }
+
+  hideUnlockMailbox(){
+    this.setState({unlockingMailbox: false})
   }
 
 
@@ -94,18 +100,22 @@ class ASelectFile extends Component{
       <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 1 ? "dt-fade-in" : "")}> 
         <div className="dt-select-mailbox-ui dt-page-inner-centered">
           <div className="dt-select-mailbox">
-            <h1 className="dt-select-account-header">Select Mailbox</h1>
+            <h1 className="dt-select-account-header">
+              {this.state.mailboxes.length === 0 ? 'Add Mailbox' : 'Select Mailbox'}
+            </h1>
             <div className="dt-select-mailbox-mailboxes">
               <div className="dt-select-mailbox-mailboxes-existing">
                 {this.state.mailboxes.map(
                   (mailbox)=>{
-                    return <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailbox={mailbox} mailboxAction={this.unlockMailbox.bind(this)} mailboxName={mailbox.subdomain} mailboxDescription="Unlock Mailbox"/>
+                    return <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailbox={mailbox} mailboxAction={this.unlockMailbox.bind(this)} mailboxName={mailbox.subdomain} mailboxDescription={mailbox.subdomain+".datafund.eth"}/>
                   }
                 )}
+                {this.state.mailboxes.length > 0 &&
+                  <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailboxAction={this.addMailbox} mailboxName="+" mailboxDescription="Add Mailbox"/>
+                }
               </div>
-              <MailboxIcon mailboxAction={this.addMailbox} mailboxName="+" mailboxDescription="Add Mailbox"/>
             </div>
-            {this.state.isAddingMailbox && 
+            {this.state.mailboxes.length === 0 &&
               <AddMailbox 
                 setSelectedMailbox={this.setSelectedMailbox.bind(this)}
               />
@@ -114,13 +124,13 @@ class ASelectFile extends Component{
               <UnlockMailbox 
                 mailbox={this.state.unlockingMailbox} 
                 setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                hideUnlockMailbox={this.hideUnlockMailbox.bind(this)}
               />
             }
           </div>
           {this.mailboxUnlocked() !== false &&
             <button className="dt-select-recipient dt-btn dt-btn-lg dt-btn-green" onClick={this.handleSelectRecipient}>Select Recipient</button>
           }
-          <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green" onClick={this.handleUploadUnencrypted}>upload unencrypted</button>
         </div>
       </div>
     )

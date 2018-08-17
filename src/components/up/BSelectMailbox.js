@@ -3,8 +3,8 @@ import DTransfer from '../../services/Dtransfer';
 import DMailbox from '../../services/DMailbox';
 import DWallet from '../../services/DWallet';
 
-
-import Dropzone from 'dropzone';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css'
 
 import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
 import AddMailbox from '../up/BSelectMailbox/AddMailbox'
@@ -12,51 +12,39 @@ import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
 
 class ASelectFile extends Component{
   
+  getInitialState(){
+    let mailboxes = DMailbox.getAll();
+
+    if(mailboxes.length === 0){
+      return {
+        isAddingMailbox: true,        
+        isUnlockingMailbox: false,
+        mailboxes: mailboxes,
+        activeMailboxSubDomain: false,
+        dropDownValue: false
+      }
+    }else if(mailboxes.length > 0){
+      return {
+        isAddingMailbox: false,        
+        isUnlockingMailbox: true,
+        mailboxes: mailboxes,
+        unlockingMailbox: mailboxes[0],
+        activeMailboxSubDomain: false,
+        dropDownValue: mailboxes[0].subdomain
+      }
+    }
+  }
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      isAddingMailbox: false,
-      mailboxes: DMailbox.getAll(),
-      activeMailboxSubDomain: false
-    }
+    this.state = this.getInitialState();
 
     this.addMailbox = this.addMailbox.bind(this);    
-    this.unlockMailbox = this.unlockMailbox.bind(this);    
-    this.handleSelectRecipient = this.handleSelectRecipient.bind(this);    
     this.handleUploadUnencrypted = this.handleUploadUnencrypted.bind(this);
+    this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
 
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
-  }
-
-  addMailbox(e){
-    this.setState({
-      isAddingMailbox: true,
-      isUnlockingMailbox: false
-    })
-    e.preventDefault();
-  }
-
-  handleSelectRecipient(e){
-    this.props.setParentState({
-      uiState: 2
-    });
-  }
-
-  setSelectedMailbox(mailbox, wallet){
-    this.props.setParentState({
-      selectedMailbox: mailbox,
-      selectedWallet: wallet
-    });
-  }
-
-  unlockMailbox(e, mailbox){
-    this.setState({
-      unlockingMailbox: mailbox,
-      isUnlockingMailbox: true,
-      isAddingMailbox: false
-    });
-    e.preventDefault();
   }
 
   unlockMailboxWallet(mailbox, password){
@@ -78,8 +66,26 @@ class ASelectFile extends Component{
       });
   }
 
-  mailboxUnlocked(){
-    return this.props.parentState.selectedWallet !== false;
+  setSelectedMailbox(mailbox, wallet){
+    this.props.setParentState({
+      selectedMailbox: mailbox,
+      selectedWallet: wallet
+    });
+  }
+
+  addMailbox(){
+    this.setState({
+      isAddingMailbox: true,
+      isUnlockingMailbox: false
+    })
+  }
+
+  setUnlockingMailbox(mailbox){
+    this.setState({
+      unlockingMailbox: mailbox,
+      isUnlockingMailbox: true,
+      isAddingMailbox: false
+    });
   }
 
   handleUploadUnencrypted(){
@@ -89,47 +95,57 @@ class ASelectFile extends Component{
     });
   }
 
-  hideUnlockMailbox(){
-    this.setState({unlockingMailbox: false})
+  mailboxUnlocked(){
+    this.props.setParentState({
+      uiState: 2
+    });
   }
 
+  handleSelectMailbox(option){
+    console.log(option.value)
+    if(option.value === 'dt-new-mailbox'){
+      this.addMailbox();
+    }else{
+      this.setUnlockingMailbox(option.value);
+    }
+  }
+
+  getDropDownOptions(mailboxes){
+    return this.state.mailboxes.map((m)=>{
+      return {label: m.subdomain, value:  m.subdomain};
+    }).concat({label: 'new mailbox', value: "dt-new-mailbox" });
+  }
 
   render(){
     return (
       <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 1 ? "dt-fade-in" : "")}> 
         <div className="dt-select-mailbox-ui dt-page-inner-centered">
-          <div className="dt-select-mailbox">
-            <h1 className="dt-select-account-header">
-              {this.state.mailboxes.length === 0 ? 'Add Mailbox' : 'Select Mailbox'}
-            </h1>
-            <div className="dt-select-mailbox-mailboxes">
-              <div className="dt-select-mailbox-mailboxes-existing">
-                {this.state.mailboxes.map(
-                  (mailbox)=>{
-                    return <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailbox={mailbox} mailboxAction={this.unlockMailbox.bind(this)} mailboxName={mailbox.subdomain} mailboxDescription={mailbox.subdomain+".datafund.eth"}/>
-                  }
-                )}
-                {this.state.mailboxes.length > 0 &&
-                  <MailboxIcon activeMailbox={this.props.parentState.activeMailbox} mailboxAction={this.addMailbox} mailboxName="+" mailboxDescription="Add Mailbox"/>
-                }
+          <div className="dt-select-mailbox">            
+            {this.state.isUnlockingMailbox &&
+              <div>
+                <h1 className="dt-select-account-header">Unlocking {this.state.unlockingMailbox.subdomain}</h1>
+                <div className="dt-select-mailbox-mailboxes">
+                  <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox.bind(this)} placeholder="Select a mailbox" />
+                </div>
               </div>
-            </div>
-            {this.state.mailboxes.length === 0 &&
+            }
+            {this.state.isAddingMailbox &&
+              <h1 className="dt-select-account-header">Create a Mailbox</h1>
+            }
+            {this.state.isAddingMailbox === true &&
               <AddMailbox 
                 setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                mailboxUnlocked={this.mailboxUnlocked.bind(this)}
               />
             }
             {this.state.isUnlockingMailbox && this.props.parentState.selectedWallet == false &&
               <UnlockMailbox 
                 mailbox={this.state.unlockingMailbox} 
                 setSelectedMailbox={this.setSelectedMailbox.bind(this)}
-                hideUnlockMailbox={this.hideUnlockMailbox.bind(this)}
+                mailboxUnlocked={this.mailboxUnlocked.bind(this)}
               />
             }
           </div>
-          {this.mailboxUnlocked() !== false &&
-            <button className="dt-select-recipient dt-btn dt-btn-lg dt-btn-green" onClick={this.handleSelectRecipient}>Select Recipient</button>
-          }
         </div>
       </div>
     )

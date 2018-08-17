@@ -129,6 +129,7 @@ class ASelectFile extends Component{
       DMailbox.create(this.state.mailboxName, this.state.password).then((newMailBox)=>{
         this.setState({feedbackMessage: 'mailbox generated...'});        
         this.props.setSelectedMailbox(newMailBox);
+        this.props.mailboxUnlocked();
       });
     }
   }

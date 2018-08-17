@@ -10,12 +10,15 @@ class EInProgress extends Component{
     return (
       <div id="dt-in-progress" className={"dt-confirm dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "")}> 
           <div className="dt-in-progress-ui dt-page-inner-centered">
-            <h1 className="dt-in-progress-header">Progress</h1>
             { !this.props.parentState.fileWasEncrypted &&
-              <p>Encrypting</p>
+              <div className="dt-in-progress-ui">
+                <h1 className="dt-in-progress-header"><img className="dt-in-progress-icon" src="/assets/images/progress.svg" alt="Spinning"/>Encrypting</h1>
+              </div>
             }
-            { !this.props.parentState.fileWasUploaded &&
-              <p>Uploading</p>
+            { this.props.parentState.fileWasEncrypted && !this.props.parentState.fileWasUploaded &&
+              <div className="dt-in-progress-ui">
+                <h1 className="dt-in-progress-header"><img className="dt-in-progress-icon" src="/assets/images/progress.svg" alt="Spinning"/>Uploading</h1>
+              </div>
             }
           </div>
       </div>

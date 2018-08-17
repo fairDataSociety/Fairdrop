@@ -10,7 +10,6 @@ class DConfirm extends Component{
     }
 
     this.handleEncryptAndSend = this.handleEncryptAndSend.bind(this);    
-    this.handleUploadUnencrypted = this.handleUploadUnencrypted.bind(this);    
     this.handleCancel = this.handleCancel.bind(this);
   }
 
@@ -25,22 +24,13 @@ class DConfirm extends Component{
     this.props.setParentState({
       uiState: 4,
     });
-    this.props.handleUpload().then(()=>{
-       this.props.setParentState({
-        uiState: 5
-      });     
-    })
-  }
-
-  handleUploadUnencrypted(){
-    this.props.setParentState({
-      uiState: 4,
-    });
-    this.props.handleUpload().then(()=>{
-       this.props.setParentState({
-        uiState: 5
-      });     
-    })    
+    setTimeout(()=>{
+      this.props.handleUpload().then(()=>{
+         this.props.setParentState({
+          uiState: 5
+        });     
+      })
+    }, 2000);
   }
 
   render(){
@@ -65,13 +55,6 @@ class DConfirm extends Component{
                 </table>
                 <button className="dt-confirm-encrypt-and-send dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Send</button>              
                 <button className="dt-confirm-cancel dt-btn dt-btn-lg dt-btn-link dt-btn-float-right" onClick={this.handleCancel}>Cancel</button>              
-              </div>
-            }
-            {!this.props.parentState.shouldEncrypt && 
-              <div className="dt-confirm-ui-group">
-                <p>File: {this.props.parentState.selectedFileName} {this.props.parentState.selectedFileSize}</p>
-                <button className="dt-confirm-upload-unencrypted dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleUploadUnencrypted}>Upload Unencrypted</button>              
-                <button className="dt-confirm-cancel dt-btn dt-btn-lg dt-btn-link dt-btn-float-right" onClick={this.handleCancel}>Cancel</button>
               </div>
             }
         </div>

@@ -37,7 +37,7 @@ class UnlockMailbox extends Component{
           feedbackMessage: 'Mailbox unlocked.',
           mailboxIsUnlocked: true,
         });
-        this.props.hideUnlockMailbox();
+        this.props.mailboxUnlocked();
       }).catch((error)=>{
         this.props.setSelectedMailbox(false, false);
         this.setState({

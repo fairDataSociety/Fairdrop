@@ -74,11 +74,11 @@ class DMailbox {
 
   isMailboxNameValid(mailboxName){
     // check to see if name conforms to eth subdomain restrictions
-    if(mailboxName === undefined) return false;
-
-    let pattern = /bob.+/
+    if(mailboxName === undefined || mailboxName === false) return false;
+    let pattern = /(bob|alic)/
     let matches = mailboxName.match(pattern)
-    if(matches !== null && matches.length === 1){
+    console.log(matches)
+    if(matches !== null && matches.length > 1){
       return true;      
     }else{
       return false;
@@ -89,11 +89,13 @@ class DMailbox {
     // check to see whether mailbox already exists
     // or handle error if network/endpoint failure
     return new Promise((resolve, reject)=>{
-      if(mailboxName === 'bobby'){
+
+      if(this.get(mailboxName) === false){
         resolve(true);
       }else{
         resolve(false);
       }
+
     });
   }
 

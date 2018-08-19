@@ -80,6 +80,13 @@ class ASelectFile extends Component{
     })
   }
 
+  cancelAddMailbox(){
+    this.setState({
+      isAddingMailbox: false,
+      isUnlockingMailbox: true
+    })    
+  }
+
   setUnlockingMailbox(mailbox){
     this.setState({
       unlockingMailbox: mailbox,
@@ -122,28 +129,32 @@ class ASelectFile extends Component{
         <div className="dt-select-mailbox-ui dt-page-inner-centered">
           <div className="dt-select-mailbox">            
             {this.state.isUnlockingMailbox &&
-              <div>
-                <h1 className="dt-select-account-header">Unlocking {this.state.unlockingMailbox.subdomain}</h1>
-                <div className="dt-select-mailbox-mailboxes">
-                  <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox.bind(this)} placeholder="Select a mailbox" />
+              <div className="dt-page-inner-wrapper">
+                <h1 className="dt-select-account-header">Encrypt and Send</h1>
+                <div className="dt-form-group clearfix">
+                  <div className="dt-select-mailbox-mailboxes">
+                    <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox.bind(this)} placeholder="Select a mailbox" />
+                  </div>
+                  <label className="dt-select-mailbox-label">Select mailbox</label>
                 </div>
+                {this.state.isUnlockingMailbox && this.props.parentState.selectedWallet == false &&
+                  <UnlockMailbox 
+                    mailbox={this.state.unlockingMailbox} 
+                    setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                    mailboxUnlocked={this.mailboxUnlocked.bind(this)}
+                  />
+                }   
               </div>
-            }
+            }         
             {this.state.isAddingMailbox &&
-              <h1 className="dt-select-account-header">Create a Mailbox</h1>
-            }
-            {this.state.isAddingMailbox === true &&
-              <AddMailbox 
-                setSelectedMailbox={this.setSelectedMailbox.bind(this)}
-                mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-              />
-            }
-            {this.state.isUnlockingMailbox && this.props.parentState.selectedWallet == false &&
-              <UnlockMailbox 
-                mailbox={this.state.unlockingMailbox} 
-                setSelectedMailbox={this.setSelectedMailbox.bind(this)}
-                mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-              />
+              <div className="dt-page-inner-wrapper">
+                <h1 className="dt-select-account-header">New Mailbox</h1>
+                <AddMailbox 
+                  setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                  mailboxUnlocked={this.mailboxUnlocked.bind(this)}
+                  cancelAddMailbox={this.cancelAddMailbox.bind(this)}
+                />
+              </div>
             }
           </div>
         </div>

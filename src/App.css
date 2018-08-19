@@ -16,6 +16,15 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+    src: url('assets/fonts/AkzidenzGroteskPro-LightEx.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+
+
 button:focus, textarea:focus, input:focus{
     outline: none;
 }
@@ -25,16 +34,22 @@ button:focus, textarea:focus, input:focus{
 }
 
 h1 {
-  font-size: 2.6vw;
-  letter-spacing: 0.1em;
+  font-size: 38px;
+  letter-spacing: 0.06em;
   font-weight: normal;
-  color: #fff;  
+  color: #fff;
+}
+
+.dt-page-wrapper h1{
+  margin-bottom: 70px;
 }
 
 h2{
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
   letter-spacing: 2.1px;
   font-weight: normal;
   color: #fff;  
+  font-size:40px;
 }
 
 p{
@@ -45,16 +60,19 @@ p{
 
 input[type='text'], input[type='password'] {
   border-radius: 50px;
-  border: 1px solid #fff;
+  border: 1px solid #ccc;
   background-color: transparent;
   color: #fff;
-  padding: 10px 20px;
-  padding-bottom: 8px;
-  padding-right: 0;
-  line-height: 1.4vw;
   margin-right: 10px;
-  margin-bottom: 10px;
-  font-size: 1.6vw;
+  margin-bottom: 29px;
+  font-size: 16px;
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  letter-spacing: 0.09vw;
+  width: 100%;
+  display: block;
+  margin: auto;
+  font-size: 16px;
+  padding: 8px 17px 8px 20px;
 }
 
 input {
@@ -65,6 +83,19 @@ input::placeholder{
   color:#A8DABE;
 }
 
+/* Change the white to any color ;) */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #57C989 inset;
+  -webkit-text-fill-color: #fff;
+}
+
+label{
+  padding: 8px;
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.03em;
+}
+
 .dt-sym-enc,
 .dt-send-mail {
   text-align: left;
@@ -72,7 +103,11 @@ input::placeholder{
 }
 
 .dt-form-group {
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
+}
+
+.dt-form-group-last {
+  margin-bottom: 75px !important;
 }
 
 .dt-form-group.dt-toggle input {
@@ -90,15 +125,55 @@ input::placeholder{
   width:87%;
 }
 
+.dt-feedback{
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+.dt-feedback-content{
+  color:white;
+  display:table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.dt-feedback-content .dt-link-group{
+  width: 77%;
+  margin: auto;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.dt-feedback-content .dt-link-label{
+  margin-bottom: 12px;
+}
+
+.dt-feedback-content .dt-link-group a{
+  color: white;
+  font-size: 24px;
+  margin-bottom: 12px;  
+}
+
+.dt-feedback-content .dt-link-group a:hover{
+  text-decoration: none;
+  color: #ccc;
+}
+
+.dt-feedback-content .dt-link-group input{
+  color: #57C989;
+  border-color: #57C989;
+}
+
+
 /* Buttons */
 
 .dt-btn.dt-btn-lg {
   border-radius: 100px;
   font-size: 1.5vw;
-  padding: 8px 35px;
+  padding: 5px 34px 2px 34px;
   border: none;
   margin-right: 10px;
-  padding-bottom: 5px;
 }
 
 .dt-btn.dt-btn-sm {
@@ -128,6 +203,12 @@ input::placeholder{
 
 .dt-btn-float-right {
   float: right;
+}
+
+
+.dt-btn-group{
+  clear: both;
+  margin-bottom:75px;
 }
 
 /* Shared */
@@ -221,6 +302,11 @@ input::placeholder{
   text-align: center;
 }
 
+.dt-page-inner-wrapper{
+  width: 44vw;
+  margin: auto;
+}
+
 .dt-hidden{
   opacity: 0;
   display: none;
@@ -230,6 +316,16 @@ input::placeholder{
   opacity: 1;
   display: table;
   transition: opacity 4s;  
+}
+
+.dt-page-smallprint {
+  color: white;
+  font-size: 15px;
+  margin-top: 75px;
+}
+
+.dt-spinner {
+
 }
 
   /*slide backgrounds*/
@@ -324,11 +420,11 @@ input::placeholder{
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  font-size: 2.3vw;
+  font-size: 40px;
 }
 
-.dt-select-file-instruction h2 .dt-select-file-header-underlined{
-  text-decoration: underline;
+.dt-select-file-instruction h2 .dt-select-file-header-underlined {
+  border-bottom: 3px solid white;
 }
 
 /* select mailbox */
@@ -337,7 +433,7 @@ input::placeholder{
   z-index: 6;
 }
 
-.dt-mailbox-icon{
+/*.dt-mailbox-icon{
   display: inline-block;
   margin-right:2vw;
 }
@@ -348,10 +444,54 @@ input::placeholder{
   background: transparent;
   display: table;
   margin: auto;
+}*/
+
+.dt-select-mailbox-mailboxes {
+    width: 21vw;
+    float: left;
 }
 
-.dt-select-mailbox-mailboxes{
-  margin-bottom: 3vw;
+.dt-select-mailbox-label{
+  float: right;
+}
+
+.dt-select-mailbox-mailboxes .Dropdown-control{
+  background: #57C989;
+  border-radius: 30px;
+  padding: 8px 8px 8px 10px;
+  font-size: 16px;
+  color: #fff;
+  transition: unset;
+}
+
+.dt-select-mailbox-mailboxes .Dropdown-option{
+  font-size: 16px;
+  color: #fff;
+}
+
+.Dropdown-option:hover {
+    background: #57C989;
+    transition: background 3s;
+    color: #333;
+}
+
+.dt-select-mailbox-mailboxes .is-open .Dropdown-control{
+  border-radius: 30px 30px 0px 0px;  
+}
+
+.dt-select-mailbox-mailboxes .Dropdown-menu{
+  background: #57C989;
+  border-radius: 0 0 30px 30px;
+}
+
+.dt-select-mailbox-mailboxes .Dropdown-arrow {
+  border-color: #fff transparent;
+  top: 18px;
+  right: 18px;
+}
+
+.dt-select-mailbox-mailboxes .is-open .Dropdown-arrow {
+  border-color: transparent transparent #fff;
 }
 
 .dt-mailbox-name{
@@ -376,6 +516,15 @@ input::placeholder{
   padding-top: 1vw;  
 }
 
+.dt-feedback-unlock-ui{
+  padding:8px;
+  width: 75%;
+  float: left;
+  text-align: left;
+  color: white;
+  height: 24px; 
+}
+
 /* select recipient */
 
 .dt-select-recipient {
@@ -388,11 +537,6 @@ input::placeholder{
   z-index: 8;
 }
 
-.dt-confirm-ui .dt-confirm-ui-group{
-  width: 60vw;
-  margin: auto;
-}
-
 .dt-confirm .dt-confirm-ui table{
   color: #fff;
   margin: auto;
@@ -402,6 +546,10 @@ input::placeholder{
 .dt-confirm .dt-confirm-ui table td{
   text-align: left;
   padding-right: 1vw;
+}
+
+.dt-confirm-ui-group {
+  margin-bottom: 75px;
 }
 
 .dt-confirm .dt-confirm-upload-unencrypted{
@@ -418,6 +566,27 @@ input::placeholder{
   z-index: 8;
 }
 
+.dt-in-progress h1.dt-in-progress-header{
+  font-size: 42px;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dt-in-progress-icon{
+  height: 46px;
+  margin: 8px 18px 18px 18px;
+  animation: rotate 1.5s linear infinite;
+}
+
+.dt-in-progress h2.dt-in-progress-sub{
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-size: 24px;
+}
+
 /* completed */
 
 .dt-in-progress {
@@ -429,7 +598,7 @@ input::placeholder{
 
 .dt-info{
   top:0;
-  background: #FF6F58;
+  background: #57C989;
   height:100vh;
   width:50vw;
   position: absolute;
@@ -454,23 +623,30 @@ input::placeholder{
 }
 
 .dt-info-content .dt-file-icon{
-  width:8vw;
-  margin-bottom: 4.5vh;
+  height: 108px;
+  margin-bottom: 75px;
 }
 
 .dt-info-content .dt-info-filename{
-  font-size: 2.4vw;
-  margin-bottom: 1.5vh;
+  font-size: 24px;
+  margin-bottom: 12px;
 }
 
 .dt-info-content .dt-info-filesize{
-  font-size: 1.8vw;
-  margin-bottom: 6vh;
+  font-size: 24px;
+  margin-bottom: 75px;
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
 }
 
 .dt-info-content .dt-info-is-encrypted{
-  font-size: 1.8vw;
-  margin-bottom: 6vh;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.dt-fairdrop-lock{
+  height: 40px;
+  margin-bottom: 10px;
+  margin-right: 12px;
 }
 
 .dt-ui{

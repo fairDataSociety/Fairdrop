@@ -17,7 +17,7 @@ class ASelectFile extends Component{
     this.handleSelectPassword = this.handleSelectPassword.bind(this);
     this.handleSelectPasswordVerification = this.handleSelectPasswordVerification.bind(this);
     this.handleRemoveValueAndArm = this.handleRemoveValueAndArm.bind(this);
-    this.addMailbox = this.addMailbox.bind(this);    
+    this.addMailbox = this.addMailbox.bind(this);
   }
 
   processMailboxName(){
@@ -126,6 +126,8 @@ class ASelectFile extends Component{
     }else{
       //add the mailbox and select it
       this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
+      window.DMailbox = DMailbox;
+      console.log(this.state.mailboxName, this.state.password)
       DMailbox.create(this.state.mailboxName, this.state.password).then((newMailBox)=>{
         this.setState({feedbackMessage: 'mailbox generated...'});        
         this.props.setSelectedMailbox(newMailBox);
@@ -134,10 +136,14 @@ class ASelectFile extends Component{
     }
   }
 
+  cancelAddMailbox(e){
+
+  }
+
   render(){
     return (
       <div className="dt-mailbox-add-ui">
-        <div className="dt-form-group">
+        <div className="dt-form-group">      
           <input 
             id="dt-mailbox-add-name" 
             className="dt-mailbox-add-name" 
@@ -147,7 +153,9 @@ class ASelectFile extends Component{
             onChange={this.handleSelectMailboxName}
             name="selectMailboxName"             
             ref="dtSelectMailboxName"
-          /><br/>
+          />
+        </div>
+        <div className="dt-form-group"> 
           <input 
             id="dt-mailbox-add-password" 
             autoComplete="off" 
@@ -158,7 +166,9 @@ class ASelectFile extends Component{
             onChange={this.handleSelectPassword}
             name="dtSelectPassword"
             ref="dtSelectPassword"
-          /><br/>
+          />
+        </div>
+        <div className="dt-form-group-last clearfix">
           <input 
             id="dt-mailbox-add-password-verification" 
             autoComplete="off" 
@@ -168,10 +178,13 @@ class ASelectFile extends Component{
             onChange={this.handleSelectPasswordVerification}
             name="dtSelectPasswordVerification"            
             ref="dtSelectPasswordVerification"  
-          /><br/>
+          />
+          <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>
         </div>
-        <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>
-        <p>{this.state.feedbackMessage}</p>
+        <div className="dt-actions">
+            <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>        
+            <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn dt-btn-lg dt-btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>        
+        </div>
       </div>
     )
   }

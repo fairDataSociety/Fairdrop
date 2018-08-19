@@ -5,11 +5,6 @@ class CSelectRecipient extends Component{
   
   constructor(props) {
     super(props);
-
-    this.state = {
-      feedbackMessage: ""
-    }
-
     this.handleSelectRecipient = this.handleSelectRecipient.bind(this);    
     this.handleUploadAndEncrypt = this.handleUploadAndEncrypt.bind(this);    
 
@@ -32,9 +27,9 @@ class CSelectRecipient extends Component{
     return (
       <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "")}> 
         <div className="dt-select-recipient-ui dt-page-inner-centered">
-          <div className="dt-select-recipient">
-            <h1 className="dt-select-account-header">Select Recipient</h1>
-              <div className="dt-form-group">
+          <div className="dt-select-recipient dt-page-inner-wrapper">
+            <h1 className="dt-select-account-header">Select Recipient*</h1>
+              <div className="dt-form-group dt-form-group-last">
                 <input 
                   id="dt-select-recipient-address"
                   className="dt-select-recipient-address"
@@ -45,8 +40,12 @@ class CSelectRecipient extends Component{
                   ref="dtSelectRecipient"
                 />
               </div>
-              <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green" onClick={this.handleUploadAndEncrypt}>Upload and Encrypt</button>
-              <p>{this.state.feedbackMessage}</p>
+              <div className="dt-btn-group clearfix">
+                <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleUploadAndEncrypt}>Upload and Encrypt</button>
+              </div>
+              <div class="dt-page-smallprint">
+                *For somebody to receive a file they need a mailbox first
+              </div>
           </div>
         </div>
       </div>

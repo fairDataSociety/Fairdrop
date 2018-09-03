@@ -735,6 +735,33 @@ label{
 /* mailbox */
 
 .dt-mailbox{
-  
+  color: #fff;
+}
+
+.dt-show-files .dt-show-files-header {
+  margin-bottom: 0;
+}
+
+.dt-icon-group {
+  padding: 5vw 10vw;
+  height: 63vh;
+}
+
+.dt-icon-group .dt-icon {
+  float: left;
+}
+
+.dt-icon-group .dt-icon img{
+  height: 70px;
+}
+
+.dt-icon-group .dt-icon .dt-info-filename{
+  color: #fff;
+  font-size: 10px;
+  margin-top:2px;
+}
+.dt-icon-group .dt-icon .dt-info-filesize{
+  color: #fff;  
+  font-size: 8px;
 }
 

@@ -20,6 +20,7 @@ class DTransferMy extends Component{
         selectedMailbox: null,
         selectedWallet: null,
         unlockingMailbox: null,
+        uiState: 0,
 
         isAddingMailbox: true,        
         isUnlockingMailbox: false,
@@ -32,6 +33,7 @@ class DTransferMy extends Component{
         selectedMailbox: null,
         selectedWallet: null,
         unlockingMailbox: null,
+        uiState: 0,
 
         isAddingMailbox: false,        
         isUnlockingMailbox: true,
@@ -96,30 +98,51 @@ class DTransferMy extends Component{
 
   render() {
     return (
-      <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.props.uiState !== 1 ? "dt-fade-in" : "")}> 
-        <div className="dt-select-mailbox-ui dt-page-inner-centered">
-          <div className="dt-select-mailbox">            
-              <div className="dt-page-inner-wrapper">
-                <h1 className="dt-select-account-header">Mailbox</h1>
-                <div className="dt-form-group clearfix">
-                  <div className="dt-select-mailbox-mailboxes">
-                    <Dropdown 
-                      options={this.getDropDownOptions()} 
-                      value={this.state.dropDownValue} 
-                      onChange={this.handleSelectMailbox.bind(this)}
-                      placeholder="Select a mailbox" 
-                    />
+      <div>
+        <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 0 ? "dt-fade-in" : "")}> 
+          <div className="dt-select-mailbox-ui dt-page-inner-centered">
+            <div className="dt-select-mailbox">            
+                <div className="dt-page-inner-wrapper">
+                  <h1 className="dt-select-account-header">Mailbox</h1>
+                  <div className="dt-form-group clearfix">
+                    <div className="dt-select-mailbox-mailboxes">
+                      <Dropdown 
+                        options={this.getDropDownOptions()} 
+                        value={this.state.dropDownValue} 
+                        onChange={this.handleSelectMailbox.bind(this)}
+                        placeholder="Select a mailbox" 
+                      />
+                    </div>
+                    <label className="dt-select-mailbox-label">Select mailbox</label>
                   </div>
-                  <label className="dt-select-mailbox-label">Select mailbox</label>
+                    <UnlockMailbox 
+                      mailbox={this.state.unlockingMailbox}
+                      setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                      mailboxUnlocked={this.mailboxUnlocked.bind(this)}
+                    />
                 </div>
-                  <UnlockMailbox 
-                    mailbox={this.state.unlockingMailbox}
-                    setSelectedMailbox={this.setSelectedMailbox.bind(this)}
-                    mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-                  />
-              </div>
+            </div>
           </div>
         </div>
+        <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 1 ? "dt-fade-in" : "")}>
+          <div className="dt-page-inner-centered">
+            <div className="dt-show-files-ui">            
+              <h1 className="dt-show-files-header">Bobby</h1>
+              <div className="dt-icon-group clearfix">
+              {[1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9].map(()=>{
+              return <div className="dt-icon">
+                        <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                        <div className="dt-info-filename">File Name</div>
+                        <div className="dt-info-filesize">128kb</div>
+                      </div>
+              })}
+              </div>
+              <div className="dt-show-files-nav">
+                <a href="">sent</a> - <a href="">recieved</a>
+              </div>
+            </div>
+          </div>
+        </div>        
       </div>
     );
   }

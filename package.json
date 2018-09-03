@@ -16,6 +16,7 @@
     "react-dom": "^16.4.1",
     "react-dropdown": "^1.5.0",
     "react-scripts": "1.1.4",
+    "web3": "^0.20.6",
     "zxcvbn": "^4.4.2"
   },
   "scripts": {

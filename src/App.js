@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DTransfer from "./services/Dtransfer";
 import FileSaver from 'file-saver';
 import DTransferUp from "./components/DTransferUp";
+import DTransferMailbox from "./components/DTransferMailbox";
 import './App.css';
 
 class App extends Component {
@@ -60,6 +61,7 @@ class App extends Component {
     let fileName = urlParams.get('fileName'); 
     let mimeType = urlParams.get('mimeType'); 
     let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
+    let mailbox = urlParams.get('mailbox') !== null;      
 
     if(swarmHash && fileName){
       this.setState({
@@ -72,6 +74,12 @@ class App extends Component {
       });
       
       this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
+    }
+
+    if(mailbox){
+      this.setState({
+        isMailbox: true,
+      });      
     }
   }
 
@@ -136,7 +144,12 @@ class App extends Component {
             </svg>    
           </div>
         </div>
-        <DTransferUp setIsSelecting={this.setIsSelecting}/>
+
+        { this.state.isMailbox
+          ? <DTransferMailbox/>
+          : <DTransferUp setIsSelecting={this.setIsSelecting}/>
+        }
+
         <div className="dt-network-status">
           <div className="dt-network-status-ethereum">
             

@@ -47,25 +47,6 @@ class ASelectFile extends Component{
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
   }
 
-  unlockMailboxWallet(mailbox, password){
-    let dWallet = new DWallet();
-    let wallet = dWallet.fromJSON(mailbox.wallet.walletV3, password).then((wallet)=>{
-        this.setSelectedMailbox(mailbox, wallet);
-        this.setState({
-          feedbackMessage: 'Mailbox unlocked.',
-          mailboxIsUnlocked: true,
-          isUnlockingMailbox: true,
-        });
-      }).catch((error)=>{
-        this.setSelectedMailbox(false, false);
-        this.setState({
-          feedbackMessage: 'Password invalid, please try again.',
-          mailboxIsUnlocked: false,
-          isUnlockingMailbox: true,
-        });
-      });
-  }
-
   setSelectedMailbox(mailbox, wallet){
     this.props.setParentState({
       selectedMailbox: mailbox,
@@ -87,7 +68,8 @@ class ASelectFile extends Component{
     })    
   }
 
-  setUnlockingMailbox(mailbox){
+  setUnlockingMailbox(subdomain){
+    let mailbox = DMailbox.get(subdomain);
     this.setState({
       unlockingMailbox: mailbox,
       isUnlockingMailbox: true,
@@ -109,7 +91,6 @@ class ASelectFile extends Component{
   }
 
   handleSelectMailbox(option){
-    console.log(option.value)
     if(option.value === 'dt-new-mailbox'){
       this.addMailbox();
     }else{
@@ -137,7 +118,7 @@ class ASelectFile extends Component{
                   </div>
                   <label className="dt-select-mailbox-label">Select mailbox</label>
                 </div>
-                {this.state.isUnlockingMailbox && this.props.parentState.selectedWallet == false &&
+                {this.state.isUnlockingMailbox &&
                   <UnlockMailbox 
                     mailbox={this.state.unlockingMailbox} 
                     setSelectedMailbox={this.setSelectedMailbox.bind(this)}

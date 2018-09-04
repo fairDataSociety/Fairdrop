@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Utils from '../../services/DTransferUtils';
 
 class FCompleted extends Component{
   
@@ -13,7 +14,7 @@ class FCompleted extends Component{
             <div className="dt-info-content">
               <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
               <div className="dt-info-filename">{this.props.parentState.selectedFileName}</div>
-              <div className="dt-info-filesize">{this.props.parentState.selectedFileSize}</div>
+              <div className="dt-info-filesize">{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</div>
               <div className="dt-info-is-encrypted">
                 <img className="dt-fairdrop-lock" src="/assets/images/fairdrop-lock.svg" /> File is encrypted
               </div>

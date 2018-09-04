@@ -28,11 +28,14 @@ class Wallet{
 
   fromJSON(walletJSON, password) {
     return new Promise((resolve, reject)=>{
+      resolve(true);
+    });
+    return new Promise((resolve, reject)=>{
       console.time("decryptWallet");
       try {
         var wallet = EthereumJSWallet.fromV3(walletJSON, password, true);
         console.timeEnd("decryptWallet");
-        resolve(wallet);    
+        resolve(wallet);
       }
       catch(err) {
         console.timeEnd("decryptWallet");

@@ -245,7 +245,7 @@ label{
   text-align: left;
 }
 
-.file-is-selecting svg{
+.dt-nav-white svg{
   fill: #fff;
   transition: fill 1s
 }
@@ -742,6 +742,10 @@ label{
   margin-bottom: 0;
 }
 
+.dt-icon {
+  width: 12%;
+}
+
 .dt-icon-group {
   padding: 5vw 10vw;
   height: 63vh;
@@ -759,9 +763,23 @@ label{
   color: #fff;
   font-size: 10px;
   margin-top:2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
 }
+
 .dt-icon-group .dt-icon .dt-info-filesize{
   color: #fff;  
   font-size: 8px;
+}
+
+.dt-show-files-nav a{
+  opacity: 0.5;
+}
+
+.dt-show-files-nav a.inactive{
+  color: #fff;
+  opacity: 1;
 }
 

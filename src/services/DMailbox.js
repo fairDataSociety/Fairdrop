@@ -1,4 +1,5 @@
 import DEns from './DEns.js';
+import DMessage from './DMessage.js'
 
 class Mailbox {
   constructor(attrs){
@@ -20,25 +21,52 @@ class DMailbox {
     this.mailboxes = this.getAll();
   }
 
-  create(subdomain, password){
-    if(
-      this.isMailboxNameValid(subdomain) === true
-    ){
-      return this.isMailboxNameAvailable(subdomain).then((response)=>{
-        return DEns.createSubdomain(password).then((wallet)=>{
-          let mailbox = new Mailbox({
-            // order: this.getAll().length + 1,
-            subdomain: subdomain,
-            wallet: wallet
-          });
-          this.mailboxes.push(mailbox);
-          this.saveAll();
-          return mailbox;
-        });
-      })
-    }else{
-      return new Promise((resolve, reject)=>reject(false));
+  saveMessage(message){
+    let messages = this.getAllMessages();
+    messages.push(message.toJSON());
+    localStorage.setItem('messages', JSON.stringify(messages));
+  }
+
+  getAllMessages(){
+    let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
+    return JSON.parse(messagesJSON);    
+  }
+
+  getMessages(type, subdomain) {
+    let messages = this.getAllMessages();
+    switch(type) {
+      case 'received':
+        return messages.filter(message => message.to === subdomain)
+        break;
+      case 'sent':
+        return messages.filter(message => message.from === subdomain)      
+        break;
+      case 'saved':
+        return messages.filter((message) => {
+          message.from === subdomain &&
+          message.to === subdomain
+        })      
+        break;
     }
+  }
+
+  create(subdomain, password){
+      return this.isMailboxNameAvailable(subdomain).then((response)=>{
+        if(response === true){
+          return DEns.createSubdomain(password).then((wallet)=>{
+            let mailbox = new Mailbox({
+              // order: this.getAll().length + 1,
+              subdomain: subdomain,
+              wallet: wallet
+            });
+            this.mailboxes.push(mailbox);
+            this.saveAll();
+            return mailbox;
+          });
+        }else{
+          return false;
+        }
+      })
   }
 
   get(subdomain){
@@ -75,10 +103,9 @@ class DMailbox {
   isMailboxNameValid(mailboxName){
     // check to see if name conforms to eth subdomain restrictions
     if(mailboxName === undefined || mailboxName === false) return false;
-    let pattern = /(bob|alic)/
+    let pattern = /^[a-zA-Z0-9_-]*$/
     let matches = mailboxName.match(pattern)
-    console.log(matches)
-    if(matches !== null && matches.length > 1){
+    if(mailboxName.length > 7 && matches !== null && matches.length > 0){
       return true;      
     }else{
       return false;

@@ -89,7 +89,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className={"dt-wrapper " + (this.state.fileIsSelecting && "file-is-selecting")}>
+      <div className={"dt-wrapper " + ((this.state.fileIsSelecting || this.state.isMailbox) ? "dt-nav-white " : "")}>
         <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
           <div className="dt-nav-header-item">
           <a href="/">
@@ -132,7 +132,7 @@ class App extends Component {
           </div>
         </div>
         <div className="dt-nav-key-wrapper">
-          <div className="dt-nav-key">
+          <div className="dt-nav-key" onClick={ () => window.location.href = "/?mailbox" }>
             <svg alt="Fairdrop Key"
                width="100px" height="68px" viewBox="0 0 100 68" enable-background="new 0 0 100 68">
             <path d="M57.818,37.086c1.383,4.604,5.516,7.698,10.283,7.698l0,0c5.943-0.009,10.775-4.851,10.77-10.791

@@ -10,8 +10,8 @@ function createSubdomain(password){
   })
 }
 
-function createSharedSecret(senderMailbox, recipient){
+function getSharedSecret(senderMailbox, recipient){
   return senderMailbox.subdomain+recipient
 }
 
-export default {createSubdomain, createSharedSecret}
+export default {createSubdomain, getSharedSecret}

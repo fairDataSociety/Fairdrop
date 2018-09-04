@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DTransfer from '../services/Dtransfer';
 import DEns from '../services/DEns';
+import DMailbox from '../services/DMailbox';
+import DMessage from '../services/DMessage';
 
 import ASelectFile from '../components/up/ASelectFile';
 import BSelectMailbox from '../components/up/BSelectMailbox';
@@ -9,7 +11,6 @@ import DConfirm from '../components/up/DConfirm';
 import EInProgress from '../components/up/EInProgress';
 import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
-
 
 class DTransferUp extends Component{
 
@@ -95,7 +96,7 @@ class DTransferUp extends Component{
       if(this.state.shouldEncrypt){
         let senderMailbox = this.state.selectedMailbox;
         let addressee = this.state.addressee;
-        let sharedSecret = DEns.createSharedSecret(senderMailbox, addressee);
+        let sharedSecret = DEns.getSharedSecret(senderMailbox, addressee);
         this.setState({encryptMessage: 'Encrypting...'});
         return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
           let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
@@ -110,7 +111,17 @@ class DTransferUp extends Component{
             this.setState({dTransferLink: dTransferLink});
             this.setState({uploadedFileHash: response});
             this.setState({feedBackMessage: "File uploaded in "+(timeEnd-timeStart)/1000+"s!"});     
+            let message = new DMessage({
+              to: addressee,              
+              from: senderMailbox.subdomain,
+              swarmhash: response,
+              filename: this.state.selectedFileName,
+              mime: this.state.selectedFileType,
+              size: this.state.selectedFileSize
+            });
+            DMailbox.saveMessage(message);
           }).catch((error)=>{
+            console.log(error)
             this.setState({feedBackMessage: "Upload failed, please try again..."});
           });
         });

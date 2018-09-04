@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Utils from '../../services/DTransferUtils';
 
 class DConfirm extends Component{
   
@@ -43,7 +44,7 @@ class DConfirm extends Component{
               <table>
                 <tablebody>
                   <tr>
-                    <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{this.props.parentState.selectedFileSize}</td>
+                    <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</td>
                   </tr>
                   <tr>
                     <td>Sender:</td><td>{this.props.parentState.selectedMailbox.subdomain}.datafund.eth</td><td></td>

@@ -3,10 +3,12 @@ import DTransfer from '../services/Dtransfer';
 import DEns from '../services/DEns';
 import Dropdown from 'react-dropdown';
 import DMailbox from '../services/DMailbox';
+import FileSaver from 'file-saver';
 
 import MailboxIcon from './up/BSelectMailbox/MailboxIcon'
 import AddMailbox from './up/BSelectMailbox/AddMailbox'
 import UnlockMailbox from './up/BSelectMailbox/UnlockMailbox'
+
 
 class DTransferMy extends Component{
 
@@ -21,6 +23,7 @@ class DTransferMy extends Component{
         selectedWallet: null,
         unlockingMailbox: null,
         uiState: 0,
+        shownMessages: [],
 
         isAddingMailbox: true,        
         isUnlockingMailbox: false,
@@ -34,6 +37,7 @@ class DTransferMy extends Component{
         selectedWallet: null,
         unlockingMailbox: null,
         uiState: 0,
+        shownMessages: [],
 
         isAddingMailbox: false,        
         isUnlockingMailbox: true,
@@ -79,13 +83,40 @@ class DTransferMy extends Component{
   setSelectedMailbox(mailbox, wallet){
     this.setState({
       selectedMailbox: mailbox,
-      selectedWallet: wallet
+      selectedWallet: wallet,
+    });
+    this.showReceived();
+  }
+
+  showSent(){
+    let messagesSent = DMailbox.getMessages('sent', this.state.selectedMailbox.subdomain);
+    this.setState({
+      shownMessageType: 'sent',
+      shownMessages: messagesSent,
+    });
+  }
+
+  showReceived(){
+    let messagesReceived = DMailbox.getMessages('received', this.state.selectedMailbox.subdomain);
+    this.setState({
+      shownMessageType: 'received',
+      shownMessages: messagesReceived,
+    });
+  }  
+
+  retrieveFile(message){
+    return this.DT.getFile(message.swarmhash, message.filename).then((retrievedFile)=>{
+      let secret = DEns.getSharedSecret(this.state.selectedMailbox, message.to);
+      let decryptedFile = this.DT.decryptedFile(retrievedFile, secret, message.filename, message.mime);      
+      FileSaver.saveAs(new File([decryptedFile], message.filename, {type: message.mime}));
     });
   }
 
   mailboxUnlocked(){
+    let messages = DMailbox.getMessages('received',this.state.selectedMailbox.subdomain);
     this.setState({
-      uiState: 1
+      uiState: 1,
+      messages: messages
     });
   }
 
@@ -127,18 +158,18 @@ class DTransferMy extends Component{
         <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 1 ? "dt-fade-in" : "")}>
           <div className="dt-page-inner-centered">
             <div className="dt-show-files-ui">            
-              <h1 className="dt-show-files-header">Bobby</h1>
-              <div className="dt-icon-group clearfix">
-              {[1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9].map(()=>{
-              return <div className="dt-icon">
-                        <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
-                        <div className="dt-info-filename">File Name</div>
-                        <div className="dt-info-filesize">128kb</div>
-                      </div>
-              })}
-              </div>
+              <h1 className="dt-show-files-header">{ this.state.selectedMailbox && this.state.selectedMailbox.subdomain }</h1>
               <div className="dt-show-files-nav">
-                <a href="">sent</a> - <a href="">recieved</a>
+                <a className={this.state.shownMessageType !== 'received' && "inactive"} onClick={this.showReceived.bind(this)}>received</a> - <a className={this.state.shownMessageType !== 'sent' && "inactive"} onClick={this.showSent.bind(this)}>sent</a>
+              </div>
+              <div className="dt-icon-group clearfix">
+                {this.state.shownMessages.map((message)=>{
+                  return <div className="dt-icon" onClick={ ()=>{ return this.retrieveFile(message); } }>
+                      <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                      <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
+                      <div className="dt-info-filesize">{ message.filesize }</div>
+                    </div>
+              })}
               </div>
             </div>
           </div>

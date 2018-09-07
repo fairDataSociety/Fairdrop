@@ -27,9 +27,9 @@ class Wallet{
   }
 
   fromJSON(walletJSON, password) {
-    return new Promise((resolve, reject)=>{
-      resolve(true);
-    });
+    // return new Promise((resolve, reject)=>{
+    //   resolve(true);
+    // });
     return new Promise((resolve, reject)=>{
       console.time("decryptWallet");
       try {

@@ -32,7 +32,12 @@ class UnlockMailbox extends Component{
     });
     setTimeout(()=>{
       let wallet = dWallet.fromJSON(mailbox.wallet.walletV3, password).then((wallet)=>{
-        this.props.setSelectedMailbox(mailbox, wallet);
+        let serialisedWallet = {
+          address: wallet.getAddressString(),
+          publicKey: wallet.getPublicKeyString(),
+          privateKey: wallet.getPrivateKeyString()
+        }
+        this.props.setSelectedMailbox(mailbox, serialisedWallet);
         this.setState({
           feedbackMessage: 'Mailbox unlocked.',
           mailboxIsUnlocked: true,

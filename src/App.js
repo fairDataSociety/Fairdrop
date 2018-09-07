@@ -3,7 +3,10 @@ import DTransfer from "./services/Dtransfer";
 import FileSaver from 'file-saver';
 import DTransferUp from "./components/DTransferUp";
 import DTransferMailbox from "./components/DTransferMailbox";
+import DMailbox from "./services/DMailbox";
 import './App.css';
+
+window.DMailbox = DMailbox;
 
 class App extends Component {
 

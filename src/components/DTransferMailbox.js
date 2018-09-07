@@ -106,7 +106,7 @@ class DTransferMy extends Component{
 
   retrieveFile(message){
     return this.DT.getFile(message.swarmhash, message.filename).then((retrievedFile)=>{
-      let secret = DEns.getSharedSecret(this.state.selectedMailbox, message.to);
+      let secret = DMailbox.getSharedSecret(this.state.selectedMailbox, this.state.selectedWallet, message.from);
       let decryptedFile = this.DT.decryptedFile(retrievedFile, secret, message.filename, message.mime);      
       FileSaver.saveAs(new File([decryptedFile], message.filename, {type: message.mime}));
     });

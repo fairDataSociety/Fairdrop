@@ -1,5 +1,15 @@
 import DEns from './DEns.js';
 import DMessage from './DMessage.js'
+import DWallet from '../services/DWallet';
+import Crypto from 'crypto'
+
+let provider = process.env.REACT_APP_GETH_GATEWAY;
+
+let dEns = new DEns(provider, {
+  registrarContractAddress: '0x21397c1a1f4acd9132fe36df011610564b87e24b',
+  fifsRegistrarContractAddress: '0xd78e926ec77acfae2f2a8533bd7e65c6b33518bb',
+  resolverContractAddress: '0xA4038A4BfeEf917Eb9876E0a7c13D577941499c4'
+});
 
 class Mailbox {
   constructor(attrs){
@@ -53,7 +63,7 @@ class DMailbox {
   create(subdomain, password){
       return this.isMailboxNameAvailable(subdomain).then((response)=>{
         if(response === true){
-          return DEns.createSubdomain(password).then((wallet)=>{
+          return this.createSubdomain(subdomain, password).then((wallet)=>{
             let mailbox = new Mailbox({
               // order: this.getAll().length + 1,
               subdomain: subdomain,
@@ -116,14 +126,44 @@ class DMailbox {
     // check to see whether mailbox already exists
     // or handle error if network/endpoint failure
     return new Promise((resolve, reject)=>{
-
-      if(this.get(mailboxName) === false){
+      let available = dEns.getSubdomainAvailiability(mailboxName)
+      if(available === true){
         resolve(true);
       }else{
         resolve(false);
       }
 
     });
+  }
+
+  registerSubdomain(subdomain){
+    return dEns.registerSubdomainToAddress(subdomain);
+  }
+
+  getPubkey(recipient){
+    return dEns.getPubKey(recipient);
+  }
+
+  createSubdomain(subdomain, password){
+    return new Promise((resolve, reject)=>{
+      let dw = new DWallet();          
+      resolve(dw.generate(password));
+    }).then((wallet)=>{
+      return dEns.registerSubdomainToAddress(
+        subdomain, 
+        "0x" + wallet.walletV3.address, 
+        wallet.wallet.getPublicKeyString()
+      ).then(()=>{
+        return wallet;
+      });
+    });
+  }
+
+  getSharedSecret(senderMailbox, senderWallet, recipient){
+    let recipientPublicKey = dEns.getPubKey(recipient);
+    let sender = Crypto.createECDH('secp256k1');
+    sender.setPrivateKey(senderWallet.privateKey.substring(2,66), 'hex');
+    return sender.computeSecret(recipientPublicKey, 'hex').toString('hex');
   }
 
 }

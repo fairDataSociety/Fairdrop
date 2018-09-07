@@ -21,8 +21,12 @@ class ASelectFile extends Component{
   }
 
   processMailboxName(){
+    this.setState({
+      mailboxName: mailboxName,
+      feedbackMessage: "Checking availiability..."        
+    });
     let mailboxName = this.refs.dtSelectMailboxName.value;
-    if(DMailbox.isMailboxNameValid(mailboxName)){
+    if(mailboxName && DMailbox.isMailboxNameValid(mailboxName)){
       DMailbox.isMailboxNameAvailable(mailboxName).then((result) => {
         if(result === true){
           this.setState({
@@ -37,6 +41,11 @@ class ASelectFile extends Component{
           }); 
           return false;       
         }
+      }).catch(()=>{
+        this.setState({
+          mailboxName: false,
+          feedbackMessage: "Sorry, there was an error - try again!"        
+        });         
       });
     }else{
       this.setState({
@@ -120,17 +129,24 @@ class ASelectFile extends Component{
     window.DMailbox = DMailbox;
     if(this.state.mailboxName === false){
       this.processMailboxName();
+      return;
     }
     if(this.state.password === false){
       this.processMailboxPassword();
+      return;
     }else{
       //add the mailbox and select it
       this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
       window.DMailbox = DMailbox;
       console.log(this.state.mailboxName, this.state.password)
       DMailbox.create(this.state.mailboxName, this.state.password).then((newMailBox)=>{
-        this.setState({feedbackMessage: 'mailbox generated...'});        
-        this.props.setSelectedMailbox(newMailBox);
+        this.setState({feedbackMessage: 'mailbox generated...'}); 
+        let serialisedWallet = {
+          address: newMailBox.wallet.wallet.getAddressString(),
+          publicKey: newMailBox.wallet.wallet.getPublicKeyString(),
+          privateKey: newMailBox.wallet.wallet.getPrivateKeyString()
+        }               
+        this.props.setSelectedMailbox(newMailBox, serialisedWallet);
         this.props.mailboxUnlocked();
       });
     }

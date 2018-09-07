@@ -95,8 +95,9 @@ class DTransferUp extends Component{
     {
       if(this.state.shouldEncrypt){
         let senderMailbox = this.state.selectedMailbox;
+        let senderWallet = this.state.selectedWallet;
         let addressee = this.state.addressee;
-        let sharedSecret = DEns.getSharedSecret(senderMailbox, addressee);
+        let sharedSecret = DMailbox.getSharedSecret(senderMailbox, senderWallet, addressee);
         this.setState({encryptMessage: 'Encrypting...'});
         return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
           let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);

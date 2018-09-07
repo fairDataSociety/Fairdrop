@@ -1,19 +1,14 @@
-import DWallet from './DWallet'
-import Web3 from 'web3';
-import ENS from 'ethereum-ens';
-import namehash from 'eth-ens-namehash';
-
-let mockWalletJSON = {"version":3,"id":"38b5f67d-536c-4a69-81e5-a636d75de587","address":"68a2824d8850facc2d934afb50e187bee2091e72","Crypto":{"ciphertext":"80382ee4912bef789537cd20ab074b73cded97071fc5de9a34d5115ccc8483ad","cipherparams":{"iv":"b6816720e79a753e82aacf04b62c39eb"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"50657dbbff42581518aee2bea79ef0e59112870c2007dae61717c37cb96dd9a8","n":8192,"r":8,"p":1},"mac":"32436b69589fe7770d678ba199657c623c9d081b37ca2dd687568892556d45bc"}};
-
+let Web3 = require('web3');
+var ENS = require('ethereum-ens');
+var namehash = require('eth-ens-namehash')
 
 class DEns {
-
 
   constructor(provider, options = {}){
     this.web3 = new Web3(new Web3.providers.HttpProvider(provider));
     this.ens = new ENS(this.web3);
 
-    this.gasPrice = this.web3.toWei(50, 'gwei');
+    this.gasPrice = this.web3.toWei(12, 'gwei');
 
     if(options.registrarContractAddress === undefined) throw new Error('registrarContractAddress must be provided');
 
@@ -37,7 +32,7 @@ class DEns {
   watchTx(hash){
     return new Promise((resolve, reject) => {
       var interval = setInterval(()=>{
-        console.log('checking... ' + hash)
+        console.log('checking...')
         try {
           let response = this.web3.eth.getTransactionReceipt(hash);
           if(response !== null){
@@ -59,10 +54,10 @@ class DEns {
     var expiryTime = new Date(this.registrarContract.expiryTimes(this.web3.sha3(subdomain)).toNumber() * 1000);
     var now = new Date();
     if (expiryTime < now) {
-        // console.log(subdomain+".gregor.test domain is available");
+        console.log(subdomain+".gregor.test domain is available");
         return true;
     } else {
-        // console.log(subdomain+".gregor.test domain is not available");
+        console.log(subdomain+".gregor.test domain is not available");
         return false;
     }
   }
@@ -94,7 +89,7 @@ class DEns {
   }
 
   setResolver(subdomain){
-    console.log(subdomain, this.resolverContract.address)
+    console.log(this.resolverContract.address)
     return this.ens.setResolver(
       subdomain+'.gregor.test', 
       this.resolverContract.address,
@@ -108,11 +103,11 @@ class DEns {
     });
   }
 
-  setAddr(subdomain, address){
+  setAddr(subdomain){
     return new Promise((resolve, reject)=>{
       this.resolverContract.setAddr(
         namehash.hash(subdomain+'.gregor.test'), 
-        address,
+        this.web3.eth.accounts[0], 
         {
           from: this.web3.eth.accounts[0],
           gasPrice: this.gasPrice
@@ -133,15 +128,12 @@ class DEns {
     })
   }
 
-  setPubKey(subdomain, publicKey){
-    console.log(publicKey)
-    let publicKeyX = publicKey.substring(0,66);
-    let publicKeyY = "0x"+publicKey.substring(66,130);
+  setPubKey(subdomain){
     return new Promise((resolve, reject)=>{
       this.resolverContract.setPubkey(
         namehash.hash(subdomain+'.gregor.test'), 
-        publicKeyX,
-        publicKeyY,
+        "0x2d6933eb8f263be62c551dc489a6d00a3a4d38b035f51507f931ccc7c7899ced",
+        "0x395a6a136dc4c252f40bfdc4be8fe3de5d16ca3bf2b709ce224da48872305292",
         {
           from: this.web3.eth.accounts[0],
           gasPrice: this.gasPrice
@@ -162,11 +154,6 @@ class DEns {
     })
   } 
 
-  getPubKey(subdomain){
-    let keyCoords = this.resolverContract.pubkey(namehash.hash(subdomain+'.gregor.test'));
-    return "04"+keyCoords[0].substring(2,66)+keyCoords[1].substring(2,66);
-  }
-
   setSubnodeOwner(subdomain, address){
     return this.ens.setSubnodeOwner(
       subdomain+'.gregor.test',
@@ -180,7 +167,11 @@ class DEns {
     });
   }
 
-  registerSubdomainToAddress(subdomain, address, publicKey){
+  pubKey(subdomain){
+    return this.resolverContract.pubkey(namehash.hash(subdomain));
+  }
+
+  registerSubdomainToAddress(subdomain, address = false){
     this.registerSubdomainToAddressState = 0;
     if(this.getSubdomainAvailiability(subdomain)){
       console.log(subdomain + ' available!')
@@ -190,10 +181,10 @@ class DEns {
         return this.setResolver(subdomain).then((tx2)=>{
           this.registerSubdomainToAddressState = 2;          
           console.log(tx2);
-          return this.setAddr(subdomain, address).then((tx3)=>{
+          return this.setAddr(subdomain).then((tx3)=>{
             this.registerSubdomainToAddressState = 3;                      
             console.log(tx3);
-            return this.setPubKey(subdomain, publicKey).then((tx4)=>{
+            return this.setPubKey(subdomain).then((tx4)=>{
             this.registerSubdomainToAddressState = 4;
               console.log(tx4.transactionHash);
               return tx4.transactionHash;
@@ -213,6 +204,70 @@ class DEns {
 
 }
 
+let provider = "http://139.59.135.220:8545";
+
+let dEns = new DEns(provider, {
+  registrarContractAddress: '0x21397c1a1f4acd9132fe36df011610564b87e24b',
+  fifsRegistrarContractAddress: '0xd78e926ec77acfae2f2a8533bd7e65c6b33518bb',
+  resolverContractAddress: '0xA4038A4BfeEf917Eb9876E0a7c13D577941499c4'
+});
 
 
-export default DEns;
+
+
+  console.log(dEns.pubKey('dave1536219559417.gregor.test'));
+
+
+
+// console.log(dEns.pubKey('john1536155074768.gregor.test'));
+// dEns.setSubnodeOwner('john1536155074768.gregor.test', '0x468ce9a1ec886d15f3483975e062d3c08b6b4bc2').then((tx)=>{
+//   console.log(tx);
+//   console.log(dEns.pubKey('dave1536219559417.gregor.test'));
+// });
+
+// subdomain = 'dave1536219559417';
+
+// console.time('registered');
+// dEns.setSubnodeOwner(subdomain, '0x468ce9a1ec886d15f3483975e062d3c08b6b4bc2').then((tx)=>{
+//   console.timeEnd('registered');  
+//   console.log(dEns.pubKey(subdomain));
+// })
+
+var subdomain = 'dave'+ Date.now();
+
+// console.time('registered');
+// dEns.registerSubdomainToAddress(subdomain, '0x468ce9a1ec886d15f3483975e062d3c08b6b4bc2').then((tx)=>{
+//   console.timeEnd('registered');  
+//   console.log(dEns.pubKey(subdomain));
+// })
+
+
+
+
+
+
+
+
+
+
+
+
+
+// if(dEns.getSubdomainAvailiability(subdomain)){
+//   console.log(subdomain + ' available!')
+//   dEns.registerSubdomain(subdomain).then((tx)=>{
+//     console.log(tx);
+//     dEns.setResolver(subdomain).then((tx2)=>{
+//       console.log(tx2);
+//       dEns.setAddr(subdomain).then((tx3)=>{
+//         console.log(tx3);
+//         dEns.setPubKey(subdomain).then((tx4)=>{
+//           console.log(tx4);
+//           console.timeEnd('registered');
+//         }).then((tx5) => {
+//           console.log(dEns.pubKey(subdomain));
+//         });
+//       });
+//     })
+//   })
+// }

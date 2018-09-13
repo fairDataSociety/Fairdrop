@@ -5,11 +5,18 @@ import EthereumJSWallet from 'ethereumjs-wallet';
 class Wallet{
 
   generate(password){
-    console.timeEnd("generateWallet");
+    let complexity = 9; //9 is used in geth but it takes ages!
     return new Promise((resolve, reject)=>{
       setTimeout(()=>{
         this.wallet = EthereumJSWallet.generate();
-        this.walletV3 = this.wallet.toV3(password);
+        this.walletV3 = this.wallet.toV3(password, {
+          kdf: 'scrypt',
+          dklen: 32,
+          n: Math.pow(complexity), 
+          r: 8,
+          p: 1,
+          cipher: 'aes-128-ctr'
+        });
         resolve(this);
       })
     })

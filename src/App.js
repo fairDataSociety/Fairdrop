@@ -97,7 +97,7 @@ class App extends Component {
           <div className="dt-nav-header-item">
           <a href="/">
             <svg version="1.1" className="fairdop-logo" alt="Fairdrop Logo"
-               width="238px" height="68px" viewBox="0 0 238 68" enable-background="new 0 0 238 68">
+               width="238px" height="68px" viewBox="0 0 238 68" enableBackground="new 0 0 238 68">
               <g>
                 <path d="M78.321,44.335c-2.959,0-3.209-1.678-3.352-2.961c-0.643,1.283-3.174,3.424-8.381,3.424c-6.632,0-8.166-3.566-8.166-5.992
                   c0-2.994,2.141-4.279,3.067-4.67c1.676-0.749,4.386-0.821,8.487-0.821h4.957v-0.427c0-2.14-0.036-4.208-5.777-4.208
@@ -137,7 +137,7 @@ class App extends Component {
         <div className="dt-nav-key-wrapper">
           <div className="dt-nav-key" onClick={ () => window.location.href = "/?mailbox" }>
             <svg alt="Fairdrop Key"
-               width="100px" height="68px" viewBox="0 0 100 68" enable-background="new 0 0 100 68">
+               width="100px" height="68px" viewBox="0 0 100 68" enableBackground="new 0 0 100 68">
             <path d="M57.818,37.086c1.383,4.604,5.516,7.698,10.283,7.698l0,0c5.943-0.009,10.775-4.851,10.77-10.791
               c-0.004-5.942-4.844-10.777-10.785-10.777c-4.773,0.005-8.897,3.104-10.272,7.714l-0.426,1.426l-34.609,0.041
               c-0.438,0-0.852,0.173-1.166,0.487c-0.312,0.314-0.485,0.728-0.484,1.165c0.001,0.911,0.741,1.652,1.651,1.652l2.002-0.002

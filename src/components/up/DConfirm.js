@@ -42,7 +42,7 @@ class DConfirm extends Component{
             <h1 className="dt-confirm-header">Confirm</h1>          
             <div className="dt-confirm-ui-group clearfix">
               <table>
-                <tablebody>
+                <tbody>
                   <tr>
                     <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</td>
                   </tr>
@@ -52,7 +52,7 @@ class DConfirm extends Component{
                   <tr>
                     <td>Recipient:</td><td>{this.props.parentState.addressee}.datafund.eth</td><td></td>
                   </tr>
-                </tablebody>
+                </tbody>
               </table>
             </div>
             <div className="dt-btn-group">

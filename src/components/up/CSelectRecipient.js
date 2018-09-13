@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import DEns from '../../services/DEns';
 
 class CSelectRecipient extends Component{
   
@@ -43,7 +42,7 @@ class CSelectRecipient extends Component{
               <div className="dt-btn-group clearfix">
                 <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleUploadAndEncrypt}>Upload and Encrypt</button>
               </div>
-              <div class="dt-page-smallprint">
+              <div className="dt-page-smallprint">
                 *For somebody to receive a file they need a mailbox first
               </div>
           </div>

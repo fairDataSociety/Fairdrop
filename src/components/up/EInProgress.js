@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 
 class EInProgress extends Component{
   
-  constructor(props) {
-    super(props);
-  }
-
   render(){
     return (
       <div id="dt-in-progress" className={"dt-in-progress dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "")}> 

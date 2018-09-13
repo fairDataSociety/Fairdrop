@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DTransfer from '../services/Dtransfer';
-import DEns from '../services/DEns';
 import DMailbox from '../services/DMailbox';
 import DMessage from '../services/DMessage';
 

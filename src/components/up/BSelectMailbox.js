@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import DTransfer from '../../services/Dtransfer';
 import DMailbox from '../../services/DMailbox';
-import DWallet from '../../services/DWallet';
-
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
 
-import MailboxIcon from '../up/BSelectMailbox/MailboxIcon'
 import AddMailbox from '../up/BSelectMailbox/AddMailbox'
 import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
 

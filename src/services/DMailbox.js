@@ -1,5 +1,4 @@
 import DEns from './DEns.js';
-import DMessage from './DMessage.js'
 import DWallet from '../services/DWallet';
 import Crypto from 'crypto'
 
@@ -47,16 +46,15 @@ class DMailbox {
     switch(type) {
       case 'received':
         return messages.filter(message => message.to === subdomain)
-        break;
       case 'sent':
         return messages.filter(message => message.from === subdomain)      
-        break;
       case 'saved':
         return messages.filter((message) => {
-          message.from === subdomain &&
-          message.to === subdomain
+          return message.from === subdomain &&
+          message.to === subdomain;
         })      
-        break;
+      default:
+        throw new Error('type should be received, sent or saved')
     }
   }
 

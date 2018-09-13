@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import DTransfer from '../services/Dtransfer';
-import DEns from '../services/DEns';
 import Dropdown from 'react-dropdown';
 import DMailbox from '../services/DMailbox';
 import FileSaver from 'file-saver';
 
-import MailboxIcon from './up/BSelectMailbox/MailboxIcon'
-import AddMailbox from './up/BSelectMailbox/AddMailbox'
 import UnlockMailbox from './up/BSelectMailbox/UnlockMailbox'
 
 
@@ -35,7 +32,6 @@ class DTransferMy extends Component{
       return {
         selectedMailbox: null,
         selectedWallet: null,
-        unlockingMailbox: null,
         uiState: 0,
         shownMessages: [],
 

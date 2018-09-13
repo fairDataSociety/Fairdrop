@@ -21,11 +21,13 @@ class ASelectFile extends Component{
   }
 
   processMailboxName(){
+    let mailboxName = this.refs.dtSelectMailboxName.value;
+
     this.setState({
       mailboxName: mailboxName,
       feedbackMessage: "Checking availiability..."        
     });
-    let mailboxName = this.refs.dtSelectMailboxName.value;
+
     if(mailboxName && DMailbox.isMailboxNameValid(mailboxName)){
       DMailbox.isMailboxNameAvailable(mailboxName).then((result) => {
         if(result === true){
@@ -139,7 +141,9 @@ class ASelectFile extends Component{
       this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
       window.DMailbox = DMailbox;
       console.log(this.state.mailboxName, this.state.password)
-      DMailbox.create(this.state.mailboxName, this.state.password).then((newMailBox)=>{
+      DMailbox.create(this.state.mailboxName, this.state.password, (message) => {
+        this.setState({feedbackMessage: message});
+      }).then((newMailBox)=>{
         this.setState({feedbackMessage: 'mailbox generated...'}); 
         let serialisedWallet = {
           address: newMailBox.wallet.wallet.getAddressString(),
@@ -174,7 +178,6 @@ class ASelectFile extends Component{
         <div className="dt-form-group"> 
           <input 
             id="dt-mailbox-add-password" 
-            autoComplete="off" 
             className="dt-mailbox-add-password" 
             type="password" 
             placeholder="password"

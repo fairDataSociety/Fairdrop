@@ -58,10 +58,10 @@ class DMailbox {
     }
   }
 
-  create(subdomain, password){
+  create(subdomain, password, feedbackMessageCallback){
       return this.isMailboxNameAvailable(subdomain).then((response)=>{
         if(response === true){
-          return this.createSubdomain(subdomain, password).then((wallet)=>{
+          return this.createSubdomain(subdomain, password, feedbackMessageCallback).then((wallet)=>{
             let mailbox = new Mailbox({
               // order: this.getAll().length + 1,
               subdomain: subdomain,
@@ -134,23 +134,26 @@ class DMailbox {
     });
   }
 
-  registerSubdomain(subdomain){
-    return dEns.registerSubdomainToAddress(subdomain);
-  }
+  // registerSubdomain(subdomain){
+  //   return dEns.registerSubdomainToAddress(subdomain);
+  // }
 
   getPubkey(recipient){
     return dEns.getPubKey(recipient);
   }
 
-  createSubdomain(subdomain, password){
+  createSubdomain(subdomain, password, feedbackMessageCallback){
+    console.time('create wallet')
     return new Promise((resolve, reject)=>{
-      let dw = new DWallet();          
+      let dw = new DWallet(); 
+      console.timeEnd('create wallet')
       resolve(dw.generate(password));
     }).then((wallet)=>{
       return dEns.registerSubdomainToAddress(
         subdomain, 
         "0x" + wallet.walletV3.address, 
-        wallet.wallet.getPublicKeyString()
+        wallet.wallet.getPublicKeyString(),
+        feedbackMessageCallback
       ).then(()=>{
         return wallet;
       });

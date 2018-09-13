@@ -175,10 +175,11 @@ class DEns {
     });
   }
 
-  registerSubdomainToAddress(subdomain, address, publicKey){
+  registerSubdomainToAddress(subdomain, address, publicKey, feedbackMessageCallback){
     this.registerSubdomainToAddressState = 0;
     if(this.getSubdomainAvailiability(subdomain)){
       console.log(subdomain + ' available!')
+      feedbackMessageCallback('registering subdomain, waiting for tx...');
       return this.registerSubdomain(subdomain).then((tx)=>{
         this.registerSubdomainToAddressState = 1;
         console.log(tx);
@@ -207,7 +208,5 @@ class DEns {
   }
 
 }
-
-
 
 export default DEns;

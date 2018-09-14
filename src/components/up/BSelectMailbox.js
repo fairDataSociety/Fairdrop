@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DTransfer from '../../services/Dtransfer';
+import DTransfer from '../../services/DTransfer';
 import DMailbox from '../../services/DMailbox';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'

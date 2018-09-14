@@ -16,7 +16,6 @@ class ASelectFile extends Component{
     this.handleSelectMailboxName = this.handleSelectMailboxName.bind(this);
     this.handleSelectPassword = this.handleSelectPassword.bind(this);
     this.handleSelectPasswordVerification = this.handleSelectPasswordVerification.bind(this);
-    this.handleRemoveValueAndArm = this.handleRemoveValueAndArm.bind(this);
     this.addMailbox = this.addMailbox.bind(this);
   }
 
@@ -103,10 +102,6 @@ class ASelectFile extends Component{
     e.preventDefault();
   }
 
-  handleRemoveValueAndArm(e){
-    debugger
-  }
-
   // copyPassword(e){
   //   if(this.refs.dtSymEncPasswordInput.value === this.refs.dtSymEncPasswordInputConfirm.value){
   //     if(navigator.clipboard){
@@ -128,22 +123,25 @@ class ASelectFile extends Component{
 
 
   addMailbox(e){
-    window.DMailbox = DMailbox;
     if(this.state.mailboxName === false){
+      // double check the subdomain before attempting to add the mailbox
       this.processMailboxName();
       return;
     }
     if(this.state.password === false){
+      // double check the password before attempting to add the mailbox
       this.processMailboxPassword();
       return;
     }else{
       //add the mailbox and select it
       this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
-      window.DMailbox = DMailbox;
-      console.log(this.state.mailboxName, this.state.password)
-      DMailbox.create(this.state.mailboxName, this.state.password, (message) => {
-        this.setState({feedbackMessage: message});
-      }).then((newMailBox)=>{
+      DMailbox.createSubdomain(
+        this.state.mailboxName, 
+        this.state.password, 
+        (message) => {
+          this.setState({feedbackMessage: message});
+        }
+      ).then((newMailBox)=>{
         this.setState({feedbackMessage: 'mailbox generated...'}); 
         let serialisedWallet = {
           address: newMailBox.wallet.wallet.getAddressString(),

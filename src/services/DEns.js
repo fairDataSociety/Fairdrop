@@ -175,11 +175,11 @@ class DEns {
     });
   }
 
-  registerSubdomainToAddress(subdomain, address, publicKey, feedbackMessageCallback){
+  registerSubdomainToAddress(subdomain, address, publicKey, feedbackMessageCallback = false){
+    if(feedbackMessageCallback) feedbackMessageCallback('verifying subdomain, waiting for node...');    
     this.registerSubdomainToAddressState = 0;
     if(this.getSubdomainAvailiability(subdomain)){
-      console.log(subdomain + ' available!')
-      feedbackMessageCallback('registering subdomain, waiting for tx...');
+      if(feedbackMessageCallback) feedbackMessageCallback('registering subdomain, waiting for tx...');
       return this.registerSubdomain(subdomain).then((tx)=>{
         this.registerSubdomainToAddressState = 1;
         console.log(tx);

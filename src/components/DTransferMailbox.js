@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import DTransfer from '../services/Dtransfer';
+import DTransfer from '../services/DTransfer';
 import Dropdown from 'react-dropdown';
 import DMailbox from '../services/DMailbox';
 import FileSaver from 'file-saver';
 
 import UnlockMailbox from './up/BSelectMailbox/UnlockMailbox'
+import AddMailbox from './up/BSelectMailbox/AddMailbox'
 
 
 class DTransferMy extends Component{
@@ -120,7 +121,7 @@ class DTransferMy extends Component{
     let mailboxes = DMailbox.getAll();
     return mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    }).concat({label: 'sent', value: 'sent' }).concat({label: 'saved', value: 'saved' });
+    });
   }
 
   render() {
@@ -128,27 +129,41 @@ class DTransferMy extends Component{
       <div>
         <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 0 ? "dt-fade-in" : "")}> 
           <div className="dt-select-mailbox-ui dt-page-inner-centered">
-            <div className="dt-select-mailbox">            
-                <div className="dt-page-inner-wrapper">
-                  <h1 className="dt-select-account-header">Mailbox</h1>
-                  <div className="dt-form-group clearfix">
-                    <div className="dt-select-mailbox-mailboxes">
-                      <Dropdown 
-                        options={this.getDropDownOptions()} 
-                        value={this.state.dropDownValue} 
-                        onChange={this.handleSelectMailbox.bind(this)}
-                        placeholder="Select a mailbox" 
-                      />
+            {this.state.isUnlockingMailbox &&
+              <div className="dt-select-mailbox">
+                  <div className="dt-page-inner-wrapper">
+                    <h1 className="dt-select-account-header">Mailbox</h1>
+                    <div className="dt-form-group clearfix">
+                      <div className="dt-select-mailbox-mailboxes">
+                        <Dropdown 
+                          options={this.getDropDownOptions()} 
+                          value={this.state.dropDownValue} 
+                          onChange={this.handleSelectMailbox.bind(this)}
+                          placeholder="Select a mailbox" 
+                        />
+                      </div>
+                      <label className="dt-select-mailbox-label">Select mailbox</label>
                     </div>
-                    <label className="dt-select-mailbox-label">Select mailbox</label>
+                      <UnlockMailbox 
+                        mailbox={this.state.unlockingMailbox}
+                        setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                        mailboxUnlocked={this.mailboxUnlocked.bind(this)}
+                      />
                   </div>
-                    <UnlockMailbox 
-                      mailbox={this.state.unlockingMailbox}
-                      setSelectedMailbox={this.setSelectedMailbox.bind(this)}
-                      mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-                    />
-                </div>
-            </div>
+              </div>
+            }
+            {this.state.isAddingMailbox &&
+              <div className="dt-select-mailbox">
+                  <div className="dt-page-inner-wrapper">
+                    <h1 className="dt-select-account-header">Create Mailbox</h1>
+                      <AddMailbox 
+                        setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                        mailboxUnlocked={this.mailboxUnlocked.bind(this)}
+                        cancelAddMailbox={()=>{}}
+                      />
+                  </div>
+              </div>
+            }
           </div>
         </div>
         <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 1 ? "dt-fade-in" : "")}>

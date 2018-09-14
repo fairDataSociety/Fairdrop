@@ -5,14 +5,14 @@ import EthereumJSWallet from 'ethereumjs-wallet';
 class Wallet{
 
   generate(password){
-    let complexity = 9; //9 is used in geth but it takes ages!
+    let complexity = 1; //9 is used in geth but it takes ages!
     return new Promise((resolve, reject)=>{
       setTimeout(()=>{
         this.wallet = EthereumJSWallet.generate();
         this.walletV3 = this.wallet.toV3(password, {
           kdf: 'scrypt',
           dklen: 32,
-          n: Math.pow(complexity), 
+          n: Math.pow(complexity,2), 
           r: 8,
           p: 1,
           cipher: 'aes-128-ctr'
@@ -20,12 +20,6 @@ class Wallet{
         resolve(this);
       })
     })
-    // return {
-    //   v3: this.wallet.toV3(password),
-    //   address: this.wallet.getAddress().toString('hex'),
-    //   publicKey: this.wallet.getPublicKey().toString('hex'),
-    //   privateKey: this.wallet.getPrivateKey().toString('hex')
-    // };
   }
 
   fromJSON(walletJSON, password) {

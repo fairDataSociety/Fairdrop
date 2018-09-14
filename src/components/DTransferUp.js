@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DTransfer from '../services/Dtransfer';
+import DTransfer from '../services/DTransfer';
 import DMailbox from '../services/DMailbox';
 import DMessage from '../services/DMessage';
 
@@ -55,35 +55,19 @@ class DTransferUp extends Component{
     this.setState(this.getInitialState());
   }
 
-  constructor(props) {
+  constructor(props){
     super(props);
 
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
 
     this.state = this.getInitialState();
+
+    window.setUIState = this.setUIState.bind(this);
   }
 
-  // componentDidMount(){
-  //   var urlParams = new URLSearchParams(window.location.search);
-  //   let swarmHash = urlParams.get('swarmHash');      
-  //   let fileName = urlParams.get('fileName'); 
-  //   let mimeType = urlParams.get('mimeType'); 
-  //   let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
-
-  //   if(swarmHash && fileName){
-  //     this.setState({
-  //       isDownloading: true,
-  //       swarmHash: swarmHash,
-  //       fileName: fileName,
-  //       mimeType: mimeType,
-  //       findingFile: true,
-  //       fileIsDecrypting: false
-  //     });
-  //     this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
-  //   }else{
-  //     // this.dropZone();
-  //   }
-  // }
+  setUIState(state){
+    this.setState({uiState: state});
+  }
 
   handleUpload(){
     let timeStart = new Date();

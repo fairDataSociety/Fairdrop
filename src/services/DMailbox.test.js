@@ -1,7 +1,7 @@
 import DMailbox from './DMailbox';
 
 it('should persist mailbox', ()=>{
-  new DMailbox().createSubdomain('bobby').then((mailbox)=>{
+  new DMailbox().create('bobby').then((mailbox)=>{
     expect(mailbox.subdomain).toEqual('bobby');
   });
 

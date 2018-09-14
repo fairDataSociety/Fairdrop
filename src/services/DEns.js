@@ -182,12 +182,15 @@ class DEns {
       if(feedbackMessageCallback) feedbackMessageCallback('registering subdomain, waiting for tx...');
       return this.registerSubdomain(subdomain).then((tx)=>{
         this.registerSubdomainToAddressState = 1;
+        if(feedbackMessageCallback) feedbackMessageCallback('setting resolver, waiting for tx...');        
         console.log(tx);
         return this.setResolver(subdomain).then((tx2)=>{
-          this.registerSubdomainToAddressState = 2;          
+          this.registerSubdomainToAddressState = 2; 
+          if(feedbackMessageCallback) feedbackMessageCallback('registering to your address, waiting for tx...');                 
           console.log(tx2);
           return this.setAddr(subdomain, address).then((tx3)=>{
             this.registerSubdomainToAddressState = 3;                      
+            if(feedbackMessageCallback) feedbackMessageCallback('registering your public key, waiting for tx...');                             
             console.log(tx3);
             return this.setPubKey(subdomain, publicKey).then((tx4)=>{
             this.registerSubdomainToAddressState = 4;

@@ -135,7 +135,7 @@ class ASelectFile extends Component{
     }else{
       //add the mailbox and select it
       this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
-      DMailbox.createSubdomain(
+      DMailbox.create(
         this.state.mailboxName, 
         this.state.password, 
         (message) => {

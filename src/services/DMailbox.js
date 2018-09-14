@@ -58,15 +58,31 @@ class DMailbox {
     }
   }
 
+  create(subdomain, password, feedbackMessageCallback){
+    return this.isMailboxNameAvailable(subdomain).then((response)=>{
+      if(response === true){
+        return this.createSubdomain(subdomain, password, feedbackMessageCallback).then((wallet)=>{
+          let mailbox = new Mailbox({
+            // order: this.getAll().length + 1,
+            subdomain: subdomain,
+            wallet: wallet
+          });
+          this.mailboxes.push(mailbox);
+          this.saveAll();
+          return mailbox;
+        });
+      }else{
+        return false;
+      }
+    })
+  }
+
   createSubdomain(subdomain, password, feedbackMessageCallback){
-    console.time('created wallet in');
+    console.time('create wallet')
     return new Promise((resolve, reject)=>{
       let dw = new DWallet(); 
-      let wallet = dw.generate(password).then((wallet)=>{
-        console.log(wallet)
-        console.timeEnd('created wallet in');
-        resolve(wallet);
-      });
+      console.timeEnd('create wallet')
+      resolve(dw.generate(password));
     }).then((wallet)=>{
       return dEns.registerSubdomainToAddress(
         subdomain, 

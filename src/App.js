@@ -5,6 +5,7 @@ import DTransferUp from "./components/DTransferUp";
 import DTransferMailbox from "./components/DTransferMailbox";
 import DMailbox from "./services/DMailbox";
 import './App.css';
+import './lib/DMist.css';
 
 class App extends Component {
 

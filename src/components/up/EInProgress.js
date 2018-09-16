@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
+import DMist from '../../lib/DMist'
 
 class EInProgress extends Component{
-  
+
+  componentDidMount(){
+    let dm = new DMist;
+    dm.mist('dt-mist');
+
+    window.DMist = DMist;
+  }
+
   render(){
     return (
       <div id="dt-in-progress" className={"dt-in-progress dt-green dt-page-wrapper " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "dt-hidden")}> 
+          <div className="dt-mist"></div>
           <div className="dt-in-progress-ui dt-page-inner-centered">
             { !this.props.parentState.fileWasEncrypted &&
               <div className="dt-in-progress-ui">

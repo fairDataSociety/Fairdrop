@@ -219,7 +219,6 @@ label{
 }
 
 .dt-wrapper{
-  background: #000;  
   height:100vh;
   width:100vw;
   position: relative;
@@ -250,6 +249,11 @@ label{
   transition: fill 1s
 }
 
+.dt-nav-black svg{
+  fill: #000;
+  transition: fill 1s linear 1s;
+}
+
 .dt-nav-key-wrapper{
   position: absolute;
   height: 15vh;
@@ -268,7 +272,6 @@ label{
   text-align: right;
 }
 
-.is-selected
 
 .dt-nav-header .dt-nav-header-item{
   display: table-cell;
@@ -293,6 +296,7 @@ label{
   top:0;
   left:0;
   position: absolute;
+  pointer-events: auto;
 }
 
 .dt-page-inner-centered{
@@ -309,7 +313,7 @@ label{
 
 .dt-hidden{
   opacity: 0;
-  display: none;
+  pointer-events: none;
 }
 
 .dt-fade-in{
@@ -348,7 +352,7 @@ label{
 .dt-select-file.is-selected{
   opacity: 0;
   transition: opacity 1s;
-  display:none;
+  pointer-events: none;
 }
 
 .dt-select-file-header{
@@ -370,6 +374,12 @@ label{
   vertical-align: middle;
   text-align: center;
   opacity: 1;
+  transition: opacity 1s linear 0.5s;
+}
+
+.dt-select-file-header.is-selecting h1{
+  opacity: 0;
+  transition: opacity 1s;
 }
 
 .dt-select-file-header h1 span.dt-select-file-header-inverted{
@@ -413,6 +423,30 @@ label{
   transform: translateY(25vh);
   transition: transform 1s;
 }
+
+/*left here as although the transition doesn't work with linear gradients, 
+it can be amended later on to either haved a setTimeout function to 
+re-add it at the appropriate time or to use a png slice (preferable)*/
+
+/*.dt-select-file-instruction-gradient-overlay{
+  content:"";
+  height: 50vh;
+  width: 100vw;
+  position: absolute;
+  top: 0; 
+  background: black;
+  display: block;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 0%,rgba(0,0,0,0) 7%,rgba(0,0,0,0) 100%);
+  opacity:1;
+  transition: opacity 3s linear 1s;
+}
+*/
+
+/*.is-selecting .dt-select-file-instruction-gradient-overlay{
+  opacity:0;
+  transition: opacity 3s linear 1s;
+}*/
 
 .dt-select-file-instruction h2{
   height: 100%;
@@ -697,6 +731,7 @@ label{
   border: 2px solid white;
   position: relative;
   top: 2px;
+  transition: width 1s;
 }
 
 .dt-ui-state-1 .dt-progress-indicator{

@@ -62,7 +62,7 @@ class DTransferMy extends Component{
 
   handleSelectMailbox(option){
     if(option.value === 'dt-new-mailbox'){
-      // this.addMailbox();
+      this.addMailbox();
     }else{
       this.setUnlockingMailbox(option.value);
     }
@@ -121,13 +121,20 @@ class DTransferMy extends Component{
     let mailboxes = DMailbox.getAll();
     return mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    });
+    }).concat({label: 'new mailbox', value: "dt-new-mailbox" });;
   }
+
+  addMailbox(){
+    this.setState({
+      isAddingMailbox: true,
+      isUnlockingMailbox: false
+    })
+  }  
 
   render() {
     return (
       <div>
-        <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 0 ? "dt-fade-in" : "")}> 
+        <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper " + (this.state.uiState === 0 ? "dt-fade-in" : "dt-hidden")}> 
           <div className="dt-select-mailbox-ui dt-page-inner-centered">
             {this.state.isUnlockingMailbox &&
               <div className="dt-select-mailbox">
@@ -166,7 +173,7 @@ class DTransferMy extends Component{
             }
           </div>
         </div>
-        <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper dt-hidden " + (this.state.uiState === 1 ? "dt-fade-in" : "")}>
+        <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper " + (this.state.uiState === 1 ? "dt-fade-in" : "dt-hidden")}>
           <div className="dt-page-inner-centered">
             <div className="dt-show-files-ui">            
               <h1 className="dt-show-files-header">{ this.state.selectedMailbox && this.state.selectedMailbox.subdomain }</h1>

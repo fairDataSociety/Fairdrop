@@ -4,7 +4,7 @@ class EInProgress extends Component{
   
   render(){
     return (
-      <div id="dt-in-progress" className={"dt-in-progress dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "")}> 
+      <div id="dt-in-progress" className={"dt-in-progress dt-green dt-page-wrapper " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "dt-hidden")}> 
           <div className="dt-in-progress-ui dt-page-inner-centered">
             { !this.props.parentState.fileWasEncrypted &&
               <div className="dt-in-progress-ui">

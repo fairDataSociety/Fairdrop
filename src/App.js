@@ -84,13 +84,13 @@ class App extends Component {
     }
   }
 
-  setIsSelecting(){
-    this.setState({fileIsSelecting: true});
+  setIsSelecting(state = true){
+    this.setState({fileIsSelecting: state});
   }
 
   render() {
     return (
-      <div className={"dt-wrapper " + ((this.state.fileIsSelecting || this.state.isMailbox) ? "dt-nav-white " : "")}>
+      <div className={"dt-wrapper dt-green " + ((this.state.fileIsSelecting || this.state.isMailbox) ? "dt-nav-white " : "dt-nav-black ")}>
         <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
           <div className="dt-nav-header-item">
           <a href="/">

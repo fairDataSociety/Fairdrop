@@ -34,17 +34,23 @@ class ASelectFile extends Component{
     });
     this.dropzone.on("dragleave", (event) => {
       if(event.fromElement === null){
+        this.props.setIsSelecting(false);      
         this.props.setParentState({fileIsSelecting: false});
       }
     });
+    this.dropzone.on("drop", (event) => {
+      console.log(event.clientX, event.clientY);
+    })
     this.dropzone.on("addedfile", (file) => {
-      this.props.setParentState({
-        fileIsSelected: true,
-        selectedFileName: file.name,  
-        selectedFileType: file.type,        
-        selectedFileSize: file.size,
-        uiState: 1
-      });
+      setTimeout(()=>{
+        this.props.setParentState({
+          fileIsSelected: true,
+          selectedFileName: file.name,  
+          selectedFileType: file.type,        
+          selectedFileSize: file.size,
+          uiState: 1
+        });
+      }, 1000)
     });
   }
 
@@ -66,6 +72,7 @@ class ASelectFile extends Component{
 
         </div> {/* dt-select-file-main */}
         <div className={"dt-select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting")} onClick={this.handleClickSelectFile}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
+          <div className="dt-select-file-instruction-gradient-overlay"></div>
           <h2><span className="dt-select-file-header-underlined">select</span> or drop a file</h2>
         </div> {/* dt-select-file-instruction */}
       </div>

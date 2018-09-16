@@ -36,7 +36,7 @@ class DConfirm extends Component{
 
   render(){
     return (
-      <div id="dt-confirm" className={"dt-confirm dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 3 ? "dt-fade-in" : "")}> 
+      <div id="dt-confirm" className={"dt-confirm dt-green dt-page-wrapper " + (this.props.parentState.uiState === 3 ? "dt-fade-in" : "dt-hidden")}> 
         <div className="dt-confirm-ui dt-page-inner-centered">
           <div className="dt-page-inner-wrapper">
             <h1 className="dt-confirm-header">Confirm</h1>          

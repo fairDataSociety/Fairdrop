@@ -5,7 +5,7 @@ class FCompleted extends Component{
 
   render(){
     return (
-      <div id="dt-completed" className={"dt-confirm dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 5 ? "dt-fade-in" : "")}> 
+      <div id="dt-completed" className={"dt-confirm dt-green dt-page-wrapper " + (this.props.parentState.uiState === 5 ? "dt-fade-in" : "dt-hidden")}> 
           <div className={"dt-info " + (this.props.parentState.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}
             <div className="dt-info-content">
               <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>

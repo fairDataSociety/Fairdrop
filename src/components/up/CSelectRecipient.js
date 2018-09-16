@@ -24,7 +24,7 @@ class CSelectRecipient extends Component{
 
   render(){
     return (
-      <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "")}> 
+      <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "dt-hidden")}> 
         <div className="dt-select-recipient-ui dt-page-inner-centered">
           <div className="dt-select-recipient dt-page-inner-wrapper">
             <h1 className="dt-select-account-header">Select Recipient*</h1>

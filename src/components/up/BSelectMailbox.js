@@ -103,7 +103,7 @@ class ASelectFile extends Component{
 
   render(){
     return (
-      <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper dt-hidden " + (this.props.parentState.uiState === 1 ? "dt-fade-in" : "")}> 
+      <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper " + (this.props.parentState.uiState === 1 ? "dt-fade-in" : "dt-hidden")}> 
         <div className="dt-select-mailbox-ui dt-page-inner-centered">
           <div className="dt-select-mailbox">            
             {this.state.isUnlockingMailbox &&

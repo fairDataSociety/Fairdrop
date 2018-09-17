@@ -4,10 +4,8 @@ import DMist from '../../lib/DMist'
 class EInProgress extends Component{
 
   componentDidMount(){
-    let dm = new DMist;
+    let dm = new DMist();
     dm.mist('dt-mist');
-
-    window.DMist = DMist;
   }
 
   render(){

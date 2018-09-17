@@ -131,7 +131,7 @@ class DMailbox {
     if(mailboxName === undefined || mailboxName === false) return false;
     let pattern = /^[a-zA-Z0-9_-]*$/
     let matches = mailboxName.match(pattern)
-    if(mailboxName.length > 7 && matches !== null && matches.length > 0){
+    if(mailboxName.length > 3 && matches !== null && matches.length > 0){
       return true;      
     }else{
       return false;
@@ -139,17 +139,7 @@ class DMailbox {
   }
 
   isMailboxNameAvailable(mailboxName){
-    // check to see whether mailbox already exists
-    // or handle error if network/endpoint failure
-    return new Promise((resolve, reject)=>{
-      let available = dEns.getSubdomainAvailiability(mailboxName)
-      if(available === true){
-        resolve(true);
-      }else{
-        resolve(false);
-      }
-
-    });
+    return dEns.getSubdomainAvailiability(mailboxName);
   }
 
   // registerSubdomain(subdomain){

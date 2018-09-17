@@ -424,6 +424,11 @@ label{
   transition: transform 1s;
 }
 
+.dt-select-file-instruction.has-dropped{
+  opacity: 0;
+  transition: opacity 1s;
+}
+
 /*left here as although the transition doesn't work with linear gradients, 
 it can be amended later on to either haved a setTimeout function to 
 re-add it at the appropriate time or to use a png slice (preferable)*/

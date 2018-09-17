@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DTransfer from '../../services/DTransfer';
 import Dropzone from 'dropzone';
+import DDrop from '../../lib/DDrop';
 
 
 class ASelectFile extends Component{
@@ -8,6 +9,7 @@ class ASelectFile extends Component{
   constructor(props) {
     super(props);
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
+    this.state = { hasDropped: false }
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
   }
 
@@ -16,6 +18,7 @@ class ASelectFile extends Component{
   }
 
   dropZone(){
+    let dd = new DDrop();    
     this.dropzone = new Dropzone(this.refs.dtSelectFile, { 
       url: 'dummy://', //dropzone requires a url even if we're not using it
       accept: (file, done) => {
@@ -39,9 +42,14 @@ class ASelectFile extends Component{
       }
     });
     this.dropzone.on("drop", (event) => {
-      console.log(event.clientX, event.clientY);
+      this.setState({ hasDropped: true });
+      dd.drop('dt-drop', event.clientX, event.clientY);
     })
     this.dropzone.on("addedfile", (file) => {
+      if(this.state.hasDropped === false){
+        this.setState({ hasDropped: true });
+        dd.drop('dt-drop');
+      }
       setTimeout(()=>{
         this.props.setParentState({
           fileIsSelected: true,
@@ -50,7 +58,7 @@ class ASelectFile extends Component{
           selectedFileSize: file.size,
           uiState: 1
         });
-      }, 1000)
+      }, 1700)
     });
   }
 
@@ -68,10 +76,10 @@ class ASelectFile extends Component{
         <div className={"dt-select-file-header " + (this.props.parentState.fileIsSelecting && "is-selecting")} onClick={this.handleClickSelectFile}> {/* this bit slides up out of view using transform */}
           <h1><span className="dt-select-file-header-inverted">FAIR</span> WAY TO STORE AND SEND DATA</h1>
         </div> {/* dt-header */}
-        <div className={"dt-select-file-main " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
+        <div className={"dt-select-file-main dt-drop " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
 
         </div> {/* dt-select-file-main */}
-        <div className={"dt-select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting")} onClick={this.handleClickSelectFile}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
+        <div className={"dt-select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")} onClick={this.handleClickSelectFile}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="dt-select-file-instruction-gradient-overlay"></div>
           <h2><span className="dt-select-file-header-underlined">select</span> or drop a file</h2>
         </div> {/* dt-select-file-instruction */}

@@ -21,14 +21,13 @@ class DDrop{
 
   drop(className, locationX, locationY){
     var i = 0;
-    this.dropRing(className, locationX, locationY);
     let dropInt = setInterval(()=>{
       i = i+1;
       if(i>4){
         clearInterval(dropInt);
       }
       this.dropRing(className, locationX, locationY);
-    }, 200);
+    }, 277);
   }
 
 }

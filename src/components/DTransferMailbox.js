@@ -3,14 +3,18 @@ import DTransfer from '../services/DTransfer';
 import Dropdown from 'react-dropdown';
 import DMailbox from '../services/DMailbox';
 import FileSaver from 'file-saver';
+import DMist from '../lib/DMist';
 
 import UnlockMailbox from './up/BSelectMailbox/UnlockMailbox'
 import AddMailbox from './up/BSelectMailbox/AddMailbox'
 
 
-class DTransferMy extends Component{
+class DTransferMailbox extends Component{
 
-  // initialise
+  componentDidMount(){
+    let dm = new DMist();
+    dm.mist('dt-mist');
+  }  
 
   getInitialState(){
     let mailboxes = DMailbox.getAll();
@@ -121,7 +125,7 @@ class DTransferMy extends Component{
     let mailboxes = DMailbox.getAll();
     return mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    }).concat({label: 'new mailbox', value: "dt-new-mailbox" });;
+    }).concat({label: 'new mailbox', value: "dt-new-mailbox" });
   }
 
   addMailbox(){
@@ -136,6 +140,7 @@ class DTransferMy extends Component{
       <div>
         <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper " + (this.state.uiState === 0 ? "dt-fade-in" : "dt-hidden")}> 
           <div className="dt-select-mailbox-ui dt-page-inner-centered">
+            <div className="dt-mist"></div>
             {this.state.isUnlockingMailbox &&
               <div className="dt-select-mailbox">
                   <div className="dt-page-inner-wrapper">
@@ -178,16 +183,16 @@ class DTransferMy extends Component{
             <div className="dt-show-files-ui">            
               <h1 className="dt-show-files-header">{ this.state.selectedMailbox && this.state.selectedMailbox.subdomain }</h1>
               <div className="dt-show-files-nav">
-                <a className={this.state.shownMessageType !== 'received' && "inactive"} onClick={this.showReceived.bind(this)}>received</a> - <a className={this.state.shownMessageType !== 'sent' && "inactive"} onClick={this.showSent.bind(this)}>sent</a>
+                <a className={this.state.shownMessageType !== 'received' && "inactive"} onClick={this.showReceived.bind(this)}>received</a> - <a className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent.bind(this)}>sent</a>
               </div>
               <div className="dt-icon-group clearfix">
                 {this.state.shownMessages.map((message)=>{
-                  return <div className="dt-icon" onClick={ ()=>{ return this.retrieveFile(message); } }>
+                  return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveFile(message); } }>
                       <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
                       <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
                       <div className="dt-info-filesize">{ message.filesize }</div>
                     </div>
-              })}
+                })}
               </div>
             </div>
           </div>
@@ -197,4 +202,4 @@ class DTransferMy extends Component{
   }
 }
 
-export default DTransferMy;
+export default DTransferMailbox;

@@ -60,7 +60,7 @@ class DEns {
   registerSubdomainToAddress(subdomain, address, publicKey, feedbackMessageCallback = false){
     if(feedbackMessageCallback) feedbackMessageCallback('verifying subdomain, waiting for node...');    
     this.registerSubdomainToAddressState = 0;
-    this.getSubdomainAvailiability(subdomain).then((availability)=>{
+    return this.getSubdomainAvailiability(subdomain).then((availability)=>{
       console.log(availability);
       if(availability){
         if(feedbackMessageCallback) feedbackMessageCallback('registering subdomain, waiting for tx...');
@@ -77,7 +77,7 @@ class DEns {
               if(feedbackMessageCallback) feedbackMessageCallback('registering your public key, waiting for tx...');                             
               console.log(tx3);
               return this.setPubKey(subdomain, publicKey).then((tx4)=>{
-              this.registerSubdomainToAddressState = 4;
+                this.registerSubdomainToAddressState = 4;
                 console.log(tx4.transactionHash);
                 return tx4.transactionHash;
                 // return this.setSubnodeOwner(subdomain, address).then((tx5)=>{

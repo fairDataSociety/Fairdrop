@@ -142,10 +142,6 @@ class DMailbox {
     return dEns.getSubdomainAvailiability(mailboxName);
   }
 
-  // registerSubdomain(subdomain){
-  //   return dEns.registerSubdomainToAddress(subdomain);
-  // }
-
   getPubkey(recipient){
     return dEns.getPubKey(recipient);
   }

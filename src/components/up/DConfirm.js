@@ -17,7 +17,7 @@ class DConfirm extends Component{
   handleCancel(){
     this.setState({feedbackMessage: ""});
     this.props.setParentState({
-      uiState: 3,
+      uiState: 2,
     });
   }
 

@@ -80,33 +80,33 @@ class DTransferUp extends Component{
         let senderMailbox = this.state.selectedMailbox;
         let senderWallet = this.state.selectedWallet;
         let addressee = this.state.addressee;
-        let sharedSecret = DMailbox.getSharedSecret(senderMailbox, senderWallet, addressee);
-        this.setState({encryptMessage: 'Encrypting...'});
-        return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
-          let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
-          this.setState({encryptMessage: 'Encrypted'});
-          this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
-          this.setState({fileWasEncrypted: true});
-
-          return this.DT.postFile(encryptedFile).then((response)=>{
-            let timeEnd = new Date();
-            let dTransferLink = process.env.REACT_APP_DTRANSFER_HOST + "?swarmHash="+response+"&fileName="+encodeURI(this.state.selectedFileName)+"&mimeType="+this.state.selectedFileType+"&isEncrypted=true";
-            this.setState({fileWasUploaded: true});
-            this.setState({dTransferLink: dTransferLink});
-            this.setState({uploadedFileHash: response});
-            this.setState({feedBackMessage: "File uploaded in "+(timeEnd-timeStart)/1000+"s!"});     
-            let message = new DMessage({
-              to: addressee,              
-              from: senderMailbox.subdomain,
-              swarmhash: response,
-              filename: this.state.selectedFileName,
-              mime: this.state.selectedFileType,
-              size: this.state.selectedFileSize
+        return DMailbox.getSharedSecret(senderMailbox, senderWallet, addressee).then((sharedSecret) => {
+          this.setState({encryptMessage: 'Encrypting...'});          
+          return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
+            let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
+            this.setState({encryptMessage: 'Encrypted'});
+            this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
+            this.setState({fileWasEncrypted: true});
+            return this.DT.postFile(encryptedFile).then((response)=>{
+              let timeEnd = new Date();
+              let dTransferLink = process.env.REACT_APP_DTRANSFER_HOST + "?swarmHash="+response+"&fileName="+encodeURI(this.state.selectedFileName)+"&mimeType="+this.state.selectedFileType+"&isEncrypted=true";
+              this.setState({fileWasUploaded: true});
+              this.setState({dTransferLink: dTransferLink});
+              this.setState({uploadedFileHash: response});
+              this.setState({feedBackMessage: "File uploaded in "+(timeEnd-timeStart)/1000+"s!"});     
+              let message = new DMessage({
+                to: addressee,              
+                from: senderMailbox.subdomain,
+                swarmhash: response,
+                filename: this.state.selectedFileName,
+                mime: this.state.selectedFileType,
+                size: this.state.selectedFileSize
+              });
+              DMailbox.saveMessage(message);
+            }).catch((error)=>{
+              console.log(error)
+              this.setState({feedBackMessage: "Upload failed, please try again..."});
             });
-            DMailbox.saveMessage(message);
-          }).catch((error)=>{
-            console.log(error)
-            this.setState({feedBackMessage: "Upload failed, please try again..."});
           });
         });
       }else{

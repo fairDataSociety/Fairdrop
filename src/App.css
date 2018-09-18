@@ -262,6 +262,7 @@ label{
   margin: 0 5vw;
   pointer-events: none;
   right: 0;
+  cursor: pointer;
 }
 
 .dt-nav-key{

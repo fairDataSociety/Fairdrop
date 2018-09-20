@@ -197,8 +197,17 @@ class DEns {
   } 
 
   getPubKey(subdomain){
-    let keyCoords = this.resolverContract.pubkey(namehash.hash(subdomain+'.gregor.test'));
-    return "04"+keyCoords[0].substring(2,66)+keyCoords[1].substring(2,66);
+    return new Promise((resolve, reject) => {
+      this.resolverContract.pubkey(namehash.hash('gregor.test'),(err, keyCoords)=>{
+        if(err){
+          reject(err);
+          return;
+        }else{
+          resolve("04"+keyCoords[0].substring(2,66)+keyCoords[1].substring(2,66));
+          return;
+        }
+      })
+    });
   }
 
   setSubnodeOwner(subdomain, address){

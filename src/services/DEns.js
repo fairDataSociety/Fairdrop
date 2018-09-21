@@ -198,12 +198,17 @@ class DEns {
 
   getPubKey(subdomain){
     return new Promise((resolve, reject) => {
-      this.resolverContract.pubkey(namehash.hash(subdomain + 'gregor.test'),(err, keyCoords)=>{
+      this.resolverContract.pubkey(namehash.hash(subdomain + '.gregor.test'),(err, keyCoords)=>{
         if(err){
           reject(err);
           return;
         }else{
-          resolve("04"+keyCoords[0].substring(2,66)+keyCoords[1].substring(2,66));
+          let keyStr = "04"+keyCoords[0].substring(2,66)+keyCoords[1].substring(2,66);
+          if(keyStr !== "0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"){
+            resolve(keyStr);
+          }else{
+            reject(false);
+          }
           return;
         }
       })

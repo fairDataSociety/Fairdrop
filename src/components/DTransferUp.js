@@ -80,7 +80,7 @@ class DTransferUp extends Component{
         let senderMailbox = this.state.selectedMailbox;
         let senderWallet = this.state.selectedWallet;
         let addressee = this.state.addressee;
-        return DMailbox.getSharedSecret(senderMailbox, senderWallet, addressee).then((sharedSecret) => {
+        return DMailbox.getSharedSecret(senderWallet, addressee).then((sharedSecret) => {
           this.setState({encryptMessage: 'Encrypting...'});          
           return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
             let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
@@ -108,6 +108,12 @@ class DTransferUp extends Component{
               this.setState({feedBackMessage: "Upload failed, please try again..."});
             });
           });
+        }).catch(()=>{
+          this.setState({feedBackMessage: "Couldn't sender public key, trying again..."});
+          setTimeout(()=>{
+            this.handleUpload();
+          },2000)
+          return false;
         });
       }else{
         let isSure = window.confirm('This will expose your file to the public - are you sure?');

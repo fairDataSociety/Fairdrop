@@ -146,7 +146,7 @@ class DMailbox {
     return dEns.getPubKey(recipient);
   }
 
-  getSharedSecret(senderMailbox, senderWallet, recipient){
+  getSharedSecret(senderWallet, recipient){
     return dEns.getPubKey(recipient).then((recipientPublicKey)=>{
       let sender = Crypto.createECDH('secp256k1');
       sender.setPrivateKey(senderWallet.privateKey.substring(2,66), 'hex');

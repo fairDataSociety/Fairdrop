@@ -198,7 +198,7 @@ class DEns {
 
   getPubKey(subdomain){
     return new Promise((resolve, reject) => {
-      this.resolverContract.pubkey(namehash.hash('gregor.test'),(err, keyCoords)=>{
+      this.resolverContract.pubkey(namehash.hash(subdomain + 'gregor.test'),(err, keyCoords)=>{
         if(err){
           reject(err);
           return;

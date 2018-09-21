@@ -108,11 +108,8 @@ class DTransferUp extends Component{
               this.setState({feedBackMessage: "Upload failed, please try again..."});
             });
           });
-        }).catch(()=>{
-          this.setState({feedBackMessage: "Couldn't sender public key, trying again..."});
-          setTimeout(()=>{
-            this.handleUpload();
-          },2000)
+        }).catch((error)=>{
+          this.setState({feedBackMessage: "Couldn't sender public key, try again..."});
           return false;
         });
       }else{

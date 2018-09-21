@@ -96,7 +96,7 @@ class DEns {
   }  
 
   getSubdomainAvailiability(subdomain){
-    return this.ens.owner(subdomain+'.gregor.test').then((response)=>{
+    return this.ens.owner(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME).then((response)=>{
       return response === "0x0000000000000000000000000000000000000000";
     })
   }
@@ -130,7 +130,7 @@ class DEns {
   setResolver(subdomain){
     console.log(subdomain, this.resolverContract.address)
     return this.ens.setResolver(
-      subdomain+'.gregor.test', 
+      subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME, 
       this.resolverContract.address,
       {
         from: this.web3.eth.accounts[0],
@@ -145,7 +145,7 @@ class DEns {
   setAddr(subdomain, address){
     return new Promise((resolve, reject)=>{
       this.resolverContract.setAddr(
-        namehash.hash(subdomain+'.gregor.test'), 
+        namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
         address,
         {
           from: this.web3.eth.accounts[0],
@@ -173,7 +173,7 @@ class DEns {
     let publicKeyY = "0x"+publicKey.substring(66,130);
     return new Promise((resolve, reject)=>{
       this.resolverContract.setPubkey(
-        namehash.hash(subdomain+'.gregor.test'), 
+        namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
         publicKeyX,
         publicKeyY,
         {
@@ -198,7 +198,7 @@ class DEns {
 
   getPubKey(subdomain){
     return new Promise((resolve, reject) => {
-      this.resolverContract.pubkey(namehash.hash(subdomain + '.gregor.test'),(err, keyCoords)=>{
+      this.resolverContract.pubkey(namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME),(err, keyCoords)=>{
         if(err){
           reject(err);
           return;
@@ -217,7 +217,7 @@ class DEns {
 
   setSubnodeOwner(subdomain, address){
     return this.ens.setSubnodeOwner(
-      subdomain+'.gregor.test',
+      subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME,
       address, 
       {
         from: this.web3.eth.accounts[0],

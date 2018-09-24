@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DMailbox from '../../services/DMailbox';
 
 class CSelectRecipient extends Component{
   
@@ -6,6 +7,12 @@ class CSelectRecipient extends Component{
     super(props);
     this.handleSelectRecipient = this.handleSelectRecipient.bind(this);    
     this.handleUploadAndEncrypt = this.handleUploadAndEncrypt.bind(this);    
+
+    this.state = {
+      feedbackMessage: "",
+      mailboxName: false,
+      password: false,
+    }
 
   }
 
@@ -16,10 +23,35 @@ class CSelectRecipient extends Component{
   }
 
   handleUploadAndEncrypt(){
-    this.props.setParentState({
-      uiState: 3,
-      shouldEncrypt: true
-    }); 
+
+    let mailboxName = this.props.parentState.addressee;
+
+    this.setState({
+      mailboxName: mailboxName,
+      feedbackMessage: "Finding mailbox..."        
+    });
+
+    DMailbox.getPubKey(mailboxName).then((result) => {
+      this.setState({
+        feedbackMessage: "Mailbox found"        
+      });
+      this.props.setParentState({
+          uiState: 3,
+          shouldEncrypt: true
+        }); 
+      }).catch((error) => {
+        if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
+          this.setState({
+            mailboxName: mailboxName,
+            feedbackMessage: "Network error - please try again..."        
+          });
+        }else{
+          this.setState({
+            mailboxName: mailboxName,
+            feedbackMessage: "Couldn't find that mailbox, please try again..."        
+          });
+        }
+      })
   }
 
   render(){
@@ -38,6 +70,7 @@ class CSelectRecipient extends Component{
                   name="selectRecipient"
                   ref="dtSelectRecipient"
                 />
+                <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>
               </div>
               <div className="dt-btn-group clearfix">
                 <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleUploadAndEncrypt}>Upload and Encrypt</button>

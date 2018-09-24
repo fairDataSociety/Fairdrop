@@ -2,10 +2,12 @@ import Web3 from 'web3';
 import ENS from 'ethereum-ens';
 import namehash from 'eth-ens-namehash';
 
+let httpTimeout = 2000;
+
 class DEns {
 
   constructor(provider, options = {}){
-    this.web3 = new Web3(new Web3.providers.HttpProvider(provider));
+    this.web3 = new Web3(new Web3.providers.HttpProvider(provider, httpTimeout));
     this.ens = new ENS(this.web3);
 
     this.gasPrice = this.web3.toWei(50, 'gwei');
@@ -64,19 +66,19 @@ class DEns {
       console.log(availability);
       if(availability){
         if(feedbackMessageCallback) feedbackMessageCallback('registering subdomain, waiting for tx...');
-        return this.registerSubdomain(subdomain).then((tx)=>{
+        return this.registerSubdomain(subdomain).then((tx)=>{ // must be contract owner :-/
           this.registerSubdomainToAddressState = 1;
           if(feedbackMessageCallback) feedbackMessageCallback('setting resolver, waiting for tx...');        
           console.log(tx);
-          return this.setResolver(subdomain).then((tx2)=>{
+          return this.setResolver(subdomain).then((tx2)=>{  // must be contract owner :-/
             this.registerSubdomainToAddressState = 2; 
             if(feedbackMessageCallback) feedbackMessageCallback('registering to your address, waiting for tx...');                 
             console.log(tx2);
-            return this.setAddr(subdomain, address).then((tx3)=>{
+            return this.setAddr(subdomain, address).then((tx3)=>{ // May only be called by the owner of that node in the ENS registry.
               this.registerSubdomainToAddressState = 3;                      
               if(feedbackMessageCallback) feedbackMessageCallback('registering your public key, waiting for tx...');                             
               console.log(tx3);
-              return this.setPubKey(subdomain, publicKey).then((tx4)=>{
+              return this.setPubKey(subdomain, publicKey).then((tx4)=>{ // May only be called by the owner of that node in the ENS registry.
                 this.registerSubdomainToAddressState = 4;
                 console.log(tx4.transactionHash);
                 return tx4.transactionHash;
@@ -108,7 +110,7 @@ class DEns {
         this.web3.sha3(subdomain),
         this.web3.eth.accounts[0], 
         {
-          from: this.web3.eth.accounts[0],
+          from: this.web3.eth.accounts[0], 
           gasPrice: this.gasPrice
         },
         (err, tx)=>{

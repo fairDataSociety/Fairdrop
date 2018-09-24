@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DMailbox from '../../../services/DMailbox';
-window.DMailbox = DMailbox;
 
 class ASelectFile extends Component{
   
@@ -11,6 +10,7 @@ class ASelectFile extends Component{
       feedbackMessage: "",
       mailboxName: false,
       password: false,
+      checkingAvailability: false
     }
 
     this.handleSelectMailboxName = this.handleSelectMailboxName.bind(this);
@@ -19,48 +19,61 @@ class ASelectFile extends Component{
     this.addMailbox = this.addMailbox.bind(this);
   }
 
-  processMailboxName(){
-    let mailboxName = this.refs.dtSelectMailboxName.value;
-
-    this.setState({
-      mailboxName: mailboxName,
-      feedbackMessage: "Checking availiability..."        
-    });
-
-    if(mailboxName && DMailbox.isMailboxNameValid(mailboxName)){
-      DMailbox.isMailboxNameAvailable(mailboxName).then((result) => {
-        if(result === true){
-          this.setState({
-            mailboxName: mailboxName,
-            feedbackMessage: "Name available!"        
-          });
-          return true;
-        }else{
-          this.setState({
-            mailboxName: false,
-            feedbackMessage: "Sorry, that name is not available!"        
-          }); 
-          return false;       
-        }
-      }).catch(()=>{
-        this.setState({
-          mailboxName: false,
-          feedbackMessage: "Sorry, there was an error - try again!"        
-        });         
-      });
-    }else{
-      this.setState({
-        mailboxName: false,
-        feedbackMessage: "Sorry, that name is invalid."
-      });
-      return false;    
-    }
-  }
-
   handleSelectMailboxName(e){
     //check to see if mailbox name is unused/valid
-    this.processMailboxName();
+    if(this.state.checkingAvailability === false){
+      this.processMailboxName().catch((error)=>{
+        //already handled
+      });
+    }
     e.preventDefault();
+  }  
+
+  processMailboxName(){
+    let mailboxName = this.refs.dtSelectMailboxName.value;
+    this.setState({
+      mailboxName: mailboxName,
+      checkingAvailability: true,
+      feedbackMessage: "Checking availability..."        
+    });
+
+    return new Promise((resolve, reject)=>{
+      if(mailboxName && DMailbox.isMailboxNameValid(mailboxName)){
+        return DMailbox.isMailboxNameAvailable(mailboxName).then((result) => {
+          if(result === true){
+            this.setState({
+              mailboxName: mailboxName,
+              checkingAvailability: false,
+              feedbackMessage: "Name available!"        
+            });
+            resolve(true);
+          }else{
+            this.setState({
+              mailboxName: false,
+              checkingAvailability: false,
+              feedbackMessage: "Sorry, that name is not available!"        
+            }); 
+            resolve(false);
+          }
+        }).catch((error)=>{
+          if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
+            this.setState({
+              mailboxName: false,
+              checkingAvailability: false,
+              feedbackMessage: "Network error - try again!"
+            });
+            reject(error);   
+          }   
+        });
+      }else{
+        this.setState({
+          mailboxName: false,
+          checkingAvailability: false,
+          feedbackMessage: "Sorry, that name is invalid."
+        });
+        resolve(false);
+      }
+    });
   }
 
   processMailboxPassword(){
@@ -123,34 +136,32 @@ class ASelectFile extends Component{
 
 
   addMailbox(e){
-    if(this.state.mailboxName === false){
-      // double check the subdomain before attempting to add the mailbox
-      this.processMailboxName();
-      return;
-    }
-    if(this.state.password === false){
-      // double check the password before attempting to add the mailbox
-      this.processMailboxPassword();
+    if(this.processMailboxPassword() === false){
+      // password must be valid
       return;
     }else{
-      //add the mailbox and select it
-      this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
-      DMailbox.create(
-        this.state.mailboxName, 
-        this.state.password, 
-        (message) => {
-          this.setState({feedbackMessage: message});
+      this.processMailboxName().then((response)=>{
+        if(response !== false){
+          this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
+          DMailbox.create(
+            this.state.mailboxName, 
+            this.state.password, 
+            (message) => {
+              this.setState({feedbackMessage: message});
+            }
+          ).then((newMailBox)=>{
+            this.setState({feedbackMessage: 'mailbox generated...'}); 
+            let serialisedWallet = {
+              address: newMailBox.wallet.wallet.getAddressString(),
+              publicKey: newMailBox.wallet.wallet.getPublicKeyString(),
+              privateKey: newMailBox.wallet.wallet.getPrivateKeyString()
+            }               
+            this.props.setSelectedMailbox(newMailBox, serialisedWallet);
+            this.props.mailboxUnlocked();
+          });
         }
-      ).then((newMailBox)=>{
-        this.setState({feedbackMessage: 'mailbox generated...'}); 
-        let serialisedWallet = {
-          address: newMailBox.wallet.wallet.getAddressString(),
-          publicKey: newMailBox.wallet.wallet.getPublicKeyString(),
-          privateKey: newMailBox.wallet.wallet.getPrivateKeyString()
-        }               
-        this.props.setSelectedMailbox(newMailBox, serialisedWallet);
-        this.props.mailboxUnlocked();
       });
+      //add the mailbox and select it
     }
   }
 

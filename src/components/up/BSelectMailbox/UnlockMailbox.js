@@ -65,7 +65,6 @@ class UnlockMailbox extends Component{
               className="dt-mailbox-unlock-password" 
               type="password" 
               placeholder="password" 
-              name="dtSelectPassword"
               ref="dtSelectPassword"
             />
           </form>

@@ -163,37 +163,31 @@ class ASelectFile extends Component{
       <div className="dt-mailbox-add-ui">
         <div className="dt-form-group">      
           <input 
-            id="dt-mailbox-add-name" 
             className="dt-mailbox-add-name" 
             type="text" 
             autoComplete="new-name"    
             placeholder="mailbox name" 
             onChange={this.handleSelectMailboxName}
-            name="selectMailboxName"             
             ref="dtSelectMailboxName"
           />
         </div>
         <div className="dt-form-group"> 
           <input 
-            id="dt-mailbox-add-password" 
             className="dt-mailbox-add-password" 
             type="password" 
             placeholder="password"
-            autoComplete="new-password"            
+            autoComplete="off"       
             onChange={this.handleSelectPassword}
-            name="dtSelectPassword"
             ref="dtSelectPassword"
           />
         </div>
         <div className="dt-form-group-last clearfix">
           <input 
-            id="dt-mailbox-add-password-verification" 
-            autoComplete="off" 
+            autoComplete="off"            
             className="dt-mailbox-add-password-verification" 
             type="password" 
             placeholder="password verification" 
             onChange={this.handleSelectPasswordVerification}
-            name="dtSelectPasswordVerification"            
             ref="dtSelectPasswordVerification"  
           />
           <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>

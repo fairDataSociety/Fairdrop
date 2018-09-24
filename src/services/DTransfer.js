@@ -7,10 +7,11 @@ class DTransfer {
 
   constructor(gateway){
     if(gateway === undefined){
-      throw new Error("You must provide a Swarm gateway service eg. http://localhost:8500/bzz:/");
+      throw new Error("You must provide a Swarm gateway service eg. http://localhost:8500/");
     }
 
-    this.gateway = gateway;
+    this.gateway = gateway + "bzz:/";
+    this.rawGateway = gateway + "bzz-raw:/";
   }
 
   encryptBuffer(buffer, password){
@@ -90,11 +91,9 @@ class DTransfer {
     });
   }
 
-  getFile(swarmHash, fileName){
+  getFile(url){
     return new Promise((resolve,reject)=>{
       var xhr = new XMLHttpRequest();
-
-      let url = this.gateway + swarmHash + "/" + fileName;
 
       xhr.open("GET", url, true);
 
@@ -114,6 +113,19 @@ class DTransfer {
 
       xhr.send();
     });
+  }
+
+  getFileFromManifest(swarmHash, filename){
+    let url = this.rawGateway + swarmHash + "/";
+    return this.getFile(url).then((file)=>{
+      debugger
+      if(JSON.parse(file).entries[0].path === filename){
+        console.log(this.rawGateway + JSON.parse(file).entries[0].hash + "/");
+        return this.getFile(this.rawGateway + JSON.parse(file).entries[0].hash + "/");
+      }else{
+        throw new Error("couldn't find that file in the manifest.")
+      }
+    })
   }
 
 }

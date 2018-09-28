@@ -90,18 +90,21 @@ class DTransferMailbox extends Component{
   }
 
   showSent(){
-    let messagesSent = DMailbox.getMessages('sent', this.state.selectedMailbox.subdomain);
-    this.setState({
-      shownMessageType: 'sent',
-      shownMessages: messagesSent,
+    DMailbox.getMessages('sent', this.state.selectedMailbox.subdomain).then((messagesSent)=>{
+      this.setState({
+        shownMessageType: 'sent',
+        shownMessages: messagesSent,
+      });
     });
   }
 
   showReceived(){
-    let messagesReceived = DMailbox.getMessages('received', this.state.selectedMailbox.subdomain);
-    this.setState({
-      shownMessageType: 'received',
-      shownMessages: messagesReceived,
+    DMailbox.getMessages('received', this.state.selectedMailbox.subdomain)
+    .then((messagesReceived)=>{
+      this.setState({
+        shownMessageType: 'received',
+        shownMessages: messagesReceived,
+      });
     });
   }  
 

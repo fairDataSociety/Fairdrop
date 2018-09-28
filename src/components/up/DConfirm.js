@@ -30,6 +30,8 @@ class DConfirm extends Component{
         this.props.setParentState({
           uiState: 5
         }); 
+      }).catch((error)=>{
+        debugger
       })
     }, 2000);
   }

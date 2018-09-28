@@ -2,6 +2,25 @@ import DEns from './DEns.js';
 import DWallet from '../services/DWallet';
 import Crypto from 'crypto'
 
+import DMRU from './DMRU'
+
+const SWARM_NODE='http://37.157.197.161:8500';
+
+let MRU = new DMRU(SWARM_NODE);
+let topicName = 'fairdrop-test-01';
+
+// use this to init a new topic name for now
+
+// setInterval(()=>{
+//   MRU.getMeta(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then(console.log);
+//   MRU.getResource(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
+//     console.log('retrieved:', response)
+//   });
+// }, 2000)
+
+// MRU.handleUpdate('0x'+'211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, '{"messages":[]}');
+
+
 let provider = process.env.REACT_APP_GETH_GATEWAY;
 
 let dEns = new DEns(provider, {
@@ -31,31 +50,36 @@ class DMailbox {
   }
 
   saveMessage(message){
-    let messages = this.getAllMessages();
-    messages.push(message.toJSON());
-    localStorage.setItem('messages', JSON.stringify(messages));
+    return this.getAllMessages().then((messages)=>{
+      messages.push(message.toJSON());
+      MRU.handleUpdate('0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
+      // localStorage.setItem('messages', JSON.stringify(messages));
+    });
   }
 
   getAllMessages(){
-    let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
-    return JSON.parse(messagesJSON);    
+    // let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
+    return MRU.getResource(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
+      return JSON.parse(response).messages;
+    });
   }
 
   getMessages(type, subdomain) {
-    let messages = this.getAllMessages();
-    switch(type) {
-      case 'received':
-        return messages.filter(message => message.to === subdomain)
-      case 'sent':
-        return messages.filter(message => message.from === subdomain)      
-      case 'saved':
-        return messages.filter((message) => {
-          return message.from === subdomain &&
-          message.to === subdomain;
-        })      
-      default:
-        throw new Error('type should be received, sent or saved')
-    }
+    return this.getAllMessages().then((messages)=>{
+      switch(type) {
+        case 'received':
+          return messages.filter(message => message.to === subdomain)
+        case 'sent':
+          return messages.filter(message => message.from === subdomain)      
+        case 'saved':
+          return messages.filter((message) => {
+            return message.from === subdomain &&
+            message.to === subdomain;
+          })      
+        default:
+          throw new Error('type should be received, sent or saved')
+      }
+    });      
   }
 
   create(subdomain, password, feedbackMessageCallback){
@@ -151,6 +175,8 @@ class DMailbox {
       let sender = Crypto.createECDH('secp256k1');
       sender.setPrivateKey(senderWallet.privateKey.substring(2,66), 'hex');
       return sender.computeSecret(recipientPublicKey, 'hex').toString('hex');
+    }).catch((error)=>{
+      debugger
     });
   }
 

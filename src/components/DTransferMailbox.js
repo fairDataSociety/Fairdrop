@@ -136,6 +136,13 @@ class DTransferMailbox extends Component{
     })
   }  
 
+  cancelAddMailbox(){
+    this.setState({
+      isAddingMailbox: false,
+      isUnlockingMailbox: true
+    });
+  }
+
   render() {
     return (
       <div>
@@ -172,7 +179,7 @@ class DTransferMailbox extends Component{
                       <AddMailbox 
                         setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                         mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-                        cancelAddMailbox={()=>{}}
+                        cancelAddMailbox={this.cancelAddMailbox.bind(this)}
                       />
                   </div>
               </div>

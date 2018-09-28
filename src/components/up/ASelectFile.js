@@ -3,7 +3,6 @@ import DTransfer from '../../services/DTransfer';
 import Dropzone from 'dropzone';
 import DDrop from '../../lib/DDrop';
 
-
 class ASelectFile extends Component{
   
   constructor(props) {

@@ -34,7 +34,7 @@ class ASelectFile extends Component{
     this.setState({
       mailboxName: mailboxName,
       checkingAvailability: true,
-      feedbackMessage: "Checking availability..."        
+      feedbackMessage: "Checking availability..."
     });
 
     return new Promise((resolve, reject)=>{
@@ -163,10 +163,6 @@ class ASelectFile extends Component{
       });
       //add the mailbox and select it
     }
-  }
-
-  cancelAddMailbox(e){
-
   }
 
   render(){

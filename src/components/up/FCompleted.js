@@ -14,6 +14,8 @@ class FCompleted extends Component{
               <div className="dt-info-is-encrypted">
                 <img className="dt-fairdrop-lock" src="/assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> File is encrypted
               </div>
+              <div className="dt-feedback-message">from: { this.props.parentState.selectedMailbox.subdomain }</div>
+              <div className="dt-feedback-message">to: { this.props.parentState.addressee }</div>
               <div className="dt-feedback-message">{this.props.parentState.feedBackMessage}</div>
             </div>
           </div> {/* dt-info */}

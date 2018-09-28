@@ -105,12 +105,13 @@ class DTransferUp extends Component{
               DMailbox.saveMessage(message);
             }).catch((error)=>{
               console.log(error)
-              this.setState({feedBackMessage: "Upload failed, please try again..."});
+              throw new Error("Upload failed, please try again...");
+              // this.setState({feedBackMessage: "Upload failed, please try again..."});
             });
           });
         }).catch((error)=>{
-          this.setState({feedBackMessage: "Couldn't sender public key, try again..."});
-          return false;
+          // this.setState({feedBackMessage: "Couldn't sender public key, try again..."});
+          throw new Error("Couldn't find public key, try again...");
         });
       }else{
         let isSure = window.confirm('This will expose your file to the public - are you sure?');

@@ -118,7 +118,6 @@ class DTransfer {
   getFileFromManifest(swarmHash, filename){
     let url = this.rawGateway + swarmHash + "/";
     return this.getFile(url).then((file)=>{
-      debugger
       if(JSON.parse(file).entries[0].path === filename){
         console.log(this.rawGateway + JSON.parse(file).entries[0].hash + "/");
         return this.getFile(this.rawGateway + JSON.parse(file).entries[0].hash + "/");

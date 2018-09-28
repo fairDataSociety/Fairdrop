@@ -55,14 +55,14 @@ class ASelectFile extends Component{
     this.setState({
       isAddingMailbox: true,
       isUnlockingMailbox: false
-    })
+    });
   }
 
   cancelAddMailbox(){
     this.setState({
       isAddingMailbox: false,
       isUnlockingMailbox: true
-    })    
+    });
   }
 
   setUnlockingMailbox(subdomain){

@@ -142,7 +142,7 @@ class DMailbox {
     return dEns.getSubdomainAvailiability(mailboxName);
   }
 
-  getPubkey(recipient){
+  getPubKey(recipient){
     return dEns.getPubKey(recipient);
   }
 

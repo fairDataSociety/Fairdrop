@@ -133,7 +133,7 @@ class DTransferMailbox extends Component{
     this.setState({
       isAddingMailbox: true,
       isUnlockingMailbox: false
-    })
+    });
   }  
 
   cancelAddMailbox(){

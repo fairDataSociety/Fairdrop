@@ -56,13 +56,14 @@ class ASelectFile extends Component{
             resolve(false);
           }
         }).catch((error)=>{
+          debugger
           if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
             this.setState({
               mailboxName: false,
               checkingAvailability: false,
               feedbackMessage: "Network error - try again!"
             });
-            reject(error);   
+            resolve(false);
           }   
         });
       }else{

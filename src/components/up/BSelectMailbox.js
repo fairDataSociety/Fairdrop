@@ -4,8 +4,8 @@ import DMailbox from '../../services/DMailbox';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
 
-import AddMailbox from '../up/BSelectMailbox/AddMailbox'
-import UnlockMailbox from '../up/BSelectMailbox/UnlockMailbox'
+import AddMailbox from '../Shared/AddMailbox'
+import UnlockMailbox from '../Shared/UnlockMailbox'
 
 class ASelectFile extends Component{
   

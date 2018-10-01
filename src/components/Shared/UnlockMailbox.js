@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DWallet from '../../../services/DWallet';
+import DWallet from '../../services/DWallet';
 
 
 class UnlockMailbox extends Component{

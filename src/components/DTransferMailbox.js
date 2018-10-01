@@ -5,8 +5,8 @@ import DMailbox from '../services/DMailbox';
 import FileSaver from 'file-saver';
 import DMist from '../lib/DMist';
 
-import UnlockMailbox from './up/BSelectMailbox/UnlockMailbox'
-import AddMailbox from './up/BSelectMailbox/AddMailbox'
+import UnlockMailbox from './Shared/UnlockMailbox'
+import AddMailbox from './Shared/AddMailbox'
 
 
 class DTransferMailbox extends Component{

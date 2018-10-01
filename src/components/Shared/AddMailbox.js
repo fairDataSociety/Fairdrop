@@ -56,7 +56,6 @@ class ASelectFile extends Component{
             resolve(false);
           }
         }).catch((error)=>{
-          debugger
           if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
             this.setState({
               mailboxName: false,
@@ -202,7 +201,9 @@ class ASelectFile extends Component{
         </div>
         <div className="dt-actions">
             <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>        
-            <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn dt-btn-lg dt-btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>        
+            {this.props.mailboxesExist &&
+              <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn dt-btn-lg dt-btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>              
+            }
         </div>
       </div>
     )

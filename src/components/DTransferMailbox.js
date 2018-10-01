@@ -31,7 +31,8 @@ class DTransferMailbox extends Component{
         isUnlockingMailbox: false,
         mailboxes: mailboxes,
         activeMailboxSubDomain: false,
-        dropDownValue: false
+        dropDownValue: false,
+        mailboxesExist: false
       };
     }else if(mailboxes.length > 0){
       return {
@@ -45,7 +46,8 @@ class DTransferMailbox extends Component{
         mailboxes: mailboxes,
         unlockingMailbox: mailboxes[0],
         activeMailboxSubDomain: false,
-        dropDownValue: mailboxes[0].subdomain
+        dropDownValue: mailboxes[0].subdomain,
+        mailboxesExist: true
       };
     }
   }  
@@ -183,6 +185,7 @@ class DTransferMailbox extends Component{
                         setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                         mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                         cancelAddMailbox={this.cancelAddMailbox.bind(this)}
+                        mailboxesExist={this.state.mailboxesExist}
                       />
                   </div>
               </div>

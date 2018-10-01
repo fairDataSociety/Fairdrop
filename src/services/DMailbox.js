@@ -155,7 +155,12 @@ class DMailbox {
     if(mailboxName === undefined || mailboxName === false) return false;
     let pattern = /^[a-zA-Z0-9_-]*$/
     let matches = mailboxName.match(pattern)
-    if(mailboxName.length > 3 && matches !== null && matches.length > 0){
+    if(
+      mailboxName.length < 23 && 
+      mailboxName.length > 3 && 
+      matches !== null && 
+      matches.length > 0
+    ){
       return true;      
     }else{
       return false;

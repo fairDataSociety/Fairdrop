@@ -44,7 +44,6 @@ class UnlockMailbox extends Component{
         });
         this.props.mailboxUnlocked();
       }).catch((error)=>{
-        this.props.setSelectedMailbox(false, false);
         this.setState({
           feedbackMessage: 'Password invalid, please try again.',
           mailboxIsUnlocked: false

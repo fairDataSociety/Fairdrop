@@ -100,7 +100,7 @@ class ASelectFile extends Component{
   getDropDownOptions(mailboxes){
     return this.state.mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    }).concat({label: 'new mailbox', value: "dt-new-mailbox" });
+    }).concat({label: 'new mailbox +', value: "dt-new-mailbox" });
   }
 
   render(){

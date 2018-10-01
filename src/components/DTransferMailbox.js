@@ -131,7 +131,7 @@ class DTransferMailbox extends Component{
     let mailboxes = DMailbox.getAll();
     return mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    }).concat({label: 'new mailbox', value: "dt-new-mailbox" });
+    }).concat({label: 'new mailbox +', value: "dt-new-mailbox" });
   }
 
   addMailbox(){

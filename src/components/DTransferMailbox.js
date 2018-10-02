@@ -112,7 +112,8 @@ class DTransferMailbox extends Component{
 
   retrieveFile(message){
     return this.DT.getFileFromManifest(message.swarmhash, message.filename).then((retrievedFile)=>{
-      return DMailbox.getSharedSecret(this.state.selectedWallet, message.from).then((secret)=>{
+      let otherSubdomain = this.state.selectedMailbox.subdomain === message.from ? message.to : message.from;
+      return DMailbox.getSharedSecret(this.state.selectedWallet, otherSubdomain).then((secret)=>{
         let decryptedFile = this.DT.decryptedFile(retrievedFile, secret, message.filename, message.mime);      
         FileSaver.saveAs(new File([decryptedFile], message.filename, {type: message.mime}));
       });

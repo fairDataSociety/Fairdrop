@@ -305,7 +305,7 @@ label{
 }
 
 .dt-page-inner-wrapper{
-  width: 44vw;
+  width: 470px;
   margin: auto;
 }
 
@@ -484,7 +484,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }*/
 
 .dt-select-mailbox-mailboxes {
-    width: 26vw;
+    width: 300px;
     float: left;
 }
 

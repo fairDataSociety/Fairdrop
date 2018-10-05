@@ -81,13 +81,14 @@ class DTransferUp extends Component{
         let senderWallet = this.state.selectedWallet;
         let addressee = this.state.addressee;
         return DMailbox.getSharedSecret(senderWallet, addressee).then((sharedSecret) => {
-          this.setState({encryptMessage: 'Encrypting...'});          
-          return this.DT.encryptBlob(this.DT.bufferToBlob(window.selectedFileArrayBuffer), sharedSecret).then((encryptedBuffer)=>{
-            let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
+          this.setState({encryptMessage: 'Encrypting...'});
+
+          return this.DT.encryptBuffer(window.selectedFileArrayBuffer, sharedSecret).then((encryptedBuffer)=>{
+            // let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
             this.setState({fileWasEncrypted: true});
-            return this.DT.postFile(encryptedFile).then((response)=>{
+            return this.DT.postData(encryptedBuffer).then((response)=>{
               let timeEnd = new Date();
               let dTransferLink = process.env.REACT_APP_DTRANSFER_HOST + "?swarmHash="+response+"&fileName="+encodeURI(this.state.selectedFileName)+"&mimeType="+this.state.selectedFileType+"&isEncrypted=true";
               this.setState({fileWasUploaded: true});
@@ -104,33 +105,12 @@ class DTransferUp extends Component{
               });
               DMailbox.saveMessage(message);
             }).catch((error)=>{
-              console.log(error)
               throw new Error("Upload failed, please try again...");
-              // this.setState({feedBackMessage: "Upload failed, please try again..."});
             });
           });
         }).catch((error)=>{
-          // this.setState({feedBackMessage: "Couldn't sender public key, try again..."});
           throw new Error("Couldn't find public key, try again...");
         });
-      }else{
-        let isSure = window.confirm('This will expose your file to the public - are you sure?');
-        if(isSure){
-          return this.DT.postFile(new File([window.selectedFileArrayBuffer], this.state.selectedFileName, { type: this.state.selectedFileType })).then((response)=>{
-            let timeEnd = new Date();
-            let dTransferLink = process.env.REACT_APP_DTRANSFER_HOST + "?swarmHash="+response+"&fileName="+encodeURI(this.state.selectedFileName)+"&mimeType="+this.state.selectedFileType+"&isEncrypted=false";
-            this.setState({
-              fileWasUploaded: true,
-              dTransferLink: dTransferLink, 
-              uploadedFileHash: response, 
-              feedBackMessage: "File uploaded in "+(timeEnd-timeStart)/1000+"s!"
-            });  
-          }).catch((error)=>{
-            this.setState({feedBackMessage: "Upload failed, please try again..."});
-          });
-        }else{
-          return false;
-        }
       }
     }else{
       this.setState({feedBackMessage: "There was an error, please try again..."});

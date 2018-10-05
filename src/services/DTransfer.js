@@ -15,16 +15,19 @@ class DTransfer {
   }
 
   encryptBuffer(buffer, password){
-    if(!password) throw new Error('You must supply a password.');
-    var cipher = Crypto.createCipher('aes-256-ctr', password);
-    var crypted = cipher.update(buffer, null, 'hex');
-    crypted += cipher.final('hex');
-    return crypted;
+    // in a promise because later we'll put this in a web worker
+    return new Promise((resolve, reject) => {
+      if(!password) throw new Error('You must supply a password.');
+      let cipher = Crypto.createCipher('aes-256-ctr', password);
+      let crypted = cipher.update(new Uint8Array(buffer));
+      let cryptedFinal = cipher.final();
+      let c = new Uint8Array(crypted.length + cryptedFinal.length);
+      c.set(crypted);
+      c.set(cryptedFinal, crypted.length);
+      resolve(c);
+    });
   }
 
-  arrayBufferToBuffer(arrayBuffer){
-    return Buffer.from(arrayBuffer);
-  }
 
   bufferToBlob(buffer, fileName, mimeType){
     var f = new File([buffer], fileName, {type: mimeType});
@@ -53,42 +56,44 @@ class DTransfer {
 
   decryptBuffer(buffer, password){
     var decipher = Crypto.createDecipher('aes-256-ctr', password);
-    var dec = decipher.update(buffer,'hex','base64');
-    dec += decipher.final('base64');
-    return b64toBlob(dec);
+    var dec = decipher.update(buffer);
+    let decFinal = decipher.final();
+    let d = new Uint8Array(dec.length + decFinal.length);
+    d.set(dec);
+    d.set(decFinal, dec.length);    
+    return d;
   }
 
-  decryptedFile(encryptedFile, password, decryptedFileName, mimeType) {
-    let decryptedFile = this.decryptBuffer(encryptedFile, password);
-    let blob = new Blob([decryptedFile], { name: decryptedFileName, type: mimeType });
+  decryptedFile(encryptedBuffer, password, decryptedFileName, mimeType) {
+    let decryptedBuffer = this.decryptBuffer(encryptedBuffer, password);
+    let blob = new Blob([decryptedBuffer], { name: decryptedFileName, type: mimeType });
     blob.name = decryptedFileName;
-    return blob;
+    debugger
+    return decryptedBuffer;
   }
 
-  postFile(encryptedFile){
-    return new Promise((resolve, reject)=>{
-      var formData = new FormData();
-      formData.append('file', encryptedFile);
+  sendRequest(url, requestType, data) {
 
-      var xhr = new XMLHttpRequest();
-
-
-      xhr.open("POST", this.gateway, true);
-
-      xhr.onload = ()=>{
-        if (xhr.status === 200) {
-          resolve(xhr.responseText);
-        } else {
-          reject('error');
+    return new Promise((resolve, reject) => {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState === 4) {
+          if (this.status === 200) {
+            resolve(xhttp.responseText);
+          } else {
+            reject(this.status);
+          }
         }
       };
 
-      xhr.onerror = (error)=>{
-        reject('couldn\'t access gateway.');
-      };
-
-      xhr.send(formData);
+      xhttp.open(requestType, url, true);
+      xhttp.setRequestHeader('Content-Type', 'application/octet-stream');
+      xhttp.send(data);
     });
+  }
+
+  postData(data){
+    return this.sendRequest(this.gateway, 'POST', data);
   }
 
   getFile(url){
@@ -111,16 +116,42 @@ class DTransfer {
         reject('couldn\'t access gateway.');
       };
 
+      xhr.setRequestHeader('Content-Type', 'application/octet-stream');
       xhr.send();
     });
   }
 
-  getFileFromManifest(swarmHash, filename){
+  getData(url){
+    return new Promise((resolve,reject)=>{
+      var xhr = new XMLHttpRequest();
+
+      xhr.open("GET", url, true);
+
+      xhr.onload = ()=>{
+        if (xhr.status === 200) {
+          resolve(new Uint8Array(xhr.response));
+        } else if(xhr.status === 404){
+          reject('couldn\'t find hash.');
+        } else {
+          reject('unhandled error.');
+        }
+      };
+
+      xhr.onerror = ()=>{
+        reject('couldn\'t access gateway.');
+      };
+
+      xhr.responseType = 'arraybuffer';
+      xhr.send();
+    });
+  }
+
+  getDataFromManifest(swarmHash, filename){
     let url = this.rawGateway + swarmHash + "/";
-    return this.getFile(url).then((file)=>{
-      if(JSON.parse(file).entries[0].path === filename){
-        console.log(this.rawGateway + JSON.parse(file).entries[0].hash + "/");
-        return this.getFile(this.rawGateway + JSON.parse(file).entries[0].hash + "/");
+    return this.getFile(url).then((manifest)=>{
+      if(JSON.parse(manifest).entries.length === 1){
+        // console.log(this.rawGateway + JSON.parse(manifest).entries[0].hash + "/");
+        return this.getData(this.rawGateway + JSON.parse(manifest).entries[0].hash + "/");
       }else{
         throw new Error("couldn't find that file in the manifest.")
       }

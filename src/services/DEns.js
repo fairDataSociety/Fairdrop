@@ -10,7 +10,7 @@ class DEns {
     this.web3 = new Web3(new Web3.providers.HttpProvider(provider, httpTimeout));
     this.ens = new ENS(this.web3);
 
-    this.gasPrice = this.web3.toWei(50, 'gwei');
+    this.gasPrice = this.web3.toWei(150, 'gwei');
 
     if(options.registrarContractAddress === undefined) throw new Error('registrarContractAddress must be provided');
 

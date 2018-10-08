@@ -16,13 +16,15 @@ class CSelectRecipient extends Component{
 
   }
 
-  handleSelectRecipient(){
+  handleSelectRecipient(e){
+    e.preventDefault();
     this.props.setParentState({
       addressee: this.refs.dtSelectRecipient.value,
     });
   }
 
-  handleUploadAndEncrypt(){
+  handleUploadAndEncrypt(e){
+    e.preventDefault();
 
     let mailboxName = this.props.parentState.addressee;
 
@@ -59,7 +61,8 @@ class CSelectRecipient extends Component{
       <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "dt-hidden")}> 
         <div className="dt-select-recipient-ui dt-page-inner-centered">
           <div className="dt-select-recipient dt-page-inner-wrapper">
-            <h1 className="dt-select-account-header">Select Recipient*</h1>
+            <form onSubmit={this.handleUploadAndEncrypt}>
+              <h1 className="dt-select-account-header">Select Recipient*</h1>
               <div className="dt-form-group dt-form-group-last">
                 <input 
                   id="dt-select-recipient-address"
@@ -78,6 +81,7 @@ class CSelectRecipient extends Component{
               <div className="dt-page-smallprint">
                 *For somebody to receive a file they need a mailbox first
               </div>
+            </form>
           </div>
         </div>
       </div>

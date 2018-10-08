@@ -20,13 +20,13 @@ class ASelectFile extends Component{
   }
 
   handleSelectMailboxName(e){
+    e.preventDefault();    
     //check to see if mailbox name is unused/valid
     if(this.state.checkingAvailability === false){
       this.processMailboxName().catch((error)=>{
         //already handled
       });
     }
-    e.preventDefault();
   }  
 
   processMailboxName(){
@@ -106,13 +106,13 @@ class ASelectFile extends Component{
   }
 
   handleSelectPassword(e){
+    e.preventDefault();    
     this.processMailboxPassword();
-    e.preventDefault();
   }
 
   handleSelectPasswordVerification(e){
+    e.preventDefault();    
     this.processMailboxPassword();
-    e.preventDefault();
   }
 
   // copyPassword(e){
@@ -136,6 +136,7 @@ class ASelectFile extends Component{
 
 
   addMailbox(e){
+    e.preventDefault();    
     if(this.processMailboxPassword() === false){
       // password must be valid
       return;
@@ -168,43 +169,45 @@ class ASelectFile extends Component{
   render(){
     return (
       <div className="dt-mailbox-add-ui">
-        <div className="dt-form-group">      
-          <input 
-            className="dt-mailbox-add-name" 
-            type="text" 
-            autoComplete="new-name"    
-            placeholder="mailbox name" 
-            onChange={this.handleSelectMailboxName}
-            ref="dtSelectMailboxName"
-          />
-        </div>
-        <div className="dt-form-group"> 
-          <input 
-            className="dt-mailbox-add-password" 
-            type="password" 
-            placeholder="password"
-            autoComplete="off"       
-            onChange={this.handleSelectPassword}
-            ref="dtSelectPassword"
-          />
-        </div>
-        <div className="dt-form-group-last clearfix">
-          <input 
-            autoComplete="off"            
-            className="dt-mailbox-add-password-verification" 
-            type="password" 
-            placeholder="password verification" 
-            onChange={this.handleSelectPasswordVerification}
-            ref="dtSelectPasswordVerification"  
-          />
-          <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>
-        </div>
-        <div className="dt-actions">
-            <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>        
-            {this.props.mailboxesExist &&
-              <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn dt-btn-lg dt-btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>              
-            }
-        </div>
+        <form onSubmit={this.addMailbox}>
+          <div className="dt-form-group">      
+            <input 
+              className="dt-mailbox-add-name" 
+              type="text" 
+              autoComplete="new-name"    
+              placeholder="mailbox name" 
+              onChange={this.handleSelectMailboxName}
+              ref="dtSelectMailboxName"
+            />
+          </div>
+          <div className="dt-form-group"> 
+            <input 
+              className="dt-mailbox-add-password" 
+              type="password" 
+              placeholder="password"
+              autoComplete="off"       
+              onChange={this.handleSelectPassword}
+              ref="dtSelectPassword"
+            />
+          </div>
+          <div className="dt-form-group-last clearfix">
+            <input 
+              autoComplete="off"            
+              className="dt-mailbox-add-password-verification" 
+              type="password" 
+              placeholder="password verification" 
+              onChange={this.handleSelectPasswordVerification}
+              ref="dtSelectPasswordVerification"  
+            />
+            <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>
+          </div>
+          <div className="dt-actions">
+              <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>        
+              {this.props.mailboxesExist &&
+                <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn dt-btn-lg dt-btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>              
+              }
+          </div>
+        </form>
       </div>
     )
   }

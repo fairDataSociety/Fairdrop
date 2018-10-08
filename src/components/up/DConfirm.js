@@ -21,7 +21,8 @@ class DConfirm extends Component{
     });
   }
 
-  handleEncryptAndSend(){
+  handleEncryptAndSend(e){
+    e.preventDefault();
     this.props.setParentState({
       uiState: 4,
     });
@@ -58,8 +59,10 @@ class DConfirm extends Component{
               </table>
             </div>
             <div className="dt-btn-group">
-              <button className="dt-confirm-encrypt-and-send dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Send</button>              
-              <button className="dt-confirm-cancel dt-btn dt-btn-lg dt-btn-link dt-btn-float-right" onClick={this.handleCancel}>Cancel</button>              
+              <form onSubmit={this.handleEncryptAndSend}>                
+                <button className="dt-confirm-encrypt-and-send dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Send</button>
+                <button className="dt-confirm-cancel dt-btn dt-btn-lg dt-btn-link dt-btn-float-right" onClick={this.handleCancel}>Cancel</button>
+              </form>
             </div>        
           </div>
         </div>

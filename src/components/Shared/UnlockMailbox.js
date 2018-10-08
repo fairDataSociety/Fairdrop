@@ -16,7 +16,8 @@ class UnlockMailbox extends Component{
 
   }
 
-  handleUnlockMailboxWallet(){
+  handleUnlockMailboxWallet(e){
+    e.preventDefault();
     let password = this.refs.dtSelectPassword.value;
     let mailbox = this.props.mailbox;
 
@@ -57,7 +58,7 @@ class UnlockMailbox extends Component{
     return (
       <div className="dt-mailbox-unlock-ui">
         <div className="dt-form-group dt-form-group-last clearfix">
-          <form>
+          <form onSubmit={this.handleUnlockMailboxWallet}>
             <input 
               id="dt-mailbox-unlock-password" 
               autoComplete="off" 

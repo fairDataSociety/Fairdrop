@@ -1,7 +1,5 @@
 import Crypto from 'crypto';
-import Buffer from 'buffer';
 import toBuffer from 'blob-to-buffer';
-import b64toBlob from 'b64-to-blob';
 
 class DTransfer {
 

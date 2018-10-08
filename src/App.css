@@ -808,6 +808,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 .dt-icon-group .dt-icon {
   float: left;
+  margin-bottom: 20px;
 }
 
 .dt-icon-group .dt-icon img{

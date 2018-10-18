@@ -1,32 +1,50 @@
 import Web3 from 'web3';
 import ENS from 'ethereum-ens';
 import namehash from 'eth-ens-namehash';
+import DFaucet from './DFaucet';
+
+import PublicResolverContract from '../contracts/PublicResolver.json'
 
 let httpTimeout = 2000;
+
+// var registryAddresses = {
+//   // Mainnet
+//   "1": "0x314159265dd8dbb310642f98f50c066173c1259b",
+//   // Ropsten
+//   "3": "0x112234455c3a32fd11230c42e7bccd4a84e02010",
+//   // Rinkeby
+//   "4": "0xe7410170f87102DF0055eB195163A03B7F2Bff4A",
+// };
+
+let chainID = 3;
+
+let registryAddress = process.env.REACT_APP_ENS_ADDRESS;
+
 
 class DEns {
 
   constructor(provider, options = {}){
     this.web3 = new Web3(new Web3.providers.HttpProvider(provider, httpTimeout));
-    this.ens = new ENS(this.web3);
+    this.ens = new ENS(this.web3, registryAddress);
 
-    this.gasPrice = this.web3.toWei(150, 'gwei');
+    let ensRegistryInterface = [{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "resolver","outputs": [{"name": "","type": "address"}],"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "owner","outputs": [{"name": "","type": "address"}],"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "resolver","type": "address"}],"name": "setResolver","outputs": [],"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "label","type": "bytes32"},{"name": "owner","type": "address"}],"name": "setSubnodeOwner","outputs": [],"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "owner","type": "address"}],"name": "setOwner","outputs": [],"type": "function"}],resolverInterface: [{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "addr","outputs": [{"name": "","type": "address"}],"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "content","outputs": [{"name": "","type": "bytes32"}],"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "name","outputs": [{"name": "","type": "string"}],"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"},{"name": "kind","type": "bytes32"}],"name": "has","outputs": [{"name": "","type": "bool"}],"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "addr","type": "address"}],"name": "setAddr","outputs": [],"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "hash","type": "bytes32"}],"name": "setContent","outputs": [],"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "name","type": "string"}],"name": "setName","outputs": [],"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"},{"name": "contentType","type": "uint256"}],"name": "ABI","outputs": [{"name": "","type": "uint256"},{"name": "","type": "bytes"}],"payable": false,"type": "function"}];
+    this.ensRegistryContract = new this.web3.eth.Contract(ensRegistryInterface);
+    this.ensRegistryContract.options.address = registryAddress;
 
-    if(options.registrarContractAddress === undefined) throw new Error('registrarContractAddress must be provided');
-
-    let registrarContractAbi = [{"constant": true,"inputs": [],"name": "ens","outputs": [{"name": "","type": "address"}],"payable": false,"type": "function"},{"constant": true,"inputs": [{"name": "","type": "bytes32"}],"name": "expiryTimes","outputs": [{"name": "","type": "uint256"}],"payable": false,"type": "function"},{"constant": false,"inputs": [{"name": "subnode","type": "bytes32"},{"name": "owner","type": "address"}],"name": "register","outputs": [],"payable": false,"type": "function"},{"constant": true,"inputs": [],"name": "rootNode","outputs": [{"name": "","type": "bytes32"}],"payable": false,"type": "function"},{"inputs": [{"name": "ensAddr","type": "address"},{"name": "node","type": "bytes32"}],"type": "constructor"}];
-    this.registrarContract = this.web3.eth.contract(registrarContractAbi).at(options.registrarContractAddress);
+    this.gasPrice = this.web3.utils.toWei('1500', 'gwei');
 
     if(options.fifsRegistrarContractAddress === undefined) throw new Error('fifsRegistrarContractAddress must be provided');
 
     let fifsRegistrarContractAbi = [{"constant":false,"inputs":[{"name":"subnode","type":"bytes32"},{"name":"owner","type":"address"}],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"ensAddr","type":"address"},{"name":"node","type":"bytes32"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
-    this.fifsRegistrarContract = this.web3.eth.contract(fifsRegistrarContractAbi).at(options.fifsRegistrarContractAddress);
+    this.fifsRegistrarContract = new this.web3.eth.Contract(fifsRegistrarContractAbi, options.fifsRegistrarContractAddress);
 
     if(options.resolverContractAddress === undefined) throw new Error('resolverContractAddress must be provided');
 
-    var resolverContractAbi = [{"constant": true,"inputs": [{"name": "interfaceID","type": "bytes4"}],"name": "supportsInterface","outputs": [{"name": "","type": "bool"}],"payable": false,"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"},{"name": "contentTypes","type": "uint256"}],"name": "ABI","outputs": [{"name": "contentType","type": "uint256"},{"name": "data","type": "bytes"}],"payable": false,"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "x","type": "bytes32"},{"name": "y","type": "bytes32"}],"name": "setPubkey","outputs": [],"payable": false,"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "content","outputs": [{"name": "ret","type": "bytes32"}],"payable": false,"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "addr","outputs": [{"name": "ret","type": "address"}],"payable": false,"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "contentType","type": "uint256"},{"name": "data","type": "bytes"}],"name": "setABI","outputs": [],"payable": false,"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "name","outputs": [{"name": "ret","type": "string"}],"payable": false,"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "name","type": "string"}],"name": "setName","outputs": [],"payable": false,"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "hash","type": "bytes32"}],"name": "setContent","outputs": [],"payable": false,"type": "function"},{"constant": true,"inputs": [{"name": "node","type": "bytes32"}],"name": "pubkey","outputs": [{"name": "x","type": "bytes32"},{"name": "y","type": "bytes32"}],"payable": false,"type": "function"},{"constant": false,"inputs": [{"name": "node","type": "bytes32"},{"name": "addr","type": "address"}],"name": "setAddr","outputs": [],"payable": false,"type": "function"},{"inputs": [{"name": "ensAddr","type": "address"}],"payable": false,"type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"name": "node","type": "bytes32"},{"indexed": false,"name": "a","type": "address"}],"name": "AddrChanged","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"name": "node","type": "bytes32"},{"indexed": false,"name": "hash","type": "bytes32"}],"name": "ContentChanged","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"name": "node","type": "bytes32"},{"indexed": false,"name": "name","type": "string"}],"name": "NameChanged","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"name": "node","type": "bytes32"},{"indexed": true,"name": "contentType","type": "uint256"}],"name": "ABIChanged","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"name": "node","type": "bytes32"},{"indexed": false,"name": "x","type": "bytes32"},{"indexed": false,"name": "y","type": "bytes32"}],"name": "PubkeyChanged","type": "event"}];
-    this.resolverContract = this.web3.eth.contract(resolverContractAbi).at(options.resolverContractAddress);
+    var resolverContractAbi = PublicResolverContract.abi
+    this.resolverContractAddress = options.resolverContractAddress
+    this.resolverContract = new this.web3.eth.Contract(PublicResolverContract.abi, options.resolverContractAddress);
 
+    // window.ensRegistryContract = this.ensRegistryContract;
     // window.registrarContract = this.registrarContract;
     // window.fifsRegistrarContract =  this.fifsRegistrarContract;
     // window.resolverContract = this.resolverContract;
@@ -59,42 +77,75 @@ class DEns {
     });
   }
 
-  registerSubdomainToAddress(subdomain, address, publicKey, feedbackMessageCallback = false){
+  ensureHasBalance(address){
+    let intervalTime = 2000;
+    let tries = 200;
+
+    return new Promise((resolve, reject) => {
+      let i = 0;
+      let interval = setInterval(()=>{
+        i++;
+        this.web3.eth.getBalance(address).then((balance)=>{
+          console.log(i+ "/ checking: "+address+" balance: "+balance);
+          if(i > tries){
+            clearInterval(interval);            
+            reject(false);
+            return;
+          }
+          if(parseInt(balance) > 0){
+            clearInterval(interval);
+            resolve(true);
+          }
+        });
+      }, intervalTime);
+    });
+  }
+
+  registerSubdomainToAddress(subdomain, address, wallet, feedbackMessageCallback = false){
     if(feedbackMessageCallback) feedbackMessageCallback('verifying subdomain, waiting for node...');    
     this.registerSubdomainToAddressState = 0;
+
     return this.getSubdomainAvailiability(subdomain).then((availability)=>{
-      console.log(availability);
       if(availability){
-        if(feedbackMessageCallback) feedbackMessageCallback('registering subdomain, waiting for tx...');
-        return this.registerSubdomain(subdomain).then((tx)=>{ // must be contract owner :-/
-          this.registerSubdomainToAddressState = 1;
-          if(feedbackMessageCallback) feedbackMessageCallback('setting resolver, waiting for tx...');        
-          console.log(tx);
-          return this.setResolver(subdomain).then((tx2)=>{  // must be contract owner :-/
-            this.registerSubdomainToAddressState = 2; 
-            if(feedbackMessageCallback) feedbackMessageCallback('registering to your address, waiting for tx...');                 
-            console.log(tx2);
-            return this.setAddr(subdomain, address).then((tx3)=>{ // May only be called by the owner of that node in the ENS registry.
-              this.registerSubdomainToAddressState = 3;                      
-              if(feedbackMessageCallback) feedbackMessageCallback('registering your public key, waiting for tx...');                             
-              console.log(tx3);
-              return this.setPubKey(subdomain, publicKey).then((tx4)=>{ // May only be called by the owner of that node in the ENS registry.
-                this.registerSubdomainToAddressState = 4;
-                console.log(tx4.transactionHash);
-                return tx4.transactionHash;
-                // return this.setSubnodeOwner(subdomain, address).then((tx5)=>{
-                //   this.registerSubdomainToAddressState = 5;
-                //   console.log(tx5);
-                  // console.timeEnd('registered');
-                // });
+        feedbackMessageCallback('gifting you eth to cover your gas costs! <3 ');
+        DFaucet.gimmie(address).then((hash)=>{
+          console.log('gimmie complete tx: '+hash);
+        }).catch((error)=>{
+          console.log('gimmie errored: '+error);
+        });
+
+        return this.ensureHasBalance(address).then((balance)=>{
+          feedbackMessageCallback('gifted you x eth to cover your gas costs, registering subdomain...');
+          return this.registerSubdomain(subdomain, wallet).then((tx)=>{
+            this.registerSubdomainToAddressState = 1;
+            if(feedbackMessageCallback) feedbackMessageCallback('setting resolver...');
+            return this.setResolver(subdomain, wallet).then((tx2)=>{  // must be contract owner :-/
+              this.registerSubdomainToAddressState = 2; 
+              if(feedbackMessageCallback) feedbackMessageCallback('registering to your address, waiting for tx...');                 
+              console.log(tx2);
+              return this.setAddr(subdomain, address, wallet).then((tx3)=>{ // May only be called by the owner of that node in the ENS registry.
+                this.registerSubdomainToAddressState = 3;                      
+                if(feedbackMessageCallback) feedbackMessageCallback('registering your public key, waiting for tx...');                             
+                console.log(tx3);
+                return this.setPubKey(subdomain, wallet).then((tx4)=>{ // May only be called by the owner of that node in the ENS registry.
+                  this.registerSubdomainToAddressState = 4;
+                  console.log(tx4.transactionHash);
+                  return tx4.transactionHash;
+                  // return this.setSubnodeOwner(subdomain, address).then((tx5)=>{
+                  //   this.registerSubdomainToAddressState = 5;
+                  //   console.log(tx5);
+                  //   console.timeEnd('registered');
+                  // });
+                });
               });
             });
           })
-        })
+        });
       }else{
         return false;
       }
-    })
+    });
+
   }  
 
   getSubdomainAvailiability(subdomain){
@@ -103,118 +154,123 @@ class DEns {
     })
   }
 
-  registerSubdomain(subdomain){
-    console.log(this.web3.eth.accounts[0], this.web3.eth.getBalance(this.web3.eth.accounts[0]));
-    return new Promise((resolve, reject)=>{
-      this.fifsRegistrarContract.register(
-        this.web3.sha3(subdomain),
-        this.web3.eth.accounts[0], 
-        {
-          from: this.web3.eth.accounts[0], 
-          gasPrice: this.gasPrice
-        },
-        (err, tx)=>{
-          console.log('registering subdomain, watching...');          
-          if(err){
-            reject(err);
-          }else{
-            this.watchTx(tx).then((txReceipt)=>{
-              resolve(txReceipt);
-            }).catch((error)=>{
-              reject(error);
-            });            
-          }
-        }
-      );
+  registerSubdomain(subdomain, wallet){
+    let dataTx = this.fifsRegistrarContract.methods.register(this.web3.utils.sha3(subdomain), wallet.wallet.getAddressString()).encodeABI();
+    let privateKey = wallet.wallet.getPrivateKeyString();
+    let tx = {
+      from: wallet.wallet.getAddressString(),
+      to: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS, //fifs registrar contract address
+      data: dataTx,
+      gas: 800000,
+      // nonce: 11 //tbc......
+    };
+    
+    return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
+      return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .once('transactionHash', function(hash){ 
+          return hash;
+        });
     });
   }
 
-  setResolver(subdomain){
-    console.log(subdomain, this.resolverContract.address)
-    return this.ens.setResolver(
-      subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME, 
-      this.resolverContract.address,
-      {
-        from: this.web3.eth.accounts[0],
-        gasPrice: this.gasPrice
-      }
-    ).then((tx) => {
-        console.log('setting resolver, watching...');
-        return this.watchTx(tx);
+  setResolver(subdomain, wallet){
+    let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
+    let addr = this.resolverContractAddress;
+
+    let dataTx = this.ensRegistryContract.methods.setResolver(node, addr).encodeABI();
+    let privateKey = wallet.wallet.getPrivateKeyString();
+    let tx = {
+      from: wallet.wallet.getAddressString(),
+      to: registryAddress, //fifs registrar contract address
+      data: dataTx,
+      gas: 510000,
+      // nonce: 11 //tbc......
+    };
+
+    return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
+      return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .once('transactionHash', function(hash){ 
+          return hash;
+        });
     });
+
   }
 
-  setAddr(subdomain, address){
-    return new Promise((resolve, reject)=>{
-      this.resolverContract.setAddr(
-        namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
-        address,
-        {
-          from: this.web3.eth.accounts[0],
-          gasPrice: this.gasPrice
-        },
-        (err, tx)=>{
-          console.log('setting addr, watching...');          
-          if(err){
-            reject(err);
-          }else{
-            this.watchTx(tx).then((txReceipt)=>{
-              resolve(txReceipt);
-            }).catch((error)=>{
-              reject(error);
-            });            
-          }          
-        }
-      );
-    })
+  setAddr(subdomain, address, wallet){
+    let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
+    let addr = wallet.wallet.getAddressString();
+
+    let dataTx = this.resolverContract.methods.setAddr(
+      namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
+      address
+    ).encodeABI();
+    let privateKey = wallet.wallet.getPrivateKeyString();
+    let tx = {
+      from: wallet.wallet.getAddressString(),
+      to: this.resolverContractAddress,
+      data: dataTx,
+      gas: 510000,
+      // nonce: 11 //tbc......
+    };
+
+    return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
+      return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .once('transactionHash', function(hash){ 
+          return hash;
+        });
+    });
+
   }
 
-  setPubKey(subdomain, publicKey){
-    console.log(publicKey)
+  setPubKey(subdomain, wallet){
+    let publicKey = wallet.wallet.getPublicKeyString();
     let publicKeyX = publicKey.substring(0,66);
     let publicKeyY = "0x"+publicKey.substring(66,130);
-    return new Promise((resolve, reject)=>{
-      this.resolverContract.setPubkey(
-        namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
-        publicKeyX,
-        publicKeyY,
-        {
-          from: this.web3.eth.accounts[0],
-          gasPrice: this.gasPrice
-        },
-        (err, tx)=>{
-          console.log('setting pub key, watching...');          
-          if(err){
-            reject(err);
-          }else{
-            this.watchTx(tx).then((txReceipt)=>{
-              resolve(txReceipt);
-            }).catch((error)=>{
-              reject(error);
-            });            
-          }          
-        }
-      );
-    })
+
+    let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
+    let addr = wallet.wallet.getAddressString();
+
+    console.log(namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
+      publicKeyX,
+      publicKeyY
+    )
+
+    let dataTx = this.resolverContract.methods.setPubkey(
+      namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
+      publicKeyX,
+      publicKeyY
+    ).encodeABI();
+    let privateKey = wallet.wallet.getPrivateKeyString();
+    let tx = {
+      from: wallet.wallet.getAddressString(),
+      to: this.resolverContractAddress, //fifs registrar contract address
+      data: dataTx,
+      gas: 510000,
+      // nonce: 11 //tbc......
+    };
+
+    return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
+      return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .once('transactionHash', function(hash){ 
+          return hash;
+        });
+    });
+
   } 
 
   getPubKey(subdomain){
-    return new Promise((resolve, reject) => {
-      this.resolverContract.pubkey(namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME),(err, keyCoords)=>{
-        if(err){
-          reject(err);
-          return;
-        }else{
+    return  this.resolverContract.methods
+      .pubkey(namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME))
+      .call()
+      .then((keyCoords)=>{
           let keyStr = "04"+keyCoords[0].substring(2,66)+keyCoords[1].substring(2,66);
           if(keyStr !== "0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"){
-            resolve(keyStr);
+            return keyStr;
           }else{
-            reject(false);
+            return false;
           }
           return;
-        }
-      })
-    });
+      });
   }
 
   setSubnodeOwner(subdomain, address){

@@ -25,8 +25,8 @@ let provider = process.env.REACT_APP_GETH_GATEWAY;
 
 let dEns = new DEns(provider, {
   registrarContractAddress: '0x21397c1a1f4acd9132fe36df011610564b87e24b',
-  fifsRegistrarContractAddress: '0xd78e926ec77acfae2f2a8533bd7e65c6b33518bb',
-  resolverContractAddress: '0xA4038A4BfeEf917Eb9876E0a7c13D577941499c4'
+  fifsRegistrarContractAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,
+  resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
 });
 
 class Mailbox {
@@ -108,10 +108,11 @@ class DMailbox {
       console.timeEnd('create wallet')
       resolve(dw.generate(password));
     }).then((wallet)=>{
+      let address = "0x" + wallet.walletV3.address;
       return dEns.registerSubdomainToAddress(
         subdomain, 
-        "0x" + wallet.walletV3.address, 
-        wallet.wallet.getPublicKeyString(),
+        address, 
+        wallet,
         feedbackMessageCallback
       ).then(()=>{
         return wallet;

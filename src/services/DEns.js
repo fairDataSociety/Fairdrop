@@ -31,7 +31,7 @@ class DEns {
     this.ensRegistryContract = new this.web3.eth.Contract(ensRegistryInterface);
     this.ensRegistryContract.options.address = registryAddress;
 
-    this.gasPrice = this.web3.utils.toWei('1500', 'gwei');
+    this.gasPrice = this.web3.utils.toWei('15', 'gwei');
 
     if(options.fifsRegistrarContractAddress === undefined) throw new Error('fifsRegistrarContractAddress must be provided');
 
@@ -115,7 +115,7 @@ class DEns {
         });
 
         return this.ensureHasBalance(address).then((balance)=>{
-          feedbackMessageCallback('gifted you x eth to cover your gas costs, registering subdomain...');
+          feedbackMessageCallback('registering subdomain...');
           return this.registerSubdomain(subdomain, wallet).then((tx)=>{
             this.registerSubdomainToAddressState = 1;
             if(feedbackMessageCallback) feedbackMessageCallback('setting resolver...');

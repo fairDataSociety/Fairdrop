@@ -1,5 +1,5 @@
-import Web3_1 from 'web3_1';
-const web3 = new Web3_1();
+import Web3 from 'web3';
+const web3 = new Web3();
 
 class DMRU {
 

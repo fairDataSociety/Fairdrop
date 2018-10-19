@@ -2833,8 +2833,9 @@ eth-lib@0.2.7:
     elliptic "^6.4.0"
     xhr-request-promise "^0.1.2"
 
-"ethereum-ens@file:../ensjs":
+"ethereum-ens@https://github.com/ensdomains/ensjs":
   version "0.7.4"
+  resolved "https://github.com/ensdomains/ensjs#3911b9fbd504406ac08b941ff94705550bc9fa25"
   dependencies:
     bluebird "^3.4.7"
     eth-ens-namehash "^2.0.0"

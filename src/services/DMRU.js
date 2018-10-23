@@ -5,74 +5,62 @@ class DMRU {
 
   constructor(swarmNode){
     this.swarmNode = swarmNode;
+  }
+
+  feedUpdateDigest(request, data) {
+    let topicBytes;
+    let userBytes;
+    let protocolVersion = 0;
+
     let topicLength = 32;
     let userLength = 20;
     let timeLength = 7;
     let levelLength = 1;
-    this.updateMinLength = topicLength + userLength + timeLength + levelLength;
-  }
+    let headerLength = 8;
 
-  mruUpdateDigest(o) {
-    var topicBytes = undefined;
-    var dataBytes = undefined;
-    var userBytes = undefined;
+    let updateMinLength = topicLength + userLength + timeLength + levelLength + headerLength;
 
-    if (!web3.utils.isHexStrict(o.data)) {
-      console.error("data must be a valid 0x prefixed hex value");
-      return undefined;
-    }
-
-    dataBytes = web3.utils.hexToBytes(o.data);
+    protocolVersion = request.protocolVersion;
 
     try {
-      topicBytes = web3.utils.hexToBytes(o.topic);
-    } catch(err) {
-      console.error("topicBytes: " + err);
+      topicBytes = web3.utils.hexToBytes(request.feed.topic);
+    } catch (err) {
+      console.error(`topicBytes: ${err}`);
       return undefined;
     }
 
     try {
-      userBytes = web3.utils.hexToBytes(o.user);
-    } catch(err) {
-      console.error("userBytes: " + err);
+      userBytes = web3.utils.hexToBytes(request.feed.user);
+    } catch (err) {
+      console.error(`topicBytes: ${err}`);
       return undefined;
     }
 
-    var buf = new ArrayBuffer(this.updateMinLength + dataBytes.length);
-    var view = new DataView(buf);
-    var cursor = 0;
+    const buf = new ArrayBuffer(updateMinLength + data.length);
+    const view = new DataView(buf);
+    let cursor = 0;
 
-    topicBytes.forEach(function(v) {
+    view.setUint8(cursor, protocolVersion); // first byte is protocol version.
+    cursor += headerLength; // leave the next 7 bytes (padding) set to zero
+
+    topicBytes.forEach((v) => {
       view.setUint8(cursor, v);
       cursor++;
     });
 
-    userBytes.forEach(function(v) {
+    userBytes.forEach((v) => {
       view.setUint8(cursor, v);
       cursor++;
     });
 
-    // time is little endian
-    var timeBuf = new ArrayBuffer(4);
-    var timeView = new DataView(timeBuf);
-    //view.setUint32(cursor, o.time);
-    timeView.setUint32(0, o.time);
-    var timeBufArray = new Uint8Array(timeBuf);
-    for (var i = 0; i < 4; i++) {
-      view.setUint8(cursor, timeBufArray[3-i]);
-      cursor++;
-    }
+    // time is little-endian
+    view.setUint32(cursor, request.epoch.time, true);
+    cursor += 7;
 
-    for (i = 0; i < 3; i++) {
-      view.setUint8(cursor, 0);
-      cursor++;
-    }
-
-    //cursor += 4;
-    view.setUint8(cursor, o.level);
+    view.setUint8(cursor, request.epoch.level);
     cursor++;
 
-    dataBytes.forEach(function(v) {
+    data.forEach((v) => {
       view.setUint8(cursor, v);
       cursor++;
     });
@@ -125,55 +113,57 @@ class DMRU {
   }
 
   updateResource(privateKey, topic, state) {
-
     const data = web3.utils.padLeft(state, 2, '0');
+    // console.log('Updating topic', topic, 'with', data);
 
     web3.eth.accounts.wallet.add(privateKey);
     const account = web3.eth.accounts.wallet[0].address;
 
-    return this.sendRequest(`/bzz-resource:/?topic=${topic}&user=${account}&meta=1`,'GET', 'text', null)
-      .then((metaResponse)=>{
-        let meta = JSON.parse(metaResponse);
+    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${account}&meta=1`, 'GET', 'text', null).then((response) => {
+      const metaResponse = JSON.parse(response);
 
-        const resourceUpdate = {
-          "topic": topic,
-          "data": data,
-          "user": account,
-          "time": meta.epoch.time,
-          "level": meta.epoch.level
-        };
+      const resourceUpdate = {
+        topic,
+        data,
+        user: account,
+        time: metaResponse.epoch.time,
+        level: metaResponse.epoch.level,
+      };
 
-        const dataToSign = this.mruUpdateDigest(resourceUpdate);
+      // console.log('Resource update', resourceUpdate)
+      const dataBytes = web3.utils.hexToBytes(data);
+      const dataToSign = this.feedUpdateDigest(metaResponse, dataBytes);
+      // console.log('Data to sign', dataToSign, 'by account', account);
 
-        const secp256k1 = require('secp256k1');
-        const sigObj = secp256k1.sign(Buffer.from(web3.utils.hexToBytes(dataToSign)), Buffer.from(web3.utils.hexToBytes(privateKey)));
-        const signature = '0x'+sigObj.signature.toString('hex')+"0"+sigObj.recovery.toString();
+      const secp256k1 = require('secp256k1');
+      const sigObj = secp256k1.sign(Buffer.from(web3.utils.hexToBytes(dataToSign)), Buffer.from(web3.utils.hexToBytes(privateKey)));
+      // console.log(sigObj.signature.toString('hex'), sigObj.recovery)
+      const signature = `0x${sigObj.signature.toString('hex')}0${sigObj.recovery.toString()}`;
+      // console.log('Signature', signature);
 
-        return this.sendRequest(`/bzz-resource:/?topic=${resourceUpdate.topic}&user=${resourceUpdate.user}&level=${resourceUpdate.level}&time=${resourceUpdate.time}&signature=${signature}`,'POST', 'text', data);
-
+      return this.sendRequest(`/bzz-feed:/?topic=${resourceUpdate.topic}&user=${resourceUpdate.user}&level=${resourceUpdate.level}&time=${resourceUpdate.time}&signature=${signature}`,
+        'POST', 'text', data);
       })
-      .catch(console.log);
 
   }
 
   getResource (topicName, owner) {
     let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
-    return this.sendRequest(`/bzz-resource:/?topic=${topic}&user=${owner}`,
+    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}`,
     'GET', 'text', null)
   }
 
   getMeta (topicName, owner) {
     let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
-    return this.sendRequest(`/bzz-resource:/?topic=${topic}&user=${owner}&meta=1`,
+    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}&meta=1`,
     'GET', 'text', null);
   }
 
 
   handleUpdate(privateKey, topicName, dataString) {
-    console.log('test');
     let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');
     let data = web3.utils.toHex(dataString);
-    this.updateResource(privateKey, topic, data);
+    return this.updateResource(privateKey, topic, data);
   }
 
 }

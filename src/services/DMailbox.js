@@ -5,7 +5,7 @@ import Crypto from 'crypto'
 import DMRU from './DMRU'
 
 let MRU = new DMRU(process.env.REACT_APP_SWARM_GATEWAY);
-let topicName = 'fairdrop-test-01';
+let topicName = 'fairdrop-test-02222x';
 
 // use this to init a new topic name for now
 
@@ -16,7 +16,7 @@ let topicName = 'fairdrop-test-01';
 //   });
 // }, 2000)
 
-// MRU.handleUpdate('0x'+'211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, '{"messages":[]}');
+// MRU.handleUpdate('0x'+'211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, '{"messages":["fairdrop-test-02222x"]}');
 
 
 let provider = process.env.REACT_APP_GETH_GATEWAY;
@@ -50,17 +50,17 @@ class DMailbox {
   saveMessage(message){
     return this.getAllMessages().then((messages)=>{
       messages.push(message.toJSON());
-      // return MRU.handleUpdate('0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
-      localStorage.setItem('messages', JSON.stringify(messages));
+      return MRU.handleUpdate('0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
+      // localStorage.setItem('messages', JSON.stringify(messages));
     });
   }
 
   getAllMessages(){
     let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
-    // return MRU.getResource(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
-    //   return JSON.parse(response).messages;
-    // });
-    return new Promise((resolve, reject) => { resolve(JSON.parse(messagesJSON))} );
+    return MRU.getResource(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
+      return JSON.parse(response).messages;
+    });
+    // return new Promise((resolve, reject) => { resolve(JSON.parse(messagesJSON))} );
   }
 
   getMessages(type, subdomain) {

@@ -11,6 +11,8 @@ import EInProgress from '../components/up/EInProgress';
 import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
+window.DMailbox = DMailbox;
+
 class DTransferUp extends Component{
 
   // initialise
@@ -82,7 +84,6 @@ class DTransferUp extends Component{
         let addressee = this.state.addressee;
         return DMailbox.getSharedSecret(senderWallet, addressee).then((sharedSecret) => {
           this.setState({encryptMessage: 'Encrypting...'});
-
           return this.DT.encryptBuffer(window.selectedFileArrayBuffer, sharedSecret).then((encryptedBuffer)=>{
             // let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
             this.setState({encryptMessage: 'Encrypted'});
@@ -103,13 +104,14 @@ class DTransferUp extends Component{
                 mime: this.state.selectedFileType,
                 size: this.state.selectedFileSize
               });
+
               DMailbox.saveMessage(message);
             }).catch((error)=>{
-              throw new Error("Upload failed, please try again...");
+              throw new Error(error);
             });
           });
         }).catch((error)=>{
-          throw new Error("Couldn't find public key, try again...");
+          throw new Error(error);
         });
       }
     }else{

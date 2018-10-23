@@ -8,8 +8,8 @@ class DTransfer {
       throw new Error("You must provide a Swarm gateway service eg. http://localhost:8500/");
     }
 
-    this.gateway = gateway + "bzz:/";
-    this.rawGateway = gateway + "bzz-raw:/";
+    this.gateway = gateway + "/bzz:/";
+    this.rawGateway = gateway + "/bzz-raw:/";
   }
 
   encryptBuffer(buffer, password){

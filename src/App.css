@@ -419,12 +419,12 @@ label{
 
 .dt-select-file-instruction.is-selecting{
   transform: translateY(25vh);
-  transition: transform 1s;
+  transition: transform 0.7s;
 }
 
 .dt-select-file-instruction.has-dropped{
   opacity: 0;
-  transition: opacity 1s;
+  transition: opacity 0.6s;
 }
 
 /*left here as although the transition doesn't work with linear gradients, 
@@ -494,6 +494,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 .dt-select-mailbox-mailboxes .Dropdown-control{
   background: #57C989;
+  /*background: transparent;*/
   border-radius: 30px;
   padding: 8px 8px 8px 10px;
   font-size: 16px;
@@ -510,7 +511,11 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   color: #fff;
   overflow: hidden;  
 }
-
+/*
+.Dropdown-option.is-selected {
+  background-color: transparent; 
+}
+*/
 .Dropdown-option:hover {
   background: #57C989;
   transition: background 3s;

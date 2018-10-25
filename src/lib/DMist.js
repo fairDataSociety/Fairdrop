@@ -29,7 +29,7 @@ class DMist{
   }
 
   mist(className){
-    let mistCoordinates = new MitchellsBestCandidate(50);
+    let mistCoordinates = new MitchellsBestCandidate();
     for (var i = mistCoordinates.length - 1; i >= 0; i--) {
       this.mistSpot(className, 'rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0)', mistCoordinates[i][0], mistCoordinates[i][1], i*2);
     }       

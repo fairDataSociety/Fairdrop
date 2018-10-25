@@ -42,7 +42,9 @@ class ASelectFile extends Component{
     });
     this.dropzone.on("drop", (event) => {
       this.setState({ hasDropped: true });
-      dd.drop('dt-drop', event.clientX, event.clientY);
+      setTimeout(()=>{
+        dd.drop('dt-drop', event.clientX, event.clientY);
+      }, 233);
     })
     this.dropzone.on("addedfile", (file) => {
       if(this.state.hasDropped === false){
@@ -57,7 +59,7 @@ class ASelectFile extends Component{
           selectedFileSize: file.size,
           uiState: 1
         });
-      }, 1700)
+      }, 1555)
     });
   }
 

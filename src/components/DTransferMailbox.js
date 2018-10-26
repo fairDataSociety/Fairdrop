@@ -79,7 +79,8 @@ class DTransferMailbox extends Component{
     this.setState({
       unlockingMailbox: mailbox,
       isUnlockingMailbox: true,
-      isAddingMailbox: false
+      isAddingMailbox: false,
+      dropDownValue: mailbox.subdomain
     });
   }
 
@@ -164,7 +165,7 @@ class DTransferMailbox extends Component{
                       <div className="dt-select-mailbox-mailboxes">
                         <Dropdown 
                           options={this.getDropDownOptions()} 
-                          value={this.state.dropDownValue} 
+                          value={this.state.dropDownValue}
                           onChange={this.handleSelectMailbox.bind(this)}
                           placeholder="Select a mailbox" 
                         />

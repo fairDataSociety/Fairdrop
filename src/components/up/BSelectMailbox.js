@@ -72,7 +72,8 @@ class ASelectFile extends Component{
     this.setState({
       unlockingMailbox: mailbox,
       isUnlockingMailbox: true,
-      isAddingMailbox: false
+      isAddingMailbox: false,
+      dropDownValue: subdomain
     });
   }
 

@@ -337,6 +337,34 @@ label{
     background: hsla(146, 52%, 42%, 1);
   }
 
+
+/* disclaimer */
+
+.dt-disclaimer{
+  height:100vh;
+  width:100vw;
+  position: absolute;
+  overflow:hidden;
+  z-index: 10;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  display: table;
+  text-align: center;
+}
+
+.dt-disclaimer-wrapper{
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.dt-disclaimer-content{
+  text-align: left;
+  width: 65%;
+  margin: auto;
+  height: 50vh;
+}
+
 /* select file */
 
 .dt-select-file{

@@ -34,6 +34,9 @@ class CSelectRecipient extends Component{
     });
 
     DMailbox.getPubKey(mailboxName).then((result) => {
+      if(result === false){
+        throw new Error("Couldn't find that mailbox, please try again...")
+      }
       this.setState({
         feedbackMessage: "Mailbox found"        
       });

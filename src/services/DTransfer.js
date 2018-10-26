@@ -66,7 +66,6 @@ class DTransfer {
     let decryptedBuffer = this.decryptBuffer(encryptedBuffer, password);
     let blob = new Blob([decryptedBuffer], { name: decryptedFileName, type: mimeType });
     blob.name = decryptedFileName;
-    debugger
     return decryptedBuffer;
   }
 

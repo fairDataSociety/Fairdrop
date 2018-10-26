@@ -1,6 +1,3 @@
-import Web3 from 'web3';
-const web3 = new Web3();
-
 class DFaucet {
 
   gimmie(address) {
@@ -26,4 +23,4 @@ class DFaucet {
 
 }
 
-export default new DFaucet;
+export default new DFaucet();

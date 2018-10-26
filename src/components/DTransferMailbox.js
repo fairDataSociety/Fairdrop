@@ -200,7 +200,7 @@ class DTransferMailbox extends Component{
             <div className="dt-show-files-ui">            
               <h1 className="dt-show-files-header">{ this.state.selectedMailbox && this.state.selectedMailbox.subdomain }</h1>
               <div className="dt-show-files-nav">
-                <a className={this.state.shownMessageType !== 'received' && "inactive"} onClick={this.showReceived.bind(this)}>received</a> - <a className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent.bind(this)}>sent</a>
+                <button className={this.state.shownMessageType !== 'received' && "inactive"} onClick={this.showReceived.bind(this)}>received</button> - <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent.bind(this)}>sent</button>
               </div>
               <div className="dt-icon-group clearfix">
                 {this.state.shownMessages.map((message)=>{

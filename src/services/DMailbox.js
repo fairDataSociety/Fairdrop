@@ -56,7 +56,7 @@ class DMailbox {
   }
 
   getAllMessages(){
-    let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
+    // let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
     return MRU.getResource(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
       return JSON.parse(response).messages;
     });

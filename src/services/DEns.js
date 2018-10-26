@@ -16,7 +16,7 @@ let httpTimeout = 2000;
 //   "4": "0xe7410170f87102DF0055eB195163A03B7F2Bff4A",
 // };
 
-let chainID = 3;
+// let chainID = 3;
 
 let registryAddress = process.env.REACT_APP_ENS_ADDRESS;
 
@@ -40,7 +40,6 @@ class DEns {
 
     if(options.resolverContractAddress === undefined) throw new Error('resolverContractAddress must be provided');
 
-    var resolverContractAbi = PublicResolverContract.abi
     this.resolverContractAddress = options.resolverContractAddress
     this.resolverContract = new this.web3.eth.Contract(PublicResolverContract.abi, options.resolverContractAddress);
 
@@ -197,8 +196,8 @@ class DEns {
   }
 
   setAddr(subdomain, address, wallet){
-    let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
-    let addr = wallet.wallet.getAddressString();
+    // let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
+    // let addr = wallet.wallet.getAddressString();
 
     let dataTx = this.resolverContract.methods.setAddr(
       namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
@@ -227,8 +226,8 @@ class DEns {
     let publicKeyX = publicKey.substring(0,66);
     let publicKeyY = "0x"+publicKey.substring(66,130);
 
-    let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
-    let addr = wallet.wallet.getAddressString();
+    // let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
+    // let addr = wallet.wallet.getAddressString();
 
     console.log(namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME), 
       publicKeyX,
@@ -269,7 +268,6 @@ class DEns {
           }else{
             return false;
           }
-          return;
       });
   }
 

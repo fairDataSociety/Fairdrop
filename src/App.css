@@ -836,12 +836,15 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   font-size: 8px;
 }
 
-.dt-show-files-nav a{
-  opacity: 0.5;
+.dt-show-files-nav button{
+  color: #fff;
+  border: 0;
+  background: none;
 }
 
-.dt-show-files-nav a.inactive{
-  color: #fff;
-  opacity: 1;
+.dt-show-files-nav button.inactive{
+  border: 0;
+  opacity: 0.5;
+  background: none;
 }
 

@@ -25,11 +25,11 @@ class FCompleted extends Component{
                   <div className="dt-feedback">
                     <div className="dt-feedback-content">
                       <div className="dt-link-group">
-                        <div className="dt-link-label"><a href={this.props.parentState.dTransferLink} target="_blank">Swarm Hash </a></div>
+                        <div className="dt-link-label">Swarm Hash</div>
                         <input type="text" value={this.props.parentState.uploadedFileHash} readOnly="true"/>
                       </div>
                       <div className="dt-link-group">
-                        <div className="dt-link-label"><a href={this.props.parentState.dTransferLink} target="_blank">Fairdrop Link </a></div>
+                        <div className="dt-link-label">Fairdrop Link</div>
                         <input type="text" value={this.props.parentState.dTransferLink} readOnly="true"/>
                       </div>
                     </div>

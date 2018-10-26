@@ -9,7 +9,12 @@ class DFaucet {
           if (this.status === 200) {
             resolve(JSON.parse(xhttp.responseText).transaction);
           } else {
-            reject(JSON.parse(xhttp.responseText).error);
+            try {
+              reject(JSON.parse(xhttp.responseText).error);
+            }
+            catch(err) {
+              reject(false);
+            }
           }
         }
       };

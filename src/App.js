@@ -137,6 +137,16 @@ class App extends Component {
           <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
             <div className="dt-nav-header-items">
               <a href="/">
+                <svg id="dt-datafund-d" version="1.1" x="0px" y="0px"
+                    viewBox="0 0 68 68" enable-background="new 0 0 68 68">
+                  <polygon id="Fill-15" points="30.084,52.387 34.696,52.387 34.696,16.724 30.084,16.724 "/>
+                  <path id="Fill-17" d="M30.402,5.932H22.94H4.949v57.136h16.974h8.479c18.262,0,31.611-10.465,31.611-28.516
+                    C62.014,15.865,48.664,5.932,30.402,5.932 M30.402,10.544c16.907,0,27,8.975,27,24.008c0,14.746-10.347,23.904-27,23.904h-8.479
+                    H9.559V10.544h13.379H30.402"/>
+                  <path id="Fill-18" d="M32.39,21.356c-7.688,0-13.918,5.786-13.918,12.918s6.232,12.921,13.918,12.921
+                    c7.687,0,13.919-5.785,13.919-12.921C46.31,27.138,40.077,21.356,32.39,21.356 M32.39,25.966c5.13,0,9.306,3.728,9.306,8.308
+                    c0,4.579-4.176,8.308-9.306,8.308c-5.132,0-9.308-3.729-9.308-8.308C23.083,29.694,27.258,25.966,32.39,25.966"/>
+                </svg>
                 <svg version="1.1" className="fairdop-logo" alt="Fairdrop Logo"
                    width="238px" height="68px" viewBox="0 0 238 68" enableBackground="new 0 0 238 68">
                   <g>

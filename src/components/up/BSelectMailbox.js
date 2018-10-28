@@ -40,7 +40,6 @@ class ASelectFile extends Component{
     this.state = this.getInitialState();
 
     this.addMailbox = this.addMailbox.bind(this);    
-    this.handleUploadUnencrypted = this.handleUploadUnencrypted.bind(this);
     this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
 
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
@@ -77,17 +76,18 @@ class ASelectFile extends Component{
     });
   }
 
-  handleUploadUnencrypted(){
-    this.props.setParentState({
-      uiState: 3,
-      shouldEncrypt: false
-    });
-  }
-
   mailboxUnlocked(){
-    this.props.setParentState({
-      uiState: 2
-    });
+    if(this.props.parentState.isStoringFile){
+      //skip select recipient 
+      this.props.setParentState({
+        uiState: 3
+      });
+    }else{
+      //select recipient 
+      this.props.setParentState({
+        uiState: 2
+      });
+    }
   }
 
   handleSelectMailbox(option){

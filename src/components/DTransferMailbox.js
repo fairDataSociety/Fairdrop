@@ -4,6 +4,7 @@ import Dropdown from 'react-dropdown';
 import DMailbox from '../services/DMailbox';
 import FileSaver from 'file-saver';
 import DMist from '../lib/DMist';
+import Utils from '../services/DTransferUtils';
 
 import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
@@ -109,9 +110,19 @@ class DTransferMailbox extends Component{
         shownMessages: messagesReceived,
       });
     });
-  }  
+  } 
 
-  retrieveFile(message){
+  showStored(){
+    DMailbox.getAllStoredFiles(this.state.selectedWallet)
+    .then((storedFiles)=>{
+      this.setState({
+        shownMessageType: 'stored',
+        shownMessages: storedFiles,
+      });
+    });
+  } 
+
+  retrieveSentFile(message){
     return this.DT.getDataFromManifest(message.swarmhash, message.filename).then((retrievedFile)=>{
       // to handle retrieving sent files
       let otherSubdomain = this.state.selectedMailbox.subdomain === message.from ? message.to : message.from;
@@ -119,6 +130,15 @@ class DTransferMailbox extends Component{
         let decryptedFile = this.DT.decryptedFile(retrievedFile, secret, message.filename, message.mime);
         FileSaver.saveAs(new File([decryptedFile], message.filename, {type: message.mime}));
       });
+    });
+  }
+
+  retrieveStoredFile(file){
+    return this.DT.getDataFromManifest(file.swarmhash, file.filename).then((retrievedFile)=>{
+      // to handle retrieving sent files
+      let decryptedFile = this.DT.decryptedFile(retrievedFile, this.state.selectedWallet.privateKey, file.filename, file.mime);
+      FileSaver.saveAs(new File([decryptedFile], file.filename, {type: file.mime}));
+      return true;
     });
   }
 
@@ -200,16 +220,46 @@ class DTransferMailbox extends Component{
             <div className="dt-show-files-ui">            
               <h1 className="dt-show-files-header">{ this.state.selectedMailbox && this.state.selectedMailbox.subdomain }</h1>
               <div className="dt-show-files-nav">
-                <button className={this.state.shownMessageType !== 'received' && "inactive"} onClick={this.showReceived.bind(this)}>received</button> - <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent.bind(this)}>sent</button>
+                <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived.bind(this)}>received</button>
+                 - <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent.bind(this)}>sent</button>
+                  - <button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored.bind(this)}>stored</button>
               </div>
               <div className="dt-icon-group clearfix">
-                {this.state.shownMessages.map((message)=>{
-                  return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveFile(message); } }>
-                      <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
-                      <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
-                      <div className="dt-info-filesize">{ message.filesize }</div>
-                    </div>
-                })}
+                {this.state.shownMessageType === 'received' && 
+                  <div>
+                    {this.state.shownMessages.map((message)=>{
+                      return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveSentFile(message); } }>
+                          <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                          <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
+                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
+                          <div className="dt-info-filesender">from: { message.from }</div>
+                        </div>
+                    })}
+                  </div>
+                }
+                {this.state.shownMessageType === 'sent' && 
+                  <div>
+                    {this.state.shownMessages.map((message)=>{
+                      return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveSentFile(message); } }>
+                          <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                          <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
+                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
+                          <div className="dt-info-filerecipient">to: { message.to }</div>
+                        </div>
+                    })}
+                  </div>
+                }
+                {this.state.shownMessageType === 'stored' && 
+                  <div>
+                    {this.state.shownMessages.map((message)=>{
+                      return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveStoredFile(message); } }>
+                          <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                          <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
+                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
+                        </div>
+                    })}
+                  </div>
+                }
               </div>
             </div>
           </div>

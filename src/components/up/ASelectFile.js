@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DTransfer from '../../services/DTransfer';
 import Dropzone from 'dropzone';
 import DDrop from '../../lib/DDrop';
+import App from '../../App';
 
 class ASelectFile extends Component{
   
@@ -13,6 +14,7 @@ class ASelectFile extends Component{
   }
 
   componentDidMount(){
+    App.aSelectFile = this;
     this.dropZone();
   }
 
@@ -36,17 +38,19 @@ class ASelectFile extends Component{
     });
     this.dropzone.on("dragleave", (event) => {
       if(event.fromElement === null){
-        this.props.setIsSelecting(false);      
+        this.props.setIsSelecting(false);    
         this.props.setParentState({fileIsSelecting: false});
       }
     });
     this.dropzone.on("drop", (event) => {
       this.setState({ hasDropped: true });
+      this.props.fileWasSelected(true);
       setTimeout(()=>{
         dd.drop('dt-drop', event.clientX, event.clientY);
       }, 233);
     })
     this.dropzone.on("addedfile", (file) => {
+      this.props.fileWasSelected(true);      
       if(this.state.hasDropped === false){
         this.setState({ hasDropped: true });
         dd.drop('dt-drop');
@@ -68,6 +72,16 @@ class ASelectFile extends Component{
     e.preventDefault();
     this.props.setIsSelecting();
     this.props.setParentState({fileIsSelecting: true});
+    this.refs.dtSelectFile.click();
+  }
+
+  handleClickStoreFile(e){
+    e.preventDefault();
+    this.props.setIsSelecting();
+    this.props.setParentState({
+      isStoringFile: true,
+      fileIsSelecting: true
+    });
     this.refs.dtSelectFile.click();
   }  
 

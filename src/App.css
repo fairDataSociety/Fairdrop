@@ -233,7 +233,7 @@ label{
   pointer-events: none;
 }
 
-.dt-nav-header-item{
+.dt-nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
@@ -241,14 +241,33 @@ label{
   text-align: left;
 }
 
+.dt-nav-header-item-button{
+  color: black;
+  display: inline;
+  border: 0;
+  background: none;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.dt-nav-white .dt-nav-header-item-button{
+  color: white;
+}
+
 .dt-nav-white svg{
   fill: #fff;
-  transition: fill 1s
+  transition: fill 1s;
+  margin-bottom: 15px;
 }
 
 .dt-nav-black svg{
   fill: #000;
   transition: fill 1s linear 1s;
+  margin-bottom: 15px;
+}
+
+.dt-nav-key svg{
+  margin-bottom: 20px;
 }
 
 .dt-nav-key-wrapper{
@@ -271,14 +290,14 @@ label{
 }
 
 
-.dt-nav-header .dt-nav-header-item{
+.dt-nav-header .dt-nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
   width: 10vw;
 }
 
-.dt-nav-header .dt-nav-header-item .dt-df-logo{
+.dt-nav-header .dt-nav-header-items .dt-df-logo{
   height: 7.4vh;
   color: #fff;
 }
@@ -812,6 +831,28 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 
+
+.dt-is-storing.dt-ui-state-1 .dt-progress-indicator{
+  width: 25%;
+}
+
+.dt-is-storing.dt-ui-state-2 .dt-progress-indicator{
+  width: 50%;
+}
+
+.dt-is-storing.dt-ui-state-3 .dt-progress-indicator{
+  width: 50%;
+}
+
+.dt-is-storing.dt-ui-state-4 .dt-progress-indicator{
+  width: 75%;
+}
+
+.dt-is-storing.dt-ui-state-6 .dt-progress-indicator{
+  width: 100%;
+}
+
+
 .dt-progress-labels{
   display: table;
   vertical-align: middle;
@@ -823,6 +864,10 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   width:20vw;
   display: table-cell;
   padding: 8px;
+}
+
+.dt-is-storing .dt-progress-label{
+  width:25vw;
 }
 
 /* mailbox */
@@ -863,7 +908,9 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   word-break: break-all;
 }
 
-.dt-icon-group .dt-icon .dt-info-filesize{
+.dt-icon-group .dt-icon .dt-info-filesize,
+.dt-icon-group .dt-icon .dt-info-filesender,
+.dt-icon-group .dt-icon .dt-info-filerecipient {
   color: #fff;  
   font-size: 8px;
 }

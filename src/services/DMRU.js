@@ -7,6 +7,18 @@ class DMRU {
     this.swarmNode = swarmNode;
   }
 
+  getResource (topicName, owner) {
+    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
+    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}`,
+    'GET', 'text', null)
+  }
+
+  handleUpdate(privateKey, topicName, dataString) {
+    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');
+    let data = web3.utils.toHex(dataString);
+    return this.updateResource(privateKey, topic, data);
+  }  
+
   feedUpdateDigest(request, data) {
     let topicBytes;
     let userBytes;
@@ -147,23 +159,10 @@ class DMRU {
 
   }
 
-  getResource (topicName, owner) {
-    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
-    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}`,
-    'GET', 'text', null)
-  }
-
   getMeta (topicName, owner) {
     let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
     return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}&meta=1`,
     'GET', 'text', null);
-  }
-
-
-  handleUpdate(privateKey, topicName, dataString) {
-    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');
-    let data = web3.utils.toHex(dataString);
-    return this.updateResource(privateKey, topic, data);
   }
 
 }

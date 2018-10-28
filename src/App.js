@@ -14,7 +14,9 @@ class App extends Component {
 
     return {
       // download file
+      isStoringFile: false,      
       fileIsSelected: false,
+      fileWasSelected: false,
       findFileFeedBackMessage: 'Trying to find your file...',
       findingFile: true,
       fileIsDecrypting: false,
@@ -29,10 +31,14 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.dTransferUp = React.createRef();
+
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
 
     this.setIsSelecting = this.setIsSelecting.bind(this);
+    this.fileWasSelected = this.fileWasSelected.bind(this);
     this.hideDisclaimer = this.hideDisclaimer.bind(this);
+    this.handleStoreFile = this.handleStoreFile.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -91,6 +97,15 @@ class App extends Component {
 
   setIsSelecting(state = true){
     this.setState({fileIsSelecting: state});
+  }
+
+  fileWasSelected(state = true){
+    this.setState({fileWasSelected: state});
+  }  
+
+  handleStoreFile(e){
+    this.setState({isStoringFile: true});
+    this.dTransferUp.current.aSelectFile.current.handleClickStoreFile(e);
   }
 
   hideDisclaimer(e){
@@ -158,7 +173,7 @@ class App extends Component {
                   </g>
                 </svg>
               </a>
-              {this.state.fileWasSelected === false && 
+              {this.state.fileWasSelected === false && this.state.isMailbox !== true && 
               <span>
                 <button className="dt-nav-header-item-button" onClick={this.handleStoreFile} >
                   Store File
@@ -190,7 +205,12 @@ class App extends Component {
   
           { this.state.isMailbox
             ? <DTransferMailbox/>
-            : <DTransferUp setIsSelecting={this.setIsSelecting}/>
+            : <DTransferUp 
+                fileWasSelected={this.fileWasSelected} 
+                setIsSelecting={this.setIsSelecting} 
+                ref={this.dTransferUp} 
+                isStoringFile={this.state.isStoringFile}
+              />
           }
   
           <div className="dt-network-status">
@@ -201,7 +221,7 @@ class App extends Component {
               
             </div> {/* dt-network-status-swarm */}
           </div>
-        </div>      
+        </div>
       </div>
     );
   }

@@ -14,8 +14,17 @@ class FCompleted extends Component{
               <div className="dt-info-is-encrypted">
                 <img className="dt-fairdrop-lock" src="/assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> File is encrypted
               </div>
-              <div className="dt-feedback-message">from: { this.props.parentState.selectedMailbox.subdomain }</div>
-              <div className="dt-feedback-message">to: { this.props.parentState.addressee }</div>
+              {this.props.parentState.isStoringFile === true && 
+                <div>
+                  <div className="dt-feedback-message">File stored.</div>                  
+                </div>
+              }
+              {this.props.parentState.isStoringFile === false && 
+                <div>
+                  <div className="dt-feedback-message">from: { this.props.parentState.selectedMailbox.subdomain }</div>
+                  <div className="dt-feedback-message">to: { this.props.parentState.addressee }</div>  
+                </div>
+              }
               <div className="dt-feedback-message">{this.props.parentState.feedBackMessage}</div>
             </div>
           </div> {/* dt-info */}
@@ -26,7 +35,7 @@ class FCompleted extends Component{
                     <div className="dt-feedback-content">
                       <div className="dt-link-group">
                         <div className="dt-link-label">Swarm Hash</div>
-                        <input type="text" value={this.props.parentState.uploadedFileHash} readOnly="true"/>
+                        <input type="text" value={this.props.parentState.uploadedFileHash || ""} readOnly={true}/>
                       </div>
                     </div>
                   </div>

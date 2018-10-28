@@ -73,7 +73,7 @@ class App extends Component {
     let fileName = urlParams.get('fileName'); 
     let mimeType = urlParams.get('mimeType'); 
     let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
-    let mailbox = urlParams.get('mailbox') !== null;      
+    let mailbox = urlParams.get('mailbox') !== null && urlParams.get('mailbox') !== 'false';      
 
     if(swarmHash && fileName){
       this.setState({
@@ -130,14 +130,14 @@ class App extends Component {
                 <li>subdomains will expire</li>
                 <li>running on ropsten</li>
               </ul>
-              <h3>I understand - let's me in!</h3>
+              <h3>I understand - let me in!</h3>
             </div>
           </div>
         </div>
         <div className={"dt-wrapper dt-green " + ((this.state.fileIsSelecting || this.state.isMailbox) ? "dt-nav-white " : "dt-nav-black ")}>
           <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
             <div className="dt-nav-header-items">
-              <a href="/">
+              <a href="?mailbox=false">
                 <svg id="dt-datafund-d" version="1.1" x="0px" y="0px"
                     viewBox="0 0 68 68" enable-background="new 0 0 68 68">
                   <polygon id="Fill-15" points="30.084,52.387 34.696,52.387 34.696,16.724 30.084,16.724 "/>

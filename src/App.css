@@ -356,7 +356,7 @@ label{
   position: absolute;
   overflow:hidden;
   z-index: 10;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.9);
   color: white;
   display: table;
   text-align: center;

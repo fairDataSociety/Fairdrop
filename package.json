@@ -2,6 +2,7 @@
   "name": "d-transfer",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "b64-to-blob": "^1.2.19",
     "blob-to-buffer": "^1.2.8",

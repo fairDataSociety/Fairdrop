@@ -120,7 +120,8 @@ class App extends Component {
           <div className="dt-disclaimer-wrapper">
             <div className="dt-disclaimer-content">
               <h1>Welcome to Fairdrop!</h1>
-              <h4>Before you start, some friendly warnings...</h4>
+              <p>Behold and welcome on our Fairdata.eth beta version of the website, provided to you on an “as is”  basis, which is still undergoing final testing before its official release. </p>
+              <p>Beware, we do not give any warranties as to the suitability or usability of the website, data persistence or any of the content. We will not be liable for any loss suffered resulting from your use of the Fairdata.eth website. Real time distribution: you use it on your own risk.</p>
               <ul>
                 <li>files may not persist in the swarm network</li>
                 <li>at present metadata is exposed</li>

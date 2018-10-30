@@ -50,6 +50,11 @@ class ASelectFile extends Component{
       }, 233);
     })
     this.dropzone.on("addedfile", (file) => {
+      if(file.size > (1024 * 1024 * 5)){
+        alert('Sorry, proof of concept is restricted to 5mb');
+        window.location.reload();
+        return false;
+      }
       this.props.fileWasSelected(true);      
       if(this.state.hasDropped === false){
         this.setState({ hasDropped: true });

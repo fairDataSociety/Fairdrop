@@ -150,14 +150,14 @@ class ASelectFile extends Component{
             (message) => {
               this.setState({feedbackMessage: message});
             }
-          ).then((newMailBox)=>{
+          ).then((response)=>{
             this.setState({feedbackMessage: 'mailbox generated...'}); 
             let serialisedWallet = {
-              address: newMailBox.wallet.wallet.getAddressString(),
-              publicKey: newMailBox.wallet.wallet.getPublicKeyString(),
-              privateKey: newMailBox.wallet.wallet.getPrivateKeyString()
+              address: response.wallet.wallet.getAddressString(),
+              publicKey: response.wallet.wallet.getPublicKeyString(),
+              privateKey: response.wallet.wallet.getPrivateKeyString()
             }               
-            this.props.setSelectedMailbox(newMailBox, serialisedWallet);
+            this.props.setSelectedMailbox(response.mailbox, serialisedWallet);
             this.props.mailboxUnlocked();
           });
         }

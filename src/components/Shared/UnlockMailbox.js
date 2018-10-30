@@ -32,7 +32,7 @@ class UnlockMailbox extends Component{
       mailboxIsUnlocked: false
     });
     setTimeout(()=>{
-      dWallet.fromJSON(mailbox.wallet.walletV3, password).then((wallet)=>{
+      dWallet.fromJSON(mailbox.wallet, password).then((wallet)=>{
         let serialisedWallet = {
           address: wallet.getAddressString(),
           publicKey: wallet.getPublicKeyString(),

@@ -106,11 +106,11 @@ class DMailbox {
           let mailbox = new Mailbox({
             // order: this.getAll().length + 1,
             subdomain: subdomain,
-            wallet: wallet
+            wallet: wallet.walletV3
           });
           this.mailboxes.push(mailbox);
           this.saveAll();
-          return mailbox;
+          return {mailbox: mailbox, wallet: wallet};
         });
       }else{
         return false;

@@ -229,7 +229,7 @@ class DTransferMailbox extends Component{
                   <div>
                     {this.state.shownMessages.map((message)=>{
                       return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveSentFile(message); } }>
-                          <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                          <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
                           <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
                           <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
                           <div className="dt-info-filesender">from: { message.from }</div>
@@ -241,7 +241,7 @@ class DTransferMailbox extends Component{
                   <div>
                     {this.state.shownMessages.map((message)=>{
                       return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveSentFile(message); } }>
-                          <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                          <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
                           <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
                           <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
                           <div className="dt-info-filerecipient">to: { message.to }</div>
@@ -253,7 +253,7 @@ class DTransferMailbox extends Component{
                   <div>
                     {this.state.shownMessages.map((message)=>{
                       return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveStoredFile(message); } }>
-                          <img className="dt-file-icon" src="/assets/images/file-icon.svg" alt="File Icon"/>
+                          <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
                           <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
                           <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
                         </div>

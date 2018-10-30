@@ -9,7 +9,7 @@ class FCompleted extends Component{
           <div className={"dt-info " + (this.props.parentState.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of dt-select-file */}
             <div className="dt-info-content">
               <div className="dt-file-was-sent">
-                <img className="dt-circle-tick" src="/assets/images/circle-tick.svg" alt="Circle Tick"/>
+                <img className="dt-circle-tick" src="assets/images/circle-tick.svg" alt="Circle Tick"/>
                 File is {this.props.parentState.isStoringFile === false ? 'sent.' : 'stored.'}
               </div>
               <div className="dt-info-filename">
@@ -18,7 +18,7 @@ class FCompleted extends Component{
               </div>
               
               <div className="dt-info-is-encrypted">
-                <img className="dt-fairdrop-lock" src="/assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
+                <img className="dt-fairdrop-lock" src="assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
               </div>
 
               {this.props.parentState.fileWasUploaded &&

@@ -28,7 +28,7 @@ class DDrop{
     var i = 0;
     let dropInt = setInterval(()=>{
       i = i+1;
-      if(i>6){
+      if(i>4){
         clearInterval(dropInt);
       }
       this.dropRing(className, locationX, locationY);

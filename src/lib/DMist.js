@@ -14,9 +14,9 @@ class DMist{
         center center, 
         50% 50%, 
         ${color1} 0%, 
-        ${color2} 50%, 
+        ${color2} 90%, 
         ${color3} 100%);
-      animation: dfmist 10s infinite;
+      animation: dfmist 6s infinite;
       background-position: ${x}px ${y}px;
       animation-delay: ${delay}s;
     `;

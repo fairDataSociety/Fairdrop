@@ -2,7 +2,7 @@ class MitchellsBestCandidate{
 
   constructor(opts = {}){
     this.placedDots = []
-    let sampleSize = opts.sampleSize || 10;
+    let sampleSize = opts.sampleSize || 5;
     return this.generateCoordinates(sampleSize);
   }
 

@@ -123,12 +123,14 @@ class App extends Component {
               <p>Behold and welcome on our Fairdata.eth beta version of the website, provided to you on an “as is”  basis, which is still undergoing final testing before its official release. </p>
               <p>Beware, we do not give any warranties as to the suitability or usability of the website, data persistence or any of the content. We will not be liable for any loss suffered resulting from your use of the Fairdata.eth website. Real time distribution: you use it on your own risk.</p>
               <ul>
-                <li>files may not persist in the swarm network</li>
-                <li>at present metadata is exposed</li>
+                <li>files are not guaranteed persist in the swarm network</li>
+                <li>we will delete file references</li>
+                <li>at present metadata is unencrypted</li>
                 <li>messaging db is very primitive and subject to change</li>
                 <li>encryption is primitive - no forward secrecy or salting of diffie hellman at present</li>
                 <li>subdomains will expire</li>
-                <li>running on ropsten</li>
+                <li>running on ropsten - expect mailbox</li>
+                <li>don't store or send anything you can't afford to lose!</li>
               </ul>
               <h3>I understand - let me in!</h3>
             </div>
@@ -139,7 +141,7 @@ class App extends Component {
             <div className="dt-nav-header-items">
               <a href="?mailbox=false">
                 <svg id="dt-datafund-d" version="1.1" x="0px" y="0px"
-                    viewBox="0 0 68 68" enable-background="new 0 0 68 68">
+                    viewBox="0 0 68 68" enableBackground="new 0 0 68 68">
                   <polygon id="Fill-15" points="30.084,52.387 34.696,52.387 34.696,16.724 30.084,16.724 "/>
                   <path id="Fill-17" d="M30.402,5.932H22.94H4.949v57.136h16.974h8.479c18.262,0,31.611-10.465,31.611-28.516
                     C62.014,15.865,48.664,5.932,30.402,5.932 M30.402,10.544c16.907,0,27,8.975,27,24.008c0,14.746-10.347,23.904-27,23.904h-8.479
@@ -194,7 +196,7 @@ class App extends Component {
             </div>
           </div>
           <div className="dt-nav-key-wrapper">
-            <div className="dt-nav-key" onClick={ () => window.location.href = "/?mailbox" }>
+            <div className="dt-nav-key" onClick={ () => window.location.href = "?mailbox=true" }>
             <svg alt="Fairdrop Inbox"
               version="1.1" id="Layer_1" height="32px" viewBox="0 0 400 400">
               <path d="M193.571,208.877c0.782,0.497,1.6,0.915,2.47,1.227c3.234,1.119,8.611,0.933,11.49-1.014

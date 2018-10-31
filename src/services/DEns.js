@@ -31,7 +31,7 @@ class DEns {
     this.ensRegistryContract = new this.web3.eth.Contract(ensRegistryInterface);
     this.ensRegistryContract.options.address = registryAddress;
 
-    this.gasPrice = this.web3.utils.toWei('15', 'gwei');
+    this.gasPrice = this.web3.utils.toWei('100', 'gwei');
 
     if(options.fifsRegistrarContractAddress === undefined) throw new Error('fifsRegistrarContractAddress must be provided');
 
@@ -161,6 +161,7 @@ class DEns {
       to: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS, //fifs registrar contract address
       data: dataTx,
       gas: 800000,
+      gasPrice: this.gasPrice
       // nonce: 11 //tbc......
     };
     
@@ -183,6 +184,7 @@ class DEns {
       to: registryAddress, //fifs registrar contract address
       data: dataTx,
       gas: 510000,
+      gasPrice: this.gasPrice
       // nonce: 11 //tbc......
     };
 
@@ -209,6 +211,7 @@ class DEns {
       to: this.resolverContractAddress,
       data: dataTx,
       gas: 510000,
+      gasPrice: this.gasPrice
       // nonce: 11 //tbc......
     };
 
@@ -245,6 +248,7 @@ class DEns {
       to: this.resolverContractAddress, //fifs registrar contract address
       data: dataTx,
       gas: 510000,
+      gasPrice: this.gasPrice
       // nonce: 11 //tbc......
     };
 

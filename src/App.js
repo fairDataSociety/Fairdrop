@@ -129,7 +129,7 @@ class App extends Component {
                 <li>messaging db is very primitive and subject to change</li>
                 <li>encryption is primitive - no forward secrecy or salting of diffie hellman at present</li>
                 <li>subdomains will expire</li>
-                <li>running on ropsten - expect mailbox</li>
+                <li>running on ropsten - expect mailbox creation to be slooooooowwwwww...</li>
                 <li>don't store or send anything you can't afford to lose!</li>
               </ul>
               <h3>I understand - let me in!</h3>

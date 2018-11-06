@@ -31,7 +31,7 @@ class DEns {
     this.ensRegistryContract = new this.web3.eth.Contract(ensRegistryInterface);
     this.ensRegistryContract.options.address = registryAddress;
 
-    this.gasPrice = this.web3.utils.toWei('100', 'gwei');
+    this.gasPrice = this.web3.utils.toWei('50', 'gwei');
 
     if(options.fifsRegistrarContractAddress === undefined) throw new Error('fifsRegistrarContractAddress must be provided');
 
@@ -103,7 +103,8 @@ class DEns {
   registerSubdomainToAddress(subdomain, address, wallet, feedbackMessageCallback = false){
     if(feedbackMessageCallback) feedbackMessageCallback('verifying subdomain, waiting for node...');    
     this.registerSubdomainToAddressState = 0;
-
+    console.log('registering subdomiain, gas price: '+ this.gasPrice);
+    console.time('registered subdomain');
     return this.getSubdomainAvailiability(subdomain).then((availability)=>{
       if(availability){
         feedbackMessageCallback('gifting you eth to cover your gas costs! <3 ');
@@ -115,30 +116,24 @@ class DEns {
 
         return this.ensureHasBalance(address).then((balance)=>{
           feedbackMessageCallback('registering subdomain...');
-          return this.registerSubdomain(subdomain, wallet).then((tx)=>{
-            this.registerSubdomainToAddressState = 1;
-            if(feedbackMessageCallback) feedbackMessageCallback('setting resolver...');
-            return this.setResolver(subdomain, wallet).then((tx2)=>{  // must be contract owner :-/
-              this.registerSubdomainToAddressState = 2; 
-              if(feedbackMessageCallback) feedbackMessageCallback('registering to your address, waiting for tx...');                 
-              console.log(tx2);
-              return this.setAddr(subdomain, address, wallet).then((tx3)=>{ // May only be called by the owner of that node in the ENS registry.
-                this.registerSubdomainToAddressState = 3;                      
-                if(feedbackMessageCallback) feedbackMessageCallback('registering your public key, waiting for tx...');                             
-                console.log(tx3);
-                return this.setPubKey(subdomain, wallet).then((tx4)=>{ // May only be called by the owner of that node in the ENS registry.
-                  this.registerSubdomainToAddressState = 4;
-                  console.log(tx4.transactionHash);
-                  return tx4.transactionHash;
-                  // return this.setSubnodeOwner(subdomain, address).then((tx5)=>{
-                  //   this.registerSubdomainToAddressState = 5;
-                  //   console.log(tx5);
-                  //   console.timeEnd('registered');
-                  // });
-                });
-              });
+          return this.web3.eth.getTransactionCount(wallet.wallet.getAddressString()).then((nonce) => {
+            this.registerSubdomain(subdomain, wallet, nonce).then((hash)=>{
+              feedbackMessageCallback('setting resolver...');
             });
-          })
+            nonce = nonce + 1;
+            this.setResolver(subdomain, wallet, nonce).then((hash)=>{
+              feedbackMessageCallback('setting address...');
+            });
+            nonce = nonce + 1;
+            this.setAddr(subdomain, address, wallet, nonce).then((hash)=>{ 
+              feedbackMessageCallback('setting public key...');
+            });
+            nonce = nonce + 1;
+            return this.setPubKey(subdomain, wallet, nonce).then((response)=>{
+              console.timeEnd('registered subdomain')
+              return response;
+            });
+          });
         });
       }else{
         return false;
@@ -153,7 +148,7 @@ class DEns {
     })
   }
 
-  registerSubdomain(subdomain, wallet){
+  registerSubdomain(subdomain, wallet, nonce){
     let dataTx = this.fifsRegistrarContract.methods.register(this.web3.utils.sha3(subdomain), wallet.wallet.getAddressString()).encodeABI();
     let privateKey = wallet.wallet.getPrivateKeyString();
     let tx = {
@@ -161,19 +156,22 @@ class DEns {
       to: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS, //fifs registrar contract address
       data: dataTx,
       gas: 800000,
-      gasPrice: this.gasPrice
-      // nonce: 11 //tbc......
+      gasPrice: this.gasPrice,
+      nonce: nonce
     };
     
     return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
       return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
-        .once('transactionHash', function(hash){ 
+        .once('receipt', function(hash){ 
           return hash;
+        })
+        .once('transactionHash', function(hash){ 
+          console.log('t',hash)
         });
     });
   }
 
-  setResolver(subdomain, wallet){
+  setResolver(subdomain, wallet, nonce){
     let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
     let addr = this.resolverContractAddress;
 
@@ -184,20 +182,21 @@ class DEns {
       to: registryAddress, //fifs registrar contract address
       data: dataTx,
       gas: 510000,
-      gasPrice: this.gasPrice
+      gasPrice: this.gasPrice,
+      nonce: nonce
       // nonce: 11 //tbc......
     };
 
     return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
       return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
-        .once('transactionHash', function(hash){ 
+        .once('receipt', function(hash){ 
           return hash;
         });
     });
 
   }
 
-  setAddr(subdomain, address, wallet){
+  setAddr(subdomain, address, wallet, nonce){
     // let node = namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME);
     // let addr = wallet.wallet.getAddressString();
 
@@ -211,20 +210,21 @@ class DEns {
       to: this.resolverContractAddress,
       data: dataTx,
       gas: 510000,
-      gasPrice: this.gasPrice
+      gasPrice: this.gasPrice,
+      nonce: nonce
       // nonce: 11 //tbc......
     };
 
     return this.web3.eth.accounts.signTransaction(tx, privateKey).then((signed) => {
       return this.web3.eth.sendSignedTransaction(signed.rawTransaction)
-        .once('transactionHash', function(hash){ 
+        .once('receipt', function(hash){ 
           return hash;
         });
     });
 
   }
 
-  setPubKey(subdomain, wallet){
+  setPubKey(subdomain, wallet, nonce){
     let publicKey = wallet.wallet.getPublicKeyString();
     let publicKeyX = publicKey.substring(0,66);
     let publicKeyY = "0x"+publicKey.substring(66,130);
@@ -248,7 +248,8 @@ class DEns {
       to: this.resolverContractAddress, //fifs registrar contract address
       data: dataTx,
       gas: 510000,
-      gasPrice: this.gasPrice
+      gasPrice: this.gasPrice,
+      nonce: nonce
       // nonce: 11 //tbc......
     };
 
@@ -261,7 +262,7 @@ class DEns {
 
   } 
 
-  getPubKey(subdomain){
+  getPubKey(subdomain, nonce){
     return  this.resolverContract.methods
       .pubkey(namehash.hash(subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME))
       .call()
@@ -275,18 +276,18 @@ class DEns {
       });
   }
 
-  setSubnodeOwner(subdomain, address){
-    return this.ens.setSubnodeOwner(
-      subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME,
-      address, 
-      {
-        from: this.web3.eth.accounts[0],
-      }
-    ).then((tx) => {
-      console.log('setting subnode owner to ' + address + ', watching...');
-      return this.watchTx(tx);
-    });
-  }
+  // setSubnodeOwner(subdomain, address){
+  //   return this.ens.setSubnodeOwner(
+  //     subdomain + '.'+ process.env.REACT_APP_DOMAIN_NAME,
+  //     address, 
+  //     {
+  //       from: this.web3.eth.accounts[0],
+  //     }
+  //   ).then((tx) => {
+  //     console.log('setting subnode owner to ' + address + ', watching...');
+  //     return this.watchTx(tx);
+  //   });
+  // }
 
 }
 

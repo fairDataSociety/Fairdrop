@@ -26,32 +26,6 @@ class DTransfer {
     });
   }
 
-
-  bufferToBlob(buffer, fileName, mimeType){
-    var f = new File([buffer], fileName, {type: mimeType});
-    return f;
-  }
-
-  blobToBuffer(blob) {
-    return new Promise((resolve, reject)=>{
-      toBuffer(blob, function (err, buffer) {
-        if (err) {
-          reject(err);
-        }else{
-          resolve(buffer);
-        }
-      })
-    })    
-  }
-
-  encryptBlob(blob, password) {
-    return this.blobToBuffer(blob).then((buffer)=>{
-      var crypted = this.encryptBuffer(buffer, password);
-      var f = new File([crypted], blob.name + ".encrypted", {type: blob.type});
-      return f;
-    });
-  }
-
   decryptBuffer(buffer, password){
     var decipher = Crypto.createDecipher('aes-256-ctr', password);
     var dec = decipher.update(buffer);

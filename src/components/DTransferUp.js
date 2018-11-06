@@ -91,7 +91,6 @@ class DTransferUp extends Component{
         return DMailbox.getSharedSecret(senderWallet, addressee).then((sharedSecret) => {
           this.setState({encryptMessage: 'Encrypting...'});
           return this.DT.encryptBuffer(window.selectedFileArrayBuffer, sharedSecret).then((encryptedBuffer)=>{
-            // let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
             this.setState({fileWasEncrypted: true});
@@ -123,7 +122,6 @@ class DTransferUp extends Component{
         let privateKey = this.state.selectedWallet.privateKey;
         this.setState({encryptMessage: 'Encrypting...'});
         return this.DT.encryptBuffer(window.selectedFileArrayBuffer, privateKey).then((encryptedBuffer)=>{
-          // let encryptedFile = this.DT.bufferToBlob(encryptedBuffer, this.state.selectedFileName, this.state.selectedFileType);
           this.setState({encryptMessage: 'Encrypted'});
           this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
           this.setState({fileWasEncrypted: true});

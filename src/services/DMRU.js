@@ -7,17 +7,70 @@ class DMRU {
     this.swarmNode = swarmNode;
   }
 
-  getResource (topicName, owner) {
-    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
+  get(topicName, owner){
+    return this.getResource(topicName, owner).then((hash)=>{
+      return this.sendRequest(`/bzz-raw:/${hash}/`, 'GET', 'text');
+    });
+  }
+
+  set(privateKey, topicName, data){
+    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');        
+    return this.sendRequest('/bzz-raw:/', 'POST', 'text', web3.utils.toHex(data)).then((hash) => {
+      return this.updateResource(privateKey, topic, web3.utils.toHex(hash));
+    });
+  }
+
+  getResource(topicName, owner) {
+    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');
     return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}`,
-    'GET', 'text', null)
+    'GET');
+  }
+
+  getMeta (topicName, owner) {
+    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
+    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}&meta=1`,
+    'GET', 'text', null);
   }
 
   handleUpdate(privateKey, topicName, dataString) {
     let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');
     let data = web3.utils.toHex(dataString);
     return this.updateResource(privateKey, topic, data);
-  }  
+  }
+
+  updateResource(privateKey, topic, state) {
+    const data = web3.utils.padLeft(state, 2, '0');
+    // console.log('Updating topic', topic, 'with', data);
+
+    web3.eth.accounts.wallet.add(privateKey);
+    const account = web3.eth.accounts.wallet[0].address;
+
+    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${account}&meta=1`, 'GET', 'text', null).then((response) => {
+      const metaResponse = JSON.parse(response);
+
+      const resourceUpdate = {
+        topic,
+        data,
+        user: account,
+        time: metaResponse.epoch.time,
+        level: metaResponse.epoch.level,
+      };
+
+      // console.log('Resource update', resourceUpdate)
+      const dataBytes = web3.utils.hexToBytes(data);
+      const dataToSign = this.feedUpdateDigest(metaResponse, dataBytes);
+      // console.log('Data to sign', dataToSign, 'by account', account);
+
+      const secp256k1 = require('secp256k1');
+      const sigObj = secp256k1.sign(Buffer.from(web3.utils.hexToBytes(dataToSign)), Buffer.from(web3.utils.hexToBytes(privateKey)));
+      // console.log(sigObj.signature.toString('hex'), sigObj.recovery)
+      const signature = `0x${sigObj.signature.toString('hex')}0${sigObj.recovery.toString()}`;
+      // console.log('Signature', signature);
+
+      return this.sendRequest(`/bzz-feed:/?topic=${resourceUpdate.topic}&user=${resourceUpdate.user}&level=${resourceUpdate.level}&time=${resourceUpdate.time}&signature=${signature}`,
+        'POST', 'text', data);
+      })
+  }
 
   feedUpdateDigest(request, data) {
     let topicBytes;
@@ -122,47 +175,6 @@ class DMRU {
         xhttp.send();
       }
     });
-  }
-
-  updateResource(privateKey, topic, state) {
-    const data = web3.utils.padLeft(state, 2, '0');
-    // console.log('Updating topic', topic, 'with', data);
-
-    web3.eth.accounts.wallet.add(privateKey);
-    const account = web3.eth.accounts.wallet[0].address;
-
-    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${account}&meta=1`, 'GET', 'text', null).then((response) => {
-      const metaResponse = JSON.parse(response);
-
-      const resourceUpdate = {
-        topic,
-        data,
-        user: account,
-        time: metaResponse.epoch.time,
-        level: metaResponse.epoch.level,
-      };
-
-      // console.log('Resource update', resourceUpdate)
-      const dataBytes = web3.utils.hexToBytes(data);
-      const dataToSign = this.feedUpdateDigest(metaResponse, dataBytes);
-      // console.log('Data to sign', dataToSign, 'by account', account);
-
-      const secp256k1 = require('secp256k1');
-      const sigObj = secp256k1.sign(Buffer.from(web3.utils.hexToBytes(dataToSign)), Buffer.from(web3.utils.hexToBytes(privateKey)));
-      // console.log(sigObj.signature.toString('hex'), sigObj.recovery)
-      const signature = `0x${sigObj.signature.toString('hex')}0${sigObj.recovery.toString()}`;
-      // console.log('Signature', signature);
-
-      return this.sendRequest(`/bzz-feed:/?topic=${resourceUpdate.topic}&user=${resourceUpdate.user}&level=${resourceUpdate.level}&time=${resourceUpdate.time}&signature=${signature}`,
-        'POST', 'text', data);
-      })
-
-  }
-
-  getMeta (topicName, owner) {
-    let topic = web3.utils.padRight(web3.utils.toHex(topicName), 64, '0');    
-    return this.sendRequest(`/bzz-feed:/?topic=${topic}&user=${owner}&meta=1`,
-    'GET', 'text', null);
   }
 
 }

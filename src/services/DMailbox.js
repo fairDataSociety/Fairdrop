@@ -5,7 +5,7 @@ import Crypto from 'crypto'
 import DMRU from './DMRU'
 
 let MRU = new DMRU(process.env.REACT_APP_SWARM_GATEWAY);
-let topicName = 'fairdrop-test-2-0';
+let topicName = 'fairdrop-test-3-0';
 
 // use this to init a new topic name for now
 
@@ -56,7 +56,7 @@ class DMailbox {
   }
 
   getAllStoredFiles(wallet){
-    return MRU.getResource(topicName, wallet.address).then((response)=>{
+    return MRU.get(topicName, wallet.address).then((response)=>{
       return JSON.parse(response).storedFiles;
     }).catch(()=>{
       return [];
@@ -66,14 +66,14 @@ class DMailbox {
   saveMessage(message){
     return this.getAllMessages().then((messages)=>{
       messages.push(message.toJSON());
-      return MRU.handleUpdate('0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
+      return MRU.set('0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
       // localStorage.setItem('messages', JSON.stringify(messages));
     });
   }
 
   getAllMessages(){
     // let messagesJSON = localStorage.getItem('messages') !== null ? localStorage.getItem('messages') : '[]';
-    return MRU.getResource(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
+    return MRU.get(topicName, '0x1de9349041b78881e70c02f21e16c4a2a83292d1').then((response)=>{
       return JSON.parse(response).messages;
     }).catch(()=>{
       return [];

@@ -2,9 +2,10 @@ import DEns from './DEns.js';
 import DWallet from '../services/DWallet';
 import Crypto from 'crypto'
 
-import DMRU from './DMRU'
-
-let MRU = new DMRU(process.env.REACT_APP_SWARM_GATEWAY);
+import SwarmFeeds from 'swarm-feeds'
+// import DMRU from './DMRU'
+console.log(SwarmFeeds)
+let MRU = new SwarmFeeds(process.env.REACT_APP_SWARM_GATEWAY);
 let topicName = 'fairdrop-test-3-0';
 
 // use this to init a new topic name for now
@@ -50,7 +51,7 @@ class DMailbox {
   storeFile(wallet, fileData){
     return this.getAllStoredFiles(wallet).then((storedFiles)=>{
       storedFiles.push(fileData.toJSON());
-      return MRU.handleUpdate(wallet.privateKey, topicName, JSON.stringify({storedFiles: storedFiles}));
+      return MRU.set(wallet.address, wallet.privateKey, topicName, JSON.stringify({storedFiles: storedFiles}));
       // localStorage.setItem('messages', JSON.stringify(messages));
     });
   }
@@ -66,7 +67,7 @@ class DMailbox {
   saveMessage(message){
     return this.getAllMessages().then((messages)=>{
       messages.push(message.toJSON());
-      return MRU.set('0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
+      return MRU.set('0x1de9349041b78881e70c02f21e16c4a2a83292d1', '0x211783EA426F0FBD5AB98EE2A0B1307D45F666A8F45524D39EF735DB94788CF4', topicName, JSON.stringify({messages: messages}));
       // localStorage.setItem('messages', JSON.stringify(messages));
     });
   }

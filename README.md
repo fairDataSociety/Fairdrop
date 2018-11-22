@@ -1,15 +1,9 @@
-# DTransfer
+# Fairdrop
 
 install...
 
 `yarn`
 
-run server...
+run devserver...
 
 `yarn start`
-
-run tests...
-
-`yarn test`
-
-

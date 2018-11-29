@@ -101,6 +101,7 @@ class DMailbox {
 
   getMessages(type, subdomain) {
     return this.getAllMessages().then((messages)=>{
+      messages = messages.filter((message) => {return message !== null});
       switch(type) {
         case 'received':
           return messages.filter(message => message.to === subdomain)

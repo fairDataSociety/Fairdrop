@@ -22,8 +22,9 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.0",
     "swarm-feeds": "git+ssh://git@gitlab.datafund.net:significance/swarm-feeds.git",
-    "web3": "npm:web3@v1.0.0-beta.34",
-    "zxcvbn": "^4.4.2"
+    "web3": "1.0.0-beta.34",
+    "zxcvbn": "^4.4.2",
+    "fds": "^1.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -36,5 +37,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {}
 }

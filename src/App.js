@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
+import FDS from 'fds';
 
 import DTransfer from "./services/DTransfer";
 import FileSaver from 'file-saver';
 import DTransferUp from "./components/DTransferUp";
 import DTransferMailbox from "./components/DTransferMailbox";
+
 import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
 
 class App extends Component {
 
+  // handle initial application state
   getInitialState() {
     let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
 
     return {
-      // download file
       isStoringFile: false,      
       fileIsSelected: false,
       fileWasSelected: false,
@@ -32,6 +34,25 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+
+    this.FDS = new FDS({
+      swarmGateway: 'http://localhost:8500', 
+      ethGateway: 'http://localhost:8545', 
+      ensConfig: {
+        faucetAddress: 'http://localhost:3001/gimmie',
+        domain: 'resolver.eth',
+        registryAddress: '0x4916cf0632485bab3c396c96f09ec62f2a6d4084',
+        fifsRegistrarContractAddress: '0x30555534c2a94d5b73cbfa3ac8adf8151fe23fd8',
+        resolverContractAddress: '0xac4b6917475a9cf86e6588a248017eb2a07b7afa'
+      },
+      accountStore: {
+        method: 'filesystem',
+        location: '~/.fds/accounts'
+      }
+    });
+
+    window.FDS = this.FDS;
+
     this.dTransferUp = React.createRef();
 
     this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
@@ -44,51 +65,51 @@ class App extends Component {
     this.state = this.getInitialState();
   }
 
-  retrieveFile(swarmHash, fileName, mimeType, isEncrypted){
-    return this.DT.getFile(swarmHash, fileName).then((retrievedFile)=>{
-      this.setState({findFileFeedBackMessage: "Decrypting file..."});
-      if(isEncrypted){
-        setTimeout(()=>{
-          let password = prompt('Please enter your file\'s passphrase');
-          if(password){
-            let decryptedFileName = fileName.replace(/\.encrypted$/,'');          
-            let decryptedFile = this.DT.decryptedFile(retrievedFile, password, decryptedFileName, mimeType);
-            this.setState({findFileFeedBackMessage: "Downloading file..."}); 
-            FileSaver.saveAs(decryptedFile);
-          }else{
-            alert('Sorry, you must provide a password to download your file!');
-            this.retrieveFile(swarmHash, fileName, mimeType);
-          }
-        },500);
-      }else{
-        FileSaver.saveAs(new File([retrievedFile], fileName, {type: mimeType}));
-      }
-    }).catch((error)=>{
-      this.setState({findFileFeedBackMessage: "Sorry, we couldn't find that hash."});      
-    })
-  }
+  // retrieveFile(swarmHash, fileName, mimeType, isEncrypted){
+  //   return this.DT.getFile(swarmHash, fileName).then((retrievedFile)=>{
+  //     this.setState({findFileFeedBackMessage: "Decrypting file..."});
+  //     if(isEncrypted){
+  //       setTimeout(()=>{
+  //         let password = prompt('Please enter your file\'s passphrase');
+  //         if(password){
+  //           let decryptedFileName = fileName.replace(/\.encrypted$/,'');          
+  //           let decryptedFile = this.DT.decryptedFile(retrievedFile, password, decryptedFileName, mimeType);
+  //           this.setState({findFileFeedBackMessage: "Downloading file..."}); 
+  //           FileSaver.saveAs(decryptedFile);
+  //         }else{
+  //           alert('Sorry, you must provide a password to download your file!');
+  //           this.retrieveFile(swarmHash, fileName, mimeType);
+  //         }
+  //       },500);
+  //     }else{
+  //       FileSaver.saveAs(new File([retrievedFile], fileName, {type: mimeType}));
+  //     }
+  //   }).catch((error)=>{
+  //     this.setState({findFileFeedBackMessage: "Sorry, we couldn't find that hash."});      
+  //   })
+  // }
 
-  componentDidMount(){
-    var urlParams = new URLSearchParams(window.location.search);
-    let swarmHash = urlParams.get('swarmHash');      
-    let fileName = urlParams.get('fileName'); 
-    let mimeType = urlParams.get('mimeType'); 
-    let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
+  // componentDidMount(){
+  //   var urlParams = new URLSearchParams(window.location.search);
+  //   let swarmHash = urlParams.get('swarmHash');      
+  //   let fileName = urlParams.get('fileName'); 
+  //   let mimeType = urlParams.get('mimeType'); 
+  //   let isEncrypted = urlParams.get('isEncrypted') === 'true'; 
 
-    if(swarmHash && fileName){
-      this.setState({
-        isDownloading: true,
-        swarmHash: swarmHash,
-        fileName: fileName,
-        mimeType: mimeType,
-        findingFile: true,
-        fileIsDecrypting: false
-      });
+  //   if(swarmHash && fileName){
+  //     this.setState({
+  //       isDownloading: true,
+  //       swarmHash: swarmHash,
+  //       fileName: fileName,
+  //       mimeType: mimeType,
+  //       findingFile: true,
+  //       fileIsDecrypting: false
+  //     });
       
-      this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
-    }
+  //     this.retrieveFile(swarmHash, fileName, mimeType, isEncrypted);
+  //   }
 
-  }
+  // }
 
   setIsSelecting(state = true){
     this.setState({fileIsSelecting: state});
@@ -213,6 +234,7 @@ class App extends Component {
   
           <Route exact={true} path="/" render={ () => {
               return <DTransferUp 
+                FDS={this.FDS}
                 fileWasSelected={this.fileWasSelected} 
                 setIsSelecting={this.setIsSelecting} 
                 ref={this.dTransferUp} 
@@ -221,7 +243,9 @@ class App extends Component {
             }
           }/>
 
-          <Route path="/mailbox" component={DTransferMailbox} />
+          <Route path="/mailbox" render={() => {
+            return <DTransferMailbox FDS={this.FDS}></DTransferMailbox>
+          }} />
   
           <div className="dt-network-status">
             <div className="dt-network-status-ethereum">
@@ -232,7 +256,7 @@ class App extends Component {
             </div> {/* dt-network-status-swarm */}
           </div>
         </div>
-      </div>        
+      </div>
     );
   }
 }

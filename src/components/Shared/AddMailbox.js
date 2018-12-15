@@ -6,6 +6,8 @@ class ASelectFile extends Component{
   constructor(props) {
     super(props);
 
+    this.FDS = props.FDS;
+
     this.state = {
       feedbackMessage: "",
       mailboxName: false,
@@ -38,6 +40,8 @@ class ASelectFile extends Component{
     });
 
     return new Promise((resolve, reject)=>{
+      // x
+      // is mailbox name valid, available (need to expose this)
       if(mailboxName && DMailbox.isMailboxNameValid(mailboxName)){
         return DMailbox.isMailboxNameAvailable(mailboxName).then((result) => {
           if(result === true){
@@ -135,35 +139,53 @@ class ASelectFile extends Component{
   // }
 
 
+  // x
+    // FDS.createAccount();
+  // x
+
+
   addMailbox(e){
-    e.preventDefault();    
-    if(this.processMailboxPassword() === false){
-      // password must be valid
-      return;
-    }else{
-      this.processMailboxName().then((response)=>{
-        if(response !== false){
-          this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
-          DMailbox.create(
-            this.state.mailboxName, 
-            this.state.password, 
-            (message) => {
-              this.setState({feedbackMessage: message});
-            }
-          ).then((response)=>{
-            this.setState({feedbackMessage: 'mailbox generated...'}); 
-            let serialisedWallet = {
-              address: response.wallet.wallet.getAddressString(),
-              publicKey: response.wallet.wallet.getPublicKeyString(),
-              privateKey: response.wallet.wallet.getPrivateKeyString()
-            }               
-            this.props.setSelectedMailbox(response.mailbox, serialisedWallet);
-            this.props.mailboxUnlocked();
-          });
-        }
-      });
-      //add the mailbox and select it
-    }
+    e.preventDefault();
+
+    this.FDS.CreateAccount(this.state.mailboxName, this.state.password, (message) => {
+      this.setState({feedbackMessage: message});
+    }).then((account)=>{
+      this.setState({feedbackMessage: 'mailbox generated...'}); 
+      this.props.setSelectedMailbox(account);
+      this.props.mailboxUnlocked();      
+    }).catch((error)=>{
+      this.setState({feedbackMessage: error});
+    });
+
+    // if(this.processMailboxPassword() === false){
+    //   // password must be valid
+    //   return;
+    // }else{
+    //   this.processMailboxName().then((response)=>{
+    //     if(response !== false){
+    //       this.setState({feedbackMessage: 'generating mailbox, maths takes a while...'});
+    //       // x
+    //       // create mailbox
+    //       DMailbox.create(
+    //         this.state.mailboxName, 
+    //         this.state.password, 
+    //         (message) => {
+    //           this.setState({feedbackMessage: message});
+    //         }
+    //       ).then((response)=>{
+    //         this.setState({feedbackMessage: 'mailbox generated...'}); 
+    //         let serialisedWallet = {
+    //           address: response.wallet.wallet.getAddressString(),
+    //           publicKey: response.wallet.wallet.getPublicKeyString(),
+    //           privateKey: response.wallet.wallet.getPrivateKeyString()
+    //         }               
+    //         this.props.setSelectedMailbox(response.mailbox, serialisedWallet);
+    //         this.props.mailboxUnlocked();
+    //       });
+    //     }
+    //   });
+    //   //add the mailbox and select it
+    // }
   }
 
   render(){

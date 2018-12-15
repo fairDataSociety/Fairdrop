@@ -8,7 +8,6 @@ class ASelectFile extends Component{
   
   constructor(props) {
     super(props);
-    this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
     this.state = { hasDropped: false }
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
   }
@@ -26,7 +25,7 @@ class ASelectFile extends Component{
         var reader = new FileReader();
         reader.addEventListener("loadend", 
           function(event) { 
-            // for now, todo -> encrypt this into local file system!
+            // for now, todo -> encrypt this into local file system?
             window.selectedFileArrayBuffer = event.target.result;
           });
         reader.readAsArrayBuffer(file);
@@ -71,7 +70,6 @@ class ASelectFile extends Component{
       }, 1555)
     });
   }
-
 
   handleClickSelectFile(e){
     e.preventDefault();

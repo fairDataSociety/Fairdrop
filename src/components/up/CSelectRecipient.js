@@ -5,6 +5,9 @@ class CSelectRecipient extends Component{
   
   constructor(props) {
     super(props);
+
+    this.FDS = props.FDS;
+
     this.handleSelectRecipient = this.handleSelectRecipient.bind(this);    
     this.handleUploadAndEncrypt = this.handleUploadAndEncrypt.bind(this);    
 
@@ -33,8 +36,10 @@ class CSelectRecipient extends Component{
       feedbackMessage: "Finding mailbox..."        
     });
 
-    DMailbox.getPubKey(mailboxName).then((result) => {
-      if(result === false){
+
+
+    this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {
+      if(result === true){
         throw new Error("Couldn't find that mailbox, please try again...")
       }
       this.setState({

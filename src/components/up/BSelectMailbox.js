@@ -7,10 +7,23 @@ import 'react-dropdown/style.css'
 import AddMailbox from '../Shared/AddMailbox'
 import UnlockMailbox from '../Shared/UnlockMailbox'
 
-class ASelectFile extends Component{
+class BSelectMailbox extends Component{
   
+  constructor(props) {
+    super(props);
+
+    this.FDS = this.props.FDS;
+
+    this.state = this.getInitialState();
+
+    this.addMailbox = this.addMailbox.bind(this);    
+    this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
+
+    this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
+  }
+
   getInitialState(){
-    let mailboxes = DMailbox.getAll();
+    let mailboxes = this.FDS.GetAccounts();
 
     if(mailboxes.length === 0){
       return {
@@ -32,17 +45,6 @@ class ASelectFile extends Component{
         mailboxesExist: true
       }
     }
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = this.getInitialState();
-
-    this.addMailbox = this.addMailbox.bind(this);    
-    this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
-
-    this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
   }
 
   setSelectedMailbox(mailbox, wallet){
@@ -67,7 +69,9 @@ class ASelectFile extends Component{
   }
 
   setUnlockingMailbox(subdomain){
+    // x
     let mailbox = DMailbox.get(subdomain);
+    // x
     this.setState({
       unlockingMailbox: mailbox,
       isUnlockingMailbox: true,
@@ -120,7 +124,8 @@ class ASelectFile extends Component{
                 </div>
                 {this.state.isUnlockingMailbox &&
                   <UnlockMailbox 
-                    mailbox={this.state.unlockingMailbox} 
+                    FDS={this.FDS}
+                    subdomain={this.state.unlockingMailbox}
                     setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                     mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                   />
@@ -131,6 +136,7 @@ class ASelectFile extends Component{
               <div className="dt-page-inner-wrapper">
                 <h1 className="dt-select-account-header">New Mailbox</h1>
                 <AddMailbox 
+                  FDS={this.FDS}
                   setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                   mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                   cancelAddMailbox={this.cancelAddMailbox.bind(this)}
@@ -145,4 +151,4 @@ class ASelectFile extends Component{
   }
 }
 
-export default ASelectFile;
+export default BSelectMailbox;

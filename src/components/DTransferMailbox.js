@@ -14,11 +14,12 @@ class DTransferMailbox extends Component{
 
   componentDidMount(){
     let dm = new DMist();
-    dm.mist('dt-mist');
+    // dm.mist('dt-mist');
   }  
 
   getInitialState(){
-    let mailboxes = DMailbox.getAll();
+    this.FDS = this.props.FDS;
+    let mailboxes = this.FDS.GetAccounts();
 
     if(mailboxes.length === 0){
       return {
@@ -76,82 +77,68 @@ class DTransferMailbox extends Component{
   }
 
   setUnlockingMailbox(subdomain){
-    let mailbox = DMailbox.get(subdomain);
     this.setState({
-      unlockingMailbox: mailbox,
+      unlockingMailbox: subdomain,
       isUnlockingMailbox: true,
       isAddingMailbox: false,
-      dropDownValue: mailbox.subdomain
+      dropDownValue: subdomain
     });
   }
 
-  setSelectedMailbox(mailbox, wallet){
+  setSelectedMailbox(){
     this.setState({
-      selectedMailbox: mailbox,
-      selectedWallet: wallet,
+      selectedMailbox: this.FDS.currentAccount
     });
     this.showReceived();
   }
 
   showSent(){
-    DMailbox.getMessages('sent', this.state.selectedMailbox.subdomain).then((messagesSent)=>{
+    this.FDS.currentAccount.messages('sent').then((messages)=>{
       this.setState({
         shownMessageType: 'sent',
-        shownMessages: messagesSent,
+        shownMessages: messages
       });
-    });
+    });    
   }
 
   showReceived(){
-    DMailbox.getMessages('received', this.state.selectedMailbox.subdomain)
-    .then((messagesReceived)=>{
+    this.FDS.currentAccount.messages('received').then((messages)=>{
       this.setState({
         shownMessageType: 'received',
-        shownMessages: messagesReceived,
+        shownMessages: messages
       });
     });
   } 
 
   showStored(){
-    DMailbox.getAllStoredFiles(this.state.selectedWallet)
-    .then((storedFiles)=>{
+    this.FDS.currentAccount.stored().then((messages)=>{
       this.setState({
         shownMessageType: 'stored',
-        shownMessages: storedFiles,
+        shownMessages: messages
       });
     });
   } 
 
   retrieveSentFile(message){
-    return this.DT.getDataFromManifest(message.swarmhash, message.filename).then((retrievedFile)=>{
-      // to handle retrieving sent files
-      let otherSubdomain = this.state.selectedMailbox.subdomain === message.from ? message.to : message.from;
-      return DMailbox.getSharedSecret(this.state.selectedWallet, otherSubdomain).then((secret)=>{
-        let decryptedFile = this.DT.decryptedFile(retrievedFile, secret, message.filename, message.mime);
-        FileSaver.saveAs(new File([decryptedFile], message.filename, {type: message.mime}));
+    message.saveAs();
+  }
+
+  retrieveStoredFile(file){
+    file.saveAs();
+  }
+
+  mailboxUnlocked(){
+    this.FDS.currentAccount.messages('received').then((messages)=>{
+      this.setState({
+        uiState: 1,
+        shownMessageType: 'received',
+        shownMessages: messages
       });
     });
   }
 
-  retrieveStoredFile(file){
-    return this.DT.getDataFromManifest(file.swarmhash, file.filename).then((retrievedFile)=>{
-      // to handle retrieving sent files
-      let decryptedFile = this.DT.decryptedFile(retrievedFile, this.state.selectedWallet.privateKey, file.filename, file.mime);
-      FileSaver.saveAs(new File([decryptedFile], file.filename, {type: file.mime}));
-      return true;
-    });
-  }
-
-  mailboxUnlocked(){
-    let messages = DMailbox.getMessages('received',this.state.selectedMailbox.subdomain);
-    this.setState({
-      uiState: 1,
-      messages: messages
-    });
-  }
-
   getDropDownOptions(){
-    let mailboxes = DMailbox.getAll();
+    let mailboxes = this.props.FDS.GetAccounts();
     return mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
     }).concat({label: 'new mailbox +', value: "dt-new-mailbox" });
@@ -192,8 +179,9 @@ class DTransferMailbox extends Component{
                       </div>
                       <label className="dt-select-mailbox-label">Select mailbox</label>
                     </div>
-                      <UnlockMailbox 
-                        mailbox={this.state.unlockingMailbox}
+                      <UnlockMailbox
+                        FDS={this.props.FDS}
+                        subdomain={this.state.unlockingMailbox}
                         setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                         mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                       />
@@ -205,6 +193,7 @@ class DTransferMailbox extends Component{
                   <div className="dt-page-inner-wrapper">
                     <h1 className="dt-select-account-header">Create Mailbox</h1>
                       <AddMailbox 
+                        FDS={this.FDS}
                         setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                         mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                         cancelAddMailbox={this.cancelAddMailbox.bind(this)}
@@ -228,10 +217,10 @@ class DTransferMailbox extends Component{
                 {this.state.shownMessageType === 'received' && 
                   <div>
                     {this.state.shownMessages.map((message)=>{
-                      return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveSentFile(message); } }>
+                      return <div key={message.hash.address} className="dt-icon" onClick={ ()=>{ return message.saveAs(); } }>
                           <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
-                          <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
-                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
+                          <div className="dt-info-filename">{ message.hash.file.name.substring(0,24)+'...' }</div>
+                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.hash.file.size) }</div>
                           <div className="dt-info-filesender">from: { message.from }</div>
                         </div>
                     })}
@@ -240,10 +229,10 @@ class DTransferMailbox extends Component{
                 {this.state.shownMessageType === 'sent' && 
                   <div>
                     {this.state.shownMessages.map((message)=>{
-                      return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveSentFile(message); } }>
+                      return <div key={message.hash.address} className="dt-icon" onClick={ ()=>{ return message.saveAs(); } }>
                           <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
-                          <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
-                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
+                          <div className="dt-info-filename">{ message.hash.file.name.substring(0,24)+'...' }</div>
+                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.hash.file.size) }</div>
                           <div className="dt-info-filerecipient">to: { message.to }</div>
                         </div>
                     })}
@@ -251,11 +240,11 @@ class DTransferMailbox extends Component{
                 }
                 {this.state.shownMessageType === 'stored' && 
                   <div>
-                    {this.state.shownMessages.map((message)=>{
-                      return <div key={message.swarmhash} className="dt-icon" onClick={ ()=>{ return this.retrieveStoredFile(message); } }>
+                    {this.state.shownMessages.map((hash)=>{
+                      return <div key={hash.address} className="dt-icon" onClick={ ()=>{ return hash.saveAs(); } }>
                           <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
-                          <div className="dt-info-filename">{ message.filename.substring(0,24)+'...' }</div>
-                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.size) }</div>
+                          <div className="dt-info-filename">{ hash.file.name.substring(0,24)+'...' }</div>
+                          <div className="dt-info-filesize">{ Utils.humanFileSize(hash.file.size) }</div>
                         </div>
                     })}
                   </div>

@@ -7,50 +7,38 @@ class UnlockMailbox extends Component{
   constructor(props) {
     super(props);
 
+    this.FDS = this.props.FDS;
+
     this.state = {
       feedbackMessage: "",
       mailboxIsUnlocked: false,
     }
 
     this.handleUnlockMailboxWallet = this.handleUnlockMailboxWallet.bind(this);
-
   }
 
   handleUnlockMailboxWallet(e){
     e.preventDefault();
     let password = this.refs.dtSelectPassword.value;
-    let mailbox = this.props.mailbox;
-
-    this.unlockMailboxWallet(mailbox, password);
+    let subdomain = this.props.subdomain;
+    this.unlockMailboxWallet(subdomain, password);
   }
 
 
-  unlockMailboxWallet(mailbox, password){
-    let dWallet = new DWallet();
-    this.setState({
-      feedbackMessage: 'Hard maths takes a long time...',
-      mailboxIsUnlocked: false
+  unlockMailboxWallet(account, password){
+    this.FDS.UnlockAccount(account.subdomain, password).then((account)=>{
+      this.setState({
+        feedbackMessage: 'Mailbox unlocked.',
+        mailboxIsUnlocked: true,
+      });
+      this.props.mailboxUnlocked();
+      this.props.setSelectedMailbox(account);
+    }).catch((error)=>{
+      this.setState({
+        feedbackMessage: 'Password invalid, please try again.',
+        mailboxIsUnlocked: false
+      });
     });
-    setTimeout(()=>{
-      dWallet.fromJSON(mailbox.wallet, password).then((wallet)=>{
-        let serialisedWallet = {
-          address: wallet.getAddressString(),
-          publicKey: wallet.getPublicKeyString(),
-          privateKey: wallet.getPrivateKeyString()
-        }
-        this.props.setSelectedMailbox(mailbox, serialisedWallet);
-        this.setState({
-          feedbackMessage: 'Mailbox unlocked.',
-          mailboxIsUnlocked: true,
-        });
-        this.props.mailboxUnlocked();
-      }).catch((error)=>{
-        this.setState({
-          feedbackMessage: 'Password invalid, please try again.',
-          mailboxIsUnlocked: false
-        });
-      });      
-    })
   }
 
 

@@ -30,7 +30,7 @@ class DConfirm extends Component{
       this.props.handleUpload().then(()=>{
         this.props.setParentState({
           uiState: 5
-        }); 
+        });
       }).catch((error)=>{
         debugger
       })

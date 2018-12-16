@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import DTransfer from '../../services/DTransfer';
 import Dropzone from 'dropzone';
 import DDrop from '../../lib/DDrop';
 import App from '../../App';

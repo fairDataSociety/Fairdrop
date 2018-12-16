@@ -52,7 +52,7 @@ class DConfirm extends Component{
                         <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</td>
                       </tr>
                       <tr>
-                        <td>Sender:</td><td>{this.props.parentState.selectedMailbox.subdomain}.datafund.eth</td><td></td>
+                        <td>Sender:</td><td>{this.props.parentState.selectedMailbox}.datafund.eth</td><td></td>
                       </tr>
                       <tr>
                         <td>Recipient:</td><td>{this.props.parentState.addressee}.datafund.eth</td><td></td>

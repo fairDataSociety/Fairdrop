@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import DTransfer from '../../services/DTransfer';
-import DMailbox from '../../services/DMailbox';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
 
@@ -19,7 +17,6 @@ class BSelectMailbox extends Component{
     this.addMailbox = this.addMailbox.bind(this);    
     this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
 
-    this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
   }
 
   getInitialState(){
@@ -39,7 +36,7 @@ class BSelectMailbox extends Component{
         isAddingMailbox: false,        
         isUnlockingMailbox: true,
         mailboxes: mailboxes,
-        unlockingMailbox: mailboxes[0],
+        unlockingMailbox: mailboxes[0].subdomain,
         activeMailboxSubDomain: false,
         dropDownValue: mailboxes[0].subdomain,
         mailboxesExist: true
@@ -47,10 +44,9 @@ class BSelectMailbox extends Component{
     }
   }
 
-  setSelectedMailbox(mailbox, wallet){
+  setSelectedMailbox(account){
     this.props.setParentState({
-      selectedMailbox: mailbox,
-      selectedWallet: wallet
+      selectedMailbox: account.subdomain
     });
   }
 
@@ -69,11 +65,8 @@ class BSelectMailbox extends Component{
   }
 
   setUnlockingMailbox(subdomain){
-    // x
-    let mailbox = DMailbox.get(subdomain);
-    // x
     this.setState({
-      unlockingMailbox: mailbox,
+      unlockingMailbox: subdomain,
       isUnlockingMailbox: true,
       isAddingMailbox: false,
       dropDownValue: subdomain
@@ -126,8 +119,8 @@ class BSelectMailbox extends Component{
                   <UnlockMailbox 
                     FDS={this.FDS}
                     subdomain={this.state.unlockingMailbox}
-                    setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                     mailboxUnlocked={this.mailboxUnlocked.bind(this)}
+                    setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                   />
                 }   
               </div>
@@ -137,10 +130,10 @@ class BSelectMailbox extends Component{
                 <h1 className="dt-select-account-header">New Mailbox</h1>
                 <AddMailbox 
                   FDS={this.FDS}
-                  setSelectedMailbox={this.setSelectedMailbox.bind(this)}
                   mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                   cancelAddMailbox={this.cancelAddMailbox.bind(this)}
                   mailboxesExist={this.state.mailboxesExist}
+                  setSelectedMailbox={this.setSelectedMailbox.bind(this)}                  
                 />
               </div>
             }

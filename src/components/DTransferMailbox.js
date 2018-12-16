@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import DTransfer from '../services/DTransfer';
+
 import Dropdown from 'react-dropdown';
-import DMailbox from '../services/DMailbox';
-import FileSaver from 'file-saver';
+
 import DMist from '../lib/DMist';
 import Utils from '../services/DTransferUtils';
 
@@ -46,7 +45,7 @@ class DTransferMailbox extends Component{
         isAddingMailbox: false,        
         isUnlockingMailbox: true,
         mailboxes: mailboxes,
-        unlockingMailbox: mailboxes[0],
+        unlockingMailbox: mailboxes[0].subdomain,
         activeMailboxSubDomain: false,
         dropDownValue: mailboxes[0].subdomain,
         mailboxesExist: true
@@ -60,8 +59,6 @@ class DTransferMailbox extends Component{
 
   constructor(props) {
     super(props);
-
-    this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
 
     this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
 
@@ -85,9 +82,9 @@ class DTransferMailbox extends Component{
     });
   }
 
-  setSelectedMailbox(){
+  setSelectedMailbox(account){
     this.setState({
-      selectedMailbox: this.FDS.currentAccount
+      selectedMailbox: account
     });
     this.showReceived();
   }

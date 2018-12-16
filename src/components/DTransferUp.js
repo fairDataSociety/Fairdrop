@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import DTransfer from '../services/DTransfer';
-import DMailbox from '../services/DMailbox';
-import DMessage from '../services/DMessage';
-import DFileData from '../services/DFileData';
 
 import ASelectFile from '../components/up/ASelectFile';
 import BSelectMailbox from '../components/up/BSelectMailbox';
@@ -12,8 +8,6 @@ import EInProgress from '../components/up/EInProgress';
 import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
-
-window.DMailbox = DMailbox;
 
 class DTransferUp extends Component{
 
@@ -49,10 +43,10 @@ class DTransferUp extends Component{
 
       isStoringFile: false,
 
-      dTransferLink: null,
-      uploadedFileHash: null,
-      encryptMessage: 'Unencrypted',      
-      sendButtonMessage: 'Upload Unencrypted',
+      // dTransferLink: null,
+      // uploadedFileHash: null,
+      // encryptMessage: 'Unencrypted',      
+      // sendButtonMessage: 'Upload Unencrypted',
     };
   }
 
@@ -65,7 +59,6 @@ class DTransferUp extends Component{
 
     this.FDS = this.props.FDS;
 
-    // this.DT = new DTransfer(process.env.REACT_APP_SWARM_GATEWAY);
 
     this.aSelectFile = React.createRef();
 
@@ -79,18 +72,15 @@ class DTransferUp extends Component{
   }
 
   handleUpload(){
-    let feedbackCallback = (msg)=>{this.setState({feedBackMessage: msg});};
-
     if( // ensure that we have a file saved from dropzone
       window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
       window.selectedFileArrayBuffer.byteLength > 0
       )
     {
       if(this.state.isStoringFile === false){
-        let senderMailbox = this.state.selectedMailbox;
-        let senderWallet = this.state.selectedWallet;
+        // let senderMailbox = this.state.selectedMailbox;
+        // let senderWallet = this.state.selectedWallet;
         let addressee = this.state.addressee;
-
         return this.FDS.currentAccount.send(
           addressee, 
           new File(

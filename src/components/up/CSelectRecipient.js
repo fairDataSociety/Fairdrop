@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import DMailbox from '../../services/DMailbox';
 
 class CSelectRecipient extends Component{
   

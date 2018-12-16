@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import DWallet from '../../services/DWallet';
-
 
 class UnlockMailbox extends Component{
   
@@ -25,14 +23,14 @@ class UnlockMailbox extends Component{
   }
 
 
-  unlockMailboxWallet(account, password){
-    this.FDS.UnlockAccount(account.subdomain, password).then((account)=>{
+  unlockMailboxWallet(subdomain, password){
+    this.FDS.UnlockAccount(subdomain, password).then((account)=>{
       this.setState({
         feedbackMessage: 'Mailbox unlocked.',
         mailboxIsUnlocked: true,
       });
       this.props.mailboxUnlocked();
-      this.props.setSelectedMailbox(account);
+      this.props.setSelectedMailbox(this.FDS.currentAccount);
     }).catch((error)=>{
       this.setState({
         feedbackMessage: 'Password invalid, please try again.',

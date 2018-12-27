@@ -33,8 +33,9 @@ class App extends Component {
     this.FDS = new FDS({
       swarmGateway: process.env.REACT_APP_SWARM_GATEWAY, 
       ethGateway: process.env.REACT_APP_GETH_GATEWAY, 
+      faucetAddress: process.env.REACT_APP_FAUCET_URL,
+      httpTimeout: 1000,
       ensConfig: {
-        faucetAddress: process.env.REACT_APP_FAUCET_URL,
         domain: process.env.REACT_APP_DOMAIN_NAME,
         registryAddress: process.env.REACT_APP_ENS_ADDRESS,
         fifsRegistrarContractAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,

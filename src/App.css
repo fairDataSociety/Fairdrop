@@ -687,6 +687,11 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   font-size: 24px;
 }
 
+.dt-in-progress h3.dt-in-progress-sub-2{
+  font-size: 1.2em;
+  color: white;
+}
+
 /* completed */
 
 .dt-in-progress {

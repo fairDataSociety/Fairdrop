@@ -17,11 +17,14 @@ class EInProgress extends Component{
               <div className="dt-in-progress-ui">
                 <h1 className="dt-in-progress-header"><img className="dt-in-progress-icon" src="assets/images/progress.svg" alt="Spinning"/>Encrypting*</h1>
                 <h2 className="dt-in-progress-sub">*AES-256 military grade encryption</h2>
+                <h3 className="dt-in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
               </div>
             }
             { this.props.parentState.fileWasEncrypted && !this.props.parentState.fileWasUploaded &&
               <div className="dt-in-progress-ui">
                 <h1 className="dt-in-progress-header"><img className="dt-in-progress-icon" src="assets/images/progress.svg" alt="Spinning"/>Uploading</h1>
+                <h2 className="dt-in-progress-sub">Stored Encrypted in Swarm network</h2>
+                <h3 className="dt-in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
               </div>
             }
           </div>

@@ -22,7 +22,7 @@ class DTransferUp extends Component{
       selectedFileName: null,
       selectedFileSize: null,
 
-      feedBackMessage: false,
+      feedbackMessage: false,
 
       isSignedIn: false,
 
@@ -90,14 +90,17 @@ class DTransferUp extends Component{
           ),
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
-            this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
+            this.setState({feedbackMessage: "file was encrypted, uploading file..."}); 
             this.setState({fileWasEncrypted: true});
           },
           (response)=>{
-            this.setState({feedBackMessage: "File uploaded."});
+            this.setState({feedbackMessage: "file uploaded."});
+          },
+          (message)=>{
+            this.setState({feedbackMessage: message});
           }
         ).catch((error) => {
-          this.setState({feedBackMessage: error});
+          this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
         });
 
@@ -110,20 +113,20 @@ class DTransferUp extends Component{
           ),
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
-            this.setState({feedBackMessage: "File was encrypted, uploading file..."}); 
+            this.setState({feedbackMessage: "file was encrypted, uploading file..."}); 
             this.setState({fileWasEncrypted: true});
           },
           (response)=>{
-            this.setState({feedBackMessage: "File uploaded."});
+            this.setState({feedbackMessage: "file uploaded."});
           }
         ).catch((error) => {
-          this.setState({feedBackMessage: error});
+          this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
         });
 
       }
     }else{
-      this.setState({feedBackMessage: "There was an error, please try again..."});
+      this.setState({feedbackMessage: "there was an error, please try again..."});
       return false;
     }
   }

@@ -43,7 +43,7 @@ class DConfirm extends Component{
         <div className="dt-confirm-ui dt-page-inner-centered">
           <div className="dt-page-inner-wrapper">
             <h1 className="dt-confirm-header">Confirm</h1>
-            {this.props.parentState.isStoringFile === false && 
+            {this.props.isStoringFile === false && 
               <div>
                 <div className="dt-confirm-ui-group clearfix">
                   <table>
@@ -52,7 +52,7 @@ class DConfirm extends Component{
                         <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</td>
                       </tr>
                       <tr>
-                        <td>Sender:</td><td>{this.props.parentState.selectedMailbox}.datafund.eth</td><td></td>
+                        <td>Sender:</td><td>{this.props.selectedMailbox.subdomain}.datafund.eth</td><td></td>
                       </tr>
                       <tr>
                         <td>Recipient:</td><td>{this.props.parentState.addressee}.datafund.eth</td><td></td>
@@ -68,7 +68,7 @@ class DConfirm extends Component{
                 </div>
               </div>
             }
-            {this.props.parentState.isStoringFile === true && 
+            {this.props.isStoringFile === true && 
               <div>
                 <div className="dt-confirm-ui-group clearfix">
                   <table>

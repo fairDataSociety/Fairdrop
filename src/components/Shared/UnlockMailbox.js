@@ -56,7 +56,7 @@ class UnlockMailbox extends Component{
           </form>
           <div className="dt-feedback-unlock-ui dt-feedback-float-right">{this.state.feedbackMessage}</div>
         </div>
-        <button className="dt-btn dt-btn-lg dt-btn-float-left dt-btn-green" onClick={this.handleUnlockMailboxWallet}>Continue</button>
+        <button className="dt-btn dt-btn-lg dt-btn-float-left dt-btn-green" onClick={this.handleUnlockMailboxWallet.bind(this)}>Continue</button>
       </div>
     )
   }

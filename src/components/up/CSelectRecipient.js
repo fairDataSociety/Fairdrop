@@ -55,7 +55,6 @@ class CSelectRecipient extends Component{
             feedbackMessage: "Network error - please try again..."        
           });
         }else{
-          console.log(error)
           this.setState({
             mailboxName: mailboxName,
             feedbackMessage: "Couldn't find that mailbox, please try again..."

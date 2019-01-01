@@ -11,11 +11,13 @@ class BSelectMailbox extends Component{
     super(props);
 
     this.FDS = this.props.FDS;
-
     this.state = this.getInitialState();
 
     this.addMailbox = this.addMailbox.bind(this);    
     this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
+    this.mailboxUnlocked = this.mailboxUnlocked.bind(this)
+    this.cancelAddMailbox = this.cancelAddMailbox.bind(this)
+
 
   }
 
@@ -42,12 +44,6 @@ class BSelectMailbox extends Component{
         mailboxesExist: true
       }
     }
-  }
-
-  setSelectedMailbox(account){
-    this.props.setParentState({
-      selectedMailbox: account.subdomain
-    });
   }
 
   addMailbox(){
@@ -111,7 +107,7 @@ class BSelectMailbox extends Component{
                 <h1 className="dt-select-account-header">Encrypt and Send</h1>
                 <div className="dt-form-group clearfix">
                   <div className="dt-select-mailbox-mailboxes">
-                    <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox.bind(this)} placeholder="Select a mailbox" />
+                    <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox} placeholder="Select a mailbox" />
                   </div>
                   <label className="dt-select-mailbox-label">Select mailbox</label>
                 </div>
@@ -119,8 +115,8 @@ class BSelectMailbox extends Component{
                   <UnlockMailbox 
                     FDS={this.FDS}
                     subdomain={this.state.unlockingMailbox}
-                    mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-                    setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                    mailboxUnlocked={this.mailboxUnlocked}
+                    setSelectedMailbox={this.props.setSelectedMailbox}
                   />
                 }   
               </div>
@@ -130,10 +126,10 @@ class BSelectMailbox extends Component{
                 <h1 className="dt-select-account-header">New Mailbox</h1>
                 <AddMailbox 
                   FDS={this.FDS}
-                  mailboxUnlocked={this.mailboxUnlocked.bind(this)}
-                  cancelAddMailbox={this.cancelAddMailbox.bind(this)}
+                  mailboxUnlocked={this.mailboxUnlocked}
+                  cancelAddMailbox={this.cancelAddMailbox}
                   mailboxesExist={this.state.mailboxesExist}
-                  setSelectedMailbox={this.setSelectedMailbox.bind(this)}                  
+                  setSelectedMailbox={this.props.setSelectedMailbox}                 
                 />
               </div>
             }

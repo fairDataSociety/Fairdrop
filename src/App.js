@@ -16,6 +16,7 @@ class App extends Component {
     let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
 
     return {
+      selectedMailbox: false,
       isStoringFile: false,      
       fileIsSelected: false,
       fileWasSelected: false,
@@ -23,8 +24,24 @@ class App extends Component {
     };
   }
 
-  resetToInitialState(){
-    this.setState(this.getInitialState());
+  resetMailboxState(){
+    this.setState({
+      selectedMailbox: false,
+      isStoringFile: false,      
+      fileIsSelected: false,
+      fileWasSelected: false,
+      fileIsSelecting: false
+    });
+    this.props.history.push('/');
+  }
+
+  resetFileState(){
+    this.setState({
+      isStoringFile: false,      
+      fileIsSelected: false,
+      fileWasSelected: false,
+      fileIsSelecting: false
+    });
   }
 
   constructor(props) {
@@ -46,9 +63,13 @@ class App extends Component {
     this.dTransferUp = React.createRef();
 
     this.setIsSelecting = this.setIsSelecting.bind(this);
+    this.setSelectedMailbox = this.setSelectedMailbox.bind(this);
     this.fileWasSelected = this.fileWasSelected.bind(this);
     this.hideDisclaimer = this.hideDisclaimer.bind(this);
+    this.handleSendFile = this.handleSendFile.bind(this);
     this.handleStoreFile = this.handleStoreFile.bind(this);
+    this.resetFileState = this.resetFileState.bind(this);
+    this.resetMailboxState = this.resetMailboxState.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -57,13 +78,22 @@ class App extends Component {
     this.setState({fileIsSelecting: state});
   }
 
+  setSelectedMailbox(selectedMailbox){
+    this.setState({selectedMailbox: selectedMailbox});
+  }
+
   fileWasSelected(state = true){
     this.setState({fileWasSelected: state});
   }  
 
+  handleSendFile(e){
+    this.setState({isSendingFile: true});
+    this.props.history.push('/');
+  }
+
   handleStoreFile(e){
     this.setState({isStoringFile: true});
-    this.dTransferUp.current.aSelectFile.current.handleClickStoreFile(e);
+    this.props.history.push('/');
   }
 
   hideDisclaimer(e){
@@ -144,13 +174,25 @@ class App extends Component {
                   </g>
                 </svg>
               </Link>
-              {this.state.fileWasSelected === false && this.props.location.pathname !== '/mailbox' && 
+              {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
               <span>
                 <button className="dt-nav-header-item-button" onClick={this.handleStoreFile} >
                   Store File
+                </button>
+              </span>
+              }
+              {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' && 
+              <span>
+                <button className="dt-nav-header-item-button" onClick={this.handleSendFile} >
+                  Send File
                 </button>                
               </span>
               }
+              <span>
+                <button className="dt-nav-header-item-button" onClick={this.resetMailboxState} >
+                  {this.state.selectedMailbox.subdomain}
+                </button>              
+              </span>
             </div>
           </div>
           <div className="dt-nav-key-wrapper">
@@ -177,16 +219,24 @@ class App extends Component {
           <Route exact={true} path="/" render={ () => {
               return <DTransferUp 
                 FDS={this.FDS}
+                setSelectedMailbox={this.setSelectedMailbox}
+                selectedMailbox={this.state.selectedMailbox}
                 fileWasSelected={this.fileWasSelected} 
                 setIsSelecting={this.setIsSelecting} 
                 ref={this.dTransferUp} 
+                isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
+                resetFileState={this.resetFileState}
               />
             }
           }/>
 
           <Route path="/mailbox" render={() => {
-            return <DTransferMailbox FDS={this.FDS}></DTransferMailbox>
+            return <DTransferMailbox 
+              setSelectedMailbox={this.setSelectedMailbox}
+              selectedMailbox={this.state.selectedMailbox}
+              FDS={this.FDS}
+            ></DTransferMailbox>
           }} />
   
         </div>

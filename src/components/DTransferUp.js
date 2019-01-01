@@ -31,17 +31,12 @@ class DTransferUp extends Component{
 
       uiState: 0,
 
-      selectedMailbox: false,
-      selectedWallet: false,
-
       addressee: false,
 
       mailboxPassword: false,
 
       fileWasEncrypted: false,
       fileWasUploaded: false,
-
-      isStoringFile: false,
 
       // dTransferLink: null,
       // uploadedFileHash: null,
@@ -65,10 +60,18 @@ class DTransferUp extends Component{
     this.state = this.getInitialState();
   }
 
+  setSelectedMailbox(account){
+    this.props.setSelectedMailbox(account);
+  }
+
   setUIState(state){
     this.setState({
       uiState: state
     });
+  }
+
+  componentWillUnmount(){
+    this.props.resetFileState();
   }
 
   handleUpload(){
@@ -77,9 +80,7 @@ class DTransferUp extends Component{
       window.selectedFileArrayBuffer.byteLength > 0
       )
     {
-      if(this.state.isStoringFile === false){
-        // let senderMailbox = this.state.selectedMailbox;
-        // let senderWallet = this.state.selectedWallet;
+      if(this.props.isStoringFile === false){
         let addressee = this.state.addressee;
         return this.FDS.currentAccount.send(
           addressee, 
@@ -103,8 +104,7 @@ class DTransferUp extends Component{
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
         });
-
-      }else{
+      }else{       
         return this.FDS.currentAccount.store(
           new File(
             [window.selectedFileArrayBuffer],
@@ -118,12 +118,14 @@ class DTransferUp extends Component{
           },
           (response)=>{
             this.setState({feedbackMessage: "file uploaded."});
+          },
+          (message)=>{
+            this.setState({feedbackMessage: message});
           }
         ).catch((error) => {
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
         });
-
       }
     }else{
       this.setState({feedbackMessage: "there was an error, please try again..."});
@@ -139,12 +141,17 @@ class DTransferUp extends Component{
             setParentState={this.setState.bind(this)} 
             setIsSelecting={this.props.setIsSelecting} 
             fileWasSelected={this.props.fileWasSelected} 
+            selectedMailbox={this.props.selectedMailbox}
+            isSendingFile={this.props.isSendingFile}            
+            isStoringFile={this.props.isStoringFile}
             ref={this.aSelectFile}
           />
           <BSelectMailbox 
             FDS={this.FDS}
             parentState={this.state} 
             setParentState={this.setState.bind(this)}
+            selectedMailbox={this.props.selectedMailbox}
+            setSelectedMailbox={this.setSelectedMailbox.bind(this)}
           />
           <CSelectRecipient 
             FDS={this.FDS}
@@ -154,16 +161,19 @@ class DTransferUp extends Component{
           <DConfirm 
             parentState={this.state} 
             setParentState={this.setState.bind(this)}
+            isStoringFile={this.props.isStoringFile}
+            selectedMailbox={this.props.selectedMailbox}
             handleUpload={this.handleUpload.bind(this)}
           />
           <EInProgress 
             parentState={this.state} 
-            setParentState={this.setState.bind(this)
-          }/>
+            setParentState={this.setState.bind(this)}
+          />
           <FCompleted 
             parentState={this.state} 
-            setParentState={this.setState.bind(this)
-          }/>
+            setParentState={this.setState.bind(this)}
+            isStoringFile={this.props.isStoringFile}
+          />
           <ProgressBar 
             parentState={this.state} 
             setParentState={this.setState.bind(this)} 

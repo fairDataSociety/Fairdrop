@@ -14,6 +14,13 @@ class ASelectFile extends Component{
   componentDidMount(){
     App.aSelectFile = this;
     this.dropZone();
+
+    if(this.props.isSendingFile){
+      this.handleClickSelectFile();
+    }else 
+    if(this.props.isStoringFile){
+      this.handleClickStoreFile();
+    }
   }
 
   dropZone(){
@@ -58,27 +65,48 @@ class ASelectFile extends Component{
         this.setState({ hasDropped: true });
         dd.drop('dt-drop');
       }
+
+    if(this.props.parentState.isStoringFile){
+      //skip select recipient
+      if(this.props.selectedMailbox){
+        var newUIState = 3;
+      }else{
+        var newUIState = 2;
+      }      
+    }else{
+      //select recipient
+      if(this.props.selectedMailbox){
+        var newUIState = 2;
+      }else{
+        var newUIState = 1;
+      }
+    }
+
       setTimeout(()=>{
         this.props.setParentState({
           fileIsSelected: true,
           selectedFileName: file.name,  
           selectedFileType: file.type,        
           selectedFileSize: file.size,
-          uiState: 1
+          uiState: newUIState
         });
       }, 1555)
     });
   }
 
   handleClickSelectFile(e){
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     this.props.setIsSelecting();
     this.props.setParentState({fileIsSelecting: true});
     this.refs.dtSelectFile.click();
   }
 
   handleClickStoreFile(e){
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     this.props.setIsSelecting();
     this.props.setParentState({
       isStoringFile: true,

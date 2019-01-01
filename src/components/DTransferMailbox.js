@@ -19,11 +19,23 @@ class DTransferMailbox extends Component{
   getInitialState(){
     this.FDS = this.props.FDS;
     let mailboxes = this.FDS.GetAccounts();
+    if(this.props.selectedMailbox){
+        this.showReceived();
+        return {
+          unlockingMailbox: null,
+          uiState: 1,
+          shownMessages: [],
 
+          isAddingMailbox: false,        
+          isUnlockingMailbox: false,
+          mailboxes: mailboxes,
+          activeMailboxSubDomain: this.props.selectedMailbox.subdomain,
+          dropDownValue: false,
+          mailboxesExist: true
+        };
+    }else 
     if(mailboxes.length === 0){
       return {
-        selectedMailbox: null,
-        selectedWallet: null,
         unlockingMailbox: null,
         uiState: 0,
         shownMessages: [],
@@ -35,10 +47,9 @@ class DTransferMailbox extends Component{
         dropDownValue: false,
         mailboxesExist: false
       };
-    }else if(mailboxes.length > 0){
+    }else 
+    if(mailboxes.length > 0){
       return {
-        selectedMailbox: null,
-        selectedWallet: null,
         uiState: 0,
         shownMessages: [],
 
@@ -61,6 +72,9 @@ class DTransferMailbox extends Component{
     super(props);
 
     this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
+    this.showReceived = this.showReceived.bind(this);
+    this.showSent = this.showSent.bind(this);
+    this.showStored = this.showStored.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -83,9 +97,7 @@ class DTransferMailbox extends Component{
   }
 
   setSelectedMailbox(account){
-    this.setState({
-      selectedMailbox: account
-    });
+    this.props.setSelectedMailbox(account);
     this.showReceived();
   }
 
@@ -95,7 +107,7 @@ class DTransferMailbox extends Component{
         shownMessageType: 'sent',
         shownMessages: messages
       });
-    });    
+    });
   }
 
   showReceived(){
@@ -178,8 +190,9 @@ class DTransferMailbox extends Component{
                     </div>
                       <UnlockMailbox
                         FDS={this.props.FDS}
+                        setSelectedMailbox={this.setSelectedMailbox.bind(this)}                        
                         subdomain={this.state.unlockingMailbox}
-                        setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+                        selectedMailbox={this.props.selectedMailbox}
                         mailboxUnlocked={this.mailboxUnlocked.bind(this)}
                       />
                   </div>
@@ -204,11 +217,11 @@ class DTransferMailbox extends Component{
         <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper " + (this.state.uiState === 1 ? "dt-fade-in" : "dt-hidden")}>
           <div className="dt-page-inner-centered">
             <div className="dt-show-files-ui">            
-              <h1 className="dt-show-files-header">{ this.state.selectedMailbox && this.state.selectedMailbox.subdomain }</h1>
+              <h1 className="dt-show-files-header">{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</h1>
               <div className="dt-show-files-nav">
-                <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived.bind(this)}>received</button>
-                 - <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent.bind(this)}>sent</button>
-                  - <button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored.bind(this)}>stored</button>
+                <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}>received</button>
+                 - <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}>sent</button>
+                  - <button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}>stored</button>
               </div>
               <div className="dt-icon-group clearfix">
                 {this.state.shownMessageType === 'received' && 

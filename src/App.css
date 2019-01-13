@@ -52,7 +52,7 @@ h2{
   font-size:40px;
 }
 
-p{
+.dt-page-inner-centered, p{
   color: #fff;
 }
 
@@ -209,21 +209,28 @@ label{
 }
 
 .dt-nav-header{
-  position:absolute;
-  width: 88%;
-  height:15vh;
-  display:table;
-  z-index:10;
-  margin:0 5vw;
-  pointer-events: none;
+  position: absolute;
+  width: 96%;
+  z-index: 10;
+  margin: 2%;
+  /*pointer-events: none;*/
 }
 
 .dt-nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
-  width: 10vw;
   text-align: left;
+}
+
+.dt-nav-header-item-left{
+  float: left;
+  margin-right: 10px;
+}
+
+.dt-nav-header-item-right{
+  float: right;
+  margin-left: 10px;
 }
 
 .dt-nav-header-item-button{
@@ -231,8 +238,8 @@ label{
   display: inline;
   border: 0;
   background: none;
-  margin-left: 15px;
   cursor: pointer;
+  margin-top: 28px;
 }
 
 .dt-nav-white .dt-nav-header-item-button{
@@ -252,7 +259,8 @@ label{
 }
 
 .dt-nav-key svg{
-  margin-bottom: 20px;
+  margin-top: 16px;
+  margin-right: 26px;
 }
 
 #dt-datafund-d{
@@ -261,13 +269,13 @@ label{
   margin-right: -7px;
 }
 
-.dt-nav-key-wrapper{
+.dt-user-nav{
   position: absolute;
   height: 15vh;
   display: table;
   z-index: 10;
   margin: 0 5vw;
-  pointer-events: none;
+  /*pointer-events: none;*/
   right: 0;
   cursor: pointer;
 }
@@ -276,10 +284,25 @@ label{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
-  width: 10vw;
   text-align: right;
 }
 
+
+.dt-nav-context{
+  color: #fff;
+  margin-top: 28px;
+  display: block;
+}
+
+.dt-nav-context:hover{
+  color: #fff;
+  text-decoration: none;
+}
+
+.dt-nav-header-sign-out{
+  font-size:10px;
+  line-height: 28px
+}
 
 .dt-nav-header .dt-nav-header-items{
   display: table-cell;
@@ -911,7 +934,66 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   height: 70px;
 }
 
-.dt-icon-group .dt-icon .dt-info-filename{
+.dt-inbox{
+  width: 96%;
+  margin: 4%;
+}
+
+.dt-inbox table{
+  width: 100%;
+  text-align: left;
+}
+
+.dt-inbox thead tr th{
+  font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
+}
+
+.dt-inbox tbody tr td:nth-child(1), .dt-inbox thead tr th:nth-child(1){
+  width: 50%;  
+}
+
+.dt-inbox tbody tr td:nth-child(2), .dt-inbox thead tr th:nth-child(2){
+  width: 20%;  
+}
+
+.dt-inbox tbody tr td:nth-child(3), .dt-inbox thead tr th:nth-child(3){
+  width: 15%;
+}
+
+.dt-inbox tbody tr td{
+  font-weight: normal;
+}
+
+.dt-inbox tbody tr.dt-message-list td{
+  cursor: pointer;
+}
+
+.dt-inbox-nav {
+  width: 14%;
+  float: left;
+}
+
+.dt-inbox-nav button{
+  color: #fff;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+.dt-inbox-nav button.inactive{
+  border: 0;
+  opacity: 0.5;
+  background: none;
+}
+
+.dt-inbox-header, .dt-inbox-main {
+  float: left;
+  width: 80%;
+  margin-right: 3%;
+}
+
+
+/*.dt-icon-group .dt-icon .dt-info-filename{
   color: #fff;
   font-size: 10px;
   margin-top:2px;
@@ -920,12 +1002,17 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   text-overflow: ellipsis;
   word-break: break-all;
 }
-
+*/
 .dt-icon-group .dt-icon .dt-info-filesize,
 .dt-icon-group .dt-icon .dt-info-filesender,
 .dt-icon-group .dt-icon .dt-info-filerecipient {
   color: #fff;  
   font-size: 8px;
+}
+
+.dt-show-files-ui {
+  width: 100%;
+  height: 76vh;
 }
 
 .dt-show-files-nav button{

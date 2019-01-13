@@ -216,7 +216,8 @@ class DTransferMailbox extends Component{
         </div>
         <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper " + (this.state.uiState === 1 ? "dt-fade-in" : "dt-hidden")}>
           <div className="dt-page-inner-centered">
-            <div className="dt-show-files-ui">            
+            <div className="dt-show-files-ui">
+              { /* 
               <h1 className="dt-show-files-header">{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</h1>
               <div className="dt-show-files-nav">
                 <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}>received</button>
@@ -259,6 +260,88 @@ class DTransferMailbox extends Component{
                     })}
                   </div>
                 }
+               */}
+              <div className="dt-inbox clearfix">
+                <div className="dt-inbox-nav">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</td>
+                      </tr>
+                      <tr>
+                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}>received</button></td>
+                      </tr>
+                      <tr>
+                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}>sent</button></td>
+                      </tr>
+                      <tr>
+                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}>stored</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="dt-inbox-header">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th className="dt-inbox-col-name">Name</th>
+                        <th className="dt-inbox-col-name">
+                          {(() => {
+                            switch(this.state.shownMessageType) {
+                              case 'sent':
+                                return "To";
+                              case 'received':
+                                return "From";
+                              case 'stored':
+                                return "";
+                            }
+                          })()}
+                        </th>
+                        <th className="dt-inbox-col-time">Time</th>
+                        <th className="dt-inbox-col-time">Size</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+                <div className="dt-inbox-main"> 
+                  <table>
+                    <tbody>
+                      {(() => {
+                        switch(this.state.shownMessageType){
+                          case 'sent':{
+                            {return this.state.shownMessages.map((message)=>{
+                              return <tr className="dt-message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
+                                  <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
+                                  <td>{ message.to }</td>                                                            
+                                  <td>23rd Feb 2023</td>
+                                  <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                </tr>
+                            })}
+                          }
+                          case 'received': {
+                            {return this.state.shownMessages.map((message)=>{
+                              return <tr className="dt-message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
+                                  <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
+                                  <td>{ message.from }</td>
+                                  <td>23rd Feb 2023</td>
+                                  <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                </tr>
+                            })}
+                          }
+                          case 'stored':
+                            {return this.state.shownMessages.map((hash)=>{
+                              return <tr className="dt-message-list" key={`${hash.address}`} onClick={ ()=>{ return hash.saveAs(); } }>
+                                  <td>{ hash.file.name.substring(0,24)+'...' }</td>
+                                  <td></td>                                  
+                                  <td>23rd Feb 2023</td>
+                                  <td>{ Utils.humanFileSize(hash.file.size) }</td>
+                                </tr>
+                            })}
+                        }
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

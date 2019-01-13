@@ -39,7 +39,6 @@ class ASelectFile extends Component{
     });
 
     return new Promise((resolve, reject)=>{
-      // x
       // is mailbox name valid, available (need to expose this)
       if(mailboxName && this.FDS.Account.isMailboxNameValid(mailboxName)){
         return this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {

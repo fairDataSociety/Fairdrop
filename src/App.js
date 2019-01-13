@@ -125,19 +125,9 @@ class App extends Component {
           </div>
         </div>
         <div className={ "dt-wrapper dt-green " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "dt-nav-white " : "dt-nav-black ")}>
-          <div className="dt-nav-header"> {/* this bit should always overlay (or perhaps be hidden unless mouseover?) */}
-            <div className="dt-nav-header-items">
+          <div className="dt-nav-header">
+            <div className="dt-nav-header-item-left">
               <Link to={"/"}>
-                <svg id="dt-datafund-d" version="1.1" x="0px" y="0px"
-                    viewBox="0 0 68 68" enableBackground="new 0 0 68 68">
-                  <polygon id="Fill-15" points="30.084,52.387 34.696,52.387 34.696,16.724 30.084,16.724 "/>
-                  <path id="Fill-17" d="M30.402,5.932H22.94H4.949v57.136h16.974h8.479c18.262,0,31.611-10.465,31.611-28.516
-                    C62.014,15.865,48.664,5.932,30.402,5.932 M30.402,10.544c16.907,0,27,8.975,27,24.008c0,14.746-10.347,23.904-27,23.904h-8.479
-                    H9.559V10.544h13.379H30.402"/>
-                  <path id="Fill-18" d="M32.39,21.356c-7.688,0-13.918,5.786-13.918,12.918s6.232,12.921,13.918,12.921
-                    c7.687,0,13.919-5.785,13.919-12.921C46.31,27.138,40.077,21.356,32.39,21.356 M32.39,25.966c5.13,0,9.306,3.728,9.306,8.308
-                    c0,4.579-4.176,8.308-9.306,8.308c-5.132,0-9.308-3.729-9.308-8.308C23.083,29.694,27.258,25.966,32.39,25.966"/>
-                </svg>
                 <svg version="1.1" className="fairdop-logo" alt="Fairdrop Logo"
                    width="238px" height="68px" viewBox="0 0 238 68" enableBackground="new 0 0 238 68">
                   <g>
@@ -174,47 +164,59 @@ class App extends Component {
                   </g>
                 </svg>
               </Link>
-              {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
-              <span>
-                <button className="dt-nav-header-item-button" onClick={this.handleStoreFile} >
-                  Store File
-                </button>
-              </span>
-              }
-              {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' && 
-              <span>
-                <button className="dt-nav-header-item-button" onClick={this.handleSendFile} >
-                  Send File
-                </button>                
-              </span>
-              }
-              <span>
-                <button className="dt-nav-header-item-button" onClick={this.resetMailboxState} >
-                  {this.state.selectedMailbox.subdomain}
-                </button>              
-              </span>
             </div>
+            {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
+            <div className="dt-nav-header-item-left">
+              <button className="dt-nav-header-item-button" onClick={this.handleStoreFile} >
+                Store File
+              </button>
+            </div>
+            }
+            {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' && 
+            <div className="dt-nav-header-item-left">
+              <button className="dt-nav-header-item-button" onClick={this.handleSendFile} >
+                Send File
+              </button>                
+            </div>
+            }
+
+
+            <div className="dt-nav-header-item-right">
+              <Link className="dt-nav-key" to={'mailbox'}>
+                <svg alt="Fairdrop Inbox"
+                  version="1.1" id="Layer_1" height="32px" viewBox="0 0 400 400">
+                  <path d="M193.571,208.877c0.782,0.497,1.6,0.915,2.47,1.227c3.234,1.119,8.611,0.933,11.49-1.014
+                    c1.058-0.72,1.964-1.76,2.87-2.666c2.257-2.239,4.515-4.487,6.78-6.731c7.57-7.526,15.142-15.053,22.713-22.575l27.404-27.236
+                    c7.695-7.642,15.373-15.289,23.068-22.931c3.234-3.212,6.46-6.424,9.694-9.637c2.142-2.146,3.323-5.012,3.323-8.069
+                    c0-3.048-1.182-5.927-3.332-8.082c-4.327-4.323-11.863-4.323-16.173,0l-72.314,72.959V32.773c0.213-6.06-4.39-11.001-10.255-11.21
+                    h-1.146c-2.826-0.102-5.545,0.92-7.633,2.857c-2.07,1.938-3.279,4.567-3.376,7.407v142.297l-72.333-72.977
+                    c-4.425-4.438-11.676-4.438-16.137,0.018c-4.46,4.447-4.46,11.711,0,16.159c3.582,3.568,7.18,7.126,10.761,10.69
+                    c8.389,8.326,16.777,16.661,25.183,24.987c9.641,9.584,19.283,19.159,28.933,28.738c7.357,7.295,14.715,14.595,22.064,21.904
+                    C189.43,205.429,191.323,207.464,193.571,208.877"/>
+                  <path d="M369.373,223.254h-86.648c-5.545-0.053-10.112,4.07-10.672,9.544l-7.518,47.611h-128.35l-7.456-47.327
+                    c-0.613-5.758-5.447-9.881-10.699-9.828H32.289c-3.021-0.106-5.74,0.907-7.819,2.844c-2.088,1.946-3.288,4.576-3.386,7.42
+                    l0.009,135.397c-0.213,6.069,4.39,11.01,10.264,11.214h337.074c3.039,0.098,5.75-0.915,7.838-2.853
+                    c2.07-1.938,3.279-4.576,3.368-7.42V234.46C379.85,228.399,375.246,223.459,369.373,223.254 M357.226,357.709H43.495V245.665h64.806
+                    l6.851,47.949c0.906,5.35,5.598,9.286,11.179,9.188h147.988c5.643,0.089,10.353-3.839,11.277-9.331l6.824-47.807h64.806V357.709z"/>
+                </svg>  
+              </Link>                
+            </div>
+            {this.state.selectedMailbox.subdomain && 
+              <div className="dt-nav-header-item-right">
+                <button className="dt-nav-header-item-button dt-nav-header-sign-out" onClick={this.resetMailboxState}>
+                  (Sign Out)
+                </button>
+              </div>
+            }
+            {this.state.selectedMailbox.subdomain && 
+              <div className="dt-nav-header-item-right">
+                <Link className="dt-nav-context" to={'mailbox'}>
+                  {this.state.selectedMailbox.subdomain}
+                </Link>
+              </div>
+            }
           </div>
-          <div className="dt-nav-key-wrapper">
-            <Link className="dt-nav-key" to={'mailbox'}>
-              <svg alt="Fairdrop Inbox"
-                version="1.1" id="Layer_1" height="32px" viewBox="0 0 400 400">
-                <path d="M193.571,208.877c0.782,0.497,1.6,0.915,2.47,1.227c3.234,1.119,8.611,0.933,11.49-1.014
-                  c1.058-0.72,1.964-1.76,2.87-2.666c2.257-2.239,4.515-4.487,6.78-6.731c7.57-7.526,15.142-15.053,22.713-22.575l27.404-27.236
-                  c7.695-7.642,15.373-15.289,23.068-22.931c3.234-3.212,6.46-6.424,9.694-9.637c2.142-2.146,3.323-5.012,3.323-8.069
-                  c0-3.048-1.182-5.927-3.332-8.082c-4.327-4.323-11.863-4.323-16.173,0l-72.314,72.959V32.773c0.213-6.06-4.39-11.001-10.255-11.21
-                  h-1.146c-2.826-0.102-5.545,0.92-7.633,2.857c-2.07,1.938-3.279,4.567-3.376,7.407v142.297l-72.333-72.977
-                  c-4.425-4.438-11.676-4.438-16.137,0.018c-4.46,4.447-4.46,11.711,0,16.159c3.582,3.568,7.18,7.126,10.761,10.69
-                  c8.389,8.326,16.777,16.661,25.183,24.987c9.641,9.584,19.283,19.159,28.933,28.738c7.357,7.295,14.715,14.595,22.064,21.904
-                  C189.43,205.429,191.323,207.464,193.571,208.877"/>
-                <path d="M369.373,223.254h-86.648c-5.545-0.053-10.112,4.07-10.672,9.544l-7.518,47.611h-128.35l-7.456-47.327
-                  c-0.613-5.758-5.447-9.881-10.699-9.828H32.289c-3.021-0.106-5.74,0.907-7.819,2.844c-2.088,1.946-3.288,4.576-3.386,7.42
-                  l0.009,135.397c-0.213,6.069,4.39,11.01,10.264,11.214h337.074c3.039,0.098,5.75-0.915,7.838-2.853
-                  c2.07-1.938,3.279-4.576,3.368-7.42V234.46C379.85,228.399,375.246,223.459,369.373,223.254 M357.226,357.709H43.495V245.665h64.806
-                  l6.851,47.949c0.906,5.35,5.598,9.286,11.179,9.188h147.988c5.643,0.089,10.353-3.839,11.277-9.331l6.824-47.807h64.806V357.709z"/>
-              </svg>  
-            </Link>
-          </div>
+
   
           <Route exact={true} path="/" render={ () => {
               return <DTransferUp 

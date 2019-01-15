@@ -90,7 +90,7 @@ class ASelectFile extends Component{
           selectedFileSize: file.size,
           uiState: newUIState
         });
-      }, 1555)
+      }, 1337)
     });
   }
 

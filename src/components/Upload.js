@@ -9,7 +9,7 @@ import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
 
-class DTransferUp extends Component{
+class Upload extends Component{
 
   // initialise
 
@@ -184,4 +184,4 @@ class DTransferUp extends Component{
   }
 }
 
-export default DTransferUp;
+export default Upload;

@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 
 import Dropdown from 'react-dropdown';
@@ -9,7 +10,7 @@ import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
 
 
-class DTransferMailbox extends Component{
+class Mailbox extends Component{
 
   componentDidMount(){
     let dm = new DMist();
@@ -351,4 +352,4 @@ class DTransferMailbox extends Component{
   }
 }
 
-export default DTransferMailbox;
+export default Mailbox;

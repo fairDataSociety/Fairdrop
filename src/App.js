@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
 import FDS from 'fds';
 
-import DTransferUp from "./components/DTransferUp";
-import DTransferMailbox from "./components/DTransferMailbox";
+import Upload from "./components/Upload";
+import Mailbox from "./components/Mailbox";
 
 import './App.css';
 import './lib/DMist.css';
@@ -60,7 +60,7 @@ class App extends Component {
       }
     });
 
-    this.dTransferUp = React.createRef();
+    this.uploadComponent = React.createRef();
 
     this.setIsSelecting = this.setIsSelecting.bind(this);
     this.setSelectedMailbox = this.setSelectedMailbox.bind(this);
@@ -219,13 +219,13 @@ class App extends Component {
 
   
           <Route exact={true} path="/" render={ () => {
-              return <DTransferUp 
+              return <Upload 
                 FDS={this.FDS}
                 setSelectedMailbox={this.setSelectedMailbox}
                 selectedMailbox={this.state.selectedMailbox}
                 fileWasSelected={this.fileWasSelected} 
                 setIsSelecting={this.setIsSelecting} 
-                ref={this.dTransferUp} 
+                ref={this.uploadComponent} 
                 isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
                 resetFileState={this.resetFileState}
@@ -234,11 +234,11 @@ class App extends Component {
           }/>
 
           <Route path="/mailbox" render={() => {
-            return <DTransferMailbox 
+            return <Mailbox 
               setSelectedMailbox={this.setSelectedMailbox}
               selectedMailbox={this.state.selectedMailbox}
               FDS={this.FDS}
-            ></DTransferMailbox>
+            />
           }} />
   
         </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Utils from '../../services/DTransferUtils';
+import Utils from '../../services/Utils';
 
 class DConfirm extends Component{
   

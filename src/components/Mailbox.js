@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import Dropdown from 'react-dropdown';
 
 import DMist from '../lib/DMist';
-import Utils from '../services/DTransferUtils';
+import Utils from '../services/Utils';
 
 import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'

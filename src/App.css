@@ -50,13 +50,11 @@ h2{
   color: #fff;
 }
 
-/* Shared */
+/* Form */
 
 button:focus, textarea:focus, input:focus{
   outline: none;
 }
-
-/* Form */
 
 input[type='text'], input[type='password'] {
   border-radius: 50px;
@@ -121,7 +119,6 @@ label{
   width: 40%;
 }
 
-
 .feedback{
   display: table;
   height: 100%;
@@ -135,19 +132,6 @@ label{
   text-align: center;
 }
 
-/*.feedback-content .link-group{
-  width: 77%;
-  margin: auto;
-  margin-bottom: 25px;
-  text-align: left;
-}
-
-.feedback-content .link-label{
-  margin-bottom: 12px;
-  text-align: center;
-}
-*/
-
 /* Buttons */
 
 .btn.btn-lg {
@@ -159,7 +143,6 @@ label{
 }
 
 .btn.btn-sm {
-  /*height: 100px;*/
   border-radius: 100px;
   font-size: 1vw;
   padding: 10px;
@@ -195,6 +178,25 @@ label{
 
 /* Shared */
 
+.hidden{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fade-in{
+  opacity: 1;
+  display: table;
+  transition: opacity 0.7s;  
+}
+
+.page-smallprint {
+  color: white;
+  font-size: 15px;
+  margin-top: 75px;
+}
+
+/* Structure */
+
 .content-wrap {
   margin-left: 30px;
   margin-bottom: 30px;
@@ -208,12 +210,43 @@ label{
   z-index: 1;
 }
 
+.page-wrapper{
+  display: table;
+  height:100vh;
+  width:100vw;
+  top:0;
+  left:0;
+  position: absolute;
+  pointer-events: auto;
+}
+
+.page-inner-centered{
+  display: table-cell;
+  vertical-align: middle;
+  margin: auto;
+  text-align: center;
+}
+
+.page-inner-wrapper{
+  width: 470px;
+  margin: auto;
+}
+
+
+/* Slide Backgrounds */
+
+.green{
+  background: #57C989;
+  background: hsla(146, 52%, 42%, 1);
+}
+
+/* Navigation */
+
 .nav-header{
   position: absolute;
   width: 96%;
   z-index: 10;
   margin: 2%;
-  /*pointer-events: none;*/
 }
 
 .nav-header-items{
@@ -263,30 +296,12 @@ label{
   margin-right: 26px;
 }
 
-#datafund-d{
-  height: 48px;
-  margin-bottom: 22px;
-  margin-right: -7px;
-}
-
-.user-nav{
-  position: absolute;
-  height: 15vh;
-  display: table;
-  z-index: 10;
-  margin: 0 5vw;
-  /*pointer-events: none;*/
-  right: 0;
-  cursor: pointer;
-}
-
 .nav-key{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
   text-align: right;
 }
-
 
 .nav-context{
   color: #fff;
@@ -311,67 +326,7 @@ label{
   width: 10vw;
 }
 
-.nav-header .nav-header-items .df-logo{
-  height: 7.4vh;
-  color: #fff;
-}
-
-.nav-header .nav-key .df-logo path{
-  fill: black;
-}
-
-.page-wrapper{
-  display: table;
-  height:100vh;
-  width:100vw;
-  top:0;
-  left:0;
-  position: absolute;
-  pointer-events: auto;
-}
-
-.page-inner-centered{
-  display: table-cell;
-  vertical-align: middle;
-  margin: auto;
-  text-align: center;
-}
-
-.page-inner-wrapper{
-  width: 470px;
-  margin: auto;
-}
-
-.hidden{
-  opacity: 0;
-  pointer-events: none;
-}
-
-.fade-in{
-  opacity: 1;
-  display: table;
-  transition: opacity 0.7s;  
-}
-
-.page-smallprint {
-  color: white;
-  font-size: 15px;
-  margin-top: 75px;
-}
-
-.spinner {
-
-}
-
-  /*slide backgrounds*/
-
-  .green{
-    background: #57C989;
-    background: hsla(146, 52%, 42%, 1);
-  }
-
-
-/* disclaimer */
+/* Disclaimer */
 
 .disclaimer{
   height:100vh;
@@ -531,19 +486,6 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 .select-mailbox {
   z-index: 6;
 }
-
-/*.mailbox-icon{
-  display: inline-block;
-  margin-right:2vw;
-}
-
-.mailbox-icon button{
-  border: 0px;
-  border-radius: 3vw;
-  background: transparent;
-  display: table;
-  margin: auto;
-}*/
 
 .select-mailbox-mailboxes {
     width: 300px;
@@ -992,17 +934,6 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   margin-right: 3%;
 }
 
-
-/*.icon-group .icon .info-filename{
-  color: #fff;
-  font-size: 10px;
-  margin-top:2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-}
-*/
 .icon-group .icon .info-filesize,
 .icon-group .icon .info-filesender,
 .icon-group .icon .info-filerecipient {

@@ -119,18 +119,18 @@ class App extends Component {
               </Link>
             </div>
             {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
-            <div className="nav-header-item-left">
-              <button className="nav-header-item-button" onClick={this.handleStoreFile} >
-                Store File
-              </button>
-            </div>
+              <div className="nav-header-item-left">
+                <button className="nav-header-item-button" onClick={this.handleStoreFile} >
+                  Store File
+                </button>
+              </div>
             }
             {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' && 
-            <div className="nav-header-item-left">
-              <button className="nav-header-item-button" onClick={this.handleSendFile} >
-                Send File
-              </button>                
-            </div>
+              <div className="nav-header-item-left">
+                <button className="nav-header-item-button" onClick={this.handleSendFile} >
+                  Send File
+                </button>                
+              </div>
             }
 
 
@@ -172,12 +172,13 @@ class App extends Component {
           }/>
 
           <Route path="/mailbox" render={() => {
-            return <Mailbox 
-              setSelectedMailbox={this.setSelectedMailbox}
-              selectedMailbox={this.state.selectedMailbox}
-              FDS={this.FDS}
-            />
-          }} />
+              return <Mailbox 
+                setSelectedMailbox={this.setSelectedMailbox}
+                selectedMailbox={this.state.selectedMailbox}
+                FDS={this.FDS}
+              />
+            }
+          }/>
   
         </div>
       </div>

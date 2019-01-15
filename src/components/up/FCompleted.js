@@ -6,7 +6,7 @@ class FCompleted extends Component{
   render(){
     return (
       <div id="completed" className={"confirm page-wrapper " + (this.props.parentState.uiState === 5 ? "fade-in" : "hidden")}> 
-          <div className={"info " + (this.props.parentState.fileIsSelected && "is-selected")}> {/* this bit slides in from left over the top of select-file */}
+          <div className="info">
             <div className="info-content">
               <div className="file-was-sent">
                 <img className="circle-tick" src="assets/images/circle-tick.svg" alt="Circle Tick"/>

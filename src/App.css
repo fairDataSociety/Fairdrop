@@ -681,11 +681,6 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   display: table;
 }
 
-.info.is-selected{
-  transform: translateX(0);
-  transition: transform 1s;
-}
-
 .info-content{
   color:white;
   display:table-cell;

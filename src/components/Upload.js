@@ -11,8 +11,6 @@ import ProgressBar from '../components/up/ProgressBar';
 
 class Upload extends Component{
 
-  // initialise
-
   getInitialState() {
     return {
       shouldEncrypt: false,
@@ -37,11 +35,6 @@ class Upload extends Component{
 
       fileWasEncrypted: false,
       fileWasUploaded: false,
-
-      // dTransferLink: null,
-      // uploadedFileHash: null,
-      // encryptMessage: 'Unencrypted',      
-      // sendButtonMessage: 'Upload Unencrypted',
     };
   }
 

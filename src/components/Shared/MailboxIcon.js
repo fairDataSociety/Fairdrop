@@ -15,15 +15,15 @@ class MailboxIcon extends Component{
 
   render(){
     return (
-      <div className="dt-mailbox-icon">
+      <div className="mailbox-icon">
         <button onClick={ (e) => {this.props.mailboxAction(e, this.props.mailbox)} }>
-          <div className="dt-mailbox">
-            <div className="dt-mailbox-name">
+          <div className="mailbox">
+            <div className="mailbox-name">
               {this.props.mailboxName.substring(0,1)} {this.isSelected() ? "Selected" : ""}
             </div>
           </div>
         </button>
-        <div onClick={ (e) => {this.props.mailboxAction(e, this.props.mailbox)} } className="dt-mailbox-description">
+        <div onClick={ (e) => {this.props.mailboxAction(e, this.props.mailbox)} } className="mailbox-description">
           {this.props.mailboxDescription}
         </div>
       </div>

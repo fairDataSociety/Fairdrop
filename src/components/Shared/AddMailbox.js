@@ -140,11 +140,11 @@ class ASelectFile extends Component{
 
   render(){
     return (
-      <div className="dt-mailbox-add-ui">
+      <div className="mailbox-add-ui">
         <form onSubmit={this.addMailbox}>
-          <div className="dt-form-group">      
+          <div className="form-group">      
             <input 
-              className="dt-mailbox-add-name" 
+              className="mailbox-add-name" 
               type="text" 
               autoComplete="new-name"    
               placeholder="mailbox name" 
@@ -152,9 +152,9 @@ class ASelectFile extends Component{
               ref="dtSelectMailboxName"
             />
           </div>
-          <div className="dt-form-group"> 
+          <div className="form-group"> 
             <input 
-              className="dt-mailbox-add-password" 
+              className="mailbox-add-password" 
               type="password" 
               placeholder="password"
               autoComplete="off"       
@@ -162,21 +162,21 @@ class ASelectFile extends Component{
               ref="dtSelectPassword"
             />
           </div>
-          <div className="dt-form-group-last clearfix">
+          <div className="form-group-last clearfix">
             <input 
               autoComplete="off"            
-              className="dt-mailbox-add-password-verification" 
+              className="mailbox-add-password-verification" 
               type="password" 
               placeholder="password verification" 
               onChange={this.handleSelectPasswordVerification}
               ref="dtSelectPasswordVerification"  
             />
-            <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>
+            <div className="feedback-unlock-ui">{this.state.feedbackMessage}</div>
           </div>
-          <div className="dt-actions">
-              <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn-green" onClick={this.addMailbox}>Add Mailbox</button>        
+          <div className="actions">
+              <button className="btn btn-lg select-encryption-no-button btn-green" onClick={this.addMailbox}>Add Mailbox</button>        
               {this.props.mailboxesExist &&
-                <button className="dt-btn dt-btn-lg dt-select-encryption-no-button dt-btn dt-btn-lg dt-btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>              
+                <button className="btn btn-lg select-encryption-no-button btn btn-lg btn-link" onClick={this.props.cancelAddMailbox}>Cancel</button>              
               }
           </div>
         </form>

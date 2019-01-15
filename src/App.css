@@ -23,12 +23,6 @@
     font-style: normal;
 }
 
-
-
-button:focus, textarea:focus, input:focus{
-    outline: none;
-}
-
 * {
   font-family: 'Berthold Akzidenz-Grotesk Extended';
 }
@@ -40,7 +34,7 @@ h1 {
   color: #fff;
 }
 
-.dt-page-wrapper h1{
+.page-wrapper h1{
   margin-bottom: 70px;
 }
 
@@ -52,8 +46,14 @@ h2{
   font-size:40px;
 }
 
-.dt-page-inner-centered, p{
+.page-inner-centered, p{
   color: #fff;
+}
+
+/* Shared */
+
+button:focus, textarea:focus, input:focus{
+  outline: none;
 }
 
 /* Form */
@@ -96,53 +96,53 @@ label{
   letter-spacing: 0.03em;
 }
 
-.dt-sym-enc,
-.dt-send-mail {
+.sym-enc,
+.send-mail {
   text-align: left;
   padding: 0 100px;
 }
 
-.dt-form-group {
+.form-group {
   margin-bottom: 20px !important;
 }
 
-.dt-form-group-last {
+.form-group-last {
   margin-bottom: 75px !important;
 }
 
-.dt-form-group.dt-toggle input {
+.form-group.toggle input {
   width: 30px;
   float: left;
   position: relative;
   top: -3px;
 }
 
-.dt-form-two-inputs input {
+.form-two-inputs input {
   width: 40%;
 }
 
 
-.dt-feedback{
+.feedback{
   display: table;
   height: 100%;
   width: 100%;
 }
 
-.dt-feedback-content{
+.feedback-content{
   color:white;
   display:table-cell;
   vertical-align: middle;
   text-align: center;
 }
 
-/*.dt-feedback-content .dt-link-group{
+/*.feedback-content .link-group{
   width: 77%;
   margin: auto;
   margin-bottom: 25px;
   text-align: left;
 }
 
-.dt-feedback-content .dt-link-label{
+.feedback-content .link-label{
   margin-bottom: 12px;
   text-align: center;
 }
@@ -150,7 +150,7 @@ label{
 
 /* Buttons */
 
-.dt-btn.dt-btn-lg {
+.btn.btn-lg {
   border-radius: 100px;
   font-size: 16px;
   padding: 5px 34px 2px 34px;
@@ -158,7 +158,7 @@ label{
   margin-right: 10px;
 }
 
-.dt-btn.dt-btn-sm {
+.btn.btn-sm {
   /*height: 100px;*/
   border-radius: 100px;
   font-size: 1vw;
@@ -169,38 +169,38 @@ label{
   margin-right: 10px;
 }
 
-.dt-btn.dt-btn-black {
+.btn.btn-black {
   background-color: #ffffff;
   color: #000;
 }
 
-.dt-btn.dt-btn-link {
+.btn.btn-link {
   background-color: transparent;
   color: #fff;
 }
 
-.dt-btn-float-left {
+.btn-float-left {
   float: left;
 }
 
-.dt-btn-float-right {
+.btn-float-right {
   float: right;
 }
 
 
-.dt-btn-group{
+.btn-group{
   clear: both;
   margin-bottom:75px;
 }
 
 /* Shared */
 
-.dt-content-wrap {
+.content-wrap {
   margin-left: 30px;
   margin-bottom: 30px;
 }
 
-.dt-wrapper{
+.wrapper{
   height:100vh;
   width:100vw;
   position: relative;
@@ -208,7 +208,7 @@ label{
   z-index: 1;
 }
 
-.dt-nav-header{
+.nav-header{
   position: absolute;
   width: 96%;
   z-index: 10;
@@ -216,24 +216,24 @@ label{
   /*pointer-events: none;*/
 }
 
-.dt-nav-header-items{
+.nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
   text-align: left;
 }
 
-.dt-nav-header-item-left{
+.nav-header-item-left{
   float: left;
   margin-right: 10px;
 }
 
-.dt-nav-header-item-right{
+.nav-header-item-right{
   float: right;
   margin-left: 10px;
 }
 
-.dt-nav-header-item-button{
+.nav-header-item-button{
   color: black;
   display: inline;
   border: 0;
@@ -242,34 +242,34 @@ label{
   margin-top: 28px;
 }
 
-.dt-nav-white .dt-nav-header-item-button{
+.nav-white .nav-header-item-button{
   color: white;
 }
 
-.dt-nav-white svg{
+.nav-white svg{
   fill: #fff;
   transition: fill 1s;
   margin-bottom: 15px;
 }
 
-.dt-nav-black svg{
+.nav-black svg{
   fill: #000;
   transition: fill 1s linear 1s;
   margin-bottom: 15px;
 }
 
-.dt-nav-key svg{
+.nav-key svg{
   margin-top: 16px;
   margin-right: 26px;
 }
 
-#dt-datafund-d{
+#datafund-d{
   height: 48px;
   margin-bottom: 22px;
   margin-right: -7px;
 }
 
-.dt-user-nav{
+.user-nav{
   position: absolute;
   height: 15vh;
   display: table;
@@ -280,7 +280,7 @@ label{
   cursor: pointer;
 }
 
-.dt-nav-key{
+.nav-key{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
@@ -288,39 +288,39 @@ label{
 }
 
 
-.dt-nav-context{
+.nav-context{
   color: #fff;
   margin-top: 28px;
   display: block;
 }
 
-.dt-nav-context:hover{
+.nav-context:hover{
   color: #fff;
   text-decoration: none;
 }
 
-.dt-nav-header-sign-out{
+.nav-header-sign-out{
   font-size:10px;
   line-height: 28px
 }
 
-.dt-nav-header .dt-nav-header-items{
+.nav-header .nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
   width: 10vw;
 }
 
-.dt-nav-header .dt-nav-header-items .dt-df-logo{
+.nav-header .nav-header-items .df-logo{
   height: 7.4vh;
   color: #fff;
 }
 
-.dt-nav-header .dt-nav-key .dt-df-logo path{
+.nav-header .nav-key .df-logo path{
   fill: black;
 }
 
-.dt-page-wrapper{
+.page-wrapper{
   display: table;
   height:100vh;
   width:100vw;
@@ -330,42 +330,42 @@ label{
   pointer-events: auto;
 }
 
-.dt-page-inner-centered{
+.page-inner-centered{
   display: table-cell;
   vertical-align: middle;
   margin: auto;
   text-align: center;
 }
 
-.dt-page-inner-wrapper{
+.page-inner-wrapper{
   width: 470px;
   margin: auto;
 }
 
-.dt-hidden{
+.hidden{
   opacity: 0;
   pointer-events: none;
 }
 
-.dt-fade-in{
+.fade-in{
   opacity: 1;
   display: table;
   transition: opacity 0.7s;  
 }
 
-.dt-page-smallprint {
+.page-smallprint {
   color: white;
   font-size: 15px;
   margin-top: 75px;
 }
 
-.dt-spinner {
+.spinner {
 
 }
 
   /*slide backgrounds*/
 
-  .dt-green{
+  .green{
     background: #57C989;
     background: hsla(146, 52%, 42%, 1);
   }
@@ -373,7 +373,7 @@ label{
 
 /* disclaimer */
 
-.dt-disclaimer{
+.disclaimer{
   height:100vh;
   width:100vw;
   position: absolute;
@@ -385,13 +385,13 @@ label{
   text-align: center;
 }
 
-.dt-disclaimer-wrapper{
+.disclaimer-wrapper{
   display: table-cell;
   vertical-align: middle;
   text-align: center;
 }
 
-.dt-disclaimer-content{
+.disclaimer-content{
   text-align: left;
   width: 65%;
   margin: auto;
@@ -400,7 +400,7 @@ label{
 
 /* select file */
 
-.dt-select-file{
+.select-file{
   position: absolute;
   background: #FF6F58;
   height:150vh;
@@ -409,13 +409,13 @@ label{
   z-index: 2;
 }
 
-.dt-select-file.is-selected{
+.select-file.is-selected{
   opacity: 0;
   transition: opacity 1s;
   pointer-events: none;
 }
 
-.dt-select-file-header{
+.select-file-header{
   height: 50vh;
   width: 100vw;
   transition: transform 1s;
@@ -423,12 +423,12 @@ label{
   background-color: #fff;
 }
 
-.dt-select-file-header.is-selecting{
+.select-file-header.is-selecting{
   transform: translateY(-50vh); 
   transition: transform 1s;
 }
 
-.dt-select-file-header h1{
+.select-file-header h1{
   color: #000;  
   display: table-cell;
   vertical-align: middle;
@@ -437,12 +437,12 @@ label{
   transition: opacity 1s linear 0.5s;
 }
 
-.dt-select-file-header.is-selecting h1{
+.select-file-header.is-selecting h1{
   opacity: 0;
   transition: opacity 1s;
 }
 
-.dt-select-file-header h1 span.dt-select-file-header-inverted{
+.select-file-header h1 span.select-file-header-inverted{
   background: #000;
   color: #FFF;
   background: #000;
@@ -450,25 +450,25 @@ label{
   padding: 9px;  
 }
 
-.dt-select-file-header.is-selecting h1{
+.select-file-header.is-selecting h1{
   opacity: 0;
   transition: opacity 1s;
 }
 
-.dt-select-file-main{
+.select-file-main{
   height: 50vh;
   transition: transform 1s;  
   transition: height 1s;
 }
 
-.dt-select-file-main.is-selecting{
+.select-file-main.is-selecting{
   height: 100vh;
   transform: translateY(-50vh);
   transition: transform 1s;
   transition: height 1s;
 }
 
-.dt-select-file-instruction{
+.select-file-instruction{
   font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
   height: 50vh;
   width: 100vw;
@@ -479,12 +479,12 @@ label{
   transition: transform 1s;  
 }
 
-.dt-select-file-instruction.is-selecting{
+.select-file-instruction.is-selecting{
   transform: translateY(25vh);
   transition: transform 0.7s;
 }
 
-.dt-select-file-instruction.has-dropped{
+.select-file-instruction.has-dropped{
   opacity: 0;
   transition: opacity 0.6s;
 }
@@ -493,7 +493,7 @@ label{
 it can be amended later on to either haved a setTimeout function to 
 re-add it at the appropriate time or to use a png slice (preferable)*/
 
-/*.dt-select-file-instruction-gradient-overlay{
+/*.select-file-instruction-gradient-overlay{
   content:"";
   height: 50vh;
   width: 100vw;
@@ -508,12 +508,12 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 */
 
-/*.is-selecting .dt-select-file-instruction-gradient-overlay{
+/*.is-selecting .select-file-instruction-gradient-overlay{
   opacity:0;
   transition: opacity 3s linear 1s;
 }*/
 
-.dt-select-file-instruction h2{
+.select-file-instruction h2{
   height: 100%;
   width: 100%;
   display: table-cell;
@@ -522,22 +522,22 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   font-size: 40px;
 }
 
-.dt-select-file-instruction h2 .dt-select-file-header-underlined {
+.select-file-instruction h2 .select-file-header-underlined {
   border-bottom: 3px solid white;
 }
 
 /* select mailbox */
 
-.dt-select-mailbox {
+.select-mailbox {
   z-index: 6;
 }
 
-/*.dt-mailbox-icon{
+/*.mailbox-icon{
   display: inline-block;
   margin-right:2vw;
 }
 
-.dt-mailbox-icon button{
+.mailbox-icon button{
   border: 0px;
   border-radius: 3vw;
   background: transparent;
@@ -545,16 +545,16 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   margin: auto;
 }*/
 
-.dt-select-mailbox-mailboxes {
+.select-mailbox-mailboxes {
     width: 300px;
     float: left;
 }
 
-.dt-select-mailbox-label{
+.select-mailbox-label{
   float: right;
 }
 
-.dt-select-mailbox-mailboxes .Dropdown-control{
+.select-mailbox-mailboxes .Dropdown-control{
   background: #57C989;
     background: hsla(146, 52%, 42%, 1);
   background: transparent;
@@ -565,11 +565,11 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   transition: unset;
 }
 
-.dt-select-mailbox-mailboxes .Dropdown-placeholder{
+.select-mailbox-mailboxes .Dropdown-placeholder{
   overflow: hidden;
 }
 
-.dt-select-mailbox-mailboxes .Dropdown-option{
+.select-mailbox-mailboxes .Dropdown-option{
   font-size: 16px;
   color: #fff;
   overflow: hidden;  
@@ -586,27 +586,27 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   color: #333;
 }
 
-.dt-select-mailbox-mailboxes .is-open .Dropdown-control{
+.select-mailbox-mailboxes .is-open .Dropdown-control{
   border-radius: 30px 30px 0px 0px;  
 }
 
-.dt-select-mailbox-mailboxes .Dropdown-menu{
+.select-mailbox-mailboxes .Dropdown-menu{
   background: #57C989;
     background: hsla(146, 52%, 42%, 1);
   border-radius: 0 0 30px 30px;
 }
 
-.dt-select-mailbox-mailboxes .Dropdown-arrow {
+.select-mailbox-mailboxes .Dropdown-arrow {
   border-color: #fff transparent;
   top: 18px;
   right: 18px;
 }
 
-.dt-select-mailbox-mailboxes .is-open .Dropdown-arrow {
+.select-mailbox-mailboxes .is-open .Dropdown-arrow {
   border-color: transparent transparent #fff;
 }
 
-.dt-mailbox-name{
+.mailbox-name{
   color: white;
   border: 1px solid white;
   height: 6vw;
@@ -622,13 +622,13 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   padding-right: 0.1vw;
 }
 
-.dt-mailbox-description{
+.mailbox-description{
   color:#fff;
   padding: 0;
   padding-top: 1vw;  
 }
 
-.dt-feedback-unlock-ui{
+.feedback-unlock-ui{
   padding:8px;
   width: 75%;
   float: left;
@@ -639,46 +639,46 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 /* select recipient */
 
-.dt-select-recipient {
+.select-recipient {
   z-index: 7;
 }
 
 /* confirm */
 
-.dt-confirm {
+.confirm {
   z-index: 8;
 }
 
-.dt-confirm .dt-confirm-ui table{
+.confirm .confirm-ui table{
   color: #fff;
   margin: auto;
   margin-bottom: 2vh;
 }
 
-.dt-confirm .dt-confirm-ui table td{
+.confirm .confirm-ui table td{
   text-align: left;
   padding-right: 1vw;
 }
 
-.dt-confirm-ui-group {
+.confirm-ui-group {
   margin-bottom: 75px;
 }
 
-.dt-confirm .dt-confirm-upload-unencrypted{
+.confirm .confirm-upload-unencrypted{
   float:left;
 }
 
-.dt-confirm .dt-confirm-upload-unencrypted{
+.confirm .confirm-upload-unencrypted{
   float:left;
 }
 
 /* progress */
 
-.dt-in-progress {
+.in-progress {
   z-index: 8;
 }
 
-.dt-mist{
+.mist{
   z-index: 9;
   position: absolute;
   top: 0;
@@ -689,7 +689,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   opacity: 0.5;
 }
 
-.dt-in-progress h1.dt-in-progress-header{
+.in-progress h1.in-progress-header{
   font-size: 42px;
 }
 
@@ -699,32 +699,32 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   }
 }
 
-.dt-in-progress-icon{
+.in-progress-icon{
   height: 46px;
   margin: 8px 18px 18px 18px;
   animation: rotate 1.5s linear infinite;
 }
 
-.dt-in-progress h2.dt-in-progress-sub{
+.in-progress h2.in-progress-sub{
   font-family: 'Berthold Akzidenz-Grotesk Light Extended';
   font-size: 24px;
 }
 
-.dt-in-progress h3.dt-in-progress-sub-2{
+.in-progress h3.in-progress-sub-2{
   font-size: 1.2em;
   color: white;
 }
 
 /* completed */
 
-.dt-in-progress {
+.in-progress {
   z-index: 9;
 }
 
 
 /* info feedback */
 
-.dt-info{
+.info{
   top: 0;
   background: #57C989;
   background: #2E332F;
@@ -739,63 +739,63 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   display: table;
 }
 
-.dt-info.is-selected{
+.info.is-selected{
   transform: translateX(0);
   transition: transform 1s;
 }
 
-.dt-info-content{
+.info-content{
   color:white;
   display:table-cell;
   vertical-align: middle;
   text-align: center;
 }
 
-.dt-info-content .dt-file-was-sent{
+.info-content .file-was-sent{
   margin-bottom: 40px;
   font-size: 33px;
   letter-spacing: 0.03em;
 }
 
-.dt-info-content .dt-file-was-sent img{
+.info-content .file-was-sent img{
   height: 50px;
   margin-right: 15px;
   margin-bottom: 10px;
 }
 
-.dt-info-content .dt-info-filename {
+.info-content .info-filename {
   font-size: 22px;
   margin-bottom: 28px;
 }
 
-.dt-info-content .dt-info-filesize{
+.info-content .info-filesize{
   font-size: 15px;
   margin-left: 16px;
   font-family: 'Berthold Akzidenz-Grotesk Light Extended';
 }
 
-.dt-info-content .dt-info-is-encrypted{
+.info-content .info-is-encrypted{
   font-size: 18px;
   margin-bottom: 34px;
   font-family: 'Berthold Akzidenz-Grotesk Light Extended';
 }
 
-.dt-feedback-swarmhash-message{
+.feedback-swarmhash-message{
   margin-bottom: 8px;
 }
 
-.dt-feedback-swarmhash input{
+.feedback-swarmhash input{
   width: 28%;
   font-size: 11px;
 }
 
-.dt-fairdrop-lock{
+.fairdrop-lock{
   height: 25px;
   margin-bottom: 8px;
   margin-right: 8px;
 }
 
-.dt-ui{
+.ui{
   top:0;
   background: #2E332F;
   width:50vw;
@@ -808,24 +808,24 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   display:table;
 }
 
-.dt-ui.is-selected{
+.ui.is-selected{
   transform: translateX(0);
   transition: transform 1s;
 }
 
-.dt-ui .dt-ui-wrapper{
+.ui .ui-wrapper{
   display: table-cell;
   vertical-align: middle;
   text-align: center;
 }
 
-.dt-ui a.dt-file-link{
+.ui a.file-link{
   color: #fff;
 }
 
-/*.dt-progress*/
+/*.progress*/
 
-.dt-progress{
+.progress{
   position: absolute;
   z-index: 100;
   bottom: 0;
@@ -835,165 +835,165 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   color: white;
 }
 
-.dt-ui-state-0.dt-progress{
+.ui-state-0.progress{
   display: none;
 }
 
-.dt-progress-indicator{
+.progress-indicator{
   border: 2px solid white;
   position: relative;
   top: 2px;
   transition: width 1s;
 }
 
-.dt-ui-state-1 .dt-progress-indicator{
+.ui-state-1 .progress-indicator{
   width: 20%;
 }
 
-.dt-ui-state-2 .dt-progress-indicator{
+.ui-state-2 .progress-indicator{
   width: 40%;
 }
 
-.dt-ui-state-3 .dt-progress-indicator{
+.ui-state-3 .progress-indicator{
   width: 60%;
 }
 
-.dt-ui-state-4 .dt-progress-indicator{
+.ui-state-4 .progress-indicator{
   width: 80%;
 }
 
-.dt-ui-state-6 .dt-progress-indicator{
+.ui-state-6 .progress-indicator{
   width: 100%;
 }
 
 
 
-.dt-is-storing.dt-ui-state-1 .dt-progress-indicator{
+.is-storing.ui-state-1 .progress-indicator{
   width: 25%;
 }
 
-.dt-is-storing.dt-ui-state-2 .dt-progress-indicator{
+.is-storing.ui-state-2 .progress-indicator{
   width: 50%;
 }
 
-.dt-is-storing.dt-ui-state-3 .dt-progress-indicator{
+.is-storing.ui-state-3 .progress-indicator{
   width: 50%;
 }
 
-.dt-is-storing.dt-ui-state-4 .dt-progress-indicator{
+.is-storing.ui-state-4 .progress-indicator{
   width: 75%;
 }
 
-.dt-is-storing.dt-ui-state-6 .dt-progress-indicator{
+.is-storing.ui-state-6 .progress-indicator{
   width: 100%;
 }
 
 
-.dt-progress-labels{
+.progress-labels{
   display: table;
   vertical-align: middle;
   border-top: 1px solid white;
 }
 
-.dt-progress-label{
+.progress-label{
   font-size: 18px;
   width:20vw;
   display: table-cell;
   padding: 8px;
 }
 
-.dt-is-storing .dt-progress-label{
+.is-storing .progress-label{
   width:25vw;
 }
 
 /* mailbox */
 
-.dt-mailbox{
+.mailbox{
   color: #fff;
 }
 
-.dt-show-files .dt-show-files-header {
+.show-files .show-files-header {
   margin-bottom: 0;
 }
 
-.dt-icon {
+.icon {
   width: 12%;
 }
 
-.dt-icon-group {
+.icon-group {
   padding: 5vw 10vw;
   height: 63vh;
 }
 
-.dt-icon-group .dt-icon {
+.icon-group .icon {
   float: left;
   margin-bottom: 20px;
 }
 
-.dt-icon-group .dt-icon img{
+.icon-group .icon img{
   height: 70px;
 }
 
-.dt-inbox{
+.inbox{
   width: 96%;
   margin: 4%;
 }
 
-.dt-inbox table{
+.inbox table{
   width: 100%;
   text-align: left;
 }
 
-.dt-inbox thead tr th{
+.inbox thead tr th{
   font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
 }
 
-.dt-inbox tbody tr td:nth-child(1), .dt-inbox thead tr th:nth-child(1){
+.inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
   width: 50%;  
 }
 
-.dt-inbox tbody tr td:nth-child(2), .dt-inbox thead tr th:nth-child(2){
+.inbox tbody tr td:nth-child(2), .inbox thead tr th:nth-child(2){
   width: 20%;  
 }
 
-.dt-inbox tbody tr td:nth-child(3), .dt-inbox thead tr th:nth-child(3){
+.inbox tbody tr td:nth-child(3), .inbox thead tr th:nth-child(3){
   width: 15%;
 }
 
-.dt-inbox tbody tr td{
+.inbox tbody tr td{
   font-weight: normal;
 }
 
-.dt-inbox tbody tr.dt-message-list td{
+.inbox tbody tr.message-list td{
   cursor: pointer;
 }
 
-.dt-inbox-nav {
+.inbox-nav {
   width: 14%;
   float: left;
 }
 
-.dt-inbox-nav button{
+.inbox-nav button{
   color: #fff;
   border: 0;
   background: none;
   padding: 0;
 }
 
-.dt-inbox-nav button.inactive{
+.inbox-nav button.inactive{
   border: 0;
   opacity: 0.5;
   background: none;
 }
 
-.dt-inbox-header, .dt-inbox-main {
+.inbox-header, .inbox-main {
   float: left;
   width: 80%;
   margin-right: 3%;
 }
 
 
-/*.dt-icon-group .dt-icon .dt-info-filename{
+/*.icon-group .icon .info-filename{
   color: #fff;
   font-size: 10px;
   margin-top:2px;
@@ -1003,25 +1003,25 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   word-break: break-all;
 }
 */
-.dt-icon-group .dt-icon .dt-info-filesize,
-.dt-icon-group .dt-icon .dt-info-filesender,
-.dt-icon-group .dt-icon .dt-info-filerecipient {
+.icon-group .icon .info-filesize,
+.icon-group .icon .info-filesender,
+.icon-group .icon .info-filerecipient {
   color: #fff;  
   font-size: 8px;
 }
 
-.dt-show-files-ui {
+.show-files-ui {
   width: 100%;
   height: 76vh;
 }
 
-.dt-show-files-nav button{
+.show-files-nav button{
   color: #fff;
   border: 0;
   background: none;
 }
 
-.dt-show-files-nav button.inactive{
+.show-files-nav button.inactive{
   border: 0;
   opacity: 0.5;
   background: none;

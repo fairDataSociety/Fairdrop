@@ -65,27 +65,27 @@ class CSelectRecipient extends Component{
 
   render(){
     return (
-      <div id="dt-select-recipient" className={"dt-select-recipient dt-green dt-page-wrapper " + (this.props.parentState.uiState === 2 ? "dt-fade-in" : "dt-hidden")}> 
-        <div className="dt-select-recipient-ui dt-page-inner-centered">
-          <div className="dt-select-recipient dt-page-inner-wrapper">
+      <div id="select-recipient" className={"select-recipient green page-wrapper " + (this.props.parentState.uiState === 2 ? "fade-in" : "hidden")}> 
+        <div className="select-recipient-ui page-inner-centered">
+          <div className="select-recipient page-inner-wrapper">
             <form onSubmit={this.handleUploadAndEncrypt}>
-              <h1 className="dt-select-account-header">Select Recipient*</h1>
-              <div className="dt-form-group dt-form-group-last">
+              <h1 className="select-account-header">Select Recipient*</h1>
+              <div className="form-group form-group-last">
                 <input 
-                  id="dt-select-recipient-address"
-                  className="dt-select-recipient-address"
+                  id="select-recipient-address"
+                  className="select-recipient-address"
                   type="text" 
                   placeholder="mailbox name"
                   onChange={this.handleSelectRecipient}
                   name="selectRecipient"
                   ref="dtSelectRecipient"
                 />
-                <div className="dt-feedback-unlock-ui">{this.state.feedbackMessage}</div>
+                <div className="feedback-unlock-ui">{this.state.feedbackMessage}</div>
               </div>
-              <div className="dt-btn-group clearfix">
-                <button className="dt-select-select-recipient dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleUploadAndEncrypt}>Upload and Encrypt</button>
+              <div className="btn-group clearfix">
+                <button className="select-select-recipient btn btn-lg btn-green btn-float-left" onClick={this.handleUploadAndEncrypt}>Upload and Encrypt</button>
               </div>
-              <div className="dt-page-smallprint">
+              <div className="page-smallprint">
                 *For somebody to receive a file they need a mailbox first
               </div>
             </form>

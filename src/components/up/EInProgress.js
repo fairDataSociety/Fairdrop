@@ -5,26 +5,26 @@ class EInProgress extends Component{
 
   componentDidMount(){
     let dm = new DMist();
-    dm.mist('dt-mist');
+    dm.mist('mist');
   }
 
   render(){
     return (
-      <div id="dt-in-progress" className={"dt-in-progress dt-green dt-page-wrapper " + (this.props.parentState.uiState === 4 ? "dt-fade-in" : "dt-hidden")}> 
-          <div className="dt-mist"></div>
-          <div className="dt-in-progress-ui dt-page-inner-centered">
+      <div id="in-progress" className={"in-progress green page-wrapper " + (this.props.parentState.uiState === 4 ? "fade-in" : "hidden")}> 
+          <div className="mist"></div>
+          <div className="in-progress-ui page-inner-centered">
             { !this.props.parentState.fileWasEncrypted &&
-              <div className="dt-in-progress-ui">
-                <h1 className="dt-in-progress-header"><img className="dt-in-progress-icon" src="assets/images/progress.svg" alt="Spinning"/>Encrypting*</h1>
-                <h2 className="dt-in-progress-sub">*AES-256 military grade encryption</h2>
-                <h3 className="dt-in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
+              <div className="in-progress-ui">
+                <h1 className="in-progress-header"><img className="in-progress-icon" src="assets/images/progress.svg" alt="Spinning"/>Encrypting*</h1>
+                <h2 className="in-progress-sub">*AES-256 military grade encryption</h2>
+                <h3 className="in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
               </div>
             }
             { this.props.parentState.fileWasEncrypted && !this.props.parentState.fileWasUploaded &&
-              <div className="dt-in-progress-ui">
-                <h1 className="dt-in-progress-header"><img className="dt-in-progress-icon" src="assets/images/progress.svg" alt="Spinning"/>Uploading</h1>
-                <h2 className="dt-in-progress-sub">Storing Encrypted in Swarm network</h2>
-                <h3 className="dt-in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
+              <div className="in-progress-ui">
+                <h1 className="in-progress-header"><img className="in-progress-icon" src="assets/images/progress.svg" alt="Spinning"/>Uploading</h1>
+                <h2 className="in-progress-sub">Storing Encrypted in Swarm network</h2>
+                <h3 className="in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
               </div>
             }
           </div>

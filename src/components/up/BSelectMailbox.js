@@ -84,7 +84,7 @@ class BSelectMailbox extends Component{
   }
 
   handleSelectMailbox(option){
-    if(option.value === 'dt-new-mailbox'){
+    if(option.value === 'new-mailbox'){
       this.addMailbox();
     }else{
       this.setUnlockingMailbox(option.value);
@@ -94,22 +94,22 @@ class BSelectMailbox extends Component{
   getDropDownOptions(mailboxes){
     return this.state.mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    }).concat({label: 'new mailbox +', value: "dt-new-mailbox" });
+    }).concat({label: 'new mailbox +', value: "new-mailbox" });
   }
 
   render(){
     return (
-      <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper " + (this.props.parentState.uiState === 1 ? "dt-fade-in" : "dt-hidden")}> 
-        <div className="dt-select-mailbox-ui dt-page-inner-centered">
-          <div className="dt-select-mailbox">            
+      <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.props.parentState.uiState === 1 ? "fade-in" : "hidden")}> 
+        <div className="select-mailbox-ui page-inner-centered">
+          <div className="select-mailbox">            
             {this.state.isUnlockingMailbox &&
-              <div className="dt-page-inner-wrapper">
-                <h1 className="dt-select-account-header">Encrypt and Send</h1>
-                <div className="dt-form-group clearfix">
-                  <div className="dt-select-mailbox-mailboxes">
+              <div className="page-inner-wrapper">
+                <h1 className="select-account-header">Encrypt and Send</h1>
+                <div className="form-group clearfix">
+                  <div className="select-mailbox-mailboxes">
                     <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox} placeholder="Select a mailbox" />
                   </div>
-                  <label className="dt-select-mailbox-label">Select mailbox</label>
+                  <label className="select-mailbox-label">Select mailbox</label>
                 </div>
                 {this.state.isUnlockingMailbox &&
                   <UnlockMailbox 
@@ -122,8 +122,8 @@ class BSelectMailbox extends Component{
               </div>
             }         
             {this.state.isAddingMailbox &&
-              <div className="dt-page-inner-wrapper">
-                <h1 className="dt-select-account-header">New Mailbox</h1>
+              <div className="page-inner-wrapper">
+                <h1 className="select-account-header">New Mailbox</h1>
                 <AddMailbox 
                   FDS={this.FDS}
                   mailboxUnlocked={this.mailboxUnlocked}

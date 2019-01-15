@@ -103,10 +103,10 @@ class App extends Component {
 
   render() {
     return (
-      <div className="dt-parent-wrapper">
-        <div className={"dt-disclaimer " + (this.state.disclaimersAreShown === false ? 'dt-hidden' : '')} onClick={this.hideDisclaimer}>
-          <div className="dt-disclaimer-wrapper">
-            <div className="dt-disclaimer-content">
+      <div className="parent-wrapper">
+        <div className={"disclaimer " + (this.state.disclaimersAreShown === false ? 'hidden' : '')} onClick={this.hideDisclaimer}>
+          <div className="disclaimer-wrapper">
+            <div className="disclaimer-content">
               <h1>Welcome to Fairdrop!</h1>
               <p>Behold and welcome on our Fairdata.eth beta version of the website, provided to you on an “as is”  basis, which is still undergoing final testing before its official release. </p>
               <p>Beware, we do not give any warranties as to the suitability or usability of the website, data persistence or any of the content. We will not be liable for any loss suffered resulting from your use of the Fairdata.eth website. Real time distribution: you use it on your own risk.</p>
@@ -124,9 +124,9 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div className={ "dt-wrapper dt-green " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "dt-nav-white " : "dt-nav-black ")}>
-          <div className="dt-nav-header">
-            <div className="dt-nav-header-item-left">
+        <div className={ "wrapper green " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "nav-white " : "nav-black ")}>
+          <div className="nav-header">
+            <div className="nav-header-item-left">
               <Link to={"/"}>
                 <svg version="1.1" className="fairdop-logo" alt="Fairdrop Logo"
                    width="238px" height="68px" viewBox="0 0 238 68" enableBackground="new 0 0 238 68">
@@ -166,23 +166,23 @@ class App extends Component {
               </Link>
             </div>
             {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
-            <div className="dt-nav-header-item-left">
-              <button className="dt-nav-header-item-button" onClick={this.handleStoreFile} >
+            <div className="nav-header-item-left">
+              <button className="nav-header-item-button" onClick={this.handleStoreFile} >
                 Store File
               </button>
             </div>
             }
             {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' && 
-            <div className="dt-nav-header-item-left">
-              <button className="dt-nav-header-item-button" onClick={this.handleSendFile} >
+            <div className="nav-header-item-left">
+              <button className="nav-header-item-button" onClick={this.handleSendFile} >
                 Send File
               </button>                
             </div>
             }
 
 
-            <div className="dt-nav-header-item-right">
-              <Link className="dt-nav-key" to={'mailbox'}>
+            <div className="nav-header-item-right">
+              <Link className="nav-key" to={'mailbox'}>
                 <svg alt="Fairdrop Inbox"
                   version="1.1" id="Layer_1" height="32px" viewBox="0 0 400 400">
                   <path d="M193.571,208.877c0.782,0.497,1.6,0.915,2.47,1.227c3.234,1.119,8.611,0.933,11.49-1.014
@@ -202,15 +202,15 @@ class App extends Component {
               </Link>                
             </div>
             {this.state.selectedMailbox.subdomain && 
-              <div className="dt-nav-header-item-right">
-                <button className="dt-nav-header-item-button dt-nav-header-sign-out" onClick={this.resetMailboxState}>
+              <div className="nav-header-item-right">
+                <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>
                   (Sign Out)
                 </button>
               </div>
             }
             {this.state.selectedMailbox.subdomain && 
-              <div className="dt-nav-header-item-right">
-                <Link className="dt-nav-context" to={'mailbox'}>
+              <div className="nav-header-item-right">
+                <Link className="nav-context" to={'mailbox'}>
                   {this.state.selectedMailbox.subdomain}
                 </Link>
               </div>

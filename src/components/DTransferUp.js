@@ -135,7 +135,7 @@ class DTransferUp extends Component{
 
   render() {
     return (
-        <div className="dt-upload">
+        <div className="upload">
           <ASelectFile 
             parentState={this.state} 
             setParentState={this.setState.bind(this)} 

@@ -42,21 +42,21 @@ class UnlockMailbox extends Component{
 
   render(){
     return (
-      <div className="dt-mailbox-unlock-ui">
-        <div className="dt-form-group dt-form-group-last clearfix">
+      <div className="mailbox-unlock-ui">
+        <div className="form-group form-group-last clearfix">
           <form onSubmit={this.handleUnlockMailboxWallet}>
             <input 
-              id="dt-mailbox-unlock-password" 
+              id="mailbox-unlock-password" 
               autoComplete="off" 
-              className="dt-mailbox-unlock-password" 
+              className="mailbox-unlock-password" 
               type="password" 
               placeholder="password" 
               ref="dtSelectPassword"
             />
           </form>
-          <div className="dt-feedback-unlock-ui dt-feedback-float-right">{this.state.feedbackMessage}</div>
+          <div className="feedback-unlock-ui feedback-float-right">{this.state.feedbackMessage}</div>
         </div>
-        <button className="dt-btn dt-btn-lg dt-btn-float-left dt-btn-green" onClick={this.handleUnlockMailboxWallet.bind(this)}>Continue</button>
+        <button className="btn btn-lg btn-float-left btn-green" onClick={this.handleUnlockMailboxWallet.bind(this)}>Continue</button>
       </div>
     )
   }

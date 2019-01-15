@@ -13,7 +13,7 @@ class DTransferMailbox extends Component{
 
   componentDidMount(){
     let dm = new DMist();
-    // dm.mist('dt-mist');
+    // dm.mist('mist');
   }  
 
   getInitialState(){
@@ -80,7 +80,7 @@ class DTransferMailbox extends Component{
   }
 
   handleSelectMailbox(option){
-    if(option.value === 'dt-new-mailbox'){
+    if(option.value === 'new-mailbox'){
       this.addMailbox();
     }else{
       this.setUnlockingMailbox(option.value);
@@ -150,7 +150,7 @@ class DTransferMailbox extends Component{
     let mailboxes = this.props.FDS.GetAccounts();
     return mailboxes.map((m)=>{
       return {label: m.subdomain, value:  m.subdomain};
-    }).concat({label: 'new mailbox +', value: "dt-new-mailbox" });
+    }).concat({label: 'new mailbox +', value: "new-mailbox" });
   }
 
   addMailbox(){
@@ -170,15 +170,15 @@ class DTransferMailbox extends Component{
   render() {
     return (
       <div>
-        <div id="dt-select-mailbox" className={"dt-select-mailbox dt-green dt-page-wrapper " + (this.state.uiState === 0 ? "dt-fade-in" : "dt-hidden")}> 
-          <div className="dt-select-mailbox-ui dt-page-inner-centered">
-            <div className="dt-mist"></div>
+        <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.state.uiState === 0 ? "fade-in" : "hidden")}> 
+          <div className="select-mailbox-ui page-inner-centered">
+            <div className="mist"></div>
             {this.state.isUnlockingMailbox &&
-              <div className="dt-select-mailbox">
-                  <div className="dt-page-inner-wrapper">
-                    <h1 className="dt-select-account-header">Mailbox</h1>
-                    <div className="dt-form-group clearfix">
-                      <div className="dt-select-mailbox-mailboxes">
+              <div className="select-mailbox">
+                  <div className="page-inner-wrapper">
+                    <h1 className="select-account-header">Mailbox</h1>
+                    <div className="form-group clearfix">
+                      <div className="select-mailbox-mailboxes">
                         <Dropdown 
                           options={this.getDropDownOptions()} 
                           value={this.state.dropDownValue}
@@ -186,7 +186,7 @@ class DTransferMailbox extends Component{
                           placeholder="Select a mailbox" 
                         />
                       </div>
-                      <label className="dt-select-mailbox-label">Select mailbox</label>
+                      <label className="select-mailbox-label">Select mailbox</label>
                     </div>
                       <UnlockMailbox
                         FDS={this.props.FDS}
@@ -199,9 +199,9 @@ class DTransferMailbox extends Component{
               </div>
             }
             {this.state.isAddingMailbox &&
-              <div className="dt-select-mailbox">
-                  <div className="dt-page-inner-wrapper">
-                    <h1 className="dt-select-account-header">Create Mailbox</h1>
+              <div className="select-mailbox">
+                  <div className="page-inner-wrapper">
+                    <h1 className="select-account-header">Create Mailbox</h1>
                       <AddMailbox 
                         FDS={this.FDS}
                         setSelectedMailbox={this.setSelectedMailbox.bind(this)}
@@ -214,25 +214,25 @@ class DTransferMailbox extends Component{
             }
           </div>
         </div>
-        <div id="dt-show-files" className={"dt-show-files dt-green dt-page-wrapper " + (this.state.uiState === 1 ? "dt-fade-in" : "dt-hidden")}>
-          <div className="dt-page-inner-centered">
-            <div className="dt-show-files-ui">
+        <div id="show-files" className={"show-files green page-wrapper " + (this.state.uiState === 1 ? "fade-in" : "hidden")}>
+          <div className="page-inner-centered">
+            <div className="show-files-ui">
               { /* 
-              <h1 className="dt-show-files-header">{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</h1>
-              <div className="dt-show-files-nav">
+              <h1 className="show-files-header">{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</h1>
+              <div className="show-files-nav">
                 <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}>received</button>
                  - <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}>sent</button>
                   - <button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}>stored</button>
               </div>
-              <div className="dt-icon-group clearfix">
+              <div className="icon-group clearfix">
                 {this.state.shownMessageType === 'received' && 
                   <div>
                     {this.state.shownMessages.map((message)=>{
-                      return <div key={message.hash.address} className="dt-icon" onClick={ ()=>{ return message.saveAs(); } }>
-                          <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
-                          <div className="dt-info-filename">{ message.hash.file.name.substring(0,24)+'...' }</div>
-                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.hash.file.size) }</div>
-                          <div className="dt-info-filesender">from: { message.from }</div>
+                      return <div key={message.hash.address} className="icon" onClick={ ()=>{ return message.saveAs(); } }>
+                          <img className="file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
+                          <div className="info-filename">{ message.hash.file.name.substring(0,24)+'...' }</div>
+                          <div className="info-filesize">{ Utils.humanFileSize(message.hash.file.size) }</div>
+                          <div className="info-filesender">from: { message.from }</div>
                         </div>
                     })}
                   </div>
@@ -240,11 +240,11 @@ class DTransferMailbox extends Component{
                 {this.state.shownMessageType === 'sent' && 
                   <div>
                     {this.state.shownMessages.map((message)=>{
-                      return <div key={message.hash.address} className="dt-icon" onClick={ ()=>{ return message.saveAs(); } }>
-                          <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
-                          <div className="dt-info-filename">{ message.hash.file.name.substring(0,24)+'...' }</div>
-                          <div className="dt-info-filesize">{ Utils.humanFileSize(message.hash.file.size) }</div>
-                          <div className="dt-info-filerecipient">to: { message.to }</div>
+                      return <div key={message.hash.address} className="icon" onClick={ ()=>{ return message.saveAs(); } }>
+                          <img className="file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
+                          <div className="info-filename">{ message.hash.file.name.substring(0,24)+'...' }</div>
+                          <div className="info-filesize">{ Utils.humanFileSize(message.hash.file.size) }</div>
+                          <div className="info-filerecipient">to: { message.to }</div>
                         </div>
                     })}
                   </div>
@@ -252,17 +252,17 @@ class DTransferMailbox extends Component{
                 {this.state.shownMessageType === 'stored' && 
                   <div>
                     {this.state.shownMessages.map((hash)=>{
-                      return <div key={hash.address} className="dt-icon" onClick={ ()=>{ return hash.saveAs(); } }>
-                          <img className="dt-file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
-                          <div className="dt-info-filename">{ hash.file.name.substring(0,24)+'...' }</div>
-                          <div className="dt-info-filesize">{ Utils.humanFileSize(hash.file.size) }</div>
+                      return <div key={hash.address} className="icon" onClick={ ()=>{ return hash.saveAs(); } }>
+                          <img className="file-icon" src="assets/images/file-icon.svg" alt="File Icon"/>
+                          <div className="info-filename">{ hash.file.name.substring(0,24)+'...' }</div>
+                          <div className="info-filesize">{ Utils.humanFileSize(hash.file.size) }</div>
                         </div>
                     })}
                   </div>
                 }
                */}
-              <div className="dt-inbox clearfix">
-                <div className="dt-inbox-nav">
+              <div className="inbox clearfix">
+                <div className="inbox-nav">
                   <table>
                     <tbody>
                       <tr>
@@ -280,12 +280,12 @@ class DTransferMailbox extends Component{
                     </tbody>
                   </table>
                 </div>
-                <div className="dt-inbox-header">
+                <div className="inbox-header">
                   <table>
                     <thead>
                       <tr>
-                        <th className="dt-inbox-col-name">Name</th>
-                        <th className="dt-inbox-col-name">
+                        <th className="inbox-col-name">Name</th>
+                        <th className="inbox-col-name">
                           {(() => {
                             switch(this.state.shownMessageType) {
                               case 'sent':
@@ -297,20 +297,20 @@ class DTransferMailbox extends Component{
                             }
                           })()}
                         </th>
-                        <th className="dt-inbox-col-time">Time</th>
-                        <th className="dt-inbox-col-time">Size</th>
+                        <th className="inbox-col-time">Time</th>
+                        <th className="inbox-col-time">Size</th>
                       </tr>
                     </thead>
                   </table>
                 </div>
-                <div className="dt-inbox-main"> 
+                <div className="inbox-main"> 
                   <table>
                     <tbody>
                       {(() => {
                         switch(this.state.shownMessageType){
                           case 'sent':{
                             {return this.state.shownMessages.map((message)=>{
-                              return <tr className="dt-message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
+                              return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.to }</td>                                                            
                                   <td>23rd Feb 2023</td>
@@ -320,7 +320,7 @@ class DTransferMailbox extends Component{
                           }
                           case 'received': {
                             {return this.state.shownMessages.map((message)=>{
-                              return <tr className="dt-message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
+                              return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.from }</td>
                                   <td>23rd Feb 2023</td>
@@ -330,7 +330,7 @@ class DTransferMailbox extends Component{
                           }
                           case 'stored':
                             {return this.state.shownMessages.map((hash)=>{
-                              return <tr className="dt-message-list" key={`${hash.address}`} onClick={ ()=>{ return hash.saveAs(); } }>
+                              return <tr className="message-list" key={`${hash.address}`} onClick={ ()=>{ return hash.saveAs(); } }>
                                   <td>{ hash.file.name.substring(0,24)+'...' }</td>
                                   <td></td>                                  
                                   <td>23rd Feb 2023</td>

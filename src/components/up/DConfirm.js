@@ -39,13 +39,13 @@ class DConfirm extends Component{
 
   render(){
     return (
-      <div id="dt-confirm" className={"dt-confirm dt-green dt-page-wrapper " + (this.props.parentState.uiState === 3 ? "dt-fade-in" : "dt-hidden")}> 
-        <div className="dt-confirm-ui dt-page-inner-centered">
-          <div className="dt-page-inner-wrapper">
-            <h1 className="dt-confirm-header">Confirm</h1>
+      <div id="confirm" className={"confirm green page-wrapper " + (this.props.parentState.uiState === 3 ? "fade-in" : "hidden")}> 
+        <div className="confirm-ui page-inner-centered">
+          <div className="page-inner-wrapper">
+            <h1 className="confirm-header">Confirm</h1>
             {this.props.isStoringFile === false && 
               <div>
-                <div className="dt-confirm-ui-group clearfix">
+                <div className="confirm-ui-group clearfix">
                   <table>
                     <tbody>
                       <tr>
@@ -60,17 +60,17 @@ class DConfirm extends Component{
                     </tbody>
                   </table>
                 </div>
-                <div className="dt-btn-group">
+                <div className="btn-group">
                   <form onSubmit={this.handleEncryptAndSend}>                
-                    <button className="dt-confirm-encrypt-and-send dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
-                    <button className="dt-confirm-cancel dt-btn dt-btn-lg dt-btn-link dt-btn-float-right" onClick={this.handleCancel}>Cancel</button>
+                    <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
+                    <button className="confirm-cancel btn btn-lg btn-link btn-float-right" onClick={this.handleCancel}>Cancel</button>
                   </form>
                 </div>
               </div>
             }
             {this.props.isStoringFile === true && 
               <div>
-                <div className="dt-confirm-ui-group clearfix">
+                <div className="confirm-ui-group clearfix">
                   <table>
                     <tbody>
                       <tr>
@@ -82,10 +82,10 @@ class DConfirm extends Component{
                     </tbody>
                   </table>
                 </div>
-                <div className="dt-btn-group">
+                <div className="btn-group">
                   <form onSubmit={this.handleEncryptAndSend}>                
-                    <button className="dt-confirm-encrypt-and-send dt-btn dt-btn-lg dt-btn-green dt-btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
-                    <button className="dt-confirm-cancel dt-btn dt-btn-lg dt-btn-link dt-btn-float-right" onClick={this.handleCancel}>Cancel</button>
+                    <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
+                    <button className="confirm-cancel btn btn-lg btn-link btn-float-right" onClick={this.handleCancel}>Cancel</button>
                   </form>
                 </div>
               </div>

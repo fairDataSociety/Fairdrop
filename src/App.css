@@ -145,6 +145,11 @@ input:-webkit-autofill {
   display: table;
   height: 100%;
   width: 100%;
+  color: white;
+}
+
+.white .feedback{
+  color: #333;
 }
 
 .feedback-content{
@@ -651,7 +656,6 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   width: 75%;
   float: left;
   text-align: left;
-  color: white;
   height: 24px; 
 }
 
@@ -960,7 +964,8 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
-  width: 50%;  
+  width: 50%;
+  margin-bottom: 10px;
 }
 
 .inbox tbody tr td:nth-child(2), .inbox thead tr th:nth-child(2){
@@ -968,7 +973,11 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .inbox tbody tr td:nth-child(3), .inbox thead tr th:nth-child(3){
-  width: 15%;
+  width: 20%;
+}
+
+.inbox tbody tr td:nth-child(4), .inbox thead tr th:nth-child(4){
+  width: 10%;
 }
 
 .inbox tbody tr td{
@@ -985,7 +994,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .inbox-nav button{
-  color: #fff;
+  color: #000;
   border: 0;
   background: none;
   padding: 0;

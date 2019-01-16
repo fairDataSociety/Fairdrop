@@ -214,7 +214,7 @@ class Mailbox extends Component{
             }
           </div>
         </div>
-        <div id="show-files" className={"show-files green page-wrapper " + (this.state.uiState === 1 ? "fade-in" : "hidden")}>
+        <div id="show-files" className={"show-files page-wrapper " + (this.state.uiState === 1 ? "fade-in" : "hidden")}>
           <div className="page-inner-centered">
             <div className="show-files-ui">
               { /* 
@@ -325,7 +325,7 @@ class Mailbox extends Component{
                               return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.from }</td>
-                                  <td>23rd Feb 2023</td>
+                                  <td>12/09/2018 04:22</td>
                                   <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                 </tr>
                             })

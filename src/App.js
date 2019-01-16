@@ -108,7 +108,7 @@ class App extends Component {
           disclaimersAreShown={this.state.disclaimersAreShown}
           hideDisclaimer={this.hideDisclaimer}
         />
-        <div className={ "wrapper green " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "nav-black " : "nav-white ")}>
+        <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "nav-black white" : "nav-white green")}>
           <div className="nav-header">
             <div className="nav-header-item-left">
               <Link to={"/"}>

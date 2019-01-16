@@ -104,12 +104,11 @@ class BSelectMailbox extends Component{
           <div className="select-mailbox">            
             {this.state.isUnlockingMailbox &&
               <div className="page-inner-wrapper">
-                <h1 className="select-account-header">Encrypt and Send</h1>
+                <h1 className="select-account-header">Select Mailbox</h1>
                 <div className="form-group clearfix">
                   <div className="select-mailbox-mailboxes">
                     <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox} placeholder="Select a mailbox" />
                   </div>
-                  <label className="select-mailbox-label">Select mailbox</label>
                 </div>
                 {this.state.isUnlockingMailbox &&
                   <UnlockMailbox 

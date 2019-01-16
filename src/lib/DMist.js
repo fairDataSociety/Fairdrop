@@ -28,11 +28,11 @@ class DMist{
 
   }
 
-  mist(className){
+  mist(className, color=`200, 200, 200`){
     let mistCoordinates = new MitchellsBestCandidate();
     for (var i = mistCoordinates.length - 1; i >= 0; i--) {
-      this.mistSpot(className, 'rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0)', mistCoordinates[i][0], mistCoordinates[i][1], i*2);
-    }       
+      this.mistSpot(className, `rgba(${color}, 0.2)`, `rgba(${color}, 0.1)`, `rgba(${color}, 0)`, mistCoordinates[i][0], mistCoordinates[i][1], i*2);
+    }
   }
 }
 

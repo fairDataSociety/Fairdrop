@@ -15,7 +15,7 @@ class Mailbox extends Component{
   componentDidMount(){
     let dm = new DMist();
     dm.mist('mist');
-  }  
+  }
 
   getInitialState(){
     this.FDS = this.props.FDS;
@@ -171,13 +171,13 @@ class Mailbox extends Component{
   render() {
     return (
       <div>
-        <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.state.uiState === 0 ? "fade-in" : "hidden")}> 
+        <div id="select-mailbox" className={"select-mailbox white page-wrapper " + (this.state.uiState === 0 ? "fade-in" : "hidden")}> 
           <div className="select-mailbox-ui page-inner-centered">
             <div className="mist"></div>
             {this.state.isUnlockingMailbox &&
               <div className="select-mailbox">
                   <div className="page-inner-wrapper">
-                    <h1 className="select-account-header">Mailbox</h1>
+                    <h1 className="select-account-header">Select Mailbox</h1>
                     <div className="form-group clearfix">
                       <div className="select-mailbox-mailboxes">
                         <Dropdown 
@@ -187,7 +187,6 @@ class Mailbox extends Component{
                           placeholder="Select a mailbox" 
                         />
                       </div>
-                      <label className="select-mailbox-label">Select mailbox</label>
                     </div>
                       <UnlockMailbox
                         FDS={this.props.FDS}
@@ -296,7 +295,7 @@ class Mailbox extends Component{
                               case 'stored':
                                 return "";
                               default:
-                                return "";
+                                return;
                             }
                           })()}
                         </th>
@@ -306,7 +305,7 @@ class Mailbox extends Component{
                     </thead>
                   </table>
                 </div>
-                <div className="inbox-main"> 
+                <div className="inbox-main">
                   <table>
                     <tbody>
                       {(() => {
@@ -315,7 +314,7 @@ class Mailbox extends Component{
                             return this.state.shownMessages.map((message)=>{
                               return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
-                                  <td>{ message.to }</td>                                                            
+                                  <td>{ message.to }</td>
                                   <td>23rd Feb 2023</td>
                                   <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                 </tr>
@@ -335,13 +334,13 @@ class Mailbox extends Component{
                             return this.state.shownMessages.map((hash)=>{
                               return <tr className="message-list" key={`${hash.address}`} onClick={ ()=>{ return hash.saveAs(); } }>
                                   <td>{ hash.file.name.substring(0,24)+'...' }</td>
-                                  <td></td>                                  
+                                  <td></td>
                                   <td>23rd Feb 2023</td>
                                   <td>{ Utils.humanFileSize(hash.file.size) }</td>
                                 </tr>
                             })
                           default:
-                            return "";
+                            return;
                         }
                       })()}
                     </tbody>

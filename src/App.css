@@ -34,6 +34,10 @@ h1 {
   color: #fff;
 }
 
+.white h1{
+  color: #000;
+}
+
 .page-wrapper h1{
   margin-bottom: 70px;
 }
@@ -48,6 +52,21 @@ h2{
 
 .page-inner-centered, p{
   color: #fff;
+}
+
+.white .page-inner-centered, p{
+  color: #000;
+}
+
+label{
+  padding: 8px;
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.03em;
+}
+
+.white label{
+  color: #000;
 }
 
 /* Form */
@@ -73,6 +92,10 @@ input[type='text'], input[type='password'] {
   padding: 8px 17px 8px 20px;
 }
 
+.white input[type='text'], input[type='password']{
+  color: #333;
+}
+
 input {
   color:#000;
 }
@@ -84,15 +107,14 @@ input::placeholder{
 /* Change the white to any color ;) */
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #57C989 inset;
-  -webkit-text-fill-color: #fff;
+  -webkit-text-fill-color: #000;
 }
 
-label{
-  padding: 8px;
-  color: #fff;
-  font-size: 16px;
-  letter-spacing: 0.03em;
+.white input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #fff inset;
+  -webkit-text-fill-color: #000;
 }
+
 
 .sym-enc,
 .send-mail {
@@ -155,6 +177,15 @@ label{
 .btn.btn-black {
   background-color: #ffffff;
   color: #000;
+}
+
+.btn {
+  color: black;
+}
+
+.white .btn {
+  background: #000;
+  color: #fff;
 }
 
 .btn.btn-link {
@@ -503,7 +534,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .select-mailbox-mailboxes {
-    width: 300px;
+    width: 470px;
     float: left;
 }
 
@@ -512,14 +543,19 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .select-mailbox-mailboxes .Dropdown-control{
+  text-align: left;
+  padding-left: 18px;
   background: #57C989;
-    background: hsla(146, 52%, 42%, 1);
   background: transparent;
   border-radius: 30px;
-  padding: 8px 8px 8px 10px;
+  padding: 8px 8px 8px 18px;
   font-size: 16px;
   color: #fff;
   transition: unset;
+}
+
+.white .select-mailbox-mailboxes .Dropdown-control{
+  color: black;
 }
 
 .select-mailbox-mailboxes .Dropdown-placeholder{
@@ -527,19 +563,36 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .select-mailbox-mailboxes .Dropdown-option{
+  text-align: left;
+  padding-left: 18px;
   font-size: 16px;
   color: #fff;
   overflow: hidden;  
 }
 
+.white .select-mailbox-mailboxes .Dropdown-option{
+  color: black;
+}
+
 .Dropdown-option.is-selected {
   background-color: transparent; 
+  color: #333;
+}
+
+.white .Dropdown-option.is-selected {
+  background: white;
+  color: #333;
 }
 
 .Dropdown-option:hover {
-  background: #57C989;
-    background: hsla(146, 52%, 42%, 1);
+  background: hsla(146, 52%, 42%, 1);
   transition: background 3s;
+  color: #333;
+}
+
+.white .Dropdown-option:hover {
+  background: #ccc;
+  transition: background 1s;
   color: #333;
 }
 
@@ -548,8 +601,12 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .select-mailbox-mailboxes .Dropdown-menu{
-  background: #57C989;
-    background: hsla(146, 52%, 42%, 1);
+  background: hsla(146, 52%, 42%, 1);
+  border-radius: 0 0 30px 30px;
+}
+
+.white .select-mailbox-mailboxes .Dropdown-menu{
+  background: white;
   border-radius: 0 0 30px 30px;
 }
 
@@ -557,6 +614,10 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   border-color: #fff transparent;
   top: 18px;
   right: 18px;
+}
+
+.white .select-mailbox-mailboxes .Dropdown-arrow {
+  border-color: #000 transparent;
 }
 
 .select-mailbox-mailboxes .is-open .Dropdown-arrow {

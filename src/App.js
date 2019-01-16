@@ -13,6 +13,8 @@ import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
 
+import {version} from '../package.json'
+
 class App extends Component {
 
   getInitialState() {
@@ -65,7 +67,6 @@ class App extends Component {
 
     this.uploadComponent = React.createRef();
 
-    this.setIsSelecting = this.setIsSelecting.bind(this);
     this.setSelectedMailbox = this.setSelectedMailbox.bind(this);
     this.fileWasSelected = this.fileWasSelected.bind(this);
     this.hideDisclaimer = this.hideDisclaimer.bind(this);
@@ -75,10 +76,6 @@ class App extends Component {
     this.resetMailboxState = this.resetMailboxState.bind(this);
 
     this.state = this.getInitialState();
-  }
-
-  setIsSelecting(state = true){
-    this.setState({fileIsSelecting: state});
   }
 
   setSelectedMailbox(selectedMailbox){
@@ -111,12 +108,13 @@ class App extends Component {
           disclaimersAreShown={this.state.disclaimersAreShown}
           hideDisclaimer={this.hideDisclaimer}
         />
-        <div className={ "wrapper green " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "nav-white " : "nav-black ")}>
+        <div className={ "wrapper green " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "nav-black " : "nav-white ")}>
           <div className="nav-header">
             <div className="nav-header-item-left">
               <Link to={"/"}>
                 <FairdropLogo/>
               </Link>
+              <span className="version-number">{version}</span>
             </div>
             {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
               <div className="nav-header-item-left">
@@ -162,20 +160,19 @@ class App extends Component {
                 setSelectedMailbox={this.setSelectedMailbox}
                 selectedMailbox={this.state.selectedMailbox}
                 fileWasSelected={this.fileWasSelected} 
-                setIsSelecting={this.setIsSelecting} 
-                ref={this.uploadComponent} 
                 isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
                 resetFileState={this.resetFileState}
+                ref={this.uploadComponent} 
               />
             }
           }/>
 
           <Route path="/mailbox" render={() => {
               return <Mailbox 
+                FDS={this.FDS}              
                 setSelectedMailbox={this.setSelectedMailbox}
                 selectedMailbox={this.state.selectedMailbox}
-                FDS={this.FDS}
               />
             }
           }/>

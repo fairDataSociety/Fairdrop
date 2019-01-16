@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export default () => { return <svg version="1.1" className="fairdop-logo" alt="Fairdrop Logo"
    width="238px" height="68px" viewBox="0 0 238 68" enableBackground="new 0 0 238 68">

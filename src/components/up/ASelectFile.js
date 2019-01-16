@@ -9,6 +9,7 @@ class ASelectFile extends Component{
     super(props);
     this.state = { hasDropped: false }
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
+    this.handleClickStoreFile = this.handleClickStoreFile.bind(this);
   }
 
   componentDidMount(){
@@ -27,6 +28,7 @@ class ASelectFile extends Component{
     let dd = new DDrop();    
     this.dropzone = new Dropzone(this.refs.dtSelectFile, { 
       url: 'dummy://', //dropzone requires a url even if we're not using it
+      previewsContainer: false,
       accept: (file, done) => {
         var reader = new FileReader();
         reader.addEventListener("loadend", 
@@ -38,16 +40,15 @@ class ASelectFile extends Component{
       }
     });
     this.dropzone.on("dragenter", (event) => {
-     this.props.setIsSelecting();      
      this.props.setParentState({fileIsSelecting: true});
     });
     this.dropzone.on("dragleave", (event) => {
       if(event.fromElement === null){
-        this.props.setIsSelecting(false);    
         this.props.setParentState({fileIsSelecting: false});
       }
     });
     this.dropzone.on("drop", (event) => {
+      console.log(event.clientX, event.clientY);
       this.setState({ hasDropped: true });
       this.props.fileWasSelected(true);
       setTimeout(()=>{
@@ -60,37 +61,51 @@ class ASelectFile extends Component{
         window.location.reload();
         return false;
       }
-      this.props.fileWasSelected(true);      
-      if(this.state.hasDropped === false){
-        this.setState({ hasDropped: true });
-        dd.drop('drop');
-      }
 
-    if(this.props.parentState.isStoringFile){
-      //skip select recipient
-      if(this.props.selectedMailbox){
-        var newUIState = 3;
+      // solves the problem that there is no event to capture 'cancel' by doing the animation after
+      var animationTimeout = 0;
+      if(this.state.isHandlingClick === true){
+        animationTimeout =  200;
+        this.props.setParentState({fileIsSelecting: true});
       }else{
-        var newUIState = 2;
-      }      
-    }else{
-      //select recipient
-      if(this.props.selectedMailbox){
-        var newUIState = 2;
-      }else{
-        var newUIState = 1;
+        animationTimeout =  0;
       }
-    }
-
       setTimeout(()=>{
-        this.props.setParentState({
-          fileIsSelected: true,
-          selectedFileName: file.name,  
-          selectedFileType: file.type,        
-          selectedFileSize: file.size,
-          uiState: newUIState
-        });
-      }, 1337)
+        this.props.fileWasSelected(true);      
+        if(this.state.hasDropped === false){
+          this.setState({ hasDropped: true });
+          dd.drop('drop');
+        }
+        
+        let newUIState;
+
+        if(this.props.parentState.isStoringFile === true){
+          //skip select recipient
+          if(this.props.selectedMailbox === false){
+            newUIState = 1;
+          }else{
+            newUIState = 3;
+          }      
+        }else{
+          //select recipient
+          if(this.props.selectedMailbox){
+            newUIState = 2;
+          }else{
+            newUIState = 1;
+          }
+        }
+
+        setTimeout(()=>{
+          this.props.setParentState({
+            fileIsSelected: true,
+            selectedFileName: file.name,  
+            selectedFileType: file.type,        
+            selectedFileSize: file.size,
+            uiState: newUIState
+          });
+        }, 1555);
+
+      }, animationTimeout);
     });
   }
 
@@ -98,8 +113,7 @@ class ASelectFile extends Component{
     if(e){
       e.preventDefault();
     }
-    this.props.setIsSelecting();
-    this.props.setParentState({fileIsSelecting: true});
+    this.setState({'isHandlingClick': true});
     this.refs.dtSelectFile.click();
   }
 
@@ -107,26 +121,28 @@ class ASelectFile extends Component{
     if(e){
       e.preventDefault();
     }
-    this.props.setIsSelecting();
     this.props.setParentState({
       isStoringFile: true,
-      fileIsSelecting: true
     });
+    this.setState({'isHandlingClick': true});
     this.refs.dtSelectFile.click();
   }  
 
   render(){
     return (
-      <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected")} ref="dtSelectFile" > 
-        <div className={"select-file-header " + (this.props.parentState.fileIsSelecting && "is-selecting")} onClick={this.handleClickSelectFile}> {/* this bit slides up out of view using transform */}
-          <h1><span className="select-file-header-inverted">FAIR</span> WAY TO STORE AND SEND DATA</h1>
+      <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} > 
+        <div className={"select-file-header " + (this.props.parentState.fileIsSelecting && "is-selecting")}> {/* this bit slides up out of view using transform */}
+          
         </div> {/* header */}
-        <div className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
+        <div ref="dtSelectFile" className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
 
         </div> {/* select-file-main */}
-        <div className={"select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")} onClick={this.handleClickSelectFile}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
+        <div className={"select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="select-file-instruction-gradient-overlay"></div>
-          <h2><span className="select-file-header-underlined">select</span> or drop a file</h2>
+          <h2>
+            <span className="select-file-header-inverted">Fair</span> way to <span onClick={this.handleClickStoreFile} className="select-file-action">store</span> and <span onClick={this.handleClickSelectFile} className="select-file-action">send</span> data<br/>
+            <span onClick={this.handleClickSelectFile} className="select-file-action">select</span> or drop a file
+          </h2>
         </div> {/* select-file-instruction */}
       </div>
     )

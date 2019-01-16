@@ -71,7 +71,7 @@ class BSelectMailbox extends Component{
 
   mailboxUnlocked(){
     if(this.props.parentState.isStoringFile){
-      //skip select recipient 
+      //skip select recipient
       this.props.setParentState({
         uiState: 3
       });

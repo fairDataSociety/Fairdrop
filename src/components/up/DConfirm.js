@@ -43,7 +43,7 @@ class DConfirm extends Component{
         <div className="confirm-ui page-inner-centered">
           <div className="page-inner-wrapper">
             <h1 className="confirm-header">Confirm</h1>
-            {this.props.isStoringFile === false && 
+            {this.props.parentState.isStoringFile === false && 
               <div>
                 <div className="confirm-ui-group clearfix">
                   <table>
@@ -68,7 +68,7 @@ class DConfirm extends Component{
                 </div>
               </div>
             }
-            {this.props.isStoringFile === true && 
+            {this.props.parentState.isStoringFile === true && 
               <div>
                 <div className="confirm-ui-group clearfix">
                   <table>

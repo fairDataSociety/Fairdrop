@@ -35,6 +35,8 @@ class Upload extends Component{
 
       fileWasEncrypted: false,
       fileWasUploaded: false,
+
+      isStoringFile: false
     };
   }
 
@@ -46,7 +48,6 @@ class Upload extends Component{
     super(props);
 
     this.FDS = this.props.FDS;
-
 
     this.aSelectFile = React.createRef();
 
@@ -73,7 +74,7 @@ class Upload extends Component{
       window.selectedFileArrayBuffer.byteLength > 0
       )
     {
-      if(this.props.isStoringFile === false){
+      if(this.state.isStoringFile === false){
         let addressee = this.state.addressee;
         return this.FDS.currentAccount.send(
           addressee, 
@@ -132,7 +133,6 @@ class Upload extends Component{
           <ASelectFile 
             parentState={this.state} 
             setParentState={this.setState.bind(this)} 
-            setIsSelecting={this.props.setIsSelecting} 
             fileWasSelected={this.props.fileWasSelected} 
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}            
@@ -152,7 +152,7 @@ class Upload extends Component{
             setParentState={this.setState.bind(this)}
           />
           <DConfirm 
-            parentState={this.state} 
+            parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
             selectedMailbox={this.props.selectedMailbox}

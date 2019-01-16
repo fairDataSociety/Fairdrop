@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export default () => { return <svg alt="Fairdrop Inbox"
     version="1.1" id="Layer_1" height="32px" viewBox="0 0 400 400">

@@ -14,7 +14,7 @@ class Mailbox extends Component{
 
   componentDidMount(){
     let dm = new DMist();
-    // dm.mist('mist');
+    dm.mist('mist');
   }  
 
   getInitialState(){
@@ -295,6 +295,8 @@ class Mailbox extends Component{
                                 return "From";
                               case 'stored':
                                 return "";
+                              default:
+                                return "";
                             }
                           })()}
                         </th>
@@ -310,34 +312,36 @@ class Mailbox extends Component{
                       {(() => {
                         switch(this.state.shownMessageType){
                           case 'sent':{
-                            {return this.state.shownMessages.map((message)=>{
+                            return this.state.shownMessages.map((message)=>{
                               return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.to }</td>                                                            
                                   <td>23rd Feb 2023</td>
                                   <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                 </tr>
-                            })}
+                            })
                           }
                           case 'received': {
-                            {return this.state.shownMessages.map((message)=>{
+                            return this.state.shownMessages.map((message)=>{
                               return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.from }</td>
                                   <td>23rd Feb 2023</td>
                                   <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                 </tr>
-                            })}
+                            })
                           }
                           case 'stored':
-                            {return this.state.shownMessages.map((hash)=>{
+                            return this.state.shownMessages.map((hash)=>{
                               return <tr className="message-list" key={`${hash.address}`} onClick={ ()=>{ return hash.saveAs(); } }>
                                   <td>{ hash.file.name.substring(0,24)+'...' }</td>
                                   <td></td>                                  
                                   <td>23rd Feb 2023</td>
                                   <td>{ Utils.humanFileSize(hash.file.size) }</td>
                                 </tr>
-                            })}
+                            })
+                          default:
+                            return "";
                         }
                       })()}
                     </tbody>

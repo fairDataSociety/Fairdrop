@@ -195,6 +195,10 @@ label{
   margin-top: 75px;
 }
 
+.no-pointer-events {
+  cursor: none;
+}
+
 /* Structure */
 
 .content-wrap {
@@ -275,8 +279,12 @@ label{
   margin-top: 28px;
 }
 
-.nav-white .nav-header-item-button{
+.nav-white, .nav-white a, .nav-white .nav-header-item-button{
   color: white;
+}
+
+.nav-black, .nav-black a{
+  color: black;
 }
 
 .nav-white svg{
@@ -304,7 +312,6 @@ label{
 }
 
 .nav-context{
-  color: #fff;
   margin-top: 28px;
   display: block;
 }
@@ -364,25 +371,26 @@ label{
   z-index: 2;
 }
 
-.select-file.is-selected{
+/*.select-file.is-selected{
   opacity: 0;
   transition: opacity 1s;
   pointer-events: none;
 }
-
+*/
 .select-file-header{
   height: 50vh;
   width: 100vw;
   transition: transform 1s;
   display: table;
   background-color: #fff;
+  transform: translateY(-50vh);  
 }
 
-.select-file-header.is-selecting{
+/*.select-file-header.is-selecting{
   transform: translateY(-50vh); 
   transition: transform 1s;
 }
-
+*/
 .select-file-header h1{
   color: #000;  
   display: table-cell;
@@ -392,10 +400,10 @@ label{
   transition: opacity 1s linear 0.5s;
 }
 
-.select-file-header.is-selecting h1{
+/*.select-file-header.is-selecting h1{
   opacity: 0;
   transition: opacity 1s;
-}
+}*/
 
 .select-file-header h1 span.select-file-header-inverted{
   background: #000;
@@ -405,38 +413,44 @@ label{
   padding: 9px;  
 }
 
-.select-file-header.is-selecting h1{
+/*.select-file-header.is-selecting h1{
   opacity: 0;
   transition: opacity 1s;
 }
-
+*/
 .select-file-main{
-  height: 50vh;
-  transition: transform 1s;  
+  height: 100vh;
+  width: 100vw;
+  transition: -webkit-transform 1s;
+  transition: transform 1s;
   transition: height 1s;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.select-file-main.is-selecting{
+/*.select-file-main.is-selecting{
   height: 100vh;
   transform: translateY(-50vh);
   transition: transform 1s;
   transition: height 1s;
-}
+}*/
 
 .select-file-instruction{
   font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
-  height: 50vh;
+  height: 20vh;
+  margin-top: 35vh;
   width: 100vw;
   display: table;
   position: absolute;
   top: 0;
-  transform: translateY(50vh);
-  transition: transform 1s;  
+  /*transform: translateY(50vh);*/
+  transition: opacity 1s;  
 }
 
 .select-file-instruction.is-selecting{
-  transform: translateY(25vh);
-  transition: transform 0.7s;
+  opacity: 0;
+  transition: opacity 0.7s;
 }
 
 .select-file-instruction.has-dropped{
@@ -477,8 +491,9 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   font-size: 40px;
 }
 
-.select-file-instruction h2 .select-file-header-underlined {
+.select-file-instruction h2 .select-file-action {
   border-bottom: 3px solid white;
+  cursor: pointer;
 }
 
 /* select mailbox */
@@ -674,8 +689,6 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   width: 100vw;
   position: absolute;
   left: 0px;
-  transform: translateX(-50vw);
-  transition: transform 1s;
   z-index: 5;
   border-right: 1px #2E332F;
   display: table;

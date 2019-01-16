@@ -9,6 +9,8 @@ import Utils from '../services/Utils';
 import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
 
+import Moment from 'moment';
+
 
 class Mailbox extends Component{
 
@@ -315,7 +317,7 @@ class Mailbox extends Component{
                               return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.to }</td>
-                                  <td>23rd Feb 2023</td>
+                                  <td>{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
                                   <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                 </tr>
                             })
@@ -325,7 +327,7 @@ class Mailbox extends Component{
                               return <tr className="message-list" key={`${message.hash.address}`} onClick={ ()=>{ return message.saveAs(); } }>
                                   <td>{ message.hash.file.name.substring(0,24)+'...' }</td>
                                   <td>{ message.from }</td>
-                                  <td>12/09/2018 04:22</td>
+                                  <td>{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
                                   <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                 </tr>
                             })
@@ -335,7 +337,7 @@ class Mailbox extends Component{
                               return <tr className="message-list" key={`${hash.address}`} onClick={ ()=>{ return hash.saveAs(); } }>
                                   <td>{ hash.file.name.substring(0,24)+'...' }</td>
                                   <td></td>
-                                  <td>23rd Feb 2023</td>
+                                  <td>{ Moment(hash.time).format('D/MM/YYYY hh:mm ') }</td>
                                   <td>{ Utils.humanFileSize(hash.file.size) }</td>
                                 </tr>
                             })

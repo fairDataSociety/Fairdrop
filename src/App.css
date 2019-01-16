@@ -92,7 +92,7 @@ input[type='text'], input[type='password'] {
   padding: 8px 17px 8px 20px;
 }
 
-.white input[type='text'], input[type='password']{
+.white input[type='text'], .white input[type='password']{
   color: #333;
 }
 
@@ -106,8 +106,8 @@ input::placeholder{
 
 /* Change the white to any color ;) */
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px #57C989 inset;
-  -webkit-text-fill-color: #000;
+  -webkit-box-shadow: 0 0 0 30px hsla(146, 52%, 42%, 1) inset;
+  -webkit-text-fill-color: #fff;
 }
 
 .white input:-webkit-autofill {
@@ -965,7 +965,6 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
   width: 50%;
-  margin-bottom: 10px;
 }
 
 .inbox tbody tr td:nth-child(2), .inbox thead tr th:nth-child(2){

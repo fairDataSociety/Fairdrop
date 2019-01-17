@@ -7,7 +7,11 @@ class ASelectFile extends Component{
   
   constructor(props) {
     super(props);
-    this.state = { hasDropped: false }
+    this.state = { 
+      dragEnterStore: false,
+      dragEnterSend: false,
+      hasDropped: false 
+    }
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
     this.handleClickStoreFile = this.handleClickStoreFile.bind(this);
   }
@@ -24,11 +28,12 @@ class ASelectFile extends Component{
     }
   }
 
-  dropZone(){
+  initDropzone(element, isStoring=false){
     let dd = new DDrop();    
-    this.dropzone = new Dropzone(this.refs.dtSelectFile, { 
+    this.dropzone = new Dropzone(element, { 
       url: 'dummy://', //dropzone requires a url even if we're not using it
       previewsContainer: false,
+      clickable: false,
       accept: (file, done) => {
         var reader = new FileReader();
         reader.addEventListener("loadend", 
@@ -40,17 +45,34 @@ class ASelectFile extends Component{
       }
     });
     this.dropzone.on("dragenter", (event) => {
-     this.props.setParentState({fileIsSelecting: true});
+      this.props.setParentState({fileIsSelecting: true});
+      if(isStoring){
+        this.setState({dragEnterStore: true});
+      }else{
+        this.setState({dragEnterSend: true});
+      }
     });
     this.dropzone.on("dragleave", (event) => {
+      if(isStoring){
+        this.setState({dragEnterStore: false});
+      }else{
+        this.setState({dragEnterSend: false});
+      }
       if(event.fromElement === null){
         this.props.setParentState({fileIsSelecting: false});
       }
     });
     this.dropzone.on("drop", (event) => {
-      console.log(event.clientX, event.clientY);
+      
       this.setState({ hasDropped: true });
       this.props.fileWasSelected(true);
+
+      if(isStoring){
+        this.props.setParentState({isStoringFile: true});
+      }else{
+        this.props.setParentState({isSendingFile: true});        
+      }
+
       setTimeout(()=>{
         dd.drop('drop', event.clientX, event.clientY);
       }, 233);
@@ -106,7 +128,12 @@ class ASelectFile extends Component{
         }, 1555);
 
       }, animationTimeout);
-    });
+    });    
+  }
+
+  dropZone(){
+    this.initDropzone(this.refs.dtSelectSaveFile);
+    this.initDropzone(this.refs.dtSelectStoreFile, true)    
   }
 
   handleClickSelectFile(e){
@@ -134,8 +161,13 @@ class ASelectFile extends Component{
         <div className={"select-file-header " + (this.props.parentState.fileIsSelecting && "is-selecting")}> {/* this bit slides up out of view using transform */}
           
         </div> {/* header */}
-        <div ref="dtSelectFile" className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
-
+        <div className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
+          <div ref="dtSelectStoreFile" className="select-file-store">
+            <h2>Store</h2>
+          </div>
+          <div ref="dtSelectSaveFile"  className="select-file-send">
+            <h2>Send</h2>
+          </div>
         </div> {/* select-file-main */}
         <div className={"select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="select-file-instruction-gradient-overlay"></div>

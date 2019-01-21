@@ -33,7 +33,7 @@ class ASelectFile extends Component{
     this.dropzone = new Dropzone(element, { 
       url: 'dummy://', //dropzone requires a url even if we're not using it
       previewsContainer: false,
-      clickable: false,
+      // clickable: false,
       accept: (file, done) => {
         var reader = new FileReader();
         reader.addEventListener("loadend", 
@@ -133,7 +133,7 @@ class ASelectFile extends Component{
 
   dropZone(){
     this.initDropzone(this.refs.dtSelectSaveFile);
-    this.initDropzone(this.refs.dtSelectStoreFile, true)    
+    this.initDropzone(this.refs.dtSelectStoreFile, true);    
   }
 
   handleClickSelectFile(e){
@@ -141,7 +141,7 @@ class ASelectFile extends Component{
       e.preventDefault();
     }
     this.setState({'isHandlingClick': true});
-    this.refs.dtSelectFile.click();
+    this.refs.dtSelectSaveFile.click();
   }
 
   handleClickStoreFile(e){
@@ -152,7 +152,7 @@ class ASelectFile extends Component{
       isStoringFile: true,
     });
     this.setState({'isHandlingClick': true});
-    this.refs.dtSelectFile.click();
+    this.refs.dtSelectStoreFile.click();
   }  
 
   render(){

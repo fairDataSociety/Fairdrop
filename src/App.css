@@ -483,6 +483,7 @@ input:-webkit-autofill {
   top: 0;
   /*transform: translateY(50vh);*/
   transition: opacity 1s;  
+  z-index:101;
 }
 
 .select-file-instruction.is-selecting{

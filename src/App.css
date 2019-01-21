@@ -868,7 +868,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 /*.progress*/
 
-.progress{
+#progress{
   position: absolute;
   z-index: 100;
   bottom: 0;
@@ -878,7 +878,7 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   color: white;
 }
 
-.ui-state-0.progress{
+.ui-state-0#progress{
   display: none;
 }
 

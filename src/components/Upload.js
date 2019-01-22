@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import ASelectFile from '../components/up/ASelectFile';
 import BSelectMailbox from '../components/up/BSelectMailbox';
-import CSelectRecipient from '../components/up/CSelectRecipient';
 import DConfirm from '../components/up/DConfirm';
 import EInProgress from '../components/up/EInProgress';
 import FCompleted from '../components/up/FCompleted';
@@ -135,7 +134,7 @@ class Upload extends Component{
             setParentState={this.setState.bind(this)} 
             fileWasSelected={this.props.fileWasSelected} 
             selectedMailbox={this.props.selectedMailbox}
-            isSendingFile={this.props.isSendingFile}            
+            isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
             ref={this.aSelectFile}
           />
@@ -144,14 +143,10 @@ class Upload extends Component{
             parentState={this.state} 
             setParentState={this.setState.bind(this)}
             selectedMailbox={this.props.selectedMailbox}
+            isStoringFile={this.props.isStoringFile}
             setSelectedMailbox={this.setSelectedMailbox.bind(this)}
           />
-          <CSelectRecipient 
-            FDS={this.FDS}
-            parentState={this.state} 
-            setParentState={this.setState.bind(this)}
-          />
-          <DConfirm 
+          <DConfirm
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}

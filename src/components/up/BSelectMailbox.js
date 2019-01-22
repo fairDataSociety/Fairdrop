@@ -4,25 +4,19 @@ import 'react-dropdown/style.css'
 
 import AddMailbox from '../Shared/AddMailbox'
 import UnlockMailbox from '../Shared/UnlockMailbox'
+import SelectRecipient from '../Shared/SelectRecipient';
 
 class BSelectMailbox extends Component{
   
-  constructor(props) {
-    super(props);
-
-    this.FDS = this.props.FDS;
-    this.state = this.getInitialState();
-
-    this.addMailbox = this.addMailbox.bind(this);    
-    this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
-    this.mailboxUnlocked = this.mailboxUnlocked.bind(this)
-    this.cancelAddMailbox = this.cancelAddMailbox.bind(this)
-
-
-  }
-
   getInitialState(){
     let mailboxes = this.FDS.GetAccounts();
+
+    let mailboxName;
+    if(this.props.selectedMailbox){
+      mailboxName = this.props.selectedMailbox.subdomain;
+    }else{
+      mailboxName = false;
+    }
 
     if(mailboxes.length === 0){
       return {
@@ -31,7 +25,11 @@ class BSelectMailbox extends Component{
         mailboxes: mailboxes,
         activeMailboxSubDomain: false,
         dropDownValue: false,
-        mailboxesExist: false
+        mailboxesExist: false,
+        feedbackMessage: '',
+        checkingAvailability: false,
+        recipientWasSelected: false,
+        mailboxName: mailboxName
       }
     }else if(mailboxes.length > 0){
       return {
@@ -41,9 +39,27 @@ class BSelectMailbox extends Component{
         unlockingMailbox: mailboxes[0].subdomain,
         activeMailboxSubDomain: false,
         dropDownValue: mailboxes[0].subdomain,
-        mailboxesExist: true
+        mailboxesExist: true,
+        feedbackMessage: '',
+        checkingAvailability: false,
+        recipientWasSelected: false,
+        mailboxName: mailboxName
       }
     }
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.FDS = this.props.FDS;
+    this.state = this.getInitialState();
+
+    this.addMailbox = this.addMailbox.bind(this);    
+    this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
+    this.mailboxUnlocked = this.mailboxUnlocked.bind(this);
+    this.cancelAddMailbox = this.cancelAddMailbox.bind(this);
+    this.handleSelectRecipient = this.handleSelectRecipient.bind(this);
+
   }
 
   addMailbox(){
@@ -69,20 +85,6 @@ class BSelectMailbox extends Component{
     });
   }
 
-  mailboxUnlocked(){
-    if(this.props.parentState.isStoringFile){
-      //skip select recipient
-      this.props.setParentState({
-        uiState: 3
-      });
-    }else{
-      //select recipient 
-      this.props.setParentState({
-        uiState: 2
-      });
-    }
-  }
-
   handleSelectMailbox(option){
     if(option.value === 'new-mailbox'){
       this.addMailbox();
@@ -97,42 +99,349 @@ class BSelectMailbox extends Component{
     }).concat({label: 'new mailbox +', value: "new-mailbox" });
   }
 
+  handleInputMailboxName(e){
+    e.preventDefault();
+    //check to see if mailbox name is unused/valid
+
+    if(this.state.checkingAvailability === false){
+      this.processMailboxName(e.target.value).catch((error)=>{
+        //already handled
+      });
+    }
+  }
+
+  processMailboxName(mailboxName){
+    this.setState({
+      mailboxName: mailboxName,
+      checkingAvailability: true,
+      feedbackMessage: "Checking availability..."
+    });
+
+    return new Promise((resolve, reject)=>{
+      // is mailbox name valid, available
+      if(mailboxName && this.FDS.Account.isMailboxNameValid(mailboxName)){
+        return this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {
+          if(result === true){
+            this.setState({
+              mailboxName: mailboxName,
+              checkingAvailability: false,
+              feedbackMessage: "Name available!"        
+            });
+            resolve(true);
+          }else{
+            this.setState({
+              mailboxName: false,
+              checkingAvailability: false,
+              feedbackMessage: "Sorry, that name is not available!"        
+            }); 
+            resolve(false);
+          }
+        }).catch((error)=>{
+          if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
+            this.setState({
+              mailboxName: false,
+              checkingAvailability: false,
+              feedbackMessage: "Network error - try again!"
+            });
+            resolve(false);
+          }   
+        });
+      }else{
+        this.setState({
+          mailboxName: false,
+          checkingAvailability: false,
+          feedbackMessage: "Sorry, that name is invalid."
+        });
+        resolve(false);
+      }
+    });
+  }
+
+  handleInputPassword(e){
+    e.preventDefault();
+    this.setState({password: e.target.value}, this.processMailboxPassword);
+  }
+
+  handleInputPasswordVerification(e){
+    e.preventDefault();
+    this.setState({passwordVerification: e.target.value}, this.processMailboxPassword);
+  }
+
+  processMailboxPassword(){
+    let password = this.state.password;
+    let passwordVerification = this.state.passwordVerification;    
+
+    if(password === ""){
+      this.setState({
+        feedbackMessage: 'You must enter a password.',
+        passwordsValid: false
+      });
+      return false; 
+    }
+    
+    if(this.state.isUnlockingMailbox === true){
+      return true;
+    }
+
+    if(password !== passwordVerification){
+      this.setState({
+        feedbackMessage: 'Passwords must match.',
+        passwordsValid: false
+      });
+      return false;
+    } 
+
+    if(password === passwordVerification){
+      this.setState({
+        feedbackMessage: 'Passwords match!',
+        passwordsValid: true
+      });
+      return true;
+    }
+  }
+
+  handleSelectRecipient(e){
+    e.preventDefault();
+    this.processSelectRecipient(e.target.value);
+  }
+
+  processSelectRecipient(mailboxName){
+    return this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {
+      if(result === true){
+        throw new Error("Couldn't find that mailbox, please try again...")
+      }
+      this.setState({
+        feedbackMessage: "Mailbox found!",
+        recipientWasSelected: true   
+      });
+      this.props.setParentState({
+        addressee: mailboxName
+      });
+      return true;
+    }).catch((error) => {
+      if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
+        this.setState({
+          feedbackMessage: "Network error - please try again...",
+          recipientWasSelected: false          
+        });
+      }else{
+        this.setState({
+          feedbackMessage: error.message,
+          recipientWasSelected: false  
+        });
+      }
+      return false;
+    })
+  }
+
+  mailboxUnlocked(){
+    this.props.setParentState({
+      uiState: 3
+    });
+  }
+
+  handleUnlockMailboxUploadAndEncrypt(e){
+    let subdomain = this.state.unlockingMailbox;
+    let password = this.state.password;    
+    this.FDS.UnlockAccount(subdomain, password).then((account)=>{
+      this.setState({
+        feedbackMessage: 'Mailbox unlocked.',
+        mailboxIsUnlocked: true,
+      });
+      this.props.setSelectedMailbox(this.FDS.currentAccount);
+      this.mailboxUnlocked();
+    }).catch((error)=>{
+      this.setState({
+        feedbackMessage: 'Password invalid, please try again.',
+        mailboxIsUnlocked: false
+      });
+    });
+  }
+
+  handleAddMailboxUploadAndEncrypt(e){
+    this.FDS.CreateAccount(this.state.mailboxName, this.state.password, (message) => {
+      this.setState({feedbackMessage: message});
+    }).then((account)=>{
+      this.FDS.UnlockAccount(this.state.mailboxName, this.state.password).then((account)=>{
+        this.setState({
+          feedbackMessage: 'Mailbox unlocked.',
+          mailboxIsUnlocked: true,
+        });
+        this.props.setSelectedMailbox(this.FDS.currentAccount);
+        this.mailboxUnlocked();        
+      })
+    }).catch((error)=>{
+      this.setState({feedbackMessage: error});
+    });
+  }
+
+  handleAction(action){
+      //unlock or create mailbox or just go to next stage
+      switch(action) {
+        case 'add':
+          this.handleAddMailboxUploadAndEncrypt();
+          break;
+        case 'unlock':
+          this.handleUnlockMailboxUploadAndEncrypt()
+          break;
+        default:
+          this.mailboxUnlocked();
+      }    
+  }
+
+  handleSendOrStore(action=false){
+    console.log('send or store')
+    if(this.props.parentState.isStoringFile === false){
+      console.log('send')
+      //sending file
+      //check recipient mailbox
+      return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
+        if(!valid) return false;
+        this.handleAction(action);
+      });
+    }else{
+      console.log('store')
+      //storing file
+      //unlock or create mailbox and go to next stage
+      this.handleAction(action);
+    }
+  }
+
+  handleContinue(e){
+    e.preventDefault();
+    
+    if(this.props.selectedMailbox){
+      console.log('selected')
+      //already logged in
+        return this.handleSendOrStore();
+        // if(this.props.parentState.isStoringFile === false){
+        //   //sending file
+        //   //check recipient mailbox
+        //   return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
+        //     if(!valid) return false;
+        //     //create mailbox and go to next stage
+        //     return this.handleAddMailboxUploadAndEncrypt();
+        //   });
+        // }else{
+        //   //storing file
+        //   //create mailbox and go to next stage
+        //   return this.handleAddMailboxUploadAndEncrypt();
+        // }      
+
+    }else{
+      console.log('not selected')
+      //must log in or add mailbox
+      if(this.state.isAddingMailbox){
+        //adding mailbox
+        //check mailbox name is valid and available
+        return this.processMailboxName(this.state.mailboxName).then((valid)=>{
+          if(!valid) return false;
+          //check passwords
+          if(!this.processMailboxPassword()){
+            return false;
+          }
+          return this.handleSendOrStore('add');
+          // if(this.props.parentState.isStoringFile === false){
+          //   //sending file
+          //   //check recipient mailbox
+          //   return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
+          //     if(!valid) return false;
+          //     //create mailbox and go to next stage
+          //     return this.handleAddMailboxUploadAndEncrypt();
+          //   });
+          // }else{
+          //   //storing file
+          //   //create mailbox and go to next stage
+          //   return this.handleAddMailboxUploadAndEncrypt();
+          // }
+        });
+      }else{
+        //unlocking mailbox
+        console.log('unlocking')
+        if(!this.processMailboxPassword()){
+          return false;
+        }
+        return this.handleSendOrStore('unlock');
+        // if(this.props.parentState.isStoringFile === false){
+        //   //sending file
+        //   //check recipient mailbox
+        //   return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
+        //     if(!valid) return false;
+        //     //create mailbox and go to next stage
+        //     return this.handleAddMailboxUploadAndEncrypt();
+        //   });
+        // }else{
+        //   //storing file
+        //   //create mailbox and go to next stage
+        //   return this.handleAddMailboxUploadAndEncrypt();
+        // }
+      };
+    }
+
+  }
+
   render(){
     return (
       <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.props.parentState.uiState === 1 ? "fade-in" : "hidden")}> 
         <div className="select-mailbox-ui page-inner-centered">
+        <div className="page-inner-wrapper">
           <div className="select-mailbox">            
-            {this.state.isUnlockingMailbox &&
-              <div className="page-inner-wrapper">
-                <h1 className="select-account-header">Select Mailbox</h1>
-                <div className="form-group clearfix">
-                  <div className="select-mailbox-mailboxes">
-                    <Dropdown options={this.getDropDownOptions()} value={this.state.dropDownValue} onChange={this.handleSelectMailbox} placeholder="Select a mailbox" />
-                  </div>
-                </div>
-                {this.state.isUnlockingMailbox &&
-                  <UnlockMailbox 
-                    FDS={this.FDS}
-                    subdomain={this.state.unlockingMailbox}
-                    mailboxUnlocked={this.mailboxUnlocked}
-                    setSelectedMailbox={this.props.setSelectedMailbox}
+            {(this.state.isUnlockingMailbox && !this.state.mailboxName) &&
+              <div className="unlock-mailbox">
+                <div className="page-inner-wrapper">
+                  <h1 className="select-account-header">Log in to encrypt</h1>
+                  <UnlockMailbox
+                    dropDownOptions={this.getDropDownOptions()}
+                    dropDownValue={this.state.unlockingMailbox}
+                    handleSelectMailbox={this.handleSelectMailbox}
+                    handleInputPassword={this.handleInputPassword.bind(this)}
                   />
-                }   
+                </div>
               </div>
-            }         
+            }
             {this.state.isAddingMailbox &&
-              <div className="page-inner-wrapper">
-                <h1 className="select-account-header">New Mailbox</h1>
-                <AddMailbox 
-                  FDS={this.FDS}
-                  mailboxUnlocked={this.mailboxUnlocked}
-                  cancelAddMailbox={this.cancelAddMailbox}
-                  mailboxesExist={this.state.mailboxesExist}
-                  setSelectedMailbox={this.props.setSelectedMailbox}                 
-                />
+              <div className="select-mailbox">
+                <div className="page-inner-wrapper">
+                  <h1 className="select-account-header">Create Mailbox</h1>
+                    <AddMailbox
+                      handleInputMailboxName={this.handleInputMailboxName.bind(this)}
+                      handleInputPassword={this.handleInputPassword.bind(this)}
+                      handleInputPasswordVerification={this.handleInputPasswordVerification.bind(this)}
+                    />
+                </div>
               </div>
             }
           </div>
+          {!this.props.parentState.isStoringFile && 
+            <SelectRecipient 
+              FDS={this.props.FDS}
+              handleSelectRecipient={this.handleSelectRecipient} 
+            />
+          }
+          <div class="ui-feedback">{this.state.feedbackMessage}</div>
+          <div className="actions">
+            <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleContinue.bind(this)}>
+              {(this.state.isAddingMailbox && !this.props.parentState.isStoringFile) &&
+                "Create Mailbox and Send"
+              }
+              {(!this.state.mailboxName && this.state.isUnlockingMailbox && !this.props.parentState.isStoringFile) &&
+                "Unlock Mailbox and Send"
+              }
+              {(this.state.isAddingMailbox && this.props.parentState.isStoringFile) &&
+                "Create Mailbox and Store"
+              }
+              {(this.state.isUnlockingMailbox && this.props.parentState.isStoringFile) &&
+                "Unlock Mailbox and Store"
+              }
+              {(!this.state.isAddingMailbox && this.state.mailboxName && !this.props.parentState.isStoringFile) &&
+                "Send"
+              }
+            </button>
+            {this.state.mailboxesExist &&
+              <button className="btn btn-sm select-encryption-no-button btn btn-lg btn-link btn-float-right" onClick={this.cancelAddMailbox}><img src="assets/images/x.svg"/>Cancel</button>
+            }
+          </div>
+        </div>
         </div>
       </div>
     )

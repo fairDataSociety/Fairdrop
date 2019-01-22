@@ -1,3 +1,12 @@
+
+.select-file-instruction,
+.select-file-main,
+.select-file,
+.wrapper,
+.disclaimer {
+  min-width: 1020px;
+}
+
 /* Type */
 
 @font-face {
@@ -24,12 +33,12 @@
 }
 
 * {
-  font-family: 'Berthold Akzidenz-Grotesk Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
 }
 
 h1 {
-  font-size: 38px;
-  letter-spacing: 0.06em;
+  font-size: 27px;
+  letter-spacing: 0.03em;
   font-weight: normal;
   color: #fff;
 }
@@ -44,10 +53,9 @@ h1 {
 
 h2{
   font-family: 'Berthold Akzidenz-Grotesk Light Extended';
-  letter-spacing: 2.1px;
+  letter-spacing: 0.03em;
   font-weight: normal;
   color: #fff;  
-  font-size:40px;
 }
 
 .page-inner-centered, p{
@@ -106,7 +114,7 @@ input::placeholder{
 
 /* Change the white to any color ;) */
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px hsla(146, 52%, 42%, 1) inset;
+  -webkit-box-shadow: 0 0 0 30px #37bd72 inset;
   -webkit-text-fill-color: #fff;
 }
 
@@ -122,12 +130,21 @@ input:-webkit-autofill {
   padding: 0 100px;
 }
 
-.form-group {
-  margin-bottom: 20px !important;
+.form-group{
+  margin-bottom:-8px !important;
 }
 
-.form-group-last {
-  margin-bottom: 75px !important;
+.form-group::after{
+  height: 40px;
+  display: inline-block;
+  /* color: black; */
+  width: 1px;
+  content: " ";
+  background: #ccc;
+}
+
+.form-group-last::after{
+  height: 0px;
 }
 
 .form-group.toggle input {
@@ -161,27 +178,36 @@ input:-webkit-autofill {
 
 /* Buttons */
 
+.actions{
+  margin: 70px 0 0 0;
+}
+
 .btn.btn-lg {
-  border-radius: 100px;
-  font-size: 16px;
-  padding: 5px 34px 2px 34px;
+  border-radius: 100px !important;
+  font-size: 18px;
+  padding: 2px 25px 2px 25px;
   border: none;
   margin-right: 10px;
 }
 
 .btn.btn-sm {
-  border-radius: 100px;
-  font-size: 1vw;
-  padding: 10px;
-  padding-bottom: 8px;
-  background-color: #fff;
-  border: none;
-  margin-right: 10px;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.btn.btn-sm img{
+  width: 17px;
+  margin: 8px 10px 12px 18px;
 }
 
 .btn.btn-black {
   background-color: #ffffff;
   color: #000;
+}
+
+.btn.btn-green {
+  color: #37bd72;
 }
 
 .btn {
@@ -198,6 +224,10 @@ input:-webkit-autofill {
   color: #fff;
 }
 
+.white .btn.btn-link {
+  color: #000;
+}
+
 .btn-float-left {
   float: left;
 }
@@ -209,7 +239,9 @@ input:-webkit-autofill {
 
 .btn-group{
   clear: both;
-  margin-bottom:75px;
+  margin-bottom: 75px;
+  width: 100%;
+  display: block;
 }
 
 /* Shared */
@@ -217,18 +249,14 @@ input:-webkit-autofill {
 .hidden{
   opacity: 0;
   pointer-events: none !important;
+  height: 0vh !important;
+  transition: 1s height;
 }
 
 .fade-in{
   opacity: 1;
   display: table;
   transition: opacity 0.7s;  
-}
-
-.page-smallprint {
-  color: white;
-  font-size: 15px;
-  margin-top: 75px;
 }
 
 .no-pointer-events {
@@ -275,35 +303,318 @@ input:-webkit-autofill {
 
 /* Slide Backgrounds */
 
+.red{
+  background: #FB4A36;
+}
+
 .green{
-  background: #57C989;
-  background: hsla(146, 52%, 42%, 1);
+  background: #37bd72;
+}
+
+/* Menu */
+
+.menu-wrapper{
+  position: relative;
+}
+
+.menu-toggle{
+  position: absolute;
+  width: 40px;
+  z-index: 102;
+  padding: 20px;
+}
+
+.menu{
+  position: absolute;
+  top: 0;
+  left: -50vw;
+  height: 100vh;
+  width: 50vw;
+  z-index: 101;
+  background: #2e2e2e;
+  transition: 1s transform;
+  /*min-width: 510px;*/
+}
+
+.menu.show{
+  transform: translateX(50vw);
+  transition: 1s transform;
+}
+
+.menu-header{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 40px 20px 80px;
+  text-align: right;
+}
+
+.menu-header img{
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.menuShown .menu-header img{
+  opacity: 1;
+  transition: opacity 1s 0.5s;
+}
+
+
+
+.menu-background-screen{
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  opacity: 0;
+  transition: opacity 1s;
+  position: absolute;
+  z-index: 99;
+  display: none;
+}
+
+.fadeInScreen .menu-background-screen{
+  opacity: 0.4;
+  transition: opacity 1s;  
+}
+
+.showScreen .menu-background-screen{
+  display: block;
+}
+
+.menu-item-header{
+  font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
+  position: absolute;
+  width: 100px;
+  z-index: 10;
+  padding: 10px;
+  left: 20px;
+  cursor: pointer;
+  color: #ccc;
+}
+
+.show-links .menu-item-header{
+  color: #fff;
+}
+
+.menu-header-item-left{
+  float: left;
+  margin-right: 20px;
+}
+
+.menu-header-item-right{
+  float: right;
+  margin-left: 20px;
+}
+
+.menu-header-spacer{
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.menu-main{
+  position: absolute;
+  top: 100px;
+}
+
+.menu-section{
+  height: 100px;
+  color: #fff;
+}
+
+.menu-links{
+  position: absolute;
+  left: 150px;
+  background: #2e2e2e;
+  z-index: 200;
+  padding: 10px;
+  width: 180px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+
+.show-links .menu-links{
+  opacity: 1;
+  transition: opacity 1s;
+  pointer-events: all;
+}
+
+.menu-link{
+  margin-bottom: 10px;
+  width: 35vw;
+}
+
+.menu-link-hidden{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+}
+
+.menu-footer-item{
+  height: 40px;
+  width: 20%;
+  text-align: center;
+  float: left;
+}
+
+.menu-footer-item img{
+  height: 30px;
+}
+
+
+/*!
+ * Hamburgers
+ * @description Tasty CSS-animated hamburgers
+ * @author Jonathan Suh @jonsuh
+ * @site https://jonsuh.com/hamburgers
+ * @link https://github.com/jonsuh/hamburgers
+ */
+.hamburger {
+  padding: 1px 1px;
+  display: inline-block;
+  cursor: pointer;
+  transition-property: opacity, filter;
+  transition-duration: 0.15s;
+  transition-timing-function: linear;
+  font: inherit;
+  color: inherit;
+  text-transform: none;
+  background-color: transparent;
+  border: 0;
+  margin: 0;
+  overflow: visible; }
+  .hamburger:hover {
+    opacity: 0.7; }
+  .hamburger.is-active:hover {
+    opacity: 0.7; }
+  .hamburger.is-active .hamburger-inner,
+  .hamburger.is-active .hamburger-inner::before,
+  .hamburger.is-active .hamburger-inner::after {
+    background-color: #000; }
+
+.hamburger-box {
+  width: 40px;
+  height: 24px;
+  display: inline-block;
+  position: relative; }
+
+.hamburger-inner {
+  display: block;
+  top: 50%;
+  margin-top: -2px; }
+  .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+    width: 30px;
+    height: 2px;
+    background-color: #000;
+    border-radius: 4px;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease; }
+  .hamburger-inner::before, .hamburger-inner::after {
+    content: "";
+    display: block; }
+  .hamburger-inner::before {
+    top: -10px; }
+  .hamburger-inner::after {
+    bottom: -10px; }
+
+ .nav-black .hamburger-inner, .nav-white .hamburger-inner::before, .nav-white .hamburger-inner::after{
+  background-color: #000;
+  transition: transform 0.15s, color 1s;
+ }
+
+  .nav-white .hamburger-inner, .nav-white .hamburger-inner::before, .nav-white .hamburger-inner::after{
+  background-color: #fff  ;
+  transition: transform 0.15s, color 1s;
+ }
+/*
+   * Spin
+   */
+.hamburger--spin .hamburger-inner {
+  transition-duration: 0.22s;
+  transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
+  .hamburger--spin .hamburger-inner::before {
+    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
+  .hamburger--spin .hamburger-inner::after {
+    transition: bottom 0.1s 0.25s ease-in, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19); }
+
+.hamburger--spin.is-active .hamburger-inner {
+  transform: rotate(225deg);
+  transition-delay: 0.12s;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+  .hamburger--spin.is-active .hamburger-inner::before {
+    top: 0;
+    opacity: 0;
+    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
+  .hamburger--spin.is-active .hamburger-inner::after {
+    bottom: 0;
+    transform: rotate(-90deg);
+    transition: bottom 0.1s ease-out, transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1); }
+
+.hamburger.is-active .hamburger-inner, .hamburger.is-active .hamburger-inner::before, .hamburger.is-active .hamburger-inner::after {
+    background-color: #fff;
 }
 
 /* Navigation */
 
 .nav-header{
   position: absolute;
-  width: 96%;
+  width: 100%;
   z-index: 10;
-  margin: 2%;
+  padding: 20px;
 }
 
-.nav-header-items{
+.nav-black .nav-header,
+.nav-black .nav-header button{
+  color: #000;
+  transition: color linear 1s;
+  transition-delay: 1s;
+}
+
+.nav-white .nav-header,
+.nav-white .nav-header button{
+  color: #fff;
+  transition: color linear 1s;
+}
+
+/*.nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
   text-align: left;
-}
+}*/
 
 .nav-header-item-left{
   float: left;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 .nav-header-item-right{
   float: right;
-  margin-left: 10px;
+  margin-left: 20px;
+}
+
+.nav-header-spacer{
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.nav-header .version-number{
+  position: relative;
+  top: 12px;
+  font-size: 12px;
 }
 
 .nav-header-item-button{
@@ -312,7 +623,8 @@ input:-webkit-autofill {
   border: 0;
   background: none;
   cursor: pointer;
-  margin-top: 28px;
+  margin: 10px 0px 0px 0px;
+  padding: 0;
 }
 
 .nav-white, .nav-white a, .nav-white .nav-header-item-button{
@@ -325,7 +637,7 @@ input:-webkit-autofill {
 
 .nav-white svg{
   fill: #fff;
-  transition: fill 1s;
+  transition: fill linear 1s;
   margin-bottom: 15px;
 }
 
@@ -333,11 +645,6 @@ input:-webkit-autofill {
   fill: #000;
   transition: fill 1s linear 1s;
   margin-bottom: 15px;
-}
-
-.nav-key svg{
-  margin-top: 16px;
-  margin-right: 26px;
 }
 
 .nav-key{
@@ -348,36 +655,56 @@ input:-webkit-autofill {
 }
 
 .nav-context{
-  margin-top: 28px;
+  font-size: 14px;
+  margin-top: 10px;
   display: block;
+  background-color: #fff;
 }
 
-.nav-context:hover{
+a.nav-context{
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 0px 10px;
+  background-color: transparent;
+}
+
+.nav-white .nav-context{
+  border: 1px solid #fff;
+}
+
+a.nav-context:hover{
+  background-color: #000;
   color: #fff;
   text-decoration: none;
 }
 
-.nav-header-sign-out{
-  font-size:10px;
-  line-height: 28px
+.nav-white a.nav-context:hover{
+  background-color: #fff;
+  color: #FB4A36;
+  text-decoration: none;
 }
 
-.nav-header .nav-header-items{
+.nav-header-sign-out{
+  font-size:14px;
+  line-height: 24px
+}
+
+/*.nav-header .nav-header-items{
   display: table-cell;
   vertical-align: middle;
   pointer-events: auto;
   width: 10vw;
 }
 
+*/
 /* Disclaimer */
 
 .disclaimer{
-  height:100vh;
+  height:5vh;
   width:100vw;
-  position: absolute;
   overflow:hidden;
   z-index: 10;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   display: table;
   text-align: center;
@@ -389,11 +716,31 @@ input:-webkit-autofill {
   text-align: center;
 }
 
+.hidden .disclaimer-content{
+  display: none;
+}
+
 .disclaimer-content{
   text-align: left;
-  width: 65%;
-  margin: auto;
-  height: 50vh;
+  margin: 0 20px;
+  font-size: 13px;
+}
+
+.disclaimer-content a{
+  color: #ccc;
+}
+
+.click-to-dismiss{
+  font-size: 10px;
+  margin: 3px;
+  float: right;
+  cursor: pointer;
+}
+
+.ui-feedback {
+  text-align: right;
+  margin-right: 15px;
+  margin-top: 10px;
 }
 
 /* select file */
@@ -407,12 +754,6 @@ input:-webkit-autofill {
   z-index: 2;
 }
 
-/*.select-file.is-selected{
-  opacity: 0;
-  transition: opacity 1s;
-  pointer-events: none;
-}
-*/
 .select-file-header{
   height: 50vh;
   width: 100vw;
@@ -422,11 +763,6 @@ input:-webkit-autofill {
   transform: translateY(-50vh);  
 }
 
-/*.select-file-header.is-selecting{
-  transform: translateY(-50vh); 
-  transition: transform 1s;
-}
-*/
 .select-file-header h1{
   color: #000;  
   display: table-cell;
@@ -436,11 +772,6 @@ input:-webkit-autofill {
   transition: opacity 1s linear 0.5s;
 }
 
-/*.select-file-header.is-selecting h1{
-  opacity: 0;
-  transition: opacity 1s;
-}*/
-
 .select-file-header h1 span.select-file-header-inverted{
   background: #000;
   color: #FFF;
@@ -448,30 +779,6 @@ input:-webkit-autofill {
   color: #FFF;
   padding: 9px;  
 }
-
-/*.select-file-header.is-selecting h1{
-  opacity: 0;
-  transition: opacity 1s;
-}
-*/
-.select-file-main{
-  height: 100vh;
-  width: 100vw;
-  transition: -webkit-transform 1s;
-  transition: transform 1s;
-  transition: height 1s;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index:100;
-}
-
-/*.select-file-main.is-selecting{
-  height: 100vh;
-  transform: translateY(-50vh);
-  transition: transform 1s;
-  transition: height 1s;
-}*/
 
 .select-file-instruction{
   font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
@@ -481,9 +788,39 @@ input:-webkit-autofill {
   display: table;
   position: absolute;
   top: 0;
-  /*transform: translateY(50vh);*/
   transition: opacity 1s;  
-  z-index:101;
+  z-index:99;
+}
+
+.select-file-instruction h2{
+  font-size: 32px;
+  margin-bottom: 100px;
+}
+
+.select-file-instruction h3, .select-file-instruction h3 span{
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-size: 30px;
+}
+
+.select-file-instruction img:nth-child(1){
+  height: 44px;
+  top: -11px;
+  position: relative;
+  margin-right:2px;
+}
+
+.select-file-instruction img:nth-child(3){
+  height: 44px;
+  top: -5px;
+  position: relative;
+  margin-right: 6px;
+  margin-left: 13px;
+}
+
+.select-file-instruction .select-file-action{
+  text-decoration: underline;
+  cursor: pointer;
+  margin-right: 21px;
 }
 
 .select-file-instruction.is-selecting{
@@ -496,37 +833,12 @@ input:-webkit-autofill {
   transition: opacity 0.6s;
 }
 
-/*left here as although the transition doesn't work with linear gradients, 
-it can be amended later on to either haved a setTimeout function to 
-re-add it at the appropriate time or to use a png slice (preferable)*/
-
-/*.select-file-instruction-gradient-overlay{
-  content:"";
-  height: 50vh;
-  width: 100vw;
-  position: absolute;
-  top: 0; 
-  background: black;
-  display: block;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 0%,rgba(0,0,0,0) 7%,rgba(0,0,0,0) 100%);
-  opacity:1;
-  transition: opacity 3s linear 1s;
-}
-*/
-
-/*.is-selecting .select-file-instruction-gradient-overlay{
-  opacity:0;
-  transition: opacity 3s linear 1s;
-}*/
-
-.select-file-instruction h2{
+.select-file-instruction-inner{
   height: 100%;
   width: 100%;
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  font-size: 40px;
 }
 
 .select-file-instruction h2 .select-file-action {
@@ -534,36 +846,72 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   cursor: pointer;
 }
 
-.select-file-store, .select-file-send{
-  width: 100%;
-  height: 50%;
-  display: table;
-}
+/*overlay*/
 
-.select-file-store h2, .select-file-send h2{
-  margin: auto;
-  vertical-align: middle;
-  display: table-cell;
-  text-align: center;
-  color: hsla(8, 50%, 53%, 0.37);
-  transition: color 1s, opacity 1s;
+.select-file-main{
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index:100;
+  background: #FB4A36;
   opacity: 0;
 }
 
-.is-selecting .select-file-store h2, .is-selecting .select-file-send h2{
+.select-file-main.is-selecting{
   opacity: 1;
   transition: opacity 1s;
 }
 
-.select-file-store.dz-drag-hover h2, .select-file-send.dz-drag-hover h2{
-  color: hsla(8, 50%, 53%, 1);
-  transition: color 1s, opacity 1s;
+
+.select-file-store, .select-file-send{
+  width: 100%;
+  height: 50%;
+  display: table;
+  padding: 5px;  
+}
+
+.select-file-drop-inner{
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+.is-selecting .select-file-store .select-file-drop-inner, 
+.is-selecting .select-file-send .select-file-drop-inner{
+  opacity: 1;
+  transition: opacity 1s;
+}
+
+.select-file-store.dz-drag-hover .select-file-drop-inner, 
+.select-file-send.dz-drag-hover .select-file-drop-inner{
+  background: #37bd72;
+  transition: 1s background-color;
+}
+
+.has-dropped .select-file-store .select-file-drop-inner, 
+.has-dropped .select-file-send .select-file-drop-inner{
+  opacity: 0;
+  transition: opacity 0.5s;
 }
 
 /* select mailbox */
 
 .select-mailbox {
   z-index: 6;
+}
+
+.select-mailbox h2.select-account-header{
+  font-size: 19px;
+  text-align: left;
+  margin: 0 17px 15px;
+}
+
+.nav-black .select-mailbox h2.select-account-header{
+  color: #000;
 }
 
 .select-mailbox-mailboxes {
@@ -630,17 +978,16 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .select-mailbox-mailboxes .is-open .Dropdown-control{
-  border-radius: 30px 30px 0px 0px;  
+  border-radius: 20px 20px 0px 0px;  
 }
 
 .select-mailbox-mailboxes .Dropdown-menu{
-  background: hsla(146, 52%, 42%, 1);
-  border-radius: 0 0 30px 30px;
+  background: #37bd72;
+  border-radius: 0 0 20px 20px;
 }
 
 .white .select-mailbox-mailboxes .Dropdown-menu{
   background: white;
-  border-radius: 0 0 30px 30px;
 }
 
 .select-mailbox-mailboxes .Dropdown-arrow {
@@ -679,18 +1026,10 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   padding-top: 1vw;  
 }
 
-.feedback-unlock-ui{
-  padding:8px;
-  width: 75%;
-  float: left;
-  text-align: left;
-  height: 24px; 
-}
-
 /* select recipient */
 
 .select-recipient {
-  z-index: 7;
+  margin-top: 20px;
 }
 
 /* confirm */
@@ -712,6 +1051,26 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 .confirm-ui-group {
   margin-bottom: 75px;
+}
+
+.confirm-ui-item {
+  border-bottom: 1px solid white;
+  height: 28px;
+  margin-top: 6px;
+  clear: both;
+  font-size: 14px;
+}
+
+.confirm-ui-item-last{
+  border-bottom: 0;
+}
+
+.confirm-ui-item .confirm-ui-type{
+  float: left;
+}
+
+.confirm-ui-item .confirm-ui-value{
+  float: right;
 }
 
 .confirm .confirm-upload-unencrypted{
@@ -978,8 +1337,9 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 }
 
 .inbox{
-  width: 96%;
-  margin: 4%;
+  width: 100%;
+  padding: 20px;
+  min-width: 1020px;
 }
 
 .inbox table{
@@ -987,8 +1347,17 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   text-align: left;
 }
 
+.inbox-col{
+  font-family: 'Berthold Akzidenz-Grotesk Medium Extended'
+}
+
+.inbox th, .inbox td{
+  font-size: 12px;
+  padding: 8px;
+}
+
 .inbox thead tr th{
-  font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
+  /*font-family: 'Berthold Akzidenz-Grotesk Medium Extended';*/
 }
 
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
@@ -1009,15 +1378,41 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
 
 .inbox tbody tr td{
   font-weight: normal;
+
 }
 
 .inbox tbody tr.message-list td{
   cursor: pointer;
 }
 
+.inbox tbody tr.message-list:hover{
+  background: rgba(0, 0, 0, 0);
+  transition: background-color 0.7s;
+}
+
+.inbox tbody tr.message-list:hover{
+  background: rgba(0, 0, 0, 0.04);
+  transition: background-color 2s;
+}
+
+.inbox-main tbody tr{
+  border-bottom: 1px solid #000;
+  height: 53px;
+}
+
+.inbox tbody tr.last{
+  border-bottom: 0;
+}
+
 .inbox-nav {
-  width: 14%;
+  width: 175px;
   float: left;
+  padding-right: 18px;
+}
+
+.inbox-nav td{
+  padding: 0 0 13px;
+  font-size: 20px;
 }
 
 .inbox-nav button{
@@ -1033,22 +1428,34 @@ re-add it at the appropriate time or to use a png slice (preferable)*/
   background: none;
 }
 
+.inbox-nav button img{
+  margin-right: 10px;
+  height: 20px;
+  width: 20px;
+}
+
 .inbox-header, .inbox-main {
   float: left;
   width: 80%;
-  margin-right: 3%;
 }
 
-.icon-group .icon .info-filesize,
+/*.icon-group .icon .info-filesize,
 .icon-group .icon .info-filesender,
 .icon-group .icon .info-filerecipient {
   color: #fff;  
   font-size: 8px;
-}
+}*/
 
 .show-files-ui {
   width: 100%;
-  height: 76vh;
+  height: 84vh;
+  margin-top: 60px;
+}
+
+.show-files-mailbox-name{
+  border-radius: 30px;
+  border: 1px solid black;
+  padding: 0 10px;
 }
 
 .show-files-nav button{

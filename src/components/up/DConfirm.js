@@ -17,7 +17,7 @@ class DConfirm extends Component{
   handleCancel(){
     this.setState({feedbackMessage: ""});
     this.props.setParentState({
-      uiState: 2,
+      uiState: 1,
     });
   }
 
@@ -46,47 +46,44 @@ class DConfirm extends Component{
             {this.props.parentState.isStoringFile === false && 
               <div>
                 <div className="confirm-ui-group clearfix">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</td>
-                      </tr>
-                      <tr>
-                        <td>Sender:</td><td>{this.props.selectedMailbox.subdomain}.datafund.eth</td><td></td>
-                      </tr>
-                      <tr>
-                        <td>Recipient:</td><td>{this.props.parentState.addressee}.datafund.eth</td><td></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div className="confirm-ui-item">
+                    <div className="confirm-ui-type">File name</div>
+                    <div className="confirm-ui-value">{this.props.parentState.selectedFileName}</div>
+                  </div>
+                  <div className="confirm-ui-item">
+                    <div className="confirm-ui-type">Size</div>
+                    <div className="confirm-ui-value">{Utils.humanFileSize(this.props.parentState.selectedFileSize)}</div>
+                  </div>
+                  <div className="confirm-ui-item">
+                    <div className="confirm-ui-type">Sender</div>
+                    <div className="confirm-ui-value">{this.props.selectedMailbox.subdomain}.datafund.eth</div>
+                  </div>
+                  <div className="confirm-ui-item confirm-ui-item-last">
+                    <div className="confirm-ui-type">Recipient</div>
+                    <div className="confirm-ui-value">{this.props.parentState.addressee}.datafund.eth</div>
+                  </div>
                 </div>
                 <div className="btn-group">
-                  <form onSubmit={this.handleEncryptAndSend}>                
-                    <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
-                    <button className="confirm-cancel btn btn-lg btn-link btn-float-right" onClick={this.handleCancel}>Cancel</button>
-                  </form>
+                  <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Send</button>
+                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>
             }
             {this.props.parentState.isStoringFile === true && 
               <div>
                 <div className="confirm-ui-group clearfix">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>File:</td><td>{this.props.parentState.selectedFileName}</td><td>{ Utils.humanFileSize(this.props.parentState.selectedFileSize) }</td>
-                      </tr>
-                      <tr>
-                        <td>Storing file.</td><td></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div className="confirm-ui-item">
+                    <div className="confirm-ui-type">File name</div>
+                    <div className="confirm-ui-value">{this.props.parentState.selectedFileName}</div>
+                  </div>
+                  <div className="confirm-ui-item confirm-ui-item-last">
+                    <div className="confirm-ui-type">Size</div>
+                    <div className="confirm-ui-value">{Utils.humanFileSize(this.props.parentState.selectedFileSize)}</div>
+                  </div>
                 </div>
                 <div className="btn-group">
-                  <form onSubmit={this.handleEncryptAndSend}>                
-                    <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
-                    <button className="confirm-cancel btn btn-lg btn-link btn-float-right" onClick={this.handleCancel}>Cancel</button>
-                  </form>
+                  <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
+                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>
             }     

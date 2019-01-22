@@ -21,7 +21,7 @@ class FCompleted extends Component{
                 <img className="fairdrop-lock" src="assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
               </div>
 
-              {this.props.parentState.fileWasUploaded &&
+              {(this.props.parentState.fileWasUploaded && this.props.swarmHash) &&
                 <div>
                   <div className="feedback-swarmhash-message">Swarm Hash</div>
                   <div className="feedback-swarmhash"><input type="text" value={this.props.parentState.uploadedFileHash || ""} readOnly={true}/></div>  

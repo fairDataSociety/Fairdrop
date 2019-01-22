@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
 import FDS from 'fds';
-
+import JSZip from 'jszip';
+import FileSaver from 'filesaver.js';
 import Upload from "./components/Upload";
 import Mailbox from "./components/Mailbox";
 import DisclaimerSplash from "./components/DisclaimerSplash"
+import Menu from "./components/Menu"
 
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
@@ -20,19 +22,26 @@ class App extends Component {
   getInitialState() {
     let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
 
+    let appRoot = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(0,5).join('/') : '';
+
     return {
+      navState: false,
       selectedMailbox: false,
-      isStoringFile: false,      
+      isStoringFile: false,
+      isSendingFile: false,      
       fileIsSelected: false,
       fileWasSelected: false,
-      disclaimersAreShown: hasNotHiddenDisclaimers
+      disclaimersAreShown: hasNotHiddenDisclaimers,
+      menuState: false,
+      appRoot: appRoot
     };
   }
 
   resetMailboxState(){
     this.setState({
       selectedMailbox: false,
-      isStoringFile: false,      
+      isStoringFile: false,  
+      isSendingFile: false,      
       fileIsSelected: false,
       fileWasSelected: false,
       fileIsSelecting: false
@@ -42,7 +51,8 @@ class App extends Component {
 
   resetFileState(){
     this.setState({
-      isStoringFile: false,      
+      isStoringFile: false, 
+      isSendingFile: false,     
       fileIsSelected: false,
       fileWasSelected: false,
       fileIsSelecting: false
@@ -57,6 +67,7 @@ class App extends Component {
       ethGateway: process.env.REACT_APP_GETH_GATEWAY, 
       faucetAddress: process.env.REACT_APP_FAUCET_URL,
       httpTimeout: 1000,
+      gasPrice: 50, //gwei
       ensConfig: {
         domain: process.env.REACT_APP_DOMAIN_NAME,
         registryAddress: process.env.REACT_APP_ENS_ADDRESS,
@@ -66,6 +77,7 @@ class App extends Component {
     });
 
     this.uploadComponent = React.createRef();
+    this.importMailboxInput = React.createRef();
 
     this.setSelectedMailbox = this.setSelectedMailbox.bind(this);
     this.fileWasSelected = this.fileWasSelected.bind(this);
@@ -74,8 +86,28 @@ class App extends Component {
     this.handleStoreFile = this.handleStoreFile.bind(this);
     this.resetFileState = this.resetFileState.bind(this);
     this.resetMailboxState = this.resetMailboxState.bind(this);
+    this.handleNavigateTo = this.handleNavigateTo.bind(this);
+    this.exportMailboxes = this.exportMailboxes.bind(this);
+    this.importMailbox = this.importMailbox.bind(this);
 
     this.state = this.getInitialState();
+
+  }
+
+  unlockMailboxWallet(subdomain, password){
+    this.FDS.UnlockAccount(subdomain, password).then((account)=>{
+      this.setState({
+        feedbackMessage: 'Mailbox unlocked.',
+        mailboxIsUnlocked: true,
+      });
+      this.props.mailboxUnlocked();
+      this.props.setSelectedMailbox(this.FDS.currentAccount);
+    }).catch((error)=>{
+      this.setState({
+        feedbackMessage: 'Password invalid, please try again.',
+        mailboxIsUnlocked: false
+      });
+    });
   }
 
   setSelectedMailbox(selectedMailbox){
@@ -89,11 +121,23 @@ class App extends Component {
   handleSendFile(e){
     this.setState({isSendingFile: true});
     this.props.history.push('/');
+    if(this.uploadComponent.current){
+      this.uploadComponent.current.resetToInitialState();
+      this.uploadComponent.current.aSelectFile.current.handleClickSelectFile(); 
+    }
   }
 
   handleStoreFile(e){
     this.setState({isStoringFile: true});
     this.props.history.push('/');
+    if(this.uploadComponent.current){
+      this.uploadComponent.current.resetToInitialState();      
+      this.uploadComponent.current.aSelectFile.current.handleClickStoreFile(); 
+    }  
+  }
+
+  handleNavigateTo(url){
+    this.props.history.push(url);
   }
 
   hideDisclaimer(e){
@@ -101,46 +145,83 @@ class App extends Component {
     this.setState({disclaimersAreShown: false});
   }
 
+  importMailbox(e){
+    let ref = this.importMailboxInput.current.click();
+  }
+
+  handleImportMailbox(e){
+    if(e.target.files.length === 1){
+      let file = e.target.files[0];
+      this.FDS.RestoreAccount(file).then((o)=>{
+        alert('Import successful!');
+        window.location.reload();
+      }).catch((e)=>{
+        alert('Sorry, there was an error - please try again!');
+      });
+    }
+  }
+
+  exportMailboxes(){
+    let zip = new JSZip();
+    let promises = [];
+    let accounts = this.FDS.GetAccounts();
+    for (var i = accounts.length - 1; i >= 0; i--) {
+      var file = accounts[i].getBackup();
+      zip.file(file.name, file.data);
+    }
+    zip.generateAsync({type:"blob"})
+    .then(function(content) {
+        // see FileSaver.js
+        FileSaver.saveAs(content, "fairdrop-mailboxes.zip");
+    });
+  }
+
   render() {
     return (
-      <div className="parent-wrapper">
+      <div
+        className={
+          (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
+        + " parent-wrapper "+ (this.state.menuState ? "menu-shown " : "")
+        + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white red")
+        }
+      >
         <DisclaimerSplash 
           disclaimersAreShown={this.state.disclaimersAreShown}
           hideDisclaimer={this.hideDisclaimer}
         />
-        <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname === '/mailbox') ? "nav-black white" : "nav-white green")}>
+        <Menu
+          isShown={false}
+          menuToggled={(s)=>{this.setState({menuState: s})}}
+          handleSendFile={this.handleSendFile}
+          handleStoreFile={this.handleStoreFile}
+          handleNavigateTo={this.handleNavigateTo}
+          exportMailboxes={this.exportMailboxes}
+          importMailbox={this.importMailbox}
+          appRoot={this.state.appRoot}
+        />
+        <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")}>
           <div className="nav-header">
+            <div className="nav-header-item-left">
+              <div class="nav-header-spacer"></div>
+            </div>
             <div className="nav-header-item-left">
               <Link to={"/"}>
                 <FairdropLogo/>
               </Link>
-              <span className="version-number">{version}</span>
             </div>
-            {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' &&
-              <div className="nav-header-item-left">
-                <button className="nav-header-item-button" onClick={this.handleStoreFile} >
-                  Store File
-                </button>
-              </div>
-            }
-            {this.state.fileWasSelected === false && this.props.location.pathname === '/mailbox' && 
-              <div className="nav-header-item-left">
-                <button className="nav-header-item-button" onClick={this.handleSendFile} >
-                  Send File
-                </button>                
-              </div>
-            }
-
+            <div className="nav-header-item-left">
+              <div className="version-number">{version}</div>
+            </div>
 
             <div className="nav-header-item-right">
-              <Link className="nav-key" to={'mailbox'}>
+              <Link className="nav-key" to={'/mailbox'}>
                 <MailboxGlyph/> 
               </Link>                
             </div>
             {this.state.selectedMailbox.subdomain && 
               <div className="nav-header-item-right">
                 <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>
-                  (Sign Out)
+                  Log out
                 </button>
               </div>
             }
@@ -157,8 +238,9 @@ class App extends Component {
           <Route exact={true} path="/" render={ () => {
               return <Upload 
                 FDS={this.FDS}
-                setSelectedMailbox={this.setSelectedMailbox}
+                unlockMailboxWallet={this.unlockMailboxWallet}                
                 selectedMailbox={this.state.selectedMailbox}
+                setSelectedMailbox={this.setSelectedMailbox}
                 fileWasSelected={this.fileWasSelected} 
                 isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
@@ -168,14 +250,24 @@ class App extends Component {
             }
           }/>
 
-          <Route path="/mailbox" render={() => {
+          <Route path={"/mailbox" || "/mailbox/:filter"} render={(routerArgs) => {
               return <Mailbox 
-                FDS={this.FDS}              
+                FDS={this.FDS}
+                unlockMailboxWallet={this.unlockMailboxWallet}
                 setSelectedMailbox={this.setSelectedMailbox}
                 selectedMailbox={this.state.selectedMailbox}
+                routerArgs={routerArgs}
+                appRoot={this.state.appRoot}
               />
             }
           }/>
+
+          <input 
+            ref={this.importMailboxInput} 
+            style={{display:"none"}} 
+            type="file"
+            onChange={this.handleImportMailbox.bind(this)}
+          />
   
         </div>
       </div>

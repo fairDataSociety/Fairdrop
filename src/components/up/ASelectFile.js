@@ -44,6 +44,7 @@ class ASelectFile extends Component{
         reader.readAsArrayBuffer(file);
       }
     });
+
     this.dropzone.on("dragenter", (event) => {
       this.props.setParentState({fileIsSelecting: true});
       if(isStoring){
@@ -80,7 +81,6 @@ class ASelectFile extends Component{
     this.dropzone.on("addedfile", (file) => {
       if(file.size > (1024 * 1024 * 5)){
         alert('Sorry, proof of concept is restricted to 5mb');
-        window.location.reload();
         return false;
       }
 
@@ -102,19 +102,15 @@ class ASelectFile extends Component{
         let newUIState;
 
         if(this.props.parentState.isStoringFile === true){
-          //skip select recipient
+          //skip sign in
           if(this.props.selectedMailbox === false){
             newUIState = 1;
           }else{
             newUIState = 3;
-          }      
+          }
         }else{
           //select recipient
-          if(this.props.selectedMailbox){
-            newUIState = 2;
-          }else{
-            newUIState = 1;
-          }
+          newUIState = 1;
         }
 
         setTimeout(()=>{
@@ -153,29 +149,35 @@ class ASelectFile extends Component{
     });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectStoreFile.click();
-  }  
+  }
 
   render(){
     return (
-      <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} > 
-        <div className={"select-file-header " + (this.props.parentState.fileIsSelecting && "is-selecting")}> {/* this bit slides up out of view using transform */}
-          
-        </div> {/* header */}
-        <div className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting")} > {/* this bit expands to fill the viewport */}
+      <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} >
+        <div className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
           <div ref="dtSelectStoreFile" className="select-file-store">
-            <h2>Store</h2>
+            <div className="select-file-drop-inner">
+              <h2>Store encrypted</h2>
+              <div>Requires logging in to your mailbox</div>
+            </div>
           </div>
-          <div ref="dtSelectSaveFile"  className="select-file-send">
-            <h2>Send</h2>
+          <div ref="dtSelectSaveFile" className="select-file-send">
+            <div className="select-file-drop-inner">
+              <h2>Send encrypted</h2>
+              <div>Requires logging in to your mailbox</div>
+            </div>
           </div>
         </div> {/* select-file-main */}
         <div className={"select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
-          <div className="select-file-instruction-gradient-overlay"></div>
-          <h2>
-            <span className="select-file-header-inverted">Fair</span> way to <span onClick={this.handleClickStoreFile} className="select-file-action">store</span> and <span onClick={this.handleClickSelectFile} className="select-file-action">send</span> data<br/>
-            <span onClick={this.handleClickSelectFile} className="select-file-action">select</span> or drop a file
-          </h2>
-        </div> {/* select-file-instruction */}
+          <div className="select-file-instruction-inner">
+            <h2>
+              Fair way to store and send data in <br/> the <span ref="retype-age">age of Anthropocene</span>
+            </h2>
+            <h3>
+              <img src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img src="assets/images/fairdrop-drop.svg"/> drop a file
+            </h3>
+          </div>
+        </div>
       </div>
     )
   }

@@ -31,7 +31,7 @@ class FCompleted extends Component{
               1 Select File
             </div>
             <div className='progress-label'>
-              2 Encrypt
+              2 Confirm
             </div>
             <div className='progress-label'>
               3 Upload

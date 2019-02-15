@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+VER=$1
+echo $VER
+git add . && git commit -m "bump version"
+echo "added bump commit"
+git tag $VER
+echo "added tag"
+git push $VER
+echo "pushed"
+npm run build
+echo "built"

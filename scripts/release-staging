@@ -36,4 +36,5 @@ echo "updated production .env"
 npm run build
 echo "built"
 echo "now upload to swarm"
+echo "'./swarm --bzzapi http://209.97.190.111:8500/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/'"
 echo "and then change ENS reference"

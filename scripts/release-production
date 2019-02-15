@@ -18,6 +18,7 @@ if [ "$VER" = "" ]; then
                echo "please provide a version number"
                exit 1;
             fi
+VER+="s"            
 echo $VER
 head package.json -n5
 git status            
@@ -25,7 +26,7 @@ confirm "Have you incremented package.json to version number $VER?" &&
 confirm "Is the stage otherwise clean?" &&
 confirm "Are you on master branch?" &&
 git add package.json && git commit -m "bump version"
-echo "added bump commit"
+echo "added bump version"
 git tag $VER
 echo "added tag $VER"
 git push origin $VER
@@ -37,4 +38,5 @@ npm run build
 echo "built"
 echo "now upload to swarm"
 echo "'./swarm --bzzapi http://178.128.196.190:8500/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/'"
-echo "and then change ENS reference"
+echo "and change the current live file"
+echo "and change the ENS reference"

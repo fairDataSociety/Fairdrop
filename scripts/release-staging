@@ -25,7 +25,7 @@ confirm "Have you incremented package.json to version number $VER?" &&
 confirm "Is the stage otherwise clean?" &&
 confirm "Are you on staging branch?" &&
 git add package.json && git commit -m "bump version"
-echo "added bump commit"
+echo "added bump version"
 git tag $VER
 echo "added tag $VER"
 git push origin $VER
@@ -38,3 +38,5 @@ echo "built"
 echo "now upload to swarm"
 echo "'./swarm --bzzapi http://209.97.190.111:8500/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/'"
 echo "and then change ENS reference"
+echo "and change the current_live file"
+echo "and change the ENS reference"

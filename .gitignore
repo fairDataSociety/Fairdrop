@@ -23,4 +23,6 @@ yarn-error.log*
 
 /ganache
 
-.env*
+.env.production
+.env.testnet*
+.env.local

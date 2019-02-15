@@ -210,7 +210,7 @@ class App extends Component {
               </Link>
             </div>
             <div className="nav-header-item-left">
-              <div className="version-number">{version}</div>
+              <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
             </div>
 
             <div className="nav-header-item-right">

@@ -19,11 +19,11 @@ if [ "$VER" = "" ]; then
                exit 1;
             fi
 echo $VER
-head package.json
+head package.json -n5
 git status            
 confirm "Have you incremented package.json to version number $VER?" &&
 confirm "Is the stage otherwise clean?" &&
-confirm "Are you on staging branch?" &&
+confirm "Are you on master branch?" &&
 git add package.json && git commit -m "bump version"
 echo "added bump commit"
 git tag $VER
@@ -31,9 +31,7 @@ echo "added tag $VER"
 git push origin $VER
 git push df $VER
 echo "pushed"
-cp .env.testnet-dev .env.production 
+cp .env.testnet-prod .env.production 
 echo "updated production .env"
 npm run build
 echo "built"
-echo "now upload to swarm"
-echo "and then change ENS reference"

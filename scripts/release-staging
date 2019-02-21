@@ -12,16 +12,19 @@ confirm() {
     esac
 }
 
-VER=$1
+VERS=$1
+ENVIR="s"
 
 if [ "$VERS" = "" ]; then
                echo "please provide a version number"
                exit 1;
             fi
+VER=$VERS$ENVIR
+
 echo $VER
 head package.json
 git status        
-confirm "Have you incremented package.json to version number $VERs?" &&
+confirm "Have you incremented package.json to version number $VERS? (don't add s)" &&
 confirm "Is the stage otherwise clean?" &&
 confirm "Are you on staging branch?" &&
 echo "pushed"

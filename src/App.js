@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
-import FDS from 'fds';
+import FDS from 'fds.js';
 import JSZip from 'jszip';
 import FileSaver from 'filesaver.js';
 import Upload from "./components/Upload";
@@ -247,6 +247,7 @@ class App extends Component {
                 isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
                 resetFileState={this.resetFileState}
+                appRoot={this.state.appRoot}
                 ref={this.uploadComponent} 
               />
             }

@@ -145,6 +145,7 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isStoringFile={this.props.isStoringFile}
             setSelectedMailbox={this.setSelectedMailbox.bind(this)}
+            appRoot={this.props.appRoot}
           />
           <DConfirm
             parentState={this.state}

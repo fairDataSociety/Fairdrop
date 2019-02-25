@@ -211,7 +211,8 @@ input:-webkit-autofill {
 }
 
 .btn {
-  color: black;
+  background: #fff;
+  color: #000;
 }
 
 .white .btn {

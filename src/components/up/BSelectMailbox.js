@@ -438,7 +438,7 @@ class BSelectMailbox extends Component{
               }
             </button>
             {this.state.mailboxesExist &&
-              <button className="btn btn-sm select-encryption-no-button btn btn-lg btn-link btn-float-right" onClick={this.cancelAddMailbox}><img src="assets/images/x.svg"/>Cancel</button>
+              <button className="btn btn-sm select-encryption-no-button btn btn-lg btn-link btn-float-right" onClick={this.cancelAddMailbox}><img src={this.props.appRoot + "assets/images/x.svg"}/>Cancel</button>
             }
           </div>
         </div>

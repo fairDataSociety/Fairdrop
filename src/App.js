@@ -62,7 +62,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.FDS = new FDS({
+    let config = {
       swarmGateway: process.env.REACT_APP_SWARM_GATEWAY, 
       ethGateway: process.env.REACT_APP_GETH_GATEWAY, 
       faucetAddress: process.env.REACT_APP_FAUCET_URL,
@@ -74,7 +74,9 @@ class App extends Component {
         fifsRegistrarContractAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,
         resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
       }
-    });
+    };
+
+    this.FDS = new FDS(config);
 
     this.uploadComponent = React.createRef();
     this.importMailboxInput = React.createRef();

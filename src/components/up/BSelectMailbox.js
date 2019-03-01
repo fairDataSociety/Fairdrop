@@ -311,25 +311,9 @@ class BSelectMailbox extends Component{
     e.preventDefault();
     
     if(this.props.selectedMailbox){
-      console.log('selected')
       //already logged in
         return this.handleSendOrStore();
-        // if(this.props.parentState.isStoringFile === false){
-        //   //sending file
-        //   //check recipient mailbox
-        //   return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
-        //     if(!valid) return false;
-        //     //create mailbox and go to next stage
-        //     return this.handleAddMailboxUploadAndEncrypt();
-        //   });
-        // }else{
-        //   //storing file
-        //   //create mailbox and go to next stage
-        //   return this.handleAddMailboxUploadAndEncrypt();
-        // }      
-
     }else{
-      console.log('not selected')
       //must log in or add mailbox
       if(this.state.isAddingMailbox){
         //adding mailbox
@@ -341,19 +325,6 @@ class BSelectMailbox extends Component{
             return false;
           }
           return this.handleSendOrStore('add');
-          // if(this.props.parentState.isStoringFile === false){
-          //   //sending file
-          //   //check recipient mailbox
-          //   return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
-          //     if(!valid) return false;
-          //     //create mailbox and go to next stage
-          //     return this.handleAddMailboxUploadAndEncrypt();
-          //   });
-          // }else{
-          //   //storing file
-          //   //create mailbox and go to next stage
-          //   return this.handleAddMailboxUploadAndEncrypt();
-          // }
         });
       }else{
         //unlocking mailbox

@@ -360,6 +360,7 @@ class Mailbox extends Component{
                       dropDownValue={this.state.unlockingMailbox}
                       handleSelectMailbox={this.handleSelectMailbox}
                       handleInputPassword={this.handleInputPassword.bind(this)}
+                      unlockMailbox={this.unlockMailbox.bind(this)}
                     />
                 </div>
               }
@@ -370,6 +371,7 @@ class Mailbox extends Component{
                         handleInputMailboxName={this.handleInputMailboxName.bind(this)}
                         handleInputPassword={this.handleInputPassword.bind(this)}
                         handleInputPasswordVerification={this.handleInputPasswordVerification.bind(this)}
+                        handleAddMailbox={this.handleAddMailbox.bind(this)}
                       />
                 </div>
               }

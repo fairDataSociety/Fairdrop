@@ -7,6 +7,11 @@ class UnlockMailbox extends Component{
     super(props);
   }
 
+  proxyUnlockMailbox(e){
+    e.preventDefault();
+    this.props.unlockMailbox();
+  }
+
   render(){
     return (
       <div className="mailbox-unlock-ui">
@@ -22,15 +27,17 @@ class UnlockMailbox extends Component{
           </div>
         </div>
         <div className="form-group form-group-last clearfix">
-            <input 
-              id="mailbox-unlock-password" 
-              autoComplete="off" 
-              className="mailbox-unlock-password" 
-              type="password" 
-              placeholder="Password" 
-              ref="dtSelectPassword"
-              onChange={this.props.handleInputPassword.bind(this)}
-            />
+            <form onSubmit={this.proxyUnlockMailbox.bind(this)}>
+              <input 
+                id="mailbox-unlock-password" 
+                autoComplete="off" 
+                className="mailbox-unlock-password" 
+                type="password" 
+                placeholder="Password" 
+                ref="dtSelectPassword"
+                onChange={this.props.handleInputPassword.bind(this)}
+              />
+            </form>
         </div>
       </div>
     )

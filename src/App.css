@@ -790,7 +790,7 @@ a.nav-context:hover{
   position: absolute;
   top: 0;
   transition: opacity 1s;  
-  z-index:99;
+  z-index:101;
 }
 
 .select-file-instruction h2{
@@ -847,6 +847,10 @@ a.nav-context:hover{
   cursor: pointer;
 }
 
+.select-file-instruction.is-selecting {
+  pointer-events: none;
+}
+
 /*overlay*/
 
 .select-file-main{
@@ -885,6 +889,7 @@ a.nav-context:hover{
 .is-selecting .select-file-send .select-file-drop-inner{
   opacity: 1;
   transition: opacity 1s;
+  pointer-events: none;
 }
 
 .select-file-store.dz-drag-hover .select-file-drop-inner, 
@@ -1362,7 +1367,7 @@ a.nav-context:hover{
 }
 
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
-  width: 50%;
+  width: 53%;
 }
 
 .inbox tbody tr td:nth-child(2), .inbox thead tr th:nth-child(2){
@@ -1374,7 +1379,8 @@ a.nav-context:hover{
 }
 
 .inbox tbody tr td:nth-child(4), .inbox thead tr th:nth-child(4){
-  width: 10%;
+  width: 8%;
+  text-align: right;
 }
 
 .inbox tbody tr td{
@@ -1398,7 +1404,7 @@ a.nav-context:hover{
 
 .inbox-main tbody tr{
   border-bottom: 1px solid #000;
-  height: 53px;
+  height: 45px;
 }
 
 .inbox tbody tr.last{
@@ -1406,9 +1412,9 @@ a.nav-context:hover{
 }
 
 .inbox-nav {
-  width: 175px;
-  float: left;
-  padding-right: 18px;
+    min-width: 137px;
+    float: left;
+    width: 14%;
 }
 
 .inbox-nav td{
@@ -1436,8 +1442,8 @@ a.nav-context:hover{
 }
 
 .inbox-header, .inbox-main {
-  float: left;
-  width: 80%;
+  width: 85%;
+  float: right;
 }
 
 /*.icon-group .icon .info-filesize,
@@ -1450,7 +1456,6 @@ a.nav-context:hover{
 .show-files-ui {
   width: 100%;
   height: 84vh;
-  margin-top: 60px;
 }
 
 .show-files-mailbox-name{

@@ -32,8 +32,63 @@
     font-style: normal;
 }
 
+@font-face {
+  font-family: 'HankenGrotesk-Black';
+  src: url('assets/fonts/HankenGrotesk-Black.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-Black.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-Black.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'HankenGrotesk-Bold';
+  src: url('assets/fonts/HankenGrotesk-Bold.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-Bold.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'HankenGrotesk-ExtraLight';
+  src: url('assets/fonts/HankenGrotesk-ExtraLight.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-ExtraLight.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-ExtraLight.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'HankenGrotesk-Light';
+  src: url('assets/fonts/HankenGrotesk-Light.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-Light.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'HankenGrotesk-Medium';
+  src: url('assets/fonts/HankenGrotesk-Medium.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-Medium.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'HankenGrotesk-Regular';
+  src: url('assets/fonts/HankenGrotesk-Regular.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-Regular.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'HankenGrotesk-SemiBold';
+  src: url('assets/fonts/HankenGrotesk-SemiBold.eot') format('eot'),
+    url('assets/fonts/HankenGrotesk-SemiBold.woff') format('woff'),
+    url('assets/fonts/HankenGrotesk-SemiBold.woff2') format('woff2');
+}
+
 * {
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
+  font-kerning: none;
+  /*letter-spacing: 0.07em;*/
+}
+
+h1,h2,h3,h5{
+  letter-spacing: 0.07em;
 }
 
 h1 {
@@ -52,7 +107,7 @@ h1 {
 }
 
 h2{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Extended', 'HankenGrotesk-ExtraLight';
   letter-spacing: 0.03em;
   font-weight: normal;
   color: #fff;  
@@ -91,7 +146,7 @@ input[type='text'], input[type='password'] {
   margin-right: 10px;
   margin-bottom: 29px;
   font-size: 16px;
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'HankenGrotesk-ExtraLight';
   letter-spacing: 0.09vw;
   width: 100%;
   display: block;
@@ -384,7 +439,7 @@ input:-webkit-autofill {
 }
 
 .menu-item-header{
-  font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-SemiBold';
   position: absolute;
   width: 100px;
   z-index: 10;
@@ -782,7 +837,7 @@ a.nav-context:hover{
 }
 
 .select-file-instruction{
-  font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
   height: 20vh;
   margin-top: 35vh;
   width: 100vw;
@@ -799,7 +854,7 @@ a.nav-context:hover{
 }
 
 .select-file-instruction h3, .select-file-instruction h3 span{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-Light';
   font-size: 30px;
 }
 
@@ -1121,7 +1176,7 @@ a.nav-context:hover{
 }
 
 .in-progress h2.in-progress-sub{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
   font-size: 24px;
 }
 
@@ -1179,13 +1234,13 @@ a.nav-context:hover{
 .info-content .info-filesize{
   font-size: 15px;
   margin-left: 16px;
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
 }
 
 .info-content .info-is-encrypted{
   font-size: 18px;
   margin-bottom: 34px;
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended';
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
 }
 
 .feedback-swarmhash-message{
@@ -1354,7 +1409,7 @@ a.nav-context:hover{
 }
 
 .inbox-col{
-  font-family: 'Berthold Akzidenz-Grotesk Medium Extended'
+  font-family: 'Berthold Akzidenz-Grotesk Medium Extended', 'HankenGrotesk-SemiBold'
 }
 
 .inbox th, .inbox td{

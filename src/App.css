@@ -925,7 +925,9 @@ a.nav-context:hover{
 }
 
 
-.select-file-store, .select-file-send{
+.select-file-store,
+.select-file-send,
+.select-file-quick{
   width: 100%;
   height: 50%;
   display: table;
@@ -941,20 +943,23 @@ a.nav-context:hover{
 }
 
 .is-selecting .select-file-store .select-file-drop-inner, 
-.is-selecting .select-file-send .select-file-drop-inner{
+.is-selecting .select-file-send .select-file-drop-inner,
+.is-selecting .select-file-quick .select-file-drop-inner{
   opacity: 1;
   transition: opacity 1s;
   pointer-events: none;
 }
 
 .select-file-store.dz-drag-hover .select-file-drop-inner, 
-.select-file-send.dz-drag-hover .select-file-drop-inner{
+.select-file-send.dz-drag-hover .select-file-drop-inner,
+.select-file-quick.dz-drag-hover .select-file-drop-inner{
   background: #37bd72;
   transition: 1s background-color;
 }
 
 .has-dropped .select-file-store .select-file-drop-inner, 
-.has-dropped .select-file-send .select-file-drop-inner{
+.has-dropped .select-file-send .select-file-drop-inner,
+.has-dropped .select-file-quick .select-file-drop-inner{
   opacity: 0;
   transition: opacity 0.5s;
 }
@@ -1132,6 +1137,11 @@ a.nav-context:hover{
 
 .confirm-ui-item .confirm-ui-value{
   float: right;
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
 }
 
 .confirm .confirm-upload-unencrypted{
@@ -1214,6 +1224,25 @@ a.nav-context:hover{
   text-align: center;
 }
 
+.info-content input{
+  max-width: 420px;
+}
+
+.copy-gateway-link{
+  cursor: pointer;
+  margin-bottom: 28px;
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.copy-gateway-link:hover{
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
 .info-content .file-was-sent{
   margin-bottom: 40px;
   font-size: 33px;
@@ -1226,10 +1255,19 @@ a.nav-context:hover{
   margin-bottom: 10px;
 }
 
-.info-content .info-filename {
+.info-content .info-filename{
   font-size: 22px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
+
+/*.info-content .info-filename-truncated {
+  font-size: 22px;
+  margin: auto;
+  width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}*/
 
 .info-content .info-filesize{
   font-size: 15px;

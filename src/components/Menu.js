@@ -68,7 +68,8 @@ class App extends Component {
             header="Upload"
             items={[
                     ['Store', this.props.handleStoreFile],
-                    ['Send', this.props.handleSendFile]
+                    ['Send', this.props.handleSendFile],
+                    ['Quick (Unencrypted)', this.props.handleQuickFile]
                   ]}
             closeAll={this.closeAll.bind(this)}
             toggleMenu={this.toggleMenu.bind(this)}

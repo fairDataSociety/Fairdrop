@@ -35,7 +35,8 @@ class Upload extends Component{
       fileWasEncrypted: false,
       fileWasUploaded: false,
 
-      isStoringFile: false
+      isStoringFile: false,
+      isQuickFile: false
     };
   }
 
@@ -73,10 +74,13 @@ class Upload extends Component{
       window.selectedFileArrayBuffer.byteLength > 0
       )
     {
-      if(this.state.isStoringFile === false){
+      if(
+        this.state.isStoringFile === false &&
+        this.state.isQuickFile === false
+        ){
         let addressee = this.state.addressee;
         return this.FDS.currentAccount.send(
-          addressee, 
+          addressee,
           new File(
             [window.selectedFileArrayBuffer],
             this.state.selectedFileName,
@@ -97,7 +101,27 @@ class Upload extends Component{
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
         });
-      }else{       
+      }else if(
+        this.state.isStoringFile === false &&
+        this.state.isQuickFile === true
+      ){
+        return this.FDS.Account.Swarm.storeFileUnencrypted(
+          new File(
+            [window.selectedFileArrayBuffer],
+            this.state.selectedFileName,
+            {type: this.state.selectedFileType}
+          ),
+          (response)=>{
+            this.setState({feedbackMessage: "file uploaded."});
+          },
+          (message)=>{
+            this.setState({feedbackMessage: message});
+          }
+        ).catch((error) => {
+          this.setState({feedbackMessage: error});
+          this.setState({fileWasUploaded: true});
+        });        
+      }else{
         return this.FDS.currentAccount.store(
           new File(
             [window.selectedFileArrayBuffer],
@@ -136,6 +160,7 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
+            isQuickFile={this.props.isQuickFile}
             ref={this.aSelectFile}
           />
           <BSelectMailbox 
@@ -151,6 +176,7 @@ class Upload extends Component{
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
+            isQuickFile={this.props.isQuickFile}
             selectedMailbox={this.props.selectedMailbox}
             handleUpload={this.handleUpload.bind(this)}
           />

@@ -27,12 +27,11 @@ class DConfirm extends Component{
       uiState: 4,
     });
     setTimeout(()=>{
-      this.props.handleUpload().then(()=>{
+      this.props.handleUpload().then((hash)=>{
         this.props.setParentState({
+          uploadedHash: hash,
           uiState: 5
         });
-      }).catch((error)=>{
-        debugger
       })
     }, 2000);
   }
@@ -42,9 +41,9 @@ class DConfirm extends Component{
       <div id="confirm" className={"confirm green page-wrapper " + (this.props.parentState.uiState === 3 ? "fade-in" : "hidden")}> 
         <div className="confirm-ui page-inner-centered">
           <div className="page-inner-wrapper">
-            <h1 className="confirm-header">Confirm</h1>
-            {this.props.parentState.isStoringFile === false && 
+            {this.props.parentState.isSendingFile === true && 
               <div>
+                <h1 className="confirm-header">Confirm Send File</h1>
                 <div className="confirm-ui-group clearfix">
                   <div className="confirm-ui-item">
                     <div className="confirm-ui-type">File name</div>
@@ -72,6 +71,7 @@ class DConfirm extends Component{
             {this.props.parentState.isStoringFile === true && 
               <div>
                 <div className="confirm-ui-group clearfix">
+                  <h1 className="confirm-header">Confirm Store File</h1>
                   <div className="confirm-ui-item">
                     <div className="confirm-ui-type">File name</div>
                     <div className="confirm-ui-value">{this.props.parentState.selectedFileName}</div>
@@ -83,6 +83,25 @@ class DConfirm extends Component{
                 </div>
                 <div className="btn-group">
                   <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
+                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
+                </div>
+              </div>
+            }
+            {this.props.parentState.isQuickFile === true && 
+              <div>
+                <h1 className="confirm-header">Confirm Send Unencrypted</h1>
+                <div className="confirm-ui-group clearfix">
+                  <div className="confirm-ui-item">
+                    <div className="confirm-ui-type">File name</div>
+                    <div className="confirm-ui-value">{this.props.parentState.selectedFileName}</div>
+                  </div>
+                  <div className="confirm-ui-item confirm-ui-item-last">
+                    <div className="confirm-ui-type">Size</div>
+                    <div className="confirm-ui-value">{Utils.humanFileSize(this.props.parentState.selectedFileSize)}</div>
+                  </div>
+                </div>
+                <div className="btn-group">
+                  <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Send Unencrypted</button>
                   <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>

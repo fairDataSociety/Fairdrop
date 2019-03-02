@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
-import FDS from 'fds.js';
+import FDS from 'fds';
 import JSZip from 'jszip';
 import FileSaver from 'filesaver.js';
 import Upload from "./components/Upload";
@@ -28,7 +28,8 @@ class App extends Component {
       navState: false,
       selectedMailbox: false,
       isStoringFile: false,
-      isSendingFile: false,      
+      isSendingFile: false,
+      isQuickFile: false,      
       fileIsSelected: false,
       fileWasSelected: false,
       disclaimersAreShown: hasNotHiddenDisclaimers,
@@ -42,6 +43,7 @@ class App extends Component {
       selectedMailbox: false,
       isStoringFile: false,  
       isSendingFile: false,      
+      isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
       fileIsSelecting: false
@@ -52,7 +54,8 @@ class App extends Component {
   resetFileState(){
     this.setState({
       isStoringFile: false, 
-      isSendingFile: false,     
+      isSendingFile: false,   
+      isQuickFile: false,  
       fileIsSelected: false,
       fileWasSelected: false,
       fileIsSelecting: false
@@ -78,6 +81,8 @@ class App extends Component {
 
     this.FDS = new FDS(config);
 
+    window.FDS = this.FDS;
+
     this.uploadComponent = React.createRef();
     this.importMailboxInput = React.createRef();
 
@@ -86,6 +91,7 @@ class App extends Component {
     this.hideDisclaimer = this.hideDisclaimer.bind(this);
     this.handleSendFile = this.handleSendFile.bind(this);
     this.handleStoreFile = this.handleStoreFile.bind(this);
+    this.handleQuickFile = this.handleQuickFile.bind(this);
     this.resetFileState = this.resetFileState.bind(this);
     this.resetMailboxState = this.resetMailboxState.bind(this);
     this.handleNavigateTo = this.handleNavigateTo.bind(this);
@@ -137,6 +143,15 @@ class App extends Component {
       this.uploadComponent.current.aSelectFile.current.handleClickStoreFile(); 
     }  
   }
+
+  handleQuickFile(e){
+    this.setState({isQuickFile: true});
+    this.props.history.push('/');
+    if(this.uploadComponent.current){
+      this.uploadComponent.current.resetToInitialState();      
+      this.uploadComponent.current.aSelectFile.current.handleClickQuickFile(); 
+    }  
+  }  
 
   handleNavigateTo(url){
     this.props.history.push(url);
@@ -196,6 +211,7 @@ class App extends Component {
           menuToggled={(s)=>{this.setState({menuState: s})}}
           handleSendFile={this.handleSendFile}
           handleStoreFile={this.handleStoreFile}
+          handleQuickFile={this.handleQuickFile}
           handleNavigateTo={this.handleNavigateTo}
           exportMailboxes={this.exportMailboxes}
           importMailbox={this.importMailbox}
@@ -246,6 +262,7 @@ class App extends Component {
                 fileWasSelected={this.fileWasSelected} 
                 isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
+                isQuickFile={this.state.isQuickFile}
                 resetFileState={this.resetFileState}
                 appRoot={this.state.appRoot}
                 ref={this.uploadComponent} 

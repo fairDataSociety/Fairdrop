@@ -380,7 +380,7 @@ class Mailbox extends Component{
                 <div className="actions">
                   <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleAddMailbox.bind(this)}>Add Mailbox</button>        
                   {this.state.mailboxesExist &&
-                    <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "assets/images/x-black.svg"}/>Cancel</button>              
+                    <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "/assets/images/x-black.svg"}/>Cancel</button>              
                   }
                 </div>
               }

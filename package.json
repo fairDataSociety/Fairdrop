@@ -1,6 +1,6 @@
 {
   "name": "fairdrop",
-  "version": "0.3.0rc13",
+  "version": "0.3.0rc14",
   "private": true,
   "homepage": "./",
   "dependencies": {},
@@ -21,15 +21,15 @@
     "dropzone": "^5.5.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "fds.js": "0.0.13",
+    "filesaver.js": "^1.3.4",
+    "jszip": "^3.1.5",
+    "moment": "^2.23.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-dropdown": "^1.5.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.0",
-    "zxcvbn": "^4.4.2",
-    "fds.js": "0.0.12",
-    "filesaver.js": "^1.3.4",
-    "jszip": "^3.1.5",
-    "moment": "^2.23.0"
+    "zxcvbn": "^4.4.2"
   }
 }

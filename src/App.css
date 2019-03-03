@@ -413,6 +413,32 @@ input:-webkit-autofill {
   transition: 1s transform;
 }
 
+.content-outer {
+  height: 100vh;
+  display: table;
+  width: 50vw;
+}
+
+.content-inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 5vw;
+}
+
+.content-header {
+  margin-bottom: 40px;
+}
+
+.content-header h1{
+  color: #fff;
+}
+
+.content-text p{
+  color: #fff;
+  font-size: 14px;
+}
+
 /*
 .menu.show{
   transform: translateX(50vw);

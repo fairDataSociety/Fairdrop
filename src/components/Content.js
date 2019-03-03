@@ -74,7 +74,7 @@ class App extends Component {
       <div className={"content-background-screen"} onClick={this.toggleContent.bind(this)}></div> 
       <div 
         className={"content " + (this.state.isShown === false ? '' : 'show')}>
-        <div className={this.props.displayContent +" content-body"}>
+        <div className={(this.props.displayContent ? "content-shown" : "") +" content-body"}>
           {this.props.displayedContent === 'AboutFairdrop' &&
             <AboutFairdrop appRoot={this.props.appRoot} />
           }
@@ -84,13 +84,6 @@ class App extends Component {
           {this.props.displayedContent === 'Terms' &&
             <Terms appRoot={this.props.appRoot} />
           }
-        </div>
-        <div className="menu-footer">
-          <div class="menu-footer-item"><a target="_blank" href="https://github.com/fairDataSociety"><img src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>        
-          <div class="menu-footer-item"><a target="_blank" href="https://twitter.com/DataFundProject"><img src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a target="_blank" href="https://gitter.im/fairdatasociety/community"><img src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a target="_blank" href="https://datafund.io"><img src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>          
         </div>
       </div>
     </div>

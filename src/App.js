@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
-import FDS from 'fds';
+import FDS from 'fds.js';
 import JSZip from 'jszip';
 import FileSaver from 'filesaver.js';
 import Upload from "./components/Upload";

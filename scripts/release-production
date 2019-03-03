@@ -31,15 +31,15 @@ echo "updated production .env"
 npm run build
 echo "built"
 echo "uploading to http://178.128.196.190:8500/"
-swarm --bzzapi http://178.128.196.190:8500/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/ > current_dev
+swarm --bzzapi http://178.128.196.190:8500/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/ > current_live
 HASH=`cat config.txt`
 echo "uploaded to hash $HASH"
 git add package.json package-lock.json && git commit -m "bump version"
 echo "added bump version"
-git add current_live && git commit -m 'bump current_dev'
-echo "added bump current_dev"
+git add current_live && git commit -m 'bump current_live'
+echo "added bump current_live"
 git tag $VER
 echo "added tag $VER"
 git push origin $VER
 git push df $VER
-cat current_dev
+cat current_live

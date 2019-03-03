@@ -292,7 +292,7 @@ class BSelectMailbox extends Component{
   handleSendOrStore(action=false){
     console.log('send or store')
     if(this.props.parentState.isStoringFile === false){
-      console.log('send')
+      console.log('send', action)
       //sending file
       //check recipient mailbox
       return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{

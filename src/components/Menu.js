@@ -9,13 +9,31 @@ class App extends Component {
     this.state = {
       isShown: false,
       screenIsShown: false,
-      screenIsFadedIn: false
+      screenIsFadedIn: false,
+      debouncingToggle: false
     };
 
   }
 
+  debounceToggle(){
+    if(this.state.debouncingToggle === true){
+      return true;
+    }
+    this.setState({'debouncingToggle': true});
+    setTimeout(()=>{
+      this.setState({'debouncingToggle': false});
+    }, 1000);
+    return false;
+  }
+
   toggleMenu(){
+    if(this.debounceToggle()){
+      return false;
+    }
+
     if(this.state.isShown){
+      //hide content
+        this.props.toggleContent(false);
       //hide
       this.setState({
         isShown: false,
@@ -101,12 +119,12 @@ class App extends Component {
           <MenuItem
             header="About"
             items={[
-                    ['About Fairdrop', (c)=>{console.log(c)}],
-                    ['About Fair Data Society', (c)=>{console.log(c)}],
-                    ['Terms and Conditions', (c)=>{console.log(c)}]
+                    ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
+                    ['About Fair Data Society', ()=>{this.props.showContent('AboutFDS')}],
+                    ['Terms of Usage', ()=>{this.props.showContent('Terms')}]
                   ]}
             closeAll={this.closeAll.bind(this)}
-            toggleMenu={this.toggleMenu.bind(this)}
+            toggleMenu={()=>{}}
             ref={'about'}
           />       
         </div>

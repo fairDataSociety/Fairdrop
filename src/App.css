@@ -1,4 +1,8 @@
 
+.parent-wrapper{
+  overflow: hidden;
+}
+
 .select-file-instruction,
 .select-file-main,
 .select-file,
@@ -366,6 +370,271 @@ input:-webkit-autofill {
 .green{
   background: #37bd72;
 }
+
+/* Content */
+
+.content-wrapper{
+  position: relative;
+}
+
+
+.content-toggle{
+  position: absolute;
+  width: 40px;
+  z-index: 102;
+  padding: 20px;
+  right: 0;
+}
+
+.content{
+  position: absolute;
+  top: 0;
+  right: -50vw;
+  height: 100vh;
+  width: 50vw;
+  z-index: 101;
+  background: #2e2e2e;
+  transition: 1s transform;
+}
+
+.content-background-screen{
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  opacity: 0;
+  transition: opacity 1s;
+  position: absolute;
+  z-index: 99;
+  display: none;
+}
+
+.content.show{
+  transform: translateX(-50vw);
+  transition: 1s transform;
+}
+
+/*
+.menu.show{
+  transform: translateX(50vw);
+  transition: 1s transform;
+}
+
+.menu-header{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 40px 20px 80px;
+  text-align: right;
+}
+
+.menu-header img{
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.menuShown .menu-header img{
+  opacity: 1;
+  transition: opacity 1s 0.5s;
+}
+
+
+
+
+
+.fadeInScreen .menu-background-screen{
+  opacity: 0.4;
+  transition: opacity 1s;  
+}
+
+.showScreen .menu-background-screen{
+  display: block;
+}
+
+.menu-item-header{
+  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-SemiBold';
+  position: absolute;
+  width: 100px;
+  z-index: 10;
+  padding: 10px;
+  left: 20px;
+  cursor: pointer;
+  color: #ccc;
+}
+
+.show-links .menu-item-header{
+  color: #fff;
+}
+
+.menu-header-item-left{
+  float: left;
+  margin-right: 20px;
+}
+
+.menu-header-item-right{
+  float: right;
+  margin-left: 20px;
+}
+
+.menu-header-spacer{
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.menu-main{
+  position: absolute;
+  top: 100px;
+}
+
+.menu-section{
+  height: 100px;
+  color: #fff;
+}
+
+.menu-links{
+  position: absolute;
+  left: 150px;
+  background: #2e2e2e;
+  z-index: 200;
+  padding: 10px;
+  width: 180px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+
+.show-links .menu-links{
+  opacity: 1;
+  transition: opacity 1s;
+  pointer-events: all;
+}
+
+.menu-link{
+  margin-bottom: 10px;
+  width: 35vw;
+}
+
+.menu-link-hidden{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+}
+
+.menu-footer-item{
+  height: 40px;
+  width: 20%;
+  text-align: center;
+  float: left;
+}
+
+.menu-footer-item img{
+  height: 30px;
+}
+
+
+/*!
+ * Hamburgers
+ * @description Tasty CSS-animated hamburgers
+ * @author Jonathan Suh @jonsuh
+ * @site https://jonsuh.com/hamburgers
+ * @link https://github.com/jonsuh/hamburgers
+ */
+.hamburger {
+  padding: 1px 1px;
+  display: inline-block;
+  cursor: pointer;
+  transition-property: opacity, filter;
+  transition-duration: 0.15s;
+  transition-timing-function: linear;
+  font: inherit;
+  color: inherit;
+  text-transform: none;
+  background-color: transparent;
+  border: 0;
+  margin: 0;
+  overflow: visible; }
+  .hamburger:hover {
+    opacity: 0.7; }
+  .hamburger.is-active:hover {
+    opacity: 0.7; }
+  .hamburger.is-active .hamburger-inner,
+  .hamburger.is-active .hamburger-inner::before,
+  .hamburger.is-active .hamburger-inner::after {
+    background-color: #000; }
+
+.hamburger-box {
+  width: 40px;
+  height: 24px;
+  display: inline-block;
+  position: relative; }
+
+.hamburger-inner {
+  display: block;
+  top: 50%;
+  margin-top: -2px; }
+  .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+    width: 30px;
+    height: 2px;
+    background-color: #000;
+    border-radius: 4px;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease; }
+  .hamburger-inner::before, .hamburger-inner::after {
+    content: "";
+    display: block; }
+  .hamburger-inner::before {
+    top: -10px; }
+  .hamburger-inner::after {
+    bottom: -10px; }
+
+ .nav-black .hamburger-inner, .nav-white .hamburger-inner::before, .nav-white .hamburger-inner::after{
+  background-color: #000;
+  transition: transform 0.15s, color 1s;
+ }
+
+  .nav-white .hamburger-inner, .nav-white .hamburger-inner::before, .nav-white .hamburger-inner::after{
+  background-color: #fff  ;
+  transition: transform 0.15s, color 1s;
+ }
+/*
+   * Spin
+   */
+.hamburger--spin .hamburger-inner {
+  transition-duration: 0.22s;
+  transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
+  .hamburger--spin .hamburger-inner::before {
+    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
+  .hamburger--spin .hamburger-inner::after {
+    transition: bottom 0.1s 0.25s ease-in, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19); }
+
+.hamburger--spin.is-active .hamburger-inner {
+  transform: rotate(225deg);
+  transition-delay: 0.12s;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+  .hamburger--spin.is-active .hamburger-inner::before {
+    top: 0;
+    opacity: 0;
+    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
+  .hamburger--spin.is-active .hamburger-inner::after {
+    bottom: 0;
+    transform: rotate(-90deg);
+    transition: bottom 0.1s ease-out, transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1); }
+
+.hamburger.is-active .hamburger-inner, .hamburger.is-active .hamburger-inner::before, .hamburger.is-active .hamburger-inner::after {
+    background-color: #fff;
+}*/
+
 
 /* Menu */
 

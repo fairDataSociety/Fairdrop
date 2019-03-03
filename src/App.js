@@ -7,6 +7,7 @@ import Upload from "./components/Upload";
 import Mailbox from "./components/Mailbox";
 import DisclaimerSplash from "./components/DisclaimerSplash"
 import Menu from "./components/Menu"
+import Content from "./components/Content"
 
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
@@ -85,6 +86,7 @@ class App extends Component {
 
     this.uploadComponent = React.createRef();
     this.importMailboxInput = React.createRef();
+    this.contentComponent = React.createRef();
 
     this.setSelectedMailbox = this.setSelectedMailbox.bind(this);
     this.fileWasSelected = this.fileWasSelected.bind(this);
@@ -97,6 +99,8 @@ class App extends Component {
     this.handleNavigateTo = this.handleNavigateTo.bind(this);
     this.exportMailboxes = this.exportMailboxes.bind(this);
     this.importMailbox = this.importMailbox.bind(this);
+    this.showContent = this.showContent.bind(this);
+    this.toggleContent = this.toggleContent.bind(this);
 
     this.state = this.getInitialState();
 
@@ -153,10 +157,6 @@ class App extends Component {
     }  
   }  
 
-  handleNavigateTo(url){
-    this.props.history.push(url);
-  }
-
   hideDisclaimer(e){
     localStorage.setItem('hasHiddenDisclaimers', true);
     this.setState({disclaimersAreShown: false});
@@ -176,6 +176,23 @@ class App extends Component {
         alert('Sorry, there was an error - please try again!');
       });
     }
+  }
+
+  handleNavigateTo(url){
+    this.props.history.push(url);
+  }
+
+  toggleContent(forceOpen){
+    this.contentComponent.current.toggleContent(forceOpen);
+  }
+
+  showContent(type){
+    this.toggleContent(true);
+    this.setState({displayContent: false});
+    this.setState({displayedContent: type});
+    setTimeout(()=>{
+      this.setState({displayContent: true});
+    }, 1000);
   }
 
   exportMailboxes(){
@@ -216,6 +233,16 @@ class App extends Component {
           exportMailboxes={this.exportMailboxes}
           importMailbox={this.importMailbox}
           appRoot={this.state.appRoot}
+          toggleContent={this.toggleContent}          
+          showContent={this.showContent}
+        />
+        <Content
+          isShown={false}
+          displayedContent={this.state.displayedContent}
+          displayContent={this.state.displayContent}
+          handleNavigateTo={this.handleNavigateTo}
+          appRoot={this.state.appRoot}
+          ref={this.contentComponent}
         />
         <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")}>
           <div className="nav-header">

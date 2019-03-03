@@ -113,7 +113,7 @@ class ASelectFile extends Component{
         let newUIState;
 
         if(this.props.parentState.isStoringFile === true){
-          //skip sign in if not signed in
+          //skip sign in if signed in
           if(this.props.selectedMailbox === false){
             newUIState = 1;
           }else{
@@ -162,6 +162,9 @@ class ASelectFile extends Component{
     if(e){
       e.preventDefault();
     }
+    this.props.setParentState({
+      isSendingFile: true,
+    });        
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectSaveFile.click();
   }

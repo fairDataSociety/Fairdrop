@@ -116,7 +116,7 @@ class App extends Component {
             toggleMenu={this.toggleMenu.bind(this)}
             ref={'settings'}
           />
-          <MenuItem
+          { /* <MenuItem
             header="About"
             items={[
                     ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
@@ -126,7 +126,7 @@ class App extends Component {
             closeAll={this.closeAll.bind(this)}
             toggleMenu={()=>{}}
             ref={'about'}
-          />       
+          />  */ }     
         </div>
         <div className="menu-footer">
           <div class="menu-footer-item"><a target="_blank" href="https://github.com/fairDataSociety"><img src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>        

@@ -206,7 +206,7 @@ class ASelectFile extends Component{
         <div className={"select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="select-file-instruction-inner">
             <h2>
-              Fair way to store and send data in <br/> the <span ref="retype-age">age of Anthropocene</span>
+              Easy and secure way to send your files. <br/> No central server. No tracking. No backdoors.
             </h2>
             <h3>
               <img src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img src="assets/images/fairdrop-drop.svg"/> drop a file

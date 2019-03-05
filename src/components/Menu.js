@@ -61,7 +61,7 @@ class App extends Component {
       this.refs.send.closeItem(true),
       this.refs.myFiles.closeItem(true),
       this.refs.settings.closeItem(true),
-      this.refs.about.closeItem(true)
+      // this.refs.about.closeItem(true)
     ]
     return Promise.all(promises);
   }

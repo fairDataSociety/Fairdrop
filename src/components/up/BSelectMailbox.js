@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
@@ -7,7 +23,7 @@ import UnlockMailbox from '../Shared/UnlockMailbox'
 import SelectRecipient from '../Shared/SelectRecipient';
 
 class BSelectMailbox extends Component{
-  
+
   getInitialState(){
     let mailboxes = this.FDS.GetAccounts();
 
@@ -20,7 +36,7 @@ class BSelectMailbox extends Component{
 
     if(mailboxes.length === 0){
       return {
-        isAddingMailbox: true,        
+        isAddingMailbox: true,
         isUnlockingMailbox: false,
         mailboxes: mailboxes,
         activeMailboxSubDomain: false,
@@ -33,7 +49,7 @@ class BSelectMailbox extends Component{
       }
     }else if(mailboxes.length > 0){
       return {
-        isAddingMailbox: false,        
+        isAddingMailbox: false,
         isUnlockingMailbox: true,
         mailboxes: mailboxes,
         unlockingMailbox: mailboxes[0].subdomain,
@@ -54,7 +70,7 @@ class BSelectMailbox extends Component{
     this.FDS = this.props.FDS;
     this.state = this.getInitialState();
 
-    this.addMailbox = this.addMailbox.bind(this);    
+    this.addMailbox = this.addMailbox.bind(this);
     this.handleSelectMailbox = this.handleSelectMailbox.bind(this);
     this.mailboxUnlocked = this.mailboxUnlocked.bind(this);
     this.cancelAddMailbox = this.cancelAddMailbox.bind(this);
@@ -125,15 +141,15 @@ class BSelectMailbox extends Component{
             this.setState({
               mailboxName: mailboxName,
               checkingAvailability: false,
-              feedbackMessage: "Name available!"        
+              feedbackMessage: "Name available!"
             });
             resolve(true);
           }else{
             this.setState({
               mailboxName: false,
               checkingAvailability: false,
-              feedbackMessage: "Sorry, that name is not available!"        
-            }); 
+              feedbackMessage: "Sorry, that name is not available!"
+            });
             resolve(false);
           }
         }).catch((error)=>{
@@ -144,7 +160,7 @@ class BSelectMailbox extends Component{
               feedbackMessage: "Network error - try again!"
             });
             resolve(false);
-          }   
+          }
         });
       }else{
         this.setState({
@@ -169,16 +185,16 @@ class BSelectMailbox extends Component{
 
   processMailboxPassword(){
     let password = this.state.password;
-    let passwordVerification = this.state.passwordVerification;    
+    let passwordVerification = this.state.passwordVerification;
 
     if(password === ""){
       this.setState({
         feedbackMessage: 'You must enter a password.',
         passwordsValid: false
       });
-      return false; 
+      return false;
     }
-    
+
     if(this.state.isUnlockingMailbox === true){
       return true;
     }
@@ -189,7 +205,7 @@ class BSelectMailbox extends Component{
         passwordsValid: false
       });
       return false;
-    } 
+    }
 
     if(password === passwordVerification){
       this.setState({
@@ -212,7 +228,7 @@ class BSelectMailbox extends Component{
       }
       this.setState({
         feedbackMessage: "Mailbox found!",
-        recipientWasSelected: true   
+        recipientWasSelected: true
       });
       this.props.setParentState({
         addressee: mailboxName
@@ -222,12 +238,12 @@ class BSelectMailbox extends Component{
       if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
         this.setState({
           feedbackMessage: "Network error - please try again...",
-          recipientWasSelected: false          
+          recipientWasSelected: false
         });
       }else{
         this.setState({
           feedbackMessage: error.message,
-          recipientWasSelected: false  
+          recipientWasSelected: false
         });
       }
       return false;
@@ -242,7 +258,7 @@ class BSelectMailbox extends Component{
 
   handleUnlockMailboxUploadAndEncrypt(e){
     let subdomain = this.state.unlockingMailbox;
-    let password = this.state.password;    
+    let password = this.state.password;
     this.FDS.UnlockAccount(subdomain, password).then((account)=>{
       this.setState({
         feedbackMessage: 'Mailbox unlocked.',
@@ -268,7 +284,7 @@ class BSelectMailbox extends Component{
           mailboxIsUnlocked: true,
         });
         this.props.setSelectedMailbox(this.FDS.currentAccount);
-        this.mailboxUnlocked();        
+        this.mailboxUnlocked();
       })
     }).catch((error)=>{
       this.setState({feedbackMessage: error});
@@ -286,7 +302,7 @@ class BSelectMailbox extends Component{
           break;
         default:
           this.mailboxUnlocked();
-      }    
+      }
   }
 
   handleSendOrStore(action=false){
@@ -309,7 +325,7 @@ class BSelectMailbox extends Component{
 
   handleContinue(e){
     e.preventDefault();
-    
+
     if(this.props.selectedMailbox){
       //already logged in
         return this.handleSendOrStore();
@@ -353,10 +369,10 @@ class BSelectMailbox extends Component{
 
   render(){
     return (
-      <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.props.parentState.uiState === 1 ? "fade-in" : "hidden")}> 
+      <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.props.parentState.uiState === 1 ? "fade-in" : "hidden")}>
         <div className="select-mailbox-ui page-inner-centered">
         <div className="page-inner-wrapper">
-          <div className="select-mailbox">            
+          <div className="select-mailbox">
             {(this.state.isUnlockingMailbox && !this.state.mailboxName) &&
               <div className="unlock-mailbox">
                 <div className="page-inner-wrapper">
@@ -383,10 +399,10 @@ class BSelectMailbox extends Component{
               </div>
             }
           </div>
-          {!this.props.parentState.isStoringFile && 
-            <SelectRecipient 
+          {!this.props.parentState.isStoringFile &&
+            <SelectRecipient
               FDS={this.props.FDS}
-              handleSelectRecipient={this.handleSelectRecipient} 
+              handleSelectRecipient={this.handleSelectRecipient}
             />
           }
           <div class="ui-feedback">{this.state.feedbackMessage}</div>

@@ -1,8 +1,24 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import Utils from '../../services/Utils';
 
 class DConfirm extends Component{
-  
+
   constructor(props) {
     super(props);
 
@@ -10,7 +26,7 @@ class DConfirm extends Component{
       feedbackMessage: ""
     }
 
-    this.handleEncryptAndSend = this.handleEncryptAndSend.bind(this);    
+    this.handleEncryptAndSend = this.handleEncryptAndSend.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
 
@@ -38,10 +54,10 @@ class DConfirm extends Component{
 
   render(){
     return (
-      <div id="confirm" className={"confirm green page-wrapper " + (this.props.parentState.uiState === 3 ? "fade-in" : "hidden")}> 
+      <div id="confirm" className={"confirm green page-wrapper " + (this.props.parentState.uiState === 3 ? "fade-in" : "hidden")}>
         <div className="confirm-ui page-inner-centered">
           <div className="page-inner-wrapper">
-            {this.props.parentState.isSendingFile === true && 
+            {this.props.parentState.isSendingFile === true &&
               <div>
                 <h1 className="confirm-header">Confirm Send File</h1>
                 <div className="confirm-ui-group clearfix">
@@ -68,7 +84,7 @@ class DConfirm extends Component{
                 </div>
               </div>
             }
-            {this.props.parentState.isStoringFile === true && 
+            {this.props.parentState.isStoringFile === true &&
               <div>
                 <div className="confirm-ui-group clearfix">
                   <h1 className="confirm-header">Confirm Store File</h1>
@@ -87,7 +103,7 @@ class DConfirm extends Component{
                 </div>
               </div>
             }
-            {this.props.parentState.isQuickFile === true && 
+            {this.props.parentState.isQuickFile === true &&
               <div>
                 <h1 className="confirm-header">Confirm Send Unencrypted</h1>
                 <div className="confirm-ui-group clearfix">
@@ -105,7 +121,7 @@ class DConfirm extends Component{
                   <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>
-            }     
+            }
           </div>
         </div>
       </div>

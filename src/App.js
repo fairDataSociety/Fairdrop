@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import { withRouter, Link, Route } from 'react-router-dom'
 import FDS from 'fds.js';
@@ -30,7 +46,7 @@ class App extends Component {
       selectedMailbox: false,
       isStoringFile: false,
       isSendingFile: false,
-      isQuickFile: false,      
+      isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
       disclaimersAreShown: hasNotHiddenDisclaimers,
@@ -42,8 +58,8 @@ class App extends Component {
   resetMailboxState(){
     this.setState({
       selectedMailbox: false,
-      isStoringFile: false,  
-      isSendingFile: false,      
+      isStoringFile: false,
+      isSendingFile: false,
       isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
@@ -54,9 +70,9 @@ class App extends Component {
 
   resetFileState(){
     this.setState({
-      isStoringFile: false, 
-      isSendingFile: false,   
-      isQuickFile: false,  
+      isStoringFile: false,
+      isSendingFile: false,
+      isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
       fileIsSelecting: false
@@ -67,8 +83,8 @@ class App extends Component {
     super(props);
 
     let config = {
-      swarmGateway: process.env.REACT_APP_SWARM_GATEWAY, 
-      ethGateway: process.env.REACT_APP_GETH_GATEWAY, 
+      swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
+      ethGateway: process.env.REACT_APP_GETH_GATEWAY,
       faucetAddress: process.env.REACT_APP_FAUCET_URL,
       httpTimeout: 1000,
       gasPrice: 50, //gwei
@@ -128,14 +144,14 @@ class App extends Component {
 
   fileWasSelected(state = true){
     this.setState({fileWasSelected: state});
-  }  
+  }
 
   handleSendFile(e){
     this.setState({isSendingFile: true});
     this.props.history.push('/');
     if(this.uploadComponent.current){
       this.uploadComponent.current.resetToInitialState();
-      this.uploadComponent.current.aSelectFile.current.handleClickSelectFile(); 
+      this.uploadComponent.current.aSelectFile.current.handleClickSelectFile();
     }
   }
 
@@ -143,19 +159,19 @@ class App extends Component {
     this.setState({isStoringFile: true});
     this.props.history.push('/');
     if(this.uploadComponent.current){
-      this.uploadComponent.current.resetToInitialState();      
-      this.uploadComponent.current.aSelectFile.current.handleClickStoreFile(); 
-    }  
+      this.uploadComponent.current.resetToInitialState();
+      this.uploadComponent.current.aSelectFile.current.handleClickStoreFile();
+    }
   }
 
   handleQuickFile(e){
     this.setState({isQuickFile: true});
     this.props.history.push('/');
     if(this.uploadComponent.current){
-      this.uploadComponent.current.resetToInitialState();      
-      this.uploadComponent.current.aSelectFile.current.handleClickQuickFile(); 
-    }  
-  }  
+      this.uploadComponent.current.resetToInitialState();
+      this.uploadComponent.current.aSelectFile.current.handleClickQuickFile();
+    }
+  }
 
   hideDisclaimer(e){
     localStorage.setItem('hasHiddenDisclaimers', true);
@@ -219,7 +235,7 @@ class App extends Component {
         + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white red")
         }
       >
-        <DisclaimerSplash 
+        <DisclaimerSplash
           disclaimersAreShown={this.state.disclaimersAreShown}
           hideDisclaimer={this.hideDisclaimer}
         />
@@ -233,7 +249,7 @@ class App extends Component {
           exportMailboxes={this.exportMailboxes}
           importMailbox={this.importMailbox}
           appRoot={this.state.appRoot}
-          toggleContent={this.toggleContent}          
+          toggleContent={this.toggleContent}
           showContent={this.showContent}
         />
         <Content
@@ -260,17 +276,17 @@ class App extends Component {
 
             <div className="nav-header-item-right">
               <Link className="nav-key" to={'/mailbox'}>
-                <MailboxGlyph/> 
-              </Link>                
+                <MailboxGlyph/>
+              </Link>
             </div>
-            {this.state.selectedMailbox.subdomain && 
+            {this.state.selectedMailbox.subdomain &&
               <div className="nav-header-item-right">
                 <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>
                   Log out
                 </button>
               </div>
             }
-            {this.state.selectedMailbox.subdomain && 
+            {this.state.selectedMailbox.subdomain &&
               <div className="nav-header-item-right">
                 <Link className="nav-context" to={'mailbox'}>
                   {this.state.selectedMailbox.subdomain}
@@ -279,26 +295,26 @@ class App extends Component {
             }
           </div>
 
-  
+
           <Route exact={true} path="/" render={ () => {
-              return <Upload 
+              return <Upload
                 FDS={this.FDS}
-                unlockMailboxWallet={this.unlockMailboxWallet}                
+                unlockMailboxWallet={this.unlockMailboxWallet}
                 selectedMailbox={this.state.selectedMailbox}
                 setSelectedMailbox={this.setSelectedMailbox}
-                fileWasSelected={this.fileWasSelected} 
+                fileWasSelected={this.fileWasSelected}
                 isSendingFile={this.state.isSendingFile}
                 isStoringFile={this.state.isStoringFile}
                 isQuickFile={this.state.isQuickFile}
                 resetFileState={this.resetFileState}
                 appRoot={this.state.appRoot}
-                ref={this.uploadComponent} 
+                ref={this.uploadComponent}
               />
             }
           }/>
 
           <Route path={"/mailbox" || "/mailbox/:filter"} render={(routerArgs) => {
-              return <Mailbox 
+              return <Mailbox
                 FDS={this.FDS}
                 unlockMailboxWallet={this.unlockMailboxWallet}
                 setSelectedMailbox={this.setSelectedMailbox}
@@ -309,13 +325,13 @@ class App extends Component {
             }
           }/>
 
-          <input 
-            ref={this.importMailboxInput} 
-            style={{display:"none"}} 
+          <input
+            ref={this.importMailboxInput}
+            style={{display:"none"}}
             type="file"
             onChange={this.handleImportMailbox.bind(this)}
           />
-  
+
         </div>
       </div>
     );

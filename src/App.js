@@ -23,8 +23,6 @@ class App extends Component {
   getInitialState() {
     let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
 
-    let appRoot = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(0,5).join('/') : '';
-
     return {
       navState: false,
       selectedMailbox: false,
@@ -35,7 +33,7 @@ class App extends Component {
       fileWasSelected: false,
       disclaimersAreShown: hasNotHiddenDisclaimers,
       menuState: false,
-      appRoot: appRoot
+      appRoot: this.props.appRoot
     };
   }
 
@@ -179,7 +177,7 @@ class App extends Component {
   }
 
   handleNavigateTo(url){
-    this.props.history.push(url);
+    this.props.history.push(this.state.appRoot + url);
   }
 
   toggleContent(forceOpen){
@@ -280,7 +278,7 @@ class App extends Component {
           </div>
 
   
-          <Route exact={true} path="/" render={ () => {
+          <Route exact={true} path={"/"} render={ () => {
               return <Upload 
                 FDS={this.FDS}
                 unlockMailboxWallet={this.unlockMailboxWallet}                

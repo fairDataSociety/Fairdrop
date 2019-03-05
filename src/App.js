@@ -23,7 +23,9 @@ class App extends Component {
   getInitialState() {
     let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
 
-    let appRoot = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(0,5).join('/') : '';
+    let appRoot = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(0,5).join('/') : '/';
+
+    console.log(window.location.href, app);
 
     return {
       navState: false,

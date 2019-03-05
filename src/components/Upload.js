@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 
 import ASelectFile from '../components/up/ASelectFile';
@@ -88,7 +104,7 @@ class Upload extends Component{
           ),
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
-            this.setState({feedbackMessage: "file was encrypted, uploading file..."}); 
+            this.setState({feedbackMessage: "file was encrypted, uploading file..."});
             this.setState({fileWasEncrypted: true});
           },
           (response)=>{
@@ -120,7 +136,7 @@ class Upload extends Component{
         ).catch((error) => {
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
-        });        
+        });
       }else{
         return this.FDS.currentAccount.store(
           new File(
@@ -130,7 +146,7 @@ class Upload extends Component{
           ),
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
-            this.setState({feedbackMessage: "file was encrypted, uploading file..."}); 
+            this.setState({feedbackMessage: "file was encrypted, uploading file..."});
             this.setState({fileWasEncrypted: true});
           },
           (response)=>{
@@ -153,19 +169,19 @@ class Upload extends Component{
   render() {
     return (
         <div className="upload">
-          <ASelectFile 
-            parentState={this.state} 
-            setParentState={this.setState.bind(this)} 
-            fileWasSelected={this.props.fileWasSelected} 
+          <ASelectFile
+            parentState={this.state}
+            setParentState={this.setState.bind(this)}
+            fileWasSelected={this.props.fileWasSelected}
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
             isQuickFile={this.props.isQuickFile}
             ref={this.aSelectFile}
           />
-          <BSelectMailbox 
+          <BSelectMailbox
             FDS={this.FDS}
-            parentState={this.state} 
+            parentState={this.state}
             setParentState={this.setState.bind(this)}
             selectedMailbox={this.props.selectedMailbox}
             isStoringFile={this.props.isStoringFile}
@@ -180,18 +196,18 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             handleUpload={this.handleUpload.bind(this)}
           />
-          <EInProgress 
-            parentState={this.state} 
+          <EInProgress
+            parentState={this.state}
             setParentState={this.setState.bind(this)}
           />
-          <FCompleted 
-            parentState={this.state} 
+          <FCompleted
+            parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
           />
-          <ProgressBar 
-            parentState={this.state} 
-            setParentState={this.setState.bind(this)} 
+          <ProgressBar
+            parentState={this.state}
+            setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
           />
         </div>

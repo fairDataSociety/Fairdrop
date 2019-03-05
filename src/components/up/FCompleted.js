@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import Utils from '../../services/Utils';
 
@@ -11,7 +27,7 @@ class FCompleted extends Component{
 
   render(){
     return (
-      <div id="completed" className={"confirm page-wrapper " + (this.props.parentState.uiState === 5 ? "fade-in" : "hidden")}> 
+      <div id="completed" className={"confirm page-wrapper " + (this.props.parentState.uiState === 5 ? "fade-in" : "hidden")}>
           <div className="info">
             <div className="info-content">
               <div className="file-was-sent">
@@ -22,7 +38,7 @@ class FCompleted extends Component{
                 <span className="info-filename-truncated">{this.props.parentState.selectedFileName}</span>
                 <span className="info-filesize"> { Utils.humanFileSize(this.props.parentState.selectedFileSize) }</span>
               </div>
-              
+
               {this.props.parentState.isQuick === false &&
                 <div className="info-is-encrypted">
                   <img className="fairdrop-lock" src="assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
@@ -34,8 +50,8 @@ class FCompleted extends Component{
                   <div className="feedback-swarmhash-message">File Download Link</div>
                   <div className="feedback-gateway-link">
                     <input type="text" value={this.props.parentState.uploadedHash.gatewayLink() || ""} readOnly={true}/>
-                  </div>  
-                  <a className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</a>                  
+                  </div>
+                  <a className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</a>
                   { /* <div className="feedback-swarmhash"><input type="text" value={this.props.parentState.uploadedHash.address || ""} readOnly={true}/></div>  */ }
                 </div>
               }

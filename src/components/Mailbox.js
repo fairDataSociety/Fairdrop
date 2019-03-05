@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 
 import Dropdown from 'react-dropdown';
@@ -23,7 +39,7 @@ class Mailbox extends Component{
     let mailboxes = this.FDS.GetAccounts();
 
     if(this.props.selectedMailbox){
-        
+
         switch(this.props.routerArgs.match.params.filter){
           case 'sent':
             this.showSent();
@@ -41,7 +57,7 @@ class Mailbox extends Component{
           uiState: 1,
           shownMessages: [],
 
-          isAddingMailbox: false,        
+          isAddingMailbox: false,
           isUnlockingMailbox: false,
           mailboxes: mailboxes,
           activeMailboxSubDomain: this.props.selectedMailbox.subdomain,
@@ -52,14 +68,14 @@ class Mailbox extends Component{
         mailboxName: false,
         passwordsValid: false
         };
-    }else 
+    }else
     if(mailboxes.length === 0){
       return {
         unlockingMailbox: null,
         uiState: 0,
         shownMessages: [],
 
-        isAddingMailbox: true,        
+        isAddingMailbox: true,
         isUnlockingMailbox: false,
         mailboxes: mailboxes,
         activeMailboxSubDomain: false,
@@ -70,13 +86,13 @@ class Mailbox extends Component{
         mailboxName: false,
         passwordsValid: false
       };
-    }else 
+    }else
     if(mailboxes.length > 0){
       return {
         uiState: 0,
         shownMessages: [],
 
-        isAddingMailbox: false,        
+        isAddingMailbox: false,
         isUnlockingMailbox: true,
         mailboxes: mailboxes,
         unlockingMailbox: mailboxes[0].subdomain,
@@ -89,7 +105,7 @@ class Mailbox extends Component{
         passwordsValid: false
       };
     }
-  }  
+  }
 
   resetToInitialState(){
     this.setState(this.getInitialState());
@@ -144,7 +160,7 @@ class Mailbox extends Component{
         shownMessages: messages
       });
     });
-  } 
+  }
 
   showStored(){
     this.FDS.currentAccount.stored().then((messages)=>{
@@ -153,7 +169,7 @@ class Mailbox extends Component{
         shownMessages: messages
       });
     });
-  } 
+  }
 
   retrieveSentFile(message){
     message.saveAs();
@@ -188,7 +204,7 @@ class Mailbox extends Component{
 
   unlockMailbox(e){
     let subdomain = this.state.unlockingMailbox;
-    let password = this.state.password;    
+    let password = this.state.password;
     this.FDS.UnlockAccount(subdomain, password).then((account)=>{
       this.setState({
         feedbackMessage: 'Mailbox unlocked.',
@@ -250,7 +266,7 @@ class Mailbox extends Component{
         //already handled
       });
     }
-  }  
+  }
 
   processMailboxName(mailboxName){
     this.setState({
@@ -267,15 +283,15 @@ class Mailbox extends Component{
             this.setState({
               mailboxName: mailboxName,
               checkingAvailability: false,
-              feedbackMessage: "Name available!"        
+              feedbackMessage: "Name available!"
             });
             resolve(true);
           }else{
             this.setState({
               mailboxName: false,
               checkingAvailability: false,
-              feedbackMessage: "Sorry, that name is not available!"        
-            }); 
+              feedbackMessage: "Sorry, that name is not available!"
+            });
             resolve(false);
           }
         }).catch((error)=>{
@@ -286,7 +302,7 @@ class Mailbox extends Component{
               feedbackMessage: "Network error - try again!"
             });
             resolve(false);
-          }   
+          }
         });
       }else{
         this.setState({
@@ -311,7 +327,7 @@ class Mailbox extends Component{
 
   processMailboxPassword(){
     let password = this.state.password;
-    let passwordVerification = this.state.passwordVerification;    
+    let passwordVerification = this.state.passwordVerification;
 
     if(password === ""){
       this.setState({
@@ -319,7 +335,7 @@ class Mailbox extends Component{
         passwordsValid: false
         // password: false
       });
-      return false; 
+      return false;
     }
 
     if(this.state.isUnlockingMailbox === true){
@@ -333,7 +349,7 @@ class Mailbox extends Component{
         // password: false
       });
       return false
-    } 
+    }
 
     if(password === passwordVerification){
       this.setState({
@@ -348,13 +364,13 @@ class Mailbox extends Component{
   render() {
     return (
       <div>
-        <div id="select-mailbox" className={"select-mailbox white page-wrapper " + (this.state.uiState === 0 ? "fade-in" : "hidden")}> 
+        <div id="select-mailbox" className={"select-mailbox white page-wrapper " + (this.state.uiState === 0 ? "fade-in" : "hidden")}>
           <div className="select-mailbox-ui page-inner-centered">
             <div className="mist"></div>
             <div className="page-inner-wrapper">
               {this.state.isUnlockingMailbox &&
                 <div className="unlock-mailbox">
-                    <h1 className="select-account-header">Log in</h1>                            
+                    <h1 className="select-account-header">Log in</h1>
                     <UnlockMailbox
                       dropDownOptions={this.getDropDownOptions()}
                       dropDownValue={this.state.unlockingMailbox}
@@ -378,9 +394,9 @@ class Mailbox extends Component{
               <div class="ui-feedback">{this.state.feedbackMessage}</div>
               {this.state.isAddingMailbox &&
                 <div className="actions">
-                  <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleAddMailbox.bind(this)}>Add Mailbox</button>        
+                  <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleAddMailbox.bind(this)}>Add Mailbox</button>
                   {this.state.mailboxesExist &&
-                    <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "assets/images/x-black.svg"}/>Cancel</button>              
+                    <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "assets/images/x-black.svg"}/>Cancel</button>
                   }
                 </div>
               }
@@ -449,12 +465,12 @@ class Mailbox extends Component{
                           switch(this.state.shownMessageType){
                             case 'sent':{
                               return this.state.shownMessages.map((message, i)=>{
-                                return <tr 
+                                return <tr
                                   className={
-                                    "message-list " 
-                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "") 
-                                  } 
-                                  key={`${message.to}-${message.hash.address}`} 
+                                    "message-list "
+                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "")
+                                  }
+                                  key={`${message.to}-${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
                                     <td>{ message.hash.file.name }</td>
@@ -466,12 +482,12 @@ class Mailbox extends Component{
                             }
                             case 'received': {
                               return this.state.shownMessages.map((message, i)=>{
-                                return <tr 
+                                return <tr
                                   className={
-                                    "message-list " 
-                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "") 
-                                  } 
-                                  key={`${message.hash.address}`} 
+                                    "message-list "
+                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "")
+                                  }
+                                  key={`${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
                                     <td>{ message.hash.file.name }</td>
@@ -483,12 +499,12 @@ class Mailbox extends Component{
                             }
                             case 'stored':
                               return this.state.shownMessages.map((hash, i)=>{
-                                return <tr 
+                                return <tr
                                   className={
-                                    "message-list " 
-                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "") 
-                                  } 
-                                  key={`${hash.address}`} 
+                                    "message-list "
+                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "")
+                                  }
+                                  key={`${hash.address}`}
                                   onClick=
                                   { ()=>{ return hash.saveAs(); } }>
                                      <td>{ hash.file.name }</td>
@@ -514,7 +530,7 @@ class Mailbox extends Component{
               </div>
             </div>
           </div>
-        </div>        
+        </div>
       </div>
     );
   }

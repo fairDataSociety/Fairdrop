@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import MenuItem from './MenuItem';
 
@@ -43,7 +59,7 @@ class App extends Component {
             this.setState({screenIsShown: false});
           }, 1000);
         });
-      } 
+      }
     }else{
       if(force === true){
         //show
@@ -53,10 +69,10 @@ class App extends Component {
         },()=>{
           setTimeout(()=>{
             this.setState({screenIsFadedIn: true});
-          }, 100);      
+          }, 100);
         });
       }
-    }    
+    }
   }
 
   closeAll(){
@@ -69,10 +85,10 @@ class App extends Component {
     return Promise.all(promises);
   }
 
-  render(props){ 
+  render(props){
     return <div className={'content-wrapper ' + (this.state.isShown ? 'contentShown ' : '') + (this.state.screenIsShown ? 'showScreen ' : '') + (this.state.screenIsFadedIn ? 'fadeInScreen ' : '')}>
-      <div className={"content-background-screen"} onClick={this.toggleContent.bind(this)}></div> 
-      <div 
+      <div className={"content-background-screen"} onClick={this.toggleContent.bind(this)}></div>
+      <div
         className={"content " + (this.state.isShown === false ? '' : 'show')}>
         <div className={(this.props.displayContent ? "content-shown" : "") +" content-body"}>
           {this.props.displayedContent === 'AboutFairdrop' &&

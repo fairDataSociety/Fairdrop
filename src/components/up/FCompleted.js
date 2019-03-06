@@ -39,13 +39,12 @@ class FCompleted extends Component{
                 <span className="info-filesize"> { Utils.humanFileSize(this.props.parentState.selectedFileSize) }</span>
               </div>
 
-              {this.props.parentState.isQuick === false &&
+              {this.props.parentState.isQuickFile === false &&
                 <div className="info-is-encrypted">
                   <img className="fairdrop-lock" src="assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
                 </div>
               }
-
-              {(this.props.parentState.isQuick === true && this.props.parentState.uploadedHash) &&
+              {(this.props.parentState.isQuickFile === true && this.props.parentState.uploadedHash) &&
                 <div>
                   <div className="feedback-swarmhash-message">File Download Link</div>
                   <div className="feedback-gateway-link">

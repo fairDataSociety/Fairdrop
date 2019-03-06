@@ -1,3 +1,19 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import MenuItem from './MenuItem';
 
@@ -51,9 +67,9 @@ class App extends Component {
       },()=>{
         setTimeout(()=>{
           this.setState({screenIsFadedIn: true});
-        }, 100);      
+        }, 100);
       });
-    }    
+    }
   }
 
   closeAll(){
@@ -66,17 +82,17 @@ class App extends Component {
     return Promise.all(promises);
   }
 
-  render(props){ 
+  render(props){
     return <div className={'menu-wrapper ' + (this.state.isShown ? 'menuShown ' : '') + (this.state.screenIsShown ? 'showScreen ' : '') + (this.state.screenIsFadedIn ? 'fadeInScreen ' : '')}>
       <div className="menu-toggle">
         <button className={ "hamburger hamburger--spin " + (this.state.isShown === true ? "is-active" : "") } type="button" onClick={this.toggleMenu.bind(this)}>
           <span className="hamburger-box">
             <span className="hamburger-inner"></span>
           </span>
-        </button> 
+        </button>
       </div>
-      <div className={"menu-background-screen"} onClick={this.toggleMenu.bind(this)}></div>    
-      <div 
+      <div className={"menu-background-screen"} onClick={this.toggleMenu.bind(this)}></div>
+      <div
         className={"menu " + (this.state.isShown === false ? '' : 'show')}>
         <div className="menu-header">
           <img src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
@@ -129,11 +145,11 @@ class App extends Component {
           /> */ }    
         </div>
         <div className="menu-footer">
-          <div class="menu-footer-item"><a target="_blank" href="https://github.com/fairDataSociety"><img src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>        
+          <div class="menu-footer-item"><a target="_blank" href="https://github.com/fairDataSociety"><img src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
           <div class="menu-footer-item"><a target="_blank" href="https://twitter.com/DataFundProject"><img src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
           <div class="menu-footer-item"><a target="_blank" href="https://gitter.im/fairdatasociety/community"><img src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
           <div class="menu-footer-item"><a target="_blank" href="https://datafund.io"><img src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>          
+          <div class="menu-footer-item"><a target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>
         </div>
       </div>
     </div>

@@ -1,16 +1,32 @@
+// Copyright 2019 The FairDataSociety Authors
+// This file is part of the FairDataSociety library.
+//
+// The FairDataSociety library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The FairDataSociety library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
+
 import React, { Component } from 'react';
 import Dropzone from 'dropzone';
 import DDrop from '../../lib/DDrop';
 import App from '../../App';
 
 class ASelectFile extends Component{
-  
+
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       dragEnterStore: false,
       dragEnterSend: false,
-      hasDropped: false 
+      hasDropped: false
     }
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
     this.handleClickStoreFile = this.handleClickStoreFile.bind(this);
@@ -23,25 +39,25 @@ class ASelectFile extends Component{
 
     if(this.props.isSendingFile){
       this.handleClickSelectFile();
-    }else 
+    }else
     if(this.props.isStoringFile){
       this.handleClickStoreFile();
-    }else 
+    }else
     if(this.props.isQuickFile){
       this.handleClickQuickFile();
     }
   }
 
   initDropzone(element, isStoring=false, isQuick=false){
-    let dd = new DDrop(); 
-    this.dropzone = new Dropzone(element, { 
+    let dd = new DDrop();
+    this.dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
       previewsContainer: false,
       // clickable: false,
       accept: (file, done) => {
         var reader = new FileReader();
-        reader.addEventListener("loadend", 
-          function(event) { 
+        reader.addEventListener("loadend",
+          function(event) {
             // for now, todo -> streams...
             window.selectedFileArrayBuffer = event.target.result;
           });
@@ -70,17 +86,17 @@ class ASelectFile extends Component{
     });
 
     this.dropzone.on("drop", (event) => {
-      
+
       this.setState({ hasDropped: true });
       this.props.fileWasSelected(true);
       if(isStoring === true){
         this.props.setParentState({isStoringFile: true});
-      }else 
+      }else
       if(isQuick === true){
         this.props.setParentState({isQuickFile: true});
       }else
       {
-        this.props.setParentState({isSendingFile: true});        
+        this.props.setParentState({isSendingFile: true});
       }
 
       setTimeout(()=>{
@@ -104,12 +120,12 @@ class ASelectFile extends Component{
       }
       setTimeout(()=>{
 
-        this.props.fileWasSelected(true);    
+        this.props.fileWasSelected(true);
         if(this.state.hasDropped === false){
           this.setState({ hasDropped: true });
           dd.drop('drop');
         }
-        
+
         let newUIState;
 
         if(this.props.parentState.isStoringFile === true){
@@ -130,21 +146,21 @@ class ASelectFile extends Component{
         setTimeout(()=>{
           this.props.setParentState({
             fileIsSelected: true,
-            selectedFileName: file.name,  
-            selectedFileType: file.type,        
+            selectedFileName: file.name,
+            selectedFileType: file.type,
             selectedFileSize: file.size,
             uiState: newUIState
           });
         }, 1555);
 
       }, animationTimeout);
-    });    
+    });
   }
 
   dropZone(){
     this.initDropzone(this.refs.dtSelectSaveFile);
-    this.initDropzone(this.refs.dtSelectStoreFile, true);    
-    this.initDropzone(this.refs.dtSelectQuickFile, false, true);        
+    this.initDropzone(this.refs.dtSelectStoreFile, true);
+    this.initDropzone(this.refs.dtSelectQuickFile, false, true);
   }
 
   handleClickQuickFile(e){
@@ -153,7 +169,7 @@ class ASelectFile extends Component{
     }
     this.props.setParentState({
       isQuickFile: true,
-    });    
+    });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectSaveFile.click();
   }
@@ -164,7 +180,7 @@ class ASelectFile extends Component{
     }
     this.props.setParentState({
       isSendingFile: true,
-    });        
+    });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectSaveFile.click();
   }

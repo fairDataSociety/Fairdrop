@@ -48,11 +48,11 @@ class Upload extends Component{
 
       mailboxPassword: false,
 
-      fileWasEncrypted: false,
+      encryptionComplete: false,
       fileWasUploaded: false,
 
-      isStoringFile: false,
-      isQuickFile: false
+      isStoringFile: this.props.isStoringFile,
+      isQuickFile: this.props.isQuickFile
     };
   }
 
@@ -62,7 +62,6 @@ class Upload extends Component{
 
   constructor(props){
     super(props);
-
     this.FDS = this.props.FDS;
 
     this.aSelectFile = React.createRef();
@@ -105,10 +104,11 @@ class Upload extends Component{
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});
-            this.setState({fileWasEncrypted: true});
+            this.setState({encryptionComplete: true});
           },
           (response)=>{
             this.setState({feedbackMessage: "file uploaded."});
+            this.setState({fileWasUploaded: true});            
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -121,6 +121,7 @@ class Upload extends Component{
         this.state.isStoringFile === false &&
         this.state.isQuickFile === true
       ){
+        this.setState({encryptionComplete: true});
         return this.FDS.Account.Swarm.storeFileUnencrypted(
           new File(
             [window.selectedFileArrayBuffer],
@@ -129,6 +130,7 @@ class Upload extends Component{
           ),
           (response)=>{
             this.setState({feedbackMessage: "file uploaded."});
+            this.setState({fileWasUploaded: true});
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -147,7 +149,7 @@ class Upload extends Component{
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});
-            this.setState({fileWasEncrypted: true});
+            this.setState({encryptionComplete: true});
           },
           (response)=>{
             this.setState({feedbackMessage: "file uploaded."});
@@ -176,7 +178,7 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
-            isQuickFile={this.props.isQuickFile}
+            // isQuickFile={this.state.isQuickFile}
             ref={this.aSelectFile}
           />
           <BSelectMailbox
@@ -192,11 +194,12 @@ class Upload extends Component{
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
-            isQuickFile={this.props.isQuickFile}
+            // isQuickFile={this.state.isQuickFile}
             selectedMailbox={this.props.selectedMailbox}
             handleUpload={this.handleUpload.bind(this)}
           />
           <EInProgress
+            // isQuickFile={this.state.isQuickFile}
             parentState={this.state}
             setParentState={this.setState.bind(this)}
           />

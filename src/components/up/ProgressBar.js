@@ -20,9 +20,9 @@ class FCompleted extends Component{
 
   render(){
     return (
-      <div id='progress' className={'ui-state-'+this.props.parentState.uiState+(this.props.isStoringFile === true ? ' is-storing' : '')}>
+      <div id='progress' className={'ui-state-'+this.props.parentState.uiState+(this.props.isStoringFile === true || this.props.parentState.isQuickFile === true ? ' is-storing' : '')}>
         <div className='progress-indicator'></div>
-        {this.props.isStoringFile === false &&
+        {this.props.isStoringFile === false && this.props.parentState.isQuickFile === false &&
           <div className='progress-labels'>
             <div className='progress-label'>
               1 Select File
@@ -42,6 +42,22 @@ class FCompleted extends Component{
           </div>
         }
         {this.props.isStoringFile === true &&
+          <div className='progress-labels'>
+            <div className='progress-label'>
+              1 Select File
+            </div>
+            <div className='progress-label'>
+              2 Confirm
+            </div>
+            <div className='progress-label'>
+              3 Upload
+            </div>
+            <div className='progress-label'>
+              4 Summary
+            </div>
+          </div>
+        }
+        {this.props.parentState.isQuickFile === true &&
           <div className='progress-labels'>
             <div className='progress-label'>
               1 Select File

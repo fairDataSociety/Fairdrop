@@ -3,6 +3,7 @@
 clone repo
 
 `git clone git@github.com:fairDataSociety/Fairdrop.git`
+
 `cd Fairdrop`
 
 install dependencies

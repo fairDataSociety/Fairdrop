@@ -105,8 +105,8 @@ class ASelectFile extends Component{
     })
 
     this.dropzone.on("addedfile", (file) => {
-      if(file.size > (1024 * 1024 * 5)){
-        alert('Sorry, proof of concept is restricted to 5mb');
+      if(file.size > (1024 * 1024 * 100)){
+        alert('Sorry, proof of concept is restricted to 100mb');
         return false;
       }
 

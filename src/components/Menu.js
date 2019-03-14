@@ -137,7 +137,8 @@ class App extends Component {
             items={[
                     ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
                     ['About Fair Data Society', ()=>{this.props.showContent('AboutFDS')}],
-                    ['Terms of Usage', ()=>{this.props.showContent('Terms')}]
+                    ['Terms of Usage', ()=>{this.props.showContent('Terms')}],
+                    ['Bug Disclosure', ()=>{window.open('https://github.com/fairDataSociety/vulnerability-disclosure-policy')}]
                   ]}
             closeAll={this.closeAll.bind(this)}
             toggleMenu={()=>{}}

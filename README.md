@@ -16,5 +16,3 @@ run devserver
 to build static assets for deployment in ./build
 
 `npm build`
-
-

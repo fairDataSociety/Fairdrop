@@ -46,54 +46,6 @@ input{
 /* Type */
 
 @font-face {
-  font-family: 'Lunchtype22-Light';
-  src: 
-    /*url('assets/fonts/Lunchtype22-Light.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype22-Light.woff2') format('woff'),
-    url('assets/fonts/Lunchtype22-Light.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype22-Medium';
-  src: 
-    /*url('assets/fonts/Lunchtype22-Medium.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype22-Medium.woff2') format('woff'),
-    url('assets/fonts/Lunchtype22-Medium.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype22-Regular';
-  src: 
-    /*url('assets/fonts/Lunchtype22-Regular.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype22-Regular.woff2') format('woff'),
-    url('assets/fonts/Lunchtype22-Regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype23-Light-Italic';
-  src: 
-    /*url('assets/fonts/Lunchtype23-Light-Italic.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype23-Light-Italic.woff2') format('woff'),
-    url('assets/fonts/Lunchtype23-Light-Italic.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype23-Medium-Italic';
-  src: 
-    /*url('assets/fonts/Lunchtype23-Medium-Italic.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype23-Medium-Italic.woff2') format('woff'),
-    url('assets/fonts/Lunchtype23-Medium-Italic.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype23-Regular-Italic';
-  src: 
-    /*url('assets/fonts/Lunchtype23-Regular-Italic.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype23-Regular-Italic.woff2') format('woff'),
-    url('assets/fonts/Lunchtype23-Regular-Italic.woff2') format('woff2');
-}
-
-@font-face {
   font-family: 'Lunchtype24-Light-Expanded';
   src: 
     /*url('assets/fonts/Lunchtype24-Light-Expanded.eot') format('eot'),*/
@@ -115,30 +67,6 @@ input{
     /*url('assets/fonts/Lunchtype24-Regular-Expanded.eot') format('eot'),*/
     url('assets/fonts/Lunchtype24-Regular-Expanded.woff2') format('woff'),
     url('assets/fonts/Lunchtype24-Regular-Expanded.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype25-Light_Condensed';
-  src: 
-    /*url('assets/fonts/Lunchtype25-Light_Condensed.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype25-Light_Condensed.woff2') format('woff'),
-    url('assets/fonts/Lunchtype25-Light_Condensed.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype25-Medium-Condensed';
-  src: 
-    /*url('assets/fonts/Lunchtype25-Medium-Condensed.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype25-Medium-Condensed.woff2') format('woff'),
-    url('assets/fonts/Lunchtype25-Medium-Condensed.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lunchtype25-Regular_Condensed';
-  src: 
-    /*url('assets/fonts/Lunchtype25-Regular_Condensed.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype25-Regular_Condensed.woff2') format('woff'),
-    url('assets/fonts/Lunchtype25-Regular_Condensed.woff2') format('woff2');
 }
 
 /*typeface*/

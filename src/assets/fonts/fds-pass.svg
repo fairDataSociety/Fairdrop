@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2019 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fds-pass" horiz-adv-x="1000" >
+<font-face font-family="fds-pass" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="fds-star-small" unicode="&#x2022;" d="M267 366l162-52-101-138c-2-5-4-8-4-9 0-4 2-8 6-10l54-40c5-3 9-4 12-4 3 0 6 2 9 7l100 137 100-137c3-5 6-7 10-7 3 0 6 1 11 4l55 40c3 3 5 6 5 10 0 1-2 4-4 9l-101 138 162 52c6 3 9 7 9 12 0 1 0 3-1 6l-20 68c-2 7-5 10-11 10l-6-1-162-56v168c0 9-5 14-13 14h-68c-8-1-13-5-13-14v-168l-162 56c-3 1-5 1-6 1-6 0-10-3-11-10l-20-68-1-6c0-5 3-9 9-12z" horiz-adv-x="736" />
+
+<glyph glyph-name="fds-star-small-1" unicode="&#x25cf;" d="M267 366l162-52-101-138c-2-5-4-8-4-9 0-4 2-8 6-10l54-40c5-3 9-4 12-4 3 0 6 2 9 7l100 137 100-137c3-5 6-7 10-7 3 0 6 1 11 4l55 40c3 3 5 6 5 10 0 1-2 4-4 9l-101 138 162 52c6 3 9 7 9 12 0 1 0 3-1 6l-20 68c-2 7-5 10-11 10l-6-1-162-56v168c0 9-5 14-13 14h-68c-8-1-13-5-13-14v-168l-162 56c-3 1-5 1-6 1-6 0-10-3-11-10l-20-68-1-6c0-5 3-9 9-12z" horiz-adv-x="736" />
+</font>
+</defs>
+</svg>

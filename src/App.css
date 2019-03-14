@@ -1,3 +1,31 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 600px){
+  .parent-wrapper{
+    display: none;
+  }
+  .mobile-soon-overlay{
+    background: black;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    display: block !important;
+    z-index: 200;
+    text-align: center;
+  }
+  .mobile-soon-overlay img{
+    display: block;
+    padding: 40px;
+    margin: auto;
+  }
+}
+
+.mobile-soon-overlay{
+  display: none;
+}
 
 .parent-wrapper{
   overflow: hidden;
@@ -8,87 +36,148 @@
 .select-file,
 .wrapper,
 .disclaimer {
-  min-width: 1020px;
+  min-width: 1080px;
+}
+
+input{
+  font-kerning: inherit;
 }
 
 /* Type */
 
 @font-face {
-    font-family: 'Berthold Akzidenz-Grotesk Extended';
-    src: url('assets/fonts/AkzidenzGroteskBE-Ex.woff2') format('woff2'),
-        url('assets/fonts/AkzidenzGroteskBE-Ex.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'Lunchtype22-Light';
+  src: 
+    /*url('assets/fonts/Lunchtype22-Light.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype22-Light.woff2') format('woff'),
+    url('assets/fonts/Lunchtype22-Light.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'Berthold Akzidenz-Grotesk Medium Extended';
-    src: url('assets/fonts/AkzidenzGroteskBE-MdEx.woff2') format('woff2'),
-        url('assets/fonts/AkzidenzGroteskBE-MdEx.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
+  font-family: 'Lunchtype22-Medium';
+  src: 
+    /*url('assets/fonts/Lunchtype22-Medium.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype22-Medium.woff2') format('woff'),
+    url('assets/fonts/Lunchtype22-Medium.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'Berthold Akzidenz-Grotesk Light Extended';
-    src: url('assets/fonts/AkzidenzGroteskPro-LightEx.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
+  font-family: 'Lunchtype22-Regular';
+  src: 
+    /*url('assets/fonts/Lunchtype22-Regular.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype22-Regular.woff2') format('woff'),
+    url('assets/fonts/Lunchtype22-Regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-Black';
-  src: url('assets/fonts/HankenGrotesk-Black.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-Black.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-Black.woff2') format('woff2');
+  font-family: 'Lunchtype23-Light-Italic';
+  src: 
+    /*url('assets/fonts/Lunchtype23-Light-Italic.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype23-Light-Italic.woff2') format('woff'),
+    url('assets/fonts/Lunchtype23-Light-Italic.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-Bold';
-  src: url('assets/fonts/HankenGrotesk-Bold.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-Bold.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-Bold.woff2') format('woff2');
+  font-family: 'Lunchtype23-Medium-Italic';
+  src: 
+    /*url('assets/fonts/Lunchtype23-Medium-Italic.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype23-Medium-Italic.woff2') format('woff'),
+    url('assets/fonts/Lunchtype23-Medium-Italic.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-ExtraLight';
-  src: url('assets/fonts/HankenGrotesk-ExtraLight.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-ExtraLight.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-ExtraLight.woff2') format('woff2');
+  font-family: 'Lunchtype23-Regular-Italic';
+  src: 
+    /*url('assets/fonts/Lunchtype23-Regular-Italic.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype23-Regular-Italic.woff2') format('woff'),
+    url('assets/fonts/Lunchtype23-Regular-Italic.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-Light';
-  src: url('assets/fonts/HankenGrotesk-Light.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-Light.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-Light.woff2') format('woff2');
+  font-family: 'Lunchtype24-Light-Expanded';
+  src: 
+    /*url('assets/fonts/Lunchtype24-Light-Expanded.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype24-Light-Expanded.woff2') format('woff'),
+    url('assets/fonts/Lunchtype24-Light-Expanded.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-Medium';
-  src: url('assets/fonts/HankenGrotesk-Medium.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-Medium.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-Medium.woff2') format('woff2');
+  font-family: 'Lunchtype24-Medium-Expanded';
+  src: 
+    /*url('assets/fonts/Lunchtype24-Medium-Expanded.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype24-Medium-Expanded.woff2') format('woff'),
+    url('assets/fonts/Lunchtype24-Medium-Expanded.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-Regular';
-  src: url('assets/fonts/HankenGrotesk-Regular.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-Regular.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-Regular.woff2') format('woff2');
+  font-family: 'Lunchtype24-Regular-Expanded';
+  src: 
+    /*url('assets/fonts/Lunchtype24-Regular-Expanded.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype24-Regular-Expanded.woff2') format('woff'),
+    url('assets/fonts/Lunchtype24-Regular-Expanded.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'HankenGrotesk-SemiBold';
-  src: url('assets/fonts/HankenGrotesk-SemiBold.eot') format('eot'),
-    url('assets/fonts/HankenGrotesk-SemiBold.woff') format('woff'),
-    url('assets/fonts/HankenGrotesk-SemiBold.woff2') format('woff2');
+  font-family: 'Lunchtype25-Light_Condensed';
+  src: 
+    /*url('assets/fonts/Lunchtype25-Light_Condensed.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype25-Light_Condensed.woff2') format('woff'),
+    url('assets/fonts/Lunchtype25-Light_Condensed.woff2') format('woff2');
 }
+
+@font-face {
+  font-family: 'Lunchtype25-Medium-Condensed';
+  src: 
+    /*url('assets/fonts/Lunchtype25-Medium-Condensed.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype25-Medium-Condensed.woff2') format('woff'),
+    url('assets/fonts/Lunchtype25-Medium-Condensed.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Lunchtype25-Regular_Condensed';
+  src: 
+    /*url('assets/fonts/Lunchtype25-Regular_Condensed.eot') format('eot'),*/
+    url('assets/fonts/Lunchtype25-Regular_Condensed.woff2') format('woff'),
+    url('assets/fonts/Lunchtype25-Regular_Condensed.woff2') format('woff2');
+}
+
+/*typeface*/
 
 * {
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
+  font-family: 'Lunchtype24-Light-Expanded';
+}
+
+h1{
+  font-family: 'Lunchtype24-Medium-Expanded';
+}
+
+h2{
+  font-family: 'Lunchtype24-Regular-Expanded';
+}
+
+input[type='text'] {
+  font-family: 'Lunchtype24-Light-Expanded';
+}
+
+.menu-item-header{
+  font-family: 'Lunchtype24-Light-Expanded';  
+}
+
+.select-file-instruction h3, .select-file-instruction h3 span{
+  font-family: 'Lunchtype24-Light-Expanded';  
+}
+
+.inbox-col{
+  font-family: 'Lunchtype24-Light-Expanded';
+}
+
+input[type="password"]::placeholder{
+  font-family: 'Lunchtype24-Light-Expanded';  
+}
+
+
+* {
   font-kerning: none;
-  /*letter-spacing: 0.07em;*/
 }
 
 h1,h2,h3,h5{
@@ -111,7 +200,6 @@ h1 {
 }
 
 h2{
-  font-family: 'Berthold Akzidenz-Grotesk Extended', 'HankenGrotesk-ExtraLight';
   letter-spacing: 0.03em;
   font-weight: normal;
   color: #fff;  
@@ -136,6 +224,39 @@ label{
   color: #000;
 }
 
+/* Use the css below to change the password input symbol */
+@font-face {
+  font-family: 'fds-pass';
+  src: url('assets/fonts/fds-pass.eot?0000');
+  src: url('assets/fonts/fds-pass.eot?0000#iefix') format('embedded-opentype'),
+       url('assets/fonts/fds-pass.woff2?0000') format('woff2'),
+       url('assets/fonts/fds-pass.woff?0000') format('woff'),
+       url('assets/fonts/fds-pass.ttf?0000') format('truetype'),
+       url('assets/fonts/fds-pass.svg?0000#fds-pass') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+input[type="password"] {
+  font-family: "fds-pass";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+
+  /* add spacing to better separate each image */
+  letter-spacing: 2px;
+}
+
 /* Form */
 
 button:focus, textarea:focus, input:focus{
@@ -150,7 +271,6 @@ input[type='text'], input[type='password'] {
   margin-right: 10px;
   margin-bottom: 29px;
   font-size: 16px;
-  font-family: 'HankenGrotesk-ExtraLight';
   letter-spacing: 0.09vw;
   width: 100%;
   display: block;
@@ -160,7 +280,7 @@ input[type='text'], input[type='password'] {
 }
 
 .white input[type='text'], .white input[type='password']{
-  color: #333;
+  color: #000;
 }
 
 input {
@@ -244,7 +364,7 @@ input:-webkit-autofill {
 .btn.btn-lg {
   border-radius: 100px !important;
   font-size: 18px;
-  padding: 2px 25px 2px 25px;
+  padding: 5px 25px 2px 25px;
   border: none;
   margin-right: 10px;
 }
@@ -438,6 +558,13 @@ input:-webkit-autofill {
   color: #fff;
   font-size: 14px;
 }
+
+.content-text p.small-print{
+  color: #fff;
+  font-size: 9px;
+}
+
+
 
 /*
 .menu.show{
@@ -734,7 +861,6 @@ input:-webkit-autofill {
 }
 
 .menu-item-header{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-SemiBold';
   position: absolute;
   width: 100px;
   z-index: 10;
@@ -1092,6 +1218,7 @@ a.nav-context:hover{
   text-align: right;
   margin-right: 15px;
   margin-top: 10px;
+  height: 1em;
 }
 
 /* select file */
@@ -1132,7 +1259,7 @@ a.nav-context:hover{
 }
 
 .select-file-instruction{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
+  font-family: 'Lunchtype24-Light-Expanded';
   height: 20vh;
   margin-top: 35vh;
   width: 100vw;
@@ -1149,7 +1276,6 @@ a.nav-context:hover{
 }
 
 .select-file-instruction h3, .select-file-instruction h3 span{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-Light';
   font-size: 30px;
 }
 
@@ -1481,7 +1607,7 @@ a.nav-context:hover{
 }
 
 .in-progress h2.in-progress-sub{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
+  font-family: 'Lunchtype24-Light-Expanded';
   font-size: 24px;
 }
 
@@ -1567,13 +1693,13 @@ a.nav-context:hover{
 .info-content .info-filesize{
   font-size: 15px;
   margin-left: 16px;
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
+  font-family: 'Lunchtype24-Light-Expanded';
 }
 
 .info-content .info-is-encrypted{
   font-size: 18px;
   margin-bottom: 34px;
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-ExtraLight';
+  font-family: 'Lunchtype24-Light-Expanded';
 }
 
 .feedback-swarmhash-message{
@@ -1733,7 +1859,7 @@ a.nav-context:hover{
 .inbox{
   width: 100%;
   padding: 20px;
-  min-width: 1020px;
+  min-width: 1080px;
 }
 
 .inbox table{
@@ -1741,17 +1867,9 @@ a.nav-context:hover{
   text-align: left;
 }
 
-.inbox-col{
-  font-family: 'Berthold Akzidenz-Grotesk Medium Extended', 'HankenGrotesk-SemiBold'
-}
-
 .inbox th, .inbox td{
   font-size: 12px;
   padding: 8px;
-}
-
-.inbox thead tr th{
-  /*font-family: 'Berthold Akzidenz-Grotesk Medium Extended';*/
 }
 
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){

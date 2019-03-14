@@ -177,7 +177,7 @@ class App extends Component {
   }
 
   importMailbox(e){
-    let ref = this.importMailboxInput.current.click();
+    this.importMailboxInput.current.click();
   }
 
   handleImportMailbox(e){
@@ -226,109 +226,115 @@ class App extends Component {
 
   render() {
     return (
-      <div
-        className={
-          (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
-        + " parent-wrapper "+ (this.state.menuState ? "menu-shown " : "")
-        + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white red")
-        }
-      >
-        <DisclaimerSplash
-          disclaimersAreShown={this.state.disclaimersAreShown}
-          hideDisclaimer={this.hideDisclaimer}
-        />
-        <Menu
-          isShown={false}
-          menuToggled={(s)=>{this.setState({menuState: s})}}
-          handleSendFile={this.handleSendFile}
-          handleStoreFile={this.handleStoreFile}
-          handleQuickFile={this.handleQuickFile}
-          handleNavigateTo={this.handleNavigateTo}
-          exportMailboxes={this.exportMailboxes}
-          importMailbox={this.importMailbox}
-          appRoot={this.state.appRoot}
-          toggleContent={this.toggleContent}
-          showContent={this.showContent}
-        />
-        <Content
-          isShown={false}
-          displayedContent={this.state.displayedContent}
-          displayContent={this.state.displayContent}
-          handleNavigateTo={this.handleNavigateTo}
-          appRoot={this.state.appRoot}
-          ref={this.contentComponent}
-        />
-        <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")}>
-          <div className="nav-header">
-            <div className="nav-header-item-left">
-              <div class="nav-header-spacer"></div>
-            </div>
-            <div className="nav-header-item-left">
-              <Link to={"/"}>
-                <FairdropLogo/>
-              </Link>
-            </div>
-            <div className="nav-header-item-left">
-              <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
-            </div>
-
-            <div className="nav-header-item-right">
-              <Link className="nav-key" to={'/mailbox'}>
-                <MailboxGlyph/>
-              </Link>
-            </div>
-            {this.state.selectedMailbox.subdomain &&
-              <div className="nav-header-item-right">
-                <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>
-                  Log out
-                </button>
+      <div>
+        <div className="mobile-soon-overlay">
+          <img src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
+          Mobile version coming soon.
+        </div>
+        <div
+          className={
+            (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
+          + " parent-wrapper "+ (this.state.menuState ? "menu-shown " : "")
+          + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white red")
+          }
+        >
+          <DisclaimerSplash
+            disclaimersAreShown={this.state.disclaimersAreShown}
+            hideDisclaimer={this.hideDisclaimer}
+          />
+          <Menu
+            isShown={false}
+            menuToggled={(s)=>{this.setState({menuState: s})}}
+            handleSendFile={this.handleSendFile}
+            handleStoreFile={this.handleStoreFile}
+            handleQuickFile={this.handleQuickFile}
+            handleNavigateTo={this.handleNavigateTo}
+            exportMailboxes={this.exportMailboxes}
+            importMailbox={this.importMailbox}
+            appRoot={this.state.appRoot}
+            toggleContent={this.toggleContent}
+            showContent={this.showContent}
+          />
+          <Content
+            isShown={false}
+            displayedContent={this.state.displayedContent}
+            displayContent={this.state.displayContent}
+            handleNavigateTo={this.handleNavigateTo}
+            appRoot={this.state.appRoot}
+            ref={this.contentComponent}
+          />
+          <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")}>
+            <div className="nav-header">
+              <div className="nav-header-item-left">
+                <div class="nav-header-spacer"></div>
               </div>
-            }
-            {this.state.selectedMailbox.subdomain &&
-              <div className="nav-header-item-right">
-                <Link className="nav-context" to={'mailbox'}>
-                  {this.state.selectedMailbox.subdomain}
+              <div className="nav-header-item-left">
+                <Link to={"/"}>
+                  <FairdropLogo/>
                 </Link>
               </div>
-            }
+              <div className="nav-header-item-left">
+                <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
+              </div>
+
+              <div className="nav-header-item-right">
+                <Link className="nav-key" to={'/mailbox'}>
+                  <MailboxGlyph/>
+                </Link>
+              </div>
+              {this.state.selectedMailbox.subdomain &&
+                <div className="nav-header-item-right">
+                  <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>
+                    Log out
+                  </button>
+                </div>
+              }
+              {this.state.selectedMailbox.subdomain &&
+                <div className="nav-header-item-right">
+                  <Link className="nav-context" to={'mailbox'}>
+                    {this.state.selectedMailbox.subdomain}
+                  </Link>
+                </div>
+              }
+            </div>
+    
+            <Route exact={true} path={"/"} render={ () => {
+                return <Upload 
+                  FDS={this.FDS}
+                  unlockMailboxWallet={this.unlockMailboxWallet}
+                  selectedMailbox={this.state.selectedMailbox}
+                  setSelectedMailbox={this.setSelectedMailbox}
+                  fileWasSelected={this.fileWasSelected}
+                  isSendingFile={this.state.isSendingFile}
+                  isStoringFile={this.state.isStoringFile}
+                  isQuickFile={this.state.isQuickFile}
+                  resetFileState={this.resetFileState}
+                  appRoot={this.state.appRoot}
+                  ref={this.uploadComponent}
+                />
+              }
+            }/>
+
+            <Route path={"/mailbox" || "/mailbox/:filter"} render={(routerArgs) => {
+                return <Mailbox
+                  FDS={this.FDS}
+                  unlockMailboxWallet={this.unlockMailboxWallet}
+                  setSelectedMailbox={this.setSelectedMailbox}
+                  selectedMailbox={this.state.selectedMailbox}
+                  routerArgs={routerArgs}
+                  appRoot={this.state.appRoot}
+                />
+              }
+            }/>
+
+            <input
+              ref={this.importMailboxInput}
+              style={{display:"none"}}
+              type="file"
+              onChange={this.handleImportMailbox.bind(this)}
+            />
+
           </div>
-  
-          <Route exact={true} path={"/"} render={ () => {
-              return <Upload 
-                FDS={this.FDS}
-                unlockMailboxWallet={this.unlockMailboxWallet}
-                selectedMailbox={this.state.selectedMailbox}
-                setSelectedMailbox={this.setSelectedMailbox}
-                fileWasSelected={this.fileWasSelected}
-                isSendingFile={this.state.isSendingFile}
-                isStoringFile={this.state.isStoringFile}
-                isQuickFile={this.state.isQuickFile}
-                resetFileState={this.resetFileState}
-                appRoot={this.state.appRoot}
-                ref={this.uploadComponent}
-              />
-            }
-          }/>
-
-          <Route path={"/mailbox" || "/mailbox/:filter"} render={(routerArgs) => {
-              return <Mailbox
-                FDS={this.FDS}
-                unlockMailboxWallet={this.unlockMailboxWallet}
-                setSelectedMailbox={this.setSelectedMailbox}
-                selectedMailbox={this.state.selectedMailbox}
-                routerArgs={routerArgs}
-                appRoot={this.state.appRoot}
-              />
-            }
-          }/>
-
-          <input
-            ref={this.importMailboxInput}
-            style={{display:"none"}}
-            type="file"
-            onChange={this.handleImportMailbox.bind(this)}
-          />
-
         </div>
       </div>
     );

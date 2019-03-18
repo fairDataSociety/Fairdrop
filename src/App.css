@@ -152,6 +152,10 @@ label{
   color: #000;
 }
 
+.white ul li{
+  color: #fff;
+}
+
 /* Use the css below to change the password input symbol */
 @font-face {
   font-family: 'fds-pass';
@@ -457,7 +461,7 @@ input:-webkit-autofill {
 }
 
 .content.show{
-  transform: translateX(-50vw);
+  transform: translateX(-51vw);
   transition: 1s transform;
 }
 
@@ -467,11 +471,37 @@ input:-webkit-autofill {
   width: 50vw;
 }
 
+
 .content-inner {
   display: table-cell;
   vertical-align: middle;
   text-align: center;
-  padding: 5vw;
+  padding: 5vh 5vw;
+}
+
+.content-fds .content-inner{
+  padding: 11vw;
+}
+
+.content-fairdrop .content-inner{
+  text-align: left;
+}
+
+.content-fairdrop .content-header{
+  text-align: center;
+}
+
+.content-fairdrop .content-header img{
+  width: 25vw;
+}
+
+.content-fairdrop .content-inner h2{
+  font-size: 20px;
+  margin: 20px 0px 10px 0;
+}
+
+.content-fairdrop .content-inner ul li{
+  font-size: 14px;
 }
 
 .content-header {
@@ -482,16 +512,40 @@ input:-webkit-autofill {
   color: #fff;
 }
 
-.content-text p{
-  color: #fff;
+.content-fairdrop .content-text, .content-terms .content-text{
+  max-height: 60vh;
+  overflow: scroll;
+  padding-right: 20px;
+}
+
+.content-fade-out {
+  position: relative;
+  max-height: 350px;
+}
+
+.content-fade-out:after {
+  content: '';
+  position: absolute;
+  bottom: 14vh;
+  left: 0;
+  right: 0;
+  height: 10vh;
+  background-image: linear-gradient( rgba(255, 255, 255, 0) 50%, rgb(46, 46, 46) 100% );
+}
+
+
+.content-text a, .content-text p{
+  color: #fff !important;
   font-size: 14px;
 }
 
-.content-text p.small-print{
-  color: #fff;
-  font-size: 9px;
+.content-text a{
+  text-decoration: underline;
 }
 
+.content-terms .content-text{
+  font-size: 9px;
+}
 
 
 /*
@@ -1372,7 +1426,7 @@ a.nav-context:hover{
 
 .Dropdown-option.is-selected {
   background-color: transparent; 
-  color: #333;
+  color: #fff;
 }
 
 .white .Dropdown-option.is-selected {

@@ -24,7 +24,7 @@ class Terms extends Component{
 
   render(){
     return (
-      <div className="content-outer">
+      <div className="content-outer content-terms">
         <div className="content-inner">
           <div className="content-header">
             <h1>Terms of Usage</h1>

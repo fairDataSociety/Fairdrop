@@ -24,27 +24,27 @@ class AboutFDS extends Component{
 
   render(){
     return (
-      <div className="content-outer">
+      <div className="content-outer content-fds">
         <div className="content-inner">
           <div className="content-header">
             <img src={this.props.appRoot+"/assets/images/fair-data-society.svg"}/>
           </div>
           <div className="content-text">
             <p>
-              Lorem ipsum dolor sit amet, justo aeque definitiones nam an, eros nostrum nec at,
-              has urbanitas interpretaris ne. In sed invenire delicatissimi.
-              Id affert tation probatus qui, per ea salutatus pertinacia, essent vivendum mnesarchum est ad.
+              Imagine a society of a completely private digital life where your privacy is not weaponised against you just to sell you more things.
             </p>
 
             <p>
-              Lorem ipsum dolor sit amet. In sed invenire delicatissimi.
-              Id affert tation probatus qui, per ea salutatus pertinacia, essent vivendum mnesarchum est ad. Congue meliore philosophia mei no, ne mei quidam epicurei.
+              Fair Data Society is a non-profit initiative that is reimagining the data economy and creating a fair and decentralised data layer.
             </p>
 
             <p>
-              Ad sit ullamcorper complectitur, iudico insolens ne mel. Per idque recteque ad, has ne omnes primis singulis, vim saepe noluisse an.
+              We have Fair Trade, now why not Fair Data?
             </p>
 
+            <p>
+              Fair Data Society recognises online privacy as <br/>a <a target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
+            </p>
           </div>
         </div>
       </div>

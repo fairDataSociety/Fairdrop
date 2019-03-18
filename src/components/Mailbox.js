@@ -383,7 +383,7 @@ class Mailbox extends Component{
                       />
                 </div>
               }
-              <div class="ui-feedback">{this.state.feedbackMessage}</div>
+              <div className="ui-feedback">{this.state.feedbackMessage}</div>
               {this.state.isAddingMailbox &&
                 <div className="actions">
                   <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleAddMailbox.bind(this)}>Add Mailbox</button>
@@ -413,13 +413,13 @@ class Mailbox extends Component{
                         </td>*/}
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" class="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
+                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}><img alt="arrow" class="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
+                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" class="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
+                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
                       </tr>
                     </tbody>
                   </table>

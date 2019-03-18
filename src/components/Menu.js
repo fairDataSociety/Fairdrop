@@ -146,11 +146,11 @@ class App extends Component {
           />  
         </div>
         <div className="menu-footer">
-          <div class="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety"><img alt="github logo" src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://twitter.com/DataFundProject"><img alt="twitter logo" src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://gitter.im/fairdatasociety/community"><img alt="gitter logo" src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://datafund.io"><img alt="datafund logo" src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
-          <div class="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img alt="riot logo" src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>
+          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety"><img alt="github logo" src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
+          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://twitter.com/DataFundProject"><img alt="twitter logo" src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
+          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://gitter.im/fairdatasociety/community"><img alt="gitter logo" src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
+          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://datafund.io"><img alt="datafund logo" src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
+          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img alt="riot logo" src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>
         </div>
       </div>
     </div>

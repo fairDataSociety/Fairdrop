@@ -264,7 +264,7 @@ class App extends Component {
           <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")}>
             <div className="nav-header">
               <div className="nav-header-item-left">
-                <div class="nav-header-spacer"></div>
+                <div className="nav-header-spacer"></div>
               </div>
               <div className="nav-header-item-left">
                 <Link to={"/"}>

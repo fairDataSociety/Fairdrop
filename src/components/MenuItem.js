@@ -49,13 +49,12 @@ class App extends Component {
             <div
               className="menu-item-header"
               onClick={this.toggleItem.bind(this)}
-              handleNavigateTo={this.props.handleNavigateTo}
             >
                 {this.props.header}
             </div>
             <div className="menu-links">
-              { this.props.items.map((item)=>{
-                  return <div class="menu-link" onClick={()=>this.handleClick(item[1])}>{item[0]}</div>
+              { this.props.items.map((item, i)=>{
+                  return <div key={`menuitem-${i}`} className="menu-link" onClick={()=>this.handleClick(item[1])}>{item[0]}</div>
                 })
               }
             </div>

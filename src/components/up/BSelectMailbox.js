@@ -393,7 +393,7 @@ class BSelectMailbox extends Component{
               handleSelectRecipient={this.handleSelectRecipient}
             />
           }
-          <div class="ui-feedback">{this.state.feedbackMessage}</div>
+          <div className="ui-feedback">{this.state.feedbackMessage}</div>
           <div className="actions">
             <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleContinue.bind(this)}>
               {(this.state.isAddingMailbox && !this.props.parentState.isStoringFile) &&

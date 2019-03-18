@@ -225,7 +225,7 @@ class ASelectFile extends Component{
               Easy and secure way to send your files. <br/> No central server. No tracking. No backdoors.
             </h2>
             <h3>
-              <img src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img src="assets/images/fairdrop-drop.svg"/> drop a file
+              <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img alt="drop file glyph" src="assets/images/fairdrop-drop.svg"/> drop a file
             </h3>
           </div>
         </div>

@@ -18,16 +18,12 @@ import React, { Component } from 'react';
 
 class AboutFDS extends Component{
 
-  constructor(props) {
-    super(props);
-  }
-
   render(){
     return (
       <div className="content-outer content-fds">
         <div className="content-inner">
           <div className="content-header">
-            <img src={this.props.appRoot+"/assets/images/fair-data-society.svg"}/>
+            <img alt="FDS Logo" src={this.props.appRoot+"/assets/images/fair-data-society.svg"}/>
           </div>
           <div className="content-text">
             <p>
@@ -43,7 +39,7 @@ class AboutFDS extends Component{
             </p>
 
             <p>
-              Fair Data Society recognises online privacy as <br/>a <a target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
+              Fair Data Society recognises online privacy as <br/>a <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
             </p>
           </div>
         </div>

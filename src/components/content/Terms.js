@@ -18,10 +18,6 @@ import React, { Component } from 'react';
 
 class Terms extends Component{
 
-  constructor(props) {
-    super(props);
-  }
-
   render(){
     return (
       <div className="content-outer content-terms">

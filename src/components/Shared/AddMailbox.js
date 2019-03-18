@@ -15,13 +15,8 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import Dropdown from 'react-dropdown';
 
 class AddMailbox extends Component{
-
-  constructor(props) {
-    super(props);
-  }
 
   proxyHandleAddMailbox(e){
     e.preventDefault();

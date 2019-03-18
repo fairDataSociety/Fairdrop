@@ -19,10 +19,6 @@ import Dropdown from 'react-dropdown';
 
 class UnlockMailbox extends Component{
 
-  constructor(props) {
-    super(props);
-  }
-
   proxyUnlockMailbox(e){
     e.preventDefault();
     this.props.unlockMailbox();

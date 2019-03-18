@@ -50,7 +50,7 @@ class FCompleted extends Component{
                   <div className="feedback-gateway-link">
                     <input type="text" value={this.props.parentState.uploadedHash.gatewayLink() || ""} readOnly={true}/>
                   </div>
-                  <a className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</a>
+                  <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</button>
                   { /* <div className="feedback-swarmhash"><input type="text" value={this.props.parentState.uploadedHash.address || ""} readOnly={true}/></div>  */ }
                 </div>
               }

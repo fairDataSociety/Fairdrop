@@ -15,7 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
 
 import AddMailbox from '../Shared/AddMailbox'
@@ -347,22 +346,11 @@ class BSelectMailbox extends Component{
         console.log('unlocking')
         if(!this.processMailboxPassword()){
           return false;
+        }else{
+
         }
         return this.handleSendOrStore('unlock');
-        // if(this.props.parentState.isStoringFile === false){
-        //   //sending file
-        //   //check recipient mailbox
-        //   return this.processSelectRecipient(this.props.parentState.addressee).then((valid)=>{
-        //     if(!valid) return false;
-        //     //create mailbox and go to next stage
-        //     return this.handleAddMailboxUploadAndEncrypt();
-        //   });
-        // }else{
-        //   //storing file
-        //   //create mailbox and go to next stage
-        //   return this.handleAddMailboxUploadAndEncrypt();
-        // }
-      };
+      }
     }
 
   }
@@ -425,7 +413,7 @@ class BSelectMailbox extends Component{
               }
             </button>
             {this.state.mailboxesExist &&
-              <button className="btn btn-sm select-encryption-no-button btn btn-lg btn-link btn-float-right" onClick={this.cancelAddMailbox}><img src={this.props.appRoot + "assets/images/x.svg"}/>Cancel</button>
+              <button className="btn btn-sm select-encryption-no-button btn btn-lg btn-link btn-float-right" onClick={this.cancelAddMailbox}><img alt="cancel" src={this.props.appRoot + "assets/images/x.svg"}/>Cancel</button>
             }
           </div>
         </div>

@@ -80,7 +80,7 @@ class DConfirm extends Component{
                 </div>
                 <div className="btn-group">
                   <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Send</button>
-                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
+                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img alt="cancel" src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>
             }
@@ -99,7 +99,7 @@ class DConfirm extends Component{
                 </div>
                 <div className="btn-group">
                   <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Encrypt and Store</button>
-                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
+                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img alt="cancel" src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>
             }
@@ -118,7 +118,7 @@ class DConfirm extends Component{
                 </div>
                 <div className="btn-group">
                   <button className="confirm-encrypt-and-send btn btn-lg btn-green btn-float-left" onClick={this.handleEncryptAndSend}>Send Unencrypted</button>
-                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img src="assets/images/x.svg"/>Cancel</button>
+                  <button className="confirm-cancel btn btn-sm btn btn-link btn-float-right" onClick={this.handleCancel}><img alt="cancel" src="assets/images/x.svg"/>Cancel</button>
                 </div>
               </div>
             }

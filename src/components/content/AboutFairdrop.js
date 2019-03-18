@@ -18,16 +18,12 @@ import React, { Component } from 'react';
 
 class AboutFairdrop extends Component{
 
-  constructor(props) {
-    super(props);
-  }
-
   render(){
     return (
       <div className="content-outer content-fairdrop">
         <div className="content-inner content-fade-in content-fade-out">
           <div className="content-header">
-            <img src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
+            <img alt="Fairdrop Logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
           </div>
           <div className="content-text">
             <h2>What is Fairdrop?</h2>
@@ -35,8 +31,8 @@ class AboutFairdrop extends Component{
               Fairdrop is a decentralised, private and secure file transfer dapp. It’s the first blockchain product 
               by Fair Data Society and one whose design is based entirely on the Fair Data Society principles. This 
               means that Fairdrop respects the need for privacy and doesn’t collect any personal data. It runs using 
-              the <a target="_blank" href="https://www.ethereum.org/">Ethereum</a> blockchain and uses Swarm’s 
-              <a target="_blank" href="https://swarm-gateways.net/bzz:/theswarm.eth/"></a> decentralised storage system 
+              the <a rel="noopener noreferrer" target="_blank" href="https://www.ethereum.org/">Ethereum</a> blockchain and uses
+              <a rel="noopener noreferrer" target="_blank" href="https://swarm-gateways.net/bzz:/theswarm.eth/">Swarm’s</a> decentralised storage system 
               for file storing and sending. This means:
             </p>
             <ul>
@@ -82,7 +78,7 @@ class AboutFairdrop extends Component{
               Is Fairdrop open-source?
             </h2>
             <p>
-              Yes, you can check out our open source libraries on <a href="" target="_blank">GitHub</a>. 
+              Yes, you can check out our open source libraries on <a rel="noopener noreferrer" target="_blank" href="https://github.com/FairDataSociety">GitHub</a>. 
             </p>
             <h2>
               I found a bug, where can I report it?

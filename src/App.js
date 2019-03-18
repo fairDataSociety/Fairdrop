@@ -211,7 +211,6 @@ class App extends Component {
 
   exportMailboxes(){
     let zip = new JSZip();
-    let promises = [];
     let accounts = this.FDS.GetAccounts();
     for (var i = accounts.length - 1; i >= 0; i--) {
       var file = accounts[i].getBackup();
@@ -219,7 +218,6 @@ class App extends Component {
     }
     zip.generateAsync({type:"blob"})
     .then(function(content) {
-        // see FileSaver.js
         FileSaver.saveAs(content, "fairdrop-mailboxes.zip");
     });
   }
@@ -228,7 +226,7 @@ class App extends Component {
     return (
       <div>
         <div className="mobile-soon-overlay">
-          <img src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
+          <img alt="Fairdrop Logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
           Mobile version coming soon.
         </div>
         <div

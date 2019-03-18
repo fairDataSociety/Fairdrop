@@ -16,9 +16,6 @@
 
 import React, { Component } from 'react';
 
-import Dropdown from 'react-dropdown';
-
-import DMist from '../lib/DMist';
 import Utils from '../services/Utils';
 
 import UnlockMailbox from './Shared/UnlockMailbox'
@@ -28,11 +25,6 @@ import Moment from 'moment';
 
 
 class Mailbox extends Component{
-
-  componentDidMount(){
-    let dm = new DMist();
-    // dm.mist('mist');
-  }
 
   getInitialState(){
     this.FDS = this.props.FDS;
@@ -396,7 +388,7 @@ class Mailbox extends Component{
                 <div className="actions">
                   <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleAddMailbox.bind(this)}>Add Mailbox</button>
                   {this.state.mailboxesExist &&
-                    <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "/assets/images/x-black.svg"}/>Cancel</button>              
+                    <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "/assets/images/x-black.svg"} alt="cancel" />Cancel</button>              
                   }
                 </div>
               }
@@ -421,13 +413,13 @@ class Mailbox extends Component{
                         </td>*/}
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img class="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
+                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" class="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}><img class="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
+                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}><img alt="arrow" class="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img class="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
+                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" class="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
                       </tr>
                     </tbody>
                   </table>

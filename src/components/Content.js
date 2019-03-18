@@ -15,7 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import MenuItem from './MenuItem';
 
 import AboutFairdrop from './content/AboutFairdrop';
 import AboutFDS from './content/AboutFDS';

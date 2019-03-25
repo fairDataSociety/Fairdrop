@@ -32,9 +32,13 @@ class DConfirm extends Component{
 
   handleCancel(){
     this.setState({feedbackMessage: ""});
-    this.props.setParentState({
-      uiState: 1,
-    });
+    if(this.props.parentState.isQuickFile === true){
+      this.props.resetToInitialState()
+    }else{
+      this.props.setParentState({
+        uiState: 1,
+      });
+    }
   }
 
   handleEncryptAndSend(e){

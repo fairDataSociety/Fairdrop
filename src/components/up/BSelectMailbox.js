@@ -89,6 +89,7 @@ class BSelectMailbox extends Component{
       isAddingMailbox: false,
       isUnlockingMailbox: true
     });
+    this.props.resetToInitialState();
   }
 
   setUnlockingMailbox(subdomain){

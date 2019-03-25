@@ -21,16 +21,24 @@ import App from '../../App';
 
 class ASelectFile extends Component{
 
+  getInitialState(){
+    return {
+      hasDropped: false,
+    }
+  }
+
   constructor(props) {
     super(props);
-    this.state = {
-      dragEnterStore: false,
-      dragEnterSend: false,
-      hasDropped: false
-    }
+
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
     this.handleClickStoreFile = this.handleClickStoreFile.bind(this);
     this.handleClickQuickFile = this.handleClickQuickFile.bind(this);
+
+    this.state = this.getInitialState();
+  }
+
+  resetToInitialState(){
+    this.setState(this.getInitialState());
   }
 
   componentDidMount(){
@@ -67,19 +75,9 @@ class ASelectFile extends Component{
 
     this.dropzone.on("dragenter", (event) => {
       this.props.setParentState({fileIsSelecting: true});
-      if(isStoring){
-        this.setState({dragEnterStore: true});
-      }else{
-        this.setState({dragEnterSend: true});
-      }
     });
 
     this.dropzone.on("dragleave", (event) => {
-      if(isStoring){
-        this.setState({dragEnterStore: false});
-      }else{
-        this.setState({dragEnterSend: false});
-      }
       if(event.fromElement === null){
         this.props.setParentState({fileIsSelecting: false});
       }

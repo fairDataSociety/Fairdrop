@@ -22,6 +22,10 @@ class DDrop{
     drop.setAttribute('class', 'df-drop-ring');
     dropParent.append(drop);
 
+    setTimeout(()=>{
+      dropParent.removeChild(drop);
+    },1000);
+
   }
 
   drop(className, locationX, locationY){

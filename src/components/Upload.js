@@ -23,6 +23,7 @@ import EInProgress from '../components/up/EInProgress';
 import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
+import App from '../App';
 
 class Upload extends Component{
 
@@ -58,6 +59,7 @@ class Upload extends Component{
 
   resetToInitialState(){
     this.setState(this.getInitialState());
+    App.aSelectFile.resetToInitialState();
   }
 
   constructor(props){
@@ -178,7 +180,6 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
-            // isQuickFile={this.state.isQuickFile}
             ref={this.aSelectFile}
           />
           <BSelectMailbox
@@ -189,17 +190,17 @@ class Upload extends Component{
             isStoringFile={this.props.isStoringFile}
             setSelectedMailbox={this.setSelectedMailbox.bind(this)}
             appRoot={this.props.appRoot}
+            resetToInitialState={this.resetToInitialState.bind(this)}            
           />
           <DConfirm
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
-            // isQuickFile={this.state.isQuickFile}
             selectedMailbox={this.props.selectedMailbox}
             handleUpload={this.handleUpload.bind(this)}
+            resetToInitialState={this.resetToInitialState.bind(this)}
           />
           <EInProgress
-            // isQuickFile={this.state.isQuickFile}
             parentState={this.state}
             setParentState={this.setState.bind(this)}
           />

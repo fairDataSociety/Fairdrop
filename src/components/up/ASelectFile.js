@@ -74,12 +74,12 @@ class ASelectFile extends Component{
     });
 
     this.dropzone.on("dragenter", (event) => {
-      this.props.setParentState({fileIsSelecting: true});
+      this.props.setFileIsSelecting(true);
     });
 
     this.dropzone.on("dragleave", (event) => {
       if(event.fromElement === null){
-        this.props.setParentState({fileIsSelecting: false});
+        this.props.setFileIsSelecting(false);
       }
     });
 
@@ -121,7 +121,7 @@ class ASelectFile extends Component{
       var animationTimeout = 0;
       if(this.state.isHandlingClick === true){
         animationTimeout =  200;
-        this.props.setParentState({fileIsSelecting: true});
+        this.props.setFileIsSelecting(true);
       }else{
         animationTimeout =  0;
       }
@@ -206,7 +206,7 @@ class ASelectFile extends Component{
   render(){
     return (
       <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} >
-        <div className={"select-file-main drop " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
+        <div className={"select-file-main drop " + (this.props.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
           <div ref="dtSelectStoreFile" className="select-file-store" style={{display: 'none'}}>
             <div className="select-file-drop-inner">
               <h2>Store encrypted</h2>
@@ -226,7 +226,7 @@ class ASelectFile extends Component{
             </div>
           </div>
         </div>
-        <div className={"select-file-instruction " + (this.props.parentState.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
+        <div className={"select-file-instruction " + (this.props.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="select-file-instruction-inner">
             <h2>
               Easy and secure way to send your files. <br/> No central server. No tracking. No backdoors.

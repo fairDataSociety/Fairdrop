@@ -40,7 +40,7 @@ class App extends Component {
     let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
 
     return {
-      navState: false,
+      navState: true,
       selectedMailbox: false,
       isStoringFile: false,
       isSendingFile: false,
@@ -115,6 +115,9 @@ class App extends Component {
     this.importMailbox = this.importMailbox.bind(this);
     this.showContent = this.showContent.bind(this);
     this.toggleContent = this.toggleContent.bind(this);
+    this.setFileIsSelecting = this.setFileIsSelecting.bind(this);
+    this.disableNav = this.disableNav.bind(this);
+    this.enableNav = this.enableNav.bind(this);
 
     this.state = this.getInitialState();
 
@@ -138,6 +141,10 @@ class App extends Component {
 
   setSelectedMailbox(selectedMailbox){
     this.setState({selectedMailbox: selectedMailbox});
+  }
+
+  setFileIsSelecting(state = true){
+    this.setState({fileIsSelecting: state});    
   }
 
   fileWasSelected(state = true){
@@ -222,6 +229,14 @@ class App extends Component {
     });
   }
 
+  enableNav(e){
+    this.setState({navState: true});
+  }
+
+  disableNav(e){
+    this.setState({navState: false});
+  }  
+
   render() {
     return (
       <div>
@@ -231,9 +246,11 @@ class App extends Component {
         </div>
         <div
           className={
-            (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
-          + " parent-wrapper "+ (this.state.menuState ? "menu-shown " : "")
-          + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white red")
+          "parent-wrapper "+ 
+          + (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
+          + (this.state.menuState ? "menu-shown " : "")
+          + ((this.props.location.pathname.substring(0,8) === '/mailbox') ? "nav-black white " : " nav-white red ")
+          + (this.state.fileIsSelecting ? "is-selecting" : "")
           }
         >
           <DisclaimerSplash
@@ -252,6 +269,8 @@ class App extends Component {
             appRoot={this.state.appRoot}
             toggleContent={this.toggleContent}
             showContent={this.showContent}
+            disableNav={this.disableNav}
+            enableNav={this.enableNav}
           />
           <Content
             isShown={false}
@@ -261,7 +280,17 @@ class App extends Component {
             appRoot={this.state.appRoot}
             ref={this.contentComponent}
           />
-          <div className={ "wrapper " + ((this.state.fileIsSelecting || this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")}>
+          <div 
+            className={ 
+              "wrapper " 
+              + ((this.props.location.pathname.substring(0,8) === '/mailbox') ? " nav-black white" : "nav-white green")
+              + (this.state.navState ? " nav-enabled" : " nav-disabled")
+            } 
+            onDragOver={this.disableNav}
+            onDragEnter={this.disableNav}
+            onDragEnd={this.enableNav}
+            onDragExit={this.enableNav}
+          >
             <div className="nav-header">
               <div className="nav-header-item-left">
                 <div className="nav-header-spacer"></div>
@@ -303,6 +332,8 @@ class App extends Component {
                   selectedMailbox={this.state.selectedMailbox}
                   setSelectedMailbox={this.setSelectedMailbox}
                   fileWasSelected={this.fileWasSelected}
+                  fileIsSelecting={this.state.fileIsSelecting}
+                  setFileIsSelecting={this.setFileIsSelecting}
                   isSendingFile={this.state.isSendingFile}
                   isStoringFile={this.state.isStoringFile}
                   isQuickFile={this.state.isQuickFile}

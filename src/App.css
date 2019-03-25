@@ -965,6 +965,15 @@ input:-webkit-autofill {
   .hamburger.is-active .hamburger-inner::after {
     background-color: #000; }
 
+.hamburger {
+  opacity: 1;
+  transition: opacity 1s;
+}
+
+.nav-disabled .hamburger{
+  pointer-events: none;
+}
+
 .hamburger-box {
   width: 40px;
   height: 24px;
@@ -1029,6 +1038,15 @@ input:-webkit-autofill {
     background-color: #fff;
 }
 
+
+
+.is-selecting .hamburger{
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+
 /* Navigation */
 
 .nav-header{
@@ -1036,6 +1054,18 @@ input:-webkit-autofill {
   width: 100%;
   z-index: 10;
   padding: 20px;
+  opacity: 1;
+  transition: opacity 1s;  
+}
+
+.nav-disabled .nav-header{
+  pointer-events: none;
+}
+
+.is-selecting .nav-header{
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s;
 }
 
 .nav-black .nav-header,
@@ -1113,7 +1143,6 @@ input:-webkit-autofill {
 .nav-key{
   display: table-cell;
   vertical-align: middle;
-  pointer-events: auto;
   text-align: right;
 }
 

@@ -84,7 +84,13 @@ class App extends Component {
 
   render(props){
     return <div className={'menu-wrapper ' + (this.state.isShown ? 'menuShown ' : '') + (this.state.screenIsShown ? 'showScreen ' : '') + (this.state.screenIsFadedIn ? 'fadeInScreen ' : '')}>
-      <div className="menu-toggle">
+      <div 
+        className="menu-toggle"
+        onDragOver={this.props.disableNav}
+        onDragEnter={this.props.disableNav}
+        onDragEnd={this.props.enableNav}
+        onDragExit={this.props.enableNav}
+      >
         <button className={ "hamburger hamburger--spin " + (this.state.isShown === true ? "is-active" : "") } type="button" onClick={this.toggleMenu.bind(this)}>
           <span className="hamburger-box">
             <span className="hamburger-inner"></span>

@@ -44,6 +44,7 @@ class BSelectMailbox extends Component{
         feedbackMessage: '',
         checkingAvailability: false,
         recipientWasSelected: false,
+        processingAddMailbox: false,
         mailboxName: mailboxName
       }
     }else if(mailboxes.length > 0){
@@ -58,6 +59,7 @@ class BSelectMailbox extends Component{
         feedbackMessage: '',
         checkingAvailability: false,
         recipientWasSelected: false,
+        processingAddMailbox: false,
         mailboxName: mailboxName
       }
     }
@@ -275,6 +277,7 @@ class BSelectMailbox extends Component{
   }
 
   handleAddMailboxUploadAndEncrypt(e){
+    this.setState({processingAddMailbox: true});
     this.FDS.CreateAccount(this.state.mailboxName, this.state.password, (message) => {
       this.setState({feedbackMessage: message});
     }).then((account)=>{
@@ -396,7 +399,11 @@ class BSelectMailbox extends Component{
           }
           <div className="ui-feedback">{this.state.feedbackMessage}</div>
           <div className="actions">
-            <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleContinue.bind(this)}>
+            <button 
+              className="btn btn-lg btn-green btn-float-left" 
+              onClick={this.handleContinue.bind(this)}
+              disabled={this.state.processingAddMailbox}
+            >
               {(this.state.isAddingMailbox && !this.props.parentState.isStoringFile) &&
                 "Create Mailbox and Send"
               }

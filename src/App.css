@@ -356,6 +356,10 @@ input:-webkit-autofill {
   display: block;
 }
 
+.btn:disabled{
+  opacity: 0.5;
+}
+
 /* Shared */
 
 .hidden{

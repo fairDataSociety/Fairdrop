@@ -57,8 +57,9 @@ class Mailbox extends Component{
           mailboxesExist: true,
           checkingAvailability: false,
           feedbackMessage: '',
-        mailboxName: false,
-        passwordsValid: false
+          mailboxName: false,
+          passwordsValid: false,
+          processingAddMailbox: false
         };
     }else
     if(mailboxes.length === 0){
@@ -76,7 +77,8 @@ class Mailbox extends Component{
         checkingAvailability: false,
         feedbackMessage: '',
         mailboxName: false,
-        passwordsValid: false
+        passwordsValid: false,
+        processingAddMailbox: false
       };
     }else
     if(mailboxes.length > 0){
@@ -94,7 +96,8 @@ class Mailbox extends Component{
         checkingAvailability: false,
         feedbackMessage: '',
         mailboxName: false,
-        passwordsValid: false
+        passwordsValid: false,
+        processingAddMailbox: false
       };
     }
   }
@@ -223,6 +226,8 @@ class Mailbox extends Component{
       this.processMailboxPassword();
       return false;
     }
+
+    this.setState({processingAddMailbox: true});
 
     this.FDS.CreateAccount(this.state.mailboxName, this.state.password, (message) => {
       this.setState({feedbackMessage: message});
@@ -386,7 +391,13 @@ class Mailbox extends Component{
               <div className="ui-feedback">{this.state.feedbackMessage}</div>
               {this.state.isAddingMailbox &&
                 <div className="actions">
-                  <button className="btn btn-lg btn-green btn-float-left" onClick={this.handleAddMailbox.bind(this)}>Add Mailbox</button>
+                  <button 
+                    className="btn btn-lg btn-green btn-float-left" 
+                    onClick={this.handleAddMailbox.bind(this)}
+                    disabled={this.state.processingAddMailbox}
+                  >
+                    Add Mailbox
+                  </button>
                   {this.state.mailboxesExist &&
                     <button className="btn btn-sm btn-black btn-link btn-float-right" onClick={this.cancelAddMailbox.bind(this)}><img src={this.props.appRoot + "/assets/images/x-black.svg"} alt="cancel" />Cancel</button>              
                   }

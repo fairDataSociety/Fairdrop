@@ -18,12 +18,33 @@ import React, { Component } from 'react';
 
 class AboutFDS extends Component{
 
+  constructor(props){
+    super(props);
+    
+    this.state = {
+      timesHasClicked: 0
+    }
+
+    this.enableEgg = this.enableEgg.bind(this);
+  }
+
+  enableEgg(){
+    if(this.state.timesHasClicked < 10){
+      this.setState({
+        timesHasClicked: this.state.timesHasClicked + 1
+      });
+    }else{
+      localStorage.setItem('hasEnabledEasterEgg', true);
+      alert('Max file size set to 100mb!');
+    }
+  }  
+
   render(){
     return (
       <div className="content-outer content-fds">
         <div className="content-inner">
           <div className="content-header">
-            <img alt="FDS Logo" src={this.props.appRoot+"/assets/images/fair-data-society.svg"}/>
+            <img alt="FDS Logo" src={this.props.appRoot+"/assets/images/fair-data-society.svg"} onClick={this.enableEgg}/>
           </div>
           <div className="content-text">
             <p>

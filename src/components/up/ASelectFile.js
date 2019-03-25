@@ -103,9 +103,18 @@ class ASelectFile extends Component{
     })
 
     this.dropzone.on("addedfile", (file) => {
-      if(file.size > (1024 * 1024 * 100)){
-        alert('Sorry, proof of concept is restricted to 100mb');
-        return false;
+      if(localStorage.getItem('hasEnabledEasterEgg') === "true"){
+        if(file.size > (1024 * 1024 * 100)){
+          alert('Sorry, proof of concept is restricted to 100mb');
+          window.location.reload();
+          return false;
+        }
+      }else{
+        if(file.size > (1024 * 1024 * 5)){
+          alert('Sorry, proof of concept is restricted to 5mb');
+          window.location.reload();
+          return false;
+        }
       }
 
       // solves the problem that there is no event to capture 'cancel' by doing the animation after

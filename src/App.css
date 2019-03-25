@@ -1254,6 +1254,7 @@ a.nav-context:hover{
   top: 0;
   transition: opacity 1s;  
   z-index:101;
+  pointer-events: none;
 }
 
 .select-file-instruction h2{
@@ -1284,6 +1285,7 @@ a.nav-context:hover{
   text-decoration: underline;
   cursor: pointer;
   margin-right: 21px;
+  pointer-events: all;
 }
 
 .select-file-instruction.is-selecting{

@@ -216,6 +216,7 @@ class Upload extends Component{
             resetToInitialState={this.resetToInitialState.bind(this)}
           />
           <EInProgress
+            appRoot={this.props.appRoot}
             parentState={this.state}
             setParentState={this.setState.bind(this)}
           />

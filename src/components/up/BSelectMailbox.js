@@ -290,6 +290,7 @@ class BSelectMailbox extends Component{
         this.mailboxUnlocked();
       })
     }).catch((error)=>{
+      this.setState({processingAddMailbox: false});
       this.setState({feedbackMessage: error});
     });
   }
@@ -397,7 +398,10 @@ class BSelectMailbox extends Component{
               handleSelectRecipient={this.handleSelectRecipient}
             />
           }
-          <div className="ui-feedback">{this.state.feedbackMessage}</div>
+          <div className="ui-feedback">
+            {this.state.feedbackMessage}
+            <img className="in-progress-icon" src={this.props.appRoot + "assets/images/black-progress.svg"} alt="Spinning"/>
+          </div>
           <div className="actions">
             <button 
               className="btn btn-lg btn-green btn-float-left" 

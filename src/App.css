@@ -1633,6 +1633,11 @@ a.nav-context:hover{
   color: white;
 }
 
+.in-progress h3.in-progress-sub-3{
+  font-family: monospace;
+  color: white;
+}
+
 /* completed */
 
 .in-progress {

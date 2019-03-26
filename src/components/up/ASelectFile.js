@@ -87,6 +87,7 @@ class ASelectFile extends Component{
 
       this.setState({ hasDropped: true });
       this.props.fileWasSelected(true);
+      this.props.setFileIsSelecting(false);      
       if(isStoring === true){
         this.props.setParentState({isStoringFile: true});
       }else

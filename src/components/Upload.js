@@ -50,6 +50,7 @@ class Upload extends Component{
 
       encryptionComplete: false,
       fileWasUploaded: false,
+      uploadProgress: '000%',
 
       isStoringFile: this.props.isStoringFile,
       isQuickFile: this.props.isQuickFile
@@ -85,6 +86,11 @@ class Upload extends Component{
     this.props.resetFileState();
   }
 
+  setUploadProgress(progress){
+    if (progress<=999) { progress = ("00"+progress).slice(-3); }
+    this.setState({uploadProgress: `${progress}%`});   
+  }
+
   handleUpload(){
     if( // ensure that we have a file saved from dropzone
       window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
@@ -109,8 +115,7 @@ class Upload extends Component{
             this.setState({encryptionComplete: true});
           },
           (response)=>{
-            this.setState({feedbackMessage: "file uploaded."});
-            this.setState({fileWasUploaded: true});            
+            this.setUploadProgress(response);
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -118,6 +123,9 @@ class Upload extends Component{
         ).catch((error) => {
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
+        }).then(()=>{
+            this.setState({feedbackMessage: "file uploaded."});              
+            this.setState({fileWasUploaded: true}); 
         });
       }else if(
         this.state.isStoringFile === false &&
@@ -131,8 +139,7 @@ class Upload extends Component{
             {type: this.state.selectedFileType}
           ),
           (response)=>{
-            this.setState({feedbackMessage: "file uploaded."});
-            this.setState({fileWasUploaded: true});
+            this.setUploadProgress(response);
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -140,6 +147,9 @@ class Upload extends Component{
         ).catch((error) => {
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
+        }).then(()=>{
+            this.setState({feedbackMessage: "file uploaded."});              
+            this.setState({fileWasUploaded: true}); 
         });
       }else{
         return this.FDS.currentAccount.store(
@@ -154,7 +164,7 @@ class Upload extends Component{
             this.setState({encryptionComplete: true});
           },
           (response)=>{
-            this.setState({feedbackMessage: "file uploaded."});
+            this.setUploadProgress(response);
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -162,6 +172,9 @@ class Upload extends Component{
         ).catch((error) => {
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
+        }).then(()=>{
+            this.setState({feedbackMessage: "file uploaded."});              
+            this.setState({fileWasUploaded: true}); 
         });
       }
     }else{

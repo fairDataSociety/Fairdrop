@@ -143,6 +143,7 @@ class App extends Component {
             items={[
                     ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
                     ['About Fair Data Society', ()=>{this.props.showContent('AboutFDS')}],
+                    ['FAQs', ()=>{this.props.showContent('FAQ')}],
                     ['Terms of Usage', ()=>{this.props.showContent('Terms')}],
                     ['Bug Disclosure', ()=>{window.open('https://github.com/fairDataSociety/vulnerability-disclosure-policy')}]
                   ]}

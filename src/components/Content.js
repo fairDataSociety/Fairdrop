@@ -19,6 +19,7 @@ import React, { Component } from 'react';
 import AboutFairdrop from './content/AboutFairdrop';
 import AboutFDS from './content/AboutFDS';
 import Terms from './content/Terms';
+import FAQ from './content/FAQ';
 
 class App extends Component {
 
@@ -95,6 +96,9 @@ class App extends Component {
           }
           {this.props.displayedContent === 'AboutFDS' &&
             <AboutFDS appRoot={this.props.appRoot} />
+          }
+          {this.props.displayedContent === 'FAQ' &&
+            <FAQ appRoot={this.props.appRoot} />
           }
           {this.props.displayedContent === 'Terms' &&
             <Terms appRoot={this.props.appRoot} />

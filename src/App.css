@@ -445,7 +445,7 @@ input:-webkit-autofill {
 .content{
   position: absolute;
   top: 0;
-  right: -50vw;
+  right: -51vw;
   height: 100vh;
   width: 50vw;
   z-index: 101;
@@ -484,7 +484,7 @@ input:-webkit-autofill {
 }
 
 .content-fds .content-inner{
-  padding: 11vw;
+  padding: 9vw;
 }
 
 .content-fairdrop .content-inner{

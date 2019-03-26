@@ -534,7 +534,7 @@ input:-webkit-autofill {
 .content-fade-out:after {
   content: '';
   position: absolute;
-  bottom: 14vh;
+  bottom: 13vh;
   left: 0;
   right: 0;
   height: 10vh;

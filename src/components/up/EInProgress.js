@@ -31,34 +31,40 @@ class EInProgress extends Component{
           <div className="in-progress-ui page-inner-centered">
             { this.props.parentState.isQuickFile &&
                 <div className="in-progress-ui">
-                  <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "assets/images/progress.svg"} alt="Spinning"/>Uploading</h1>
+                  <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "/assets/images/progress.svg"} alt="Spinning"/>Uploading</h1>
                   <h2 className="in-progress-sub">Storing Unencrypted in Swarm network</h2>
                   <h3 className="in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
+                  {/*
                   <h3 className="in-progress-sub-3">
                     {this.props.parentState.encryptionComplete ? this.props.parentState.uploadProgress : " "}
                   </h3>
+                  */}
                 </div>  
             }
             { !this.props.parentState.isQuickFile &&
               <div>
                 { !this.props.parentState.encryptionComplete &&
                   <div className="in-progress-ui">
-                    <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "assets/images/progress.svg"} alt="Spinning"/>Encrypting*</h1>
+                    <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "/assets/images/progress.svg"} alt="Spinning"/>Encrypting*</h1>
                     <h2 className="in-progress-sub">*AES-256 military grade encryption</h2>
                     <h3 className="in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
+                    {/*
                     <h3 className="in-progress-sub-3">
                       {this.props.parentState.uploadProgress}
-                    </h3>                    
+                    </h3>
+                    */}
                   </div>
                 }
                 { this.props.parentState.encryptionComplete && !this.props.parentState.fileWasUploaded &&
                   <div className="in-progress-ui">
-                    <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "assets/images/progress.svg"} alt="Spinning"/>Uploading</h1>
+                    <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "/assets/images/progress.svg"} alt="Spinning"/>Uploading</h1>
                     <h2 className="in-progress-sub">Storing Encrypted in Swarm network</h2>
                     <h3 className="in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
+                    {/*
                     <h3 className="in-progress-sub-3">
                       {this.props.parentState.encryptionComplete ? this.props.parentState.uploadProgress : " "}
-                    </h3>                    
+                    </h3>
+                    */}
                   </div>
                 }
               </div>

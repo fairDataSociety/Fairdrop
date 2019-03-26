@@ -400,7 +400,7 @@ class BSelectMailbox extends Component{
           }
           <div className="ui-feedback">
             {this.state.feedbackMessage}
-            <img className="in-progress-icon" src={this.props.appRoot + "assets/images/black-progress.svg"} alt="Spinning"/>
+            {/* <img className="in-progress-icon" src={this.props.appRoot + "assets/images/progress.svg"} alt="Spinning"/> */}
           </div>
           <div className="actions">
             <button 

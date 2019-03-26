@@ -3,6 +3,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body{
+  overscroll-behavior: none;
+}
+
 @media (max-width: 600px){
   .parent-wrapper{
     display: none;

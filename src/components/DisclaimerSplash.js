@@ -24,7 +24,7 @@ class App extends Component {
       >
       <div className="disclaimer-wrapper">
         <div className="disclaimer-content">
-          Fairdrop is in Beta and provided for evaluation only! File integrity, persistence and security are not assured! <a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety/vulnerability-disclosure-policy">Report Bugs</a> <span className="click-to-dismiss" onClick={this.props.hideDisclaimer}>(Click to Dismiss)</span>
+          Fairdrop is in Beta and provided for evaluation only! File integrity, persistence and security are not assured! <a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety/Fairdrop/issues">Report Bugs</a> <span className="click-to-dismiss" onClick={this.props.hideDisclaimer}>(Click to Dismiss)</span>
         </div>
       </div>
     </div>

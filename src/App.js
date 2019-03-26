@@ -47,6 +47,7 @@ class App extends Component {
       isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
+      fileIsSelecting: false,
       disclaimersAreShown: hasNotHiddenDisclaimers,
       menuState: false,
       appRoot: this.props.appRoot

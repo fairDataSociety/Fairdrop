@@ -87,7 +87,6 @@ class ASelectFile extends Component{
 
       this.setState({ hasDropped: true });
       this.props.fileWasSelected(true);
-      this.props.setFileIsSelecting(false);      
       if(isStoring === true){
         this.props.setParentState({isStoringFile: true});
       }else
@@ -101,6 +100,10 @@ class ASelectFile extends Component{
       setTimeout(()=>{
         dd.drop('drop', event.clientX, event.clientY);
       }, 233);
+
+      setTimeout(()=>{
+        this.props.setFileIsSelecting(false);      
+      }, 2000);
     })
 
     this.dropzone.on("addedfile", (file) => {

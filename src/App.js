@@ -85,6 +85,7 @@ class App extends Component {
       swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
       ethGateway: process.env.REACT_APP_GETH_GATEWAY,
       faucetAddress: process.env.REACT_APP_FAUCET_URL,
+      chainID: process.env.REACT_APP_CHAIN_ID,
       httpTimeout: 1000,
       gasPrice: 50, //gwei
       ensConfig: {

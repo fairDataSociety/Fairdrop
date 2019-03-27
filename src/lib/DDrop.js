@@ -24,7 +24,7 @@ class DDrop{
 
     setTimeout(()=>{
       dropParent.removeChild(drop);
-    },1000);
+    },2000);
 
   }
 

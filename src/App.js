@@ -32,7 +32,7 @@ import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
 
-import {version} from '../package.json'
+import {version} from '../package.json';
 
 class App extends Component {
 

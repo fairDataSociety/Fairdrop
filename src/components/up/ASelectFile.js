@@ -85,8 +85,9 @@ class ASelectFile extends Component{
 
     this.dropzone.on("drop", (event) => {
 
-      this.setState({ hasDropped: true });
       this.props.fileWasSelected(true);
+
+      this.setState({ hasDropped: true });
       if(isStoring === true){
         this.props.setParentState({isStoringFile: true});
       }else
@@ -100,10 +101,6 @@ class ASelectFile extends Component{
       setTimeout(()=>{
         dd.drop('drop', event.clientX, event.clientY);
       }, 233);
-
-      setTimeout(()=>{
-        this.props.setFileIsSelecting(false);      
-      }, 2000);
     })
 
     this.dropzone.on("addedfile", (file) => {
@@ -155,6 +152,8 @@ class ASelectFile extends Component{
         }
 
         setTimeout(()=>{
+          this.props.setFileIsSelecting(false);          
+          this.props.fileWasSelected(false);   
           this.props.setParentState({
             fileIsSelected: true,
             selectedFileName: file.name,
@@ -162,7 +161,7 @@ class ASelectFile extends Component{
             selectedFileSize: file.size,
             uiState: newUIState
           });
-        }, 1555);
+        }, 2500);
 
       }, animationTimeout);
     });

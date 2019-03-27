@@ -116,6 +116,10 @@ class Upload extends Component{
           },
           (response)=>{
             this.setUploadProgress(response);
+            if(response === 100){
+              this.setState({feedbackMessage: "file uploaded."});              
+              this.setState({fileWasUploaded: true}); 
+            }
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -166,6 +170,10 @@ class Upload extends Component{
           },
           (response)=>{
             this.setUploadProgress(response);
+            if(response === 100){
+              this.setState({feedbackMessage: "file uploaded."});              
+              this.setState({fileWasUploaded: true}); 
+            }
           },
           (message)=>{
             this.setState({feedbackMessage: message});
@@ -173,9 +181,6 @@ class Upload extends Component{
         ).catch((error) => {
           this.setState({feedbackMessage: error});
           this.setState({fileWasUploaded: true});
-        }).then(()=>{
-            this.setState({feedbackMessage: "file uploaded."});              
-            this.setState({fileWasUploaded: true}); 
         });
       }
     }else{

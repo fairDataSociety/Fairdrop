@@ -1,1 +1,1 @@
-Fatal: Upload failed: the default path "index.html" was not found in the upload directory "/Users/significance/Code/df/fairdrop/build"
+Fatal: Upload failed: dial tcp 209.97.190.111:8500: connect: connection refused

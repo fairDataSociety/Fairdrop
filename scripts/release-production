@@ -30,8 +30,8 @@ cp .env.testnet-prod .env.production
 echo "updated production .env"
 npm run build
 echo "built"
-echo "uploading to http://178.128.196.190:8500/"
-swarm --bzzapi http://178.128.196.190:8500/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/ > current_live
+echo "uploading to https://swarm-prod-test.datafund.io/"
+swarm --bzzapi https://swarm-prod-test.datafund.io/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/ > current_live
 HASH=`cat config.txt`
 echo "uploaded to hash $HASH"
 git add package.json package-lock.json && git commit -m "bump version"

@@ -119,18 +119,21 @@ class BSelectMailbox extends Component{
 
   handleInputMailboxName(e){
     e.preventDefault();
+    let mailboxName = e.target.value;
+    this.setState({
+      mailboxName: mailboxName,
+    });
     //check to see if mailbox name is unused/valid
-
     if(this.state.checkingAvailability === false){
-      this.processMailboxName(e.target.value).catch((error)=>{
+      this.processMailboxName(mailboxName).catch((error)=>{
         //already handled
       });
     }
   }
 
+
   processMailboxName(mailboxName){
     this.setState({
-      mailboxName: mailboxName,
       checkingAvailability: true,
       feedbackMessage: "Checking availability..."
     });
@@ -141,7 +144,6 @@ class BSelectMailbox extends Component{
         return this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {
           if(result === true){
             this.setState({
-              mailboxName: mailboxName,
               checkingAvailability: false,
               feedbackMessage: "Name available!"
             });

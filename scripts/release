@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+confirm() {
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY]) 
+            true
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+}
+
+usage() {
+  echo "usage: scripts/release {version number (e.g. 0.1.0)} {target (staging, production)}"
+}
+
+VER=$1
+
+if [ "$VER" = "" ]; then
+   echo "error: please provide a version number"
+   usage
+   exit 1;
+fi
+
+TARGET=$2
+
+if [ "$TARGET" != "staging" ] && [ "$TARGET" != "production" ]; then
+   echo "target must be staging or production."
+   usage
+   exit 1;
+fi 
+
+if [ "$TARGET" = "staging" ]; then
+  BRANCH="staging"
+elif [ "$TARGET" = "production" ]; then
+  BRANCH="master"
+fi
+
+echo $VER
+head package.json
+git status
+confirm "Have you incremented package.json to version number $VER?" &&
+confirm "Ok to add package.json and package-lock.json to git and push tags?" &&
+confirm "Are you on $BRANCH branch?" &&
+echo "processing..."
+
+if [ "$TARGET" = "staging" ]; then
+  cp .env.testnet-dev .env.production
+  echo "using .env.testnet-dev"
+elif [ "$TARGET" = "production" ]; then
+  cp .env.testnet-prod .env.production
+  echo "using .env.testnet-prod"
+fi
+
+npm run build
+echo "built"
+
+if [ "$TARGET" = "staging" ]; then
+  HOST=root@testnet-dev.datafund.io
+elif [ "$TARGET" = "production" ]; then
+  HOST=root@geth-noordung.fairdatasociety.org
+fi
+
+ssh $HOST -N -L 2000:127.0.0.1:8500 & echo $! > /tmp/fairdrop-sshpid
+echo "waiting for ssh tunnel"
+while ! nc -z localhost 2000; do   
+  sleep 0.1 # wait for 1/10 of the second before check again
+done
+
+echo "created tunnel, uploading to $HOST"
+uploaded_hash=$(swarm --bzzapi http://localhost:2000/ --defaultpath index.html --recursive up ~/Code/df/fairdrop/build/)
+
+if [ "$TARGET" = "staging" ]; then
+  echo "$uploaded_hash" > current_dev
+elif [ "$TARGET" = "production" ]; then
+  echo "$uploaded_hash" > current_live
+fi
+
+git add package.json package-lock.json && git commit -m "bump version"
+echo "added bump version"
+
+git add current_live && git commit -m 'bump current_live'
+echo "added bump current_live"
+
+git tag $VER
+echo "added tag $VER"
+
+git push origin $VER
+git push df $VER
+
+cat current_live
+kill $(cat /tmp/fairdrop-sshpid)

@@ -51,27 +51,46 @@ input{
 
 @font-face {
   font-family: 'Lunchtype24-Light-Expanded';
-  src: 
-    /*url('assets/fonts/Lunchtype24-Light-Expanded.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype24-Light-Expanded.woff2') format('woff'),
-    url('assets/fonts/Lunchtype24-Light-Expanded.woff2') format('woff2');
+    src: url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.eot');
+    src: url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.eot?#iefix') format('embedded-opentype'),
+         url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.woff2') format('woff2'),
+         url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.woff') format('woff'),
+         url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.ttf') format('truetype'),
+         url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.svg#lunchtype24expanded_regular') format('svg');
+/*    font-weight: 400;
+    font-style: normal;*/
 }
 
 @font-face {
   font-family: 'Lunchtype24-Medium-Expanded';
-  src: 
-    /*url('assets/fonts/Lunchtype24-Medium-Expanded.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype24-Medium-Expanded.woff2') format('woff'),
-    url('assets/fonts/Lunchtype24-Medium-Expanded.woff2') format('woff2');
+    src: url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.eot');
+    src: url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.eot?#iefix') format('embedded-opentype'),
+         url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.woff2') format('woff2'),
+         url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.woff') format('woff'),
+         url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.ttf') format('truetype'),
+         url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.svg#lunchtype24expanded_medium') format('svg');
+/*    font-weight: 600;
+    font-style: normal;*/
 }
 
 @font-face {
   font-family: 'Lunchtype24-Regular-Expanded';
-  src: 
-    /*url('assets/fonts/Lunchtype24-Regular-Expanded.eot') format('eot'),*/
-    url('assets/fonts/Lunchtype24-Regular-Expanded.woff2') format('woff'),
-    url('assets/fonts/Lunchtype24-Regular-Expanded.woff2') format('woff2');
+    src: url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.eot');
+    src: url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.eot?#iefix') format('embedded-opentype'),
+         url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.woff2') format('woff2'),
+         url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.woff') format('woff'),
+         url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.ttf') format('truetype'),
+         url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.svg#lunchtype24expanded_light') format('svg');
+/*    font-weight: 200;
+    font-style: normal;*/
 }
+
+/*  font-family: 'Lunchtype24-Light-Expanded';
+
+  font-family: 'Lunchtype24-Medium-Expanded';
+
+  font-family: 'Lunchtype24-Regular-Expanded';*/
+
 
 /*typeface*/
 

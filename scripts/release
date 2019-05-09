@@ -97,4 +97,3 @@ git push origin $VER
 git push df $VER
 
 cat current_live
-kill $(cat /tmp/fairdrop-sshpid)

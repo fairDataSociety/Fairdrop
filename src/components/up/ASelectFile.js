@@ -61,15 +61,17 @@ class ASelectFile extends Component{
     this.dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
       previewsContainer: false,
+      maxFilesize: 1000,
       // clickable: false,
       accept: (file, done) => {
-        var reader = new FileReader();
-        reader.addEventListener("loadend",
-          function(event) {
-            // for now, todo -> streams...
-            window.selectedFileArrayBuffer = event.target.result;
-          });
-        reader.readAsArrayBuffer(file);
+        window.file = file;
+        // var reader = new FileReader();
+        // reader.addEventListener("loadend",
+        //   function(event) {
+        //     // for now, todo -> streams...
+        //     window.selectedFileArrayBuffer = event.target.result;
+        //   });
+        // reader.readAsArrayBuffer(file);
       }
     });
 

@@ -161,7 +161,7 @@ class ASelectFile extends Component{
             selectedFileSize: file.size,
             uiState: newUIState
           });
-        }, 2500);
+        }, 555);
 
       }, animationTimeout);
     });
@@ -209,8 +209,8 @@ class ASelectFile extends Component{
   render(){
     return (
       <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} >
-        <div className={"select-file-main drop " + (this.props.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
-          <div ref="dtSelectStoreFile" className="select-file-store" style={{display: 'none'}}>
+        <div className={"select-file-main hide-mobile drop " + (this.props.fileIsSelecting ? "is-selecting " : " ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
+          <div ref="dtSelectStoreFile" className="select-file-store no-events-mobile " style={{display: 'none'}}>
             <div className="select-file-drop-inner">
               <h2>Store encrypted</h2>
               <div>Requires logging in to your mailbox</div>
@@ -232,11 +232,21 @@ class ASelectFile extends Component{
         <div className={"select-file-instruction " + (this.props.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="select-file-instruction-inner">
             <h2>
-              Easy and secure way to send your files. <br/> No central server. No tracking. No backdoors.
+              An easy and secure way to send your files.
             </h2>
-            <h3>
+            <h2 className="last">
+              <span className="avoid-wrap">No central server.&nbsp;</span>
+              <span className="avoid-wrap">No tracking.&nbsp;</span>
+              <span className="avoid-wrap">No backdoors.&nbsp;</span>
+            </h2>
+            <h3 className="hide-mobile">
               <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img alt="drop file glyph" src="assets/images/fairdrop-drop.svg"/> drop a file
             </h3>
+            <h3 className="show-mobile">
+              <button className="btn btn-white btn-lg send-file-unencrypted" onClick={this.handleClickQuickFile}>send unencrypted</button><br/>
+              <button className="btn btn-white btn-lg send-file-encrypted" onClick={this.handleClickSelectFile}>send encrypted</button><br/>
+              <button className="btn btn-white btn-lg store-file-encrypted" onClick={this.handleClickStoreFile}>store encrypted</button>
+            </h3>            
           </div>
         </div>
       </div>

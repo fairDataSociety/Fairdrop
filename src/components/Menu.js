@@ -82,6 +82,11 @@ class App extends Component {
     return Promise.all(promises);
   }
 
+  resetMailboxState(){
+    this.toggleMenu();
+    this.props.resetMailboxState();
+  }
+
   render(props){
     return <div className={'menu-wrapper ' + (this.state.isShown ? 'menuShown ' : '') + (this.state.screenIsShown ? 'showScreen ' : '') + (this.state.screenIsFadedIn ? 'fadeInScreen ' : '')}>
       <div 
@@ -150,8 +155,19 @@ class App extends Component {
             closeAll={this.closeAll.bind(this)}
             toggleMenu={()=>{}}
             ref={'about'}
-          />  
+          /> 
+          {this.props.selectedMailbox.subdomain &&
+            <div className={"menu-section"}>
+              <div
+                className="menu-item-header"
+                onClick={this.resetMailboxState.bind(this)}
+              >
+                  Log Out
+              </div>
+            </div>
+          }
         </div>
+
         <div className="menu-footer">
           <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety"><img alt="github logo" src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
           <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://twitter.com/DataFundProject"><img alt="twitter logo" src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>

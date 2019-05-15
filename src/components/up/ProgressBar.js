@@ -20,7 +20,7 @@ class FCompleted extends Component{
 
   render(){
     return (
-      <div id='progress' className={'ui-state-'+this.props.parentState.uiState+(this.props.isStoringFile === true || this.props.parentState.isQuickFile === true ? ' is-storing' : '')}>
+      <div id='progress' className={'hide-mobile ui-state-'+this.props.parentState.uiState+(this.props.isStoringFile === true || this.props.parentState.isQuickFile === true ? ' is-storing' : '')}>
         <div className='progress-indicator'></div>
         {this.props.isStoringFile === false && this.props.parentState.isQuickFile === false &&
           <div className='progress-labels'>

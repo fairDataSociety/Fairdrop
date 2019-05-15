@@ -98,8 +98,6 @@ class App extends Component {
 
     this.FDS = new FDS(config);
 
-    window.FDS = this.FDS;
-
     this.uploadComponent = React.createRef();
     this.importMailboxInput = React.createRef();
     this.contentComponent = React.createRef();
@@ -273,6 +271,8 @@ class App extends Component {
             showContent={this.showContent}
             disableNav={this.disableNav}
             enableNav={this.enableNav}
+            resetMailboxState={this.resetMailboxState}
+            selectedMailbox={this.state.selectedMailbox}
           />
           <Content
             isShown={false}
@@ -302,7 +302,7 @@ class App extends Component {
                   <FairdropLogo/>
                 </Link>
               </div>
-              <div className="nav-header-item-left">
+              <div className="nav-header-item-left hide-mobile">
                 <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
               </div>
 
@@ -312,14 +312,14 @@ class App extends Component {
                 </Link>
               </div>
               {this.state.selectedMailbox.subdomain &&
-                <div className="nav-header-item-right">
+                <div className="nav-header-item-right hide-mobile">
                   <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>
                     Log out
                   </button>
                 </div>
               }
               {this.state.selectedMailbox.subdomain &&
-                <div className="nav-header-item-right">
+                <div className="nav-header-item-right hide-mobile">
                   <Link className="nav-context" to={'mailbox'}>
                     {this.state.selectedMailbox.subdomain}
                   </Link>

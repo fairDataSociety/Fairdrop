@@ -89,24 +89,30 @@ class ASelectFile extends Component{
 
       this.setState({ hasDropped: true });
       if(isStoring === true){
+        this.props.setParentState({isSendingFile: false});
         this.props.setParentState({isStoringFile: true});
+        this.props.setParentState({isQuickFile: false});  
       }else
       if(isQuick === true){
-        this.props.setParentState({isQuickFile: true});
+        this.props.setParentState({isSendingFile: false});
+        this.props.setParentState({isStoringFile: false});
+        this.props.setParentState({isQuickFile: true});        
       }else
       {
         this.props.setParentState({isSendingFile: true});
+        this.props.setParentState({isStoringFile: false});
+        this.props.setParentState({isQuickFile: false});
       }
 
-      setTimeout(()=>{
+      // setTimeout(()=>{
         dd.drop('drop', event.clientX, event.clientY);
-      }, 233);
+      // }, 233);
     })
 
     this.dropzone.on("addedfile", (file) => {
       if(localStorage.getItem('hasEnabledEasterEgg') === "true"){
-        if(file.size > (1024 * 1024 * 100)){
-          alert('Sorry, proof of concept is restricted to 100mb');
+        if(file.size > (1024 * 1024 * 2000)){
+          alert('Sorry, proof of concept is restricted to 2000mb');
           window.location.reload();
           return false;
         }
@@ -179,6 +185,8 @@ class ASelectFile extends Component{
     }
     this.props.setParentState({
       isQuickFile: true,
+      isSendingFile: false,
+      isStoringFile: false,      
     });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectSaveFile.click();
@@ -190,6 +198,8 @@ class ASelectFile extends Component{
     }
     this.props.setParentState({
       isSendingFile: true,
+      isStoringFile: false,
+      isQuickFile: false,
     });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectSaveFile.click();
@@ -201,6 +211,8 @@ class ASelectFile extends Component{
     }
     this.props.setParentState({
       isStoringFile: true,
+      isSendingFile: false,
+      isQuickFile: false,      
     });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectStoreFile.click();

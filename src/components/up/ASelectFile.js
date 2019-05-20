@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import Dropzone from 'dropzone';
-import DDrop from '../../lib/DDrop';
+// import DDrop from '../../lib/DDrop';
 import App from '../../App';
 
 class ASelectFile extends Component{
@@ -57,7 +57,7 @@ class ASelectFile extends Component{
   }
 
   initDropzone(element, isStoring=false, isQuick=false){
-    let dd = new DDrop();
+    // let dd = new DDrop();
     this.dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
       previewsContainer: false,
@@ -107,7 +107,7 @@ class ASelectFile extends Component{
       }
 
       // setTimeout(()=>{
-        dd.drop('drop', event.clientX, event.clientY);
+        // dd.drop('drop', event.clientX, event.clientY);
       // }, 233);
     })
 
@@ -139,7 +139,7 @@ class ASelectFile extends Component{
         this.props.fileWasSelected(true);
         if(this.state.hasDropped === false){
           this.setState({ hasDropped: true });
-          dd.drop('drop');
+          // dd.drop('drop');
         }
 
         let newUIState;

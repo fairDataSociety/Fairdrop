@@ -56,11 +56,7 @@ fi
 npm run build
 echo "built"
 
-if [ "$TARGET" = "staging" ]; then
-  HOST=root@testnet-dev.datafund.io
-elif [ "$TARGET" = "production" ]; then
-  HOST=root@geth-noordung.fairdatasociety.org
-fi
+HOST=root@geth-noordung-2.fairdatasociety.org
 
 ssh $HOST -N -L 2000:127.0.0.1:8500 & echo $! > /tmp/fairdrop-sshpid
 echo "waiting for ssh tunnel"

@@ -82,16 +82,17 @@ class App extends Component {
     super(props);
 
     let config = {
+      tokenName: 'gas',      
       swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
       ethGateway: process.env.REACT_APP_GETH_GATEWAY,
       faucetAddress: process.env.REACT_APP_FAUCET_URL,
       chainID: process.env.REACT_APP_CHAIN_ID,
       httpTimeout: 1000,
-      gasPrice: 50, //gwei
+      gasPrice: 0.1, //gwei
       ensConfig: {
         domain: process.env.REACT_APP_DOMAIN_NAME,
         registryAddress: process.env.REACT_APP_ENS_ADDRESS,
-        fifsRegistrarContractAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,
+        subdomainRegistrarAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,
         resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
       }
     };

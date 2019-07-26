@@ -39,6 +39,9 @@ class Mailbox extends Component{
           case 'stored':
             this.showStored();
           break;
+          case 'consents':
+            this.showConsents();
+          break;          
           default:
             this.showReceived();
           break;
@@ -113,6 +116,7 @@ class Mailbox extends Component{
     this.showReceived = this.showReceived.bind(this);
     this.showSent = this.showSent.bind(this);
     this.showStored = this.showStored.bind(this);
+    this.showConsents = this.showConsents.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -165,6 +169,15 @@ class Mailbox extends Component{
       });
     });
   }
+
+  showConsents(){
+    this.FDS.currentAccount.messages('received', '/shared/consents').then((messages)=>{
+      this.setState({
+        shownMessageType: 'consents',
+        shownMessages: messages
+      });
+    });
+  }  
 
   retrieveSentFile(message){
     message.saveAs();
@@ -433,6 +446,9 @@ class Mailbox extends Component{
                       <tr>
                         <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
                       </tr>
+                      <tr>
+                        <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={this.showConsents}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Consents</button></td>
+                      </tr>                      
                     </tbody>
                   </table>
                 </div>
@@ -448,6 +464,8 @@ class Mailbox extends Component{
                                 return "To";
                               case 'received':
                                 return "From";
+                              case 'consents':
+                                return "From";                                
                               case 'stored':
                                 return "";
                               default:
@@ -501,6 +519,23 @@ class Mailbox extends Component{
                                   </tr>
                               })
                             }
+                            case 'consents': {
+                              return this.state.shownMessages.map((message, i)=>{
+                                return <tr
+                                  className={
+                                    "message-list "
+                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "")
+                                  }
+                                  key={`${message.hash.address}`}
+                                  onClick={ ()=>{ return message.saveAs(); } }
+                                  >
+                                    <td>{ message.hash.file.name }</td>
+                                    <td>{ message.from }</td>
+                                    <td>{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                  </tr>
+                              })
+                            }                            
                             case 'stored':
                               return this.state.shownMessages.map((hash, i)=>{
                                 return <tr

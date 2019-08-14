@@ -92,7 +92,7 @@ class App extends Component {
       ensConfig: {
         domain: process.env.REACT_APP_DOMAIN_NAME,
         registryAddress: process.env.REACT_APP_ENS_ADDRESS,
-        subdomainRegistrarAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,
+        subdomainRegistrarAddress: process.env.REACT_APP_REGISTRAR_ADDRESS,
         resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
       }
     };

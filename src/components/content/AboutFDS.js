@@ -60,7 +60,7 @@ class AboutFDS extends Component{
             </p>
 
             <p>
-              Fair Data Society recognises online privacy as <br/>a <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
+              Fair Data Society recognises online privacy as a <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
             </p>
           </div>
         </div>

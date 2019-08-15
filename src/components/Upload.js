@@ -93,8 +93,9 @@ class Upload extends Component{
 
   handleUpload(){
     if( // ensure that we have a file saved from dropzone
-      window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
-      window.selectedFileArrayBuffer.byteLength > 0
+      // window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
+      // window.selectedFileArrayBuffer.byteLength > 0
+      window.file
       )
     {
       if(
@@ -104,11 +105,12 @@ class Upload extends Component{
         let addressee = this.state.addressee;
         return this.FDS.currentAccount.send(
           addressee,
-          new File(
-            [window.selectedFileArrayBuffer],
-            this.state.selectedFileName,
-            {type: this.state.selectedFileType}
-          ),
+          // new File(
+          //   [window.selectedFileArrayBuffer],
+          //   this.state.selectedFileName,
+          //   {type: this.state.selectedFileType}
+          // ),
+          window.file,
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});
@@ -137,11 +139,13 @@ class Upload extends Component{
       ){
         this.setState({encryptionComplete: true});
         return this.FDS.Account.Swarm.storeFileUnencrypted(
-          new File(
-            [window.selectedFileArrayBuffer],
-            this.state.selectedFileName,
-            {type: this.state.selectedFileType}
-          ),
+          window.file
+          // new File(
+          //   [window.selectedFileArrayBuffer],
+          //   this.state.selectedFileName,
+          //   {type: this.state.selectedFileType}
+          // )
+          ,
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
@@ -158,11 +162,12 @@ class Upload extends Component{
         });
       }else{
         return this.FDS.currentAccount.store(
-          new File(
-            [window.selectedFileArrayBuffer],
-            this.state.selectedFileName,
-            {type: this.state.selectedFileType}
-          ),
+          // new File(
+          //   [window.selectedFileArrayBuffer],
+          //   this.state.selectedFileName,
+          //   {type: this.state.selectedFileType}
+          // ),
+          window.file,
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});

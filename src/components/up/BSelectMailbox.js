@@ -228,7 +228,7 @@ class BSelectMailbox extends Component{
   processSelectRecipient(mailboxName){
     return this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {
       if(result === true){
-        throw new Error("Couldn't find that mailbox, please try again...")
+        throw new Error("Couldn't find mailbox, try again...")
       }
       this.setState({
         feedbackMessage: "Mailbox found!",
@@ -367,30 +367,26 @@ class BSelectMailbox extends Component{
       <div id="select-mailbox" className={"select-mailbox green page-wrapper " + (this.props.parentState.uiState === 1 ? "fade-in" : "hidden")}>
         <div className="select-mailbox-ui page-inner-centered">
         <div className="page-inner-wrapper">
-          <div className="select-mailbox">
+          <div>
             {(this.state.isUnlockingMailbox && !this.state.mailboxName) &&
               <div className="unlock-mailbox">
-                <div className="page-inner-wrapper">
-                  <h1 className="select-account-header">Log in to encrypt</h1>
+                  <h1 className="select-account-header hide-mobile">Log in to encrypt</h1>
                   <UnlockMailbox
                     dropDownOptions={this.getDropDownOptions()}
                     dropDownValue={this.state.unlockingMailbox}
                     handleSelectMailbox={this.handleSelectMailbox}
                     handleInputPassword={this.handleInputPassword.bind(this)}
                   />
-                </div>
               </div>
             }
             {this.state.isAddingMailbox &&
               <div className="select-mailbox">
-                <div className="page-inner-wrapper">
-                  <h1 className="select-account-header">Create Mailbox</h1>
+                  <h1 className="select-account-header hide-mobile">Create Mailbox</h1>
                     <AddMailbox
                       handleInputMailboxName={this.handleInputMailboxName.bind(this)}
                       handleInputPassword={this.handleInputPassword.bind(this)}
                       handleInputPasswordVerification={this.handleInputPasswordVerification.bind(this)}
                     />
-                </div>
               </div>
             }
           </div>
@@ -404,26 +400,26 @@ class BSelectMailbox extends Component{
             {this.state.feedbackMessage}
             {/* <img className="in-progress-icon" src={this.props.appRoot + "assets/images/progress.svg"} alt="Spinning"/> */}
           </div>
-          <div className="actions">
+          <div className="actions btn-grp">
             <button 
               className="btn btn-lg btn-green btn-float-left" 
               onClick={this.handleContinue.bind(this)}
               disabled={this.state.processingAddMailbox}
             >
               {(this.state.isAddingMailbox && !this.props.parentState.isStoringFile) &&
-                "Create Mailbox and Send"
+                "Send File"
               }
               {(!this.state.mailboxName && this.state.isUnlockingMailbox && !this.props.parentState.isStoringFile) &&
-                "Unlock Mailbox and Send"
+                "Send File"
               }
               {(this.state.isAddingMailbox && this.props.parentState.isStoringFile) &&
-                "Create Mailbox and Store"
+                "Store File"
               }
               {(this.state.isUnlockingMailbox && this.props.parentState.isStoringFile) &&
-                "Unlock Mailbox and Store"
+                "Store File"
               }
               {(!this.state.isAddingMailbox && this.state.mailboxName && !this.props.parentState.isStoringFile) &&
-                "Send"
+                "Send File"
               }
             </button>
             {this.state.mailboxesExist &&

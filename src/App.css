@@ -7,7 +7,7 @@ body{
   overscroll-behavior: none;
 }
 
-@media (max-width: 600px){
+/*@media (max-width: 600px){
   .parent-wrapper{
     display: none;
   }
@@ -26,7 +26,7 @@ body{
     margin: auto;
   }
 }
-
+*/
 .mobile-soon-overlay{
   display: none;
 }
@@ -40,7 +40,7 @@ body{
 .select-file,
 .wrapper,
 .disclaimer {
-  min-width: 1080px;
+  /*min-width: 1080px;*/
 }
 
 input{
@@ -57,8 +57,6 @@ input{
          url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.woff') format('woff'),
          url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.ttf') format('truetype'),
          url('assets/fonts/lunchtype24/lunchtype24-regular-expanded-webfont.svg#lunchtype24expanded_regular') format('svg');
-/*    font-weight: 400;
-    font-style: normal;*/
 }
 
 @font-face {
@@ -69,8 +67,6 @@ input{
          url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.woff') format('woff'),
          url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.ttf') format('truetype'),
          url('assets/fonts/lunchtype24/lunchtype24-medium-expanded-webfont.svg#lunchtype24expanded_medium') format('svg');
-/*    font-weight: 600;
-    font-style: normal;*/
 }
 
 @font-face {
@@ -81,15 +77,7 @@ input{
          url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.woff') format('woff'),
          url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.ttf') format('truetype'),
          url('assets/fonts/lunchtype24/lunchtype24-light-expanded-webfont.svg#lunchtype24expanded_light') format('svg');
-/*    font-weight: 200;
-    font-style: normal;*/
 }
-
-/*  font-family: 'Lunchtype24-Light-Expanded';
-
-  font-family: 'Lunchtype24-Medium-Expanded';
-
-  font-family: 'Lunchtype24-Regular-Expanded';*/
 
 
 /*typeface*/
@@ -102,7 +90,7 @@ h1{
   font-family: 'Lunchtype24-Medium-Expanded';
 }
 
-h2{
+h2, h2 span{
   font-family: 'Lunchtype24-Regular-Expanded';
 }
 
@@ -115,7 +103,7 @@ input[type='text'] {
 }
 
 .select-file-instruction h3, .select-file-instruction h3 span{
-  font-family: 'Lunchtype24-Light-Expanded';  
+  font-family: 'Lunchtype24-Medium-Expanded';  
 }
 
 .inbox-col{
@@ -202,13 +190,6 @@ input[type="password"] {
   font-variant: normal;
   text-transform: none;
 
-  /* Font smoothing. That was taken from TWBS */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* Uncomment for 3D effect */
-  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
-
-  /* add spacing to better separate each image */
   letter-spacing: 2px;
 }
 
@@ -246,7 +227,6 @@ input::placeholder{
   color:#A8DABE;
 }
 
-/* Change the white to any color ;) */
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #37bd72 inset;
   -webkit-text-fill-color: #fff;
@@ -256,7 +236,6 @@ input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #fff inset;
   -webkit-text-fill-color: #000;
 }
-
 
 .sym-enc,
 .send-mail {
@@ -319,7 +298,7 @@ input:-webkit-autofill {
 .btn.btn-lg {
   border-radius: 100px !important;
   font-size: 18px;
-  padding: 5px 25px 2px 25px;
+  padding: 5px 25px 4px 25px;
   border: none;
   margin-right: 10px;
 }
@@ -335,9 +314,9 @@ input:-webkit-autofill {
   margin: 8px 10px 12px 18px;
 }
 
-.btn.btn-black {
+.red .btn.btn-white {
   background-color: #ffffff;
-  color: #000;
+  color: #FB4A36;
 }
 
 .btn.btn-green {
@@ -350,6 +329,11 @@ input:-webkit-autofill {
 }
 
 .white .btn {
+  background: #000;
+  color: #fff;
+}
+
+.btn-block{
   background: #000;
   color: #fff;
 }
@@ -372,7 +356,7 @@ input:-webkit-autofill {
 }
 
 
-.btn-group{
+.btn-grp{
   clear: both;
   margin-bottom: 75px;
   width: 100%;
@@ -439,6 +423,35 @@ input:-webkit-autofill {
   margin: auto;
 }
 
+
+
+@media (max-width: 600px){
+  .menu{
+    left: -100vw;
+    width: 100vw;
+    z-index: 101;
+  }
+
+  .menu.show{
+    transform: translateX(100vw);
+    transition: 1s transform;
+  }
+
+  .page-wrapper {
+    padding: 10vw;
+    padding-top: 15vh;    
+  }
+
+  .show-files.page-wrapper {
+    padding: 0;
+  }  
+
+  .page-inner-wrapper {
+    width: 100%;
+    margin: auto;
+  }
+
+}
 
 /* Slide Backgrounds */
 
@@ -550,16 +563,6 @@ input:-webkit-autofill {
   max-height: 350px;
 }
 
-.content-fade-out:after {
-  content: '';
-  position: absolute;
-  bottom: 13vh;
-  left: 0;
-  right: 0;
-  height: 10vh;
-  background-image: linear-gradient( rgba(255, 255, 255, 0) 50%, rgb(46, 46, 46) 100% );
-}
-
 
 .content-text a, .content-text p{
   color: #fff !important;
@@ -573,229 +576,6 @@ input:-webkit-autofill {
 .content-terms .content-text{
   font-size: 9px;
 }
-
-
-/*
-.menu.show{
-  transform: translateX(50vw);
-  transition: 1s transform;
-}
-
-.menu-header{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px 40px 20px 80px;
-  text-align: right;
-}
-
-.menu-header img{
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-
-.menuShown .menu-header img{
-  opacity: 1;
-  transition: opacity 1s 0.5s;
-}
-
-
-
-
-
-.fadeInScreen .menu-background-screen{
-  opacity: 0.4;
-  transition: opacity 1s;  
-}
-
-.showScreen .menu-background-screen{
-  display: block;
-}
-
-.menu-item-header{
-  font-family: 'Berthold Akzidenz-Grotesk Light Extended', 'HankenGrotesk-SemiBold';
-  position: absolute;
-  width: 100px;
-  z-index: 10;
-  padding: 10px;
-  left: 20px;
-  cursor: pointer;
-  color: #ccc;
-}
-
-.show-links .menu-item-header{
-  color: #fff;
-}
-
-.menu-header-item-left{
-  float: left;
-  margin-right: 20px;
-}
-
-.menu-header-item-right{
-  float: right;
-  margin-left: 20px;
-}
-
-.menu-header-spacer{
-  display: block;
-  width: 40px;
-  height: 40px;
-}
-
-.menu-main{
-  position: absolute;
-  top: 100px;
-}
-
-.menu-section{
-  height: 100px;
-  color: #fff;
-}
-
-.menu-links{
-  position: absolute;
-  left: 150px;
-  background: #2e2e2e;
-  z-index: 200;
-  padding: 10px;
-  width: 180px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  cursor: pointer;
-}
-
-.show-links .menu-links{
-  opacity: 1;
-  transition: opacity 1s;
-  pointer-events: all;
-}
-
-.menu-link{
-  margin-bottom: 10px;
-  width: 35vw;
-}
-
-.menu-link-hidden{
-  opacity: 0;
-  pointer-events: none;
-}
-
-.menu-footer{
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  padding: 10px;
-}
-
-.menu-footer-item{
-  height: 40px;
-  width: 20%;
-  text-align: center;
-  float: left;
-}
-
-.menu-footer-item img{
-  height: 30px;
-}
-
-
-/*!
- * Hamburgers
- * @description Tasty CSS-animated hamburgers
- * @author Jonathan Suh @jonsuh
- * @site https://jonsuh.com/hamburgers
- * @link https://github.com/jonsuh/hamburgers
- */
-.hamburger {
-  padding: 1px 1px;
-  display: inline-block;
-  cursor: pointer;
-  transition-property: opacity, filter;
-  transition-duration: 0.15s;
-  transition-timing-function: linear;
-  font: inherit;
-  color: inherit;
-  text-transform: none;
-  background-color: transparent;
-  border: 0;
-  margin: 0;
-  overflow: visible; }
-  .hamburger:hover {
-    opacity: 0.7; }
-  .hamburger.is-active:hover {
-    opacity: 0.7; }
-  .hamburger.is-active .hamburger-inner,
-  .hamburger.is-active .hamburger-inner::before,
-  .hamburger.is-active .hamburger-inner::after {
-    background-color: #000; }
-
-.hamburger-box {
-  width: 40px;
-  height: 24px;
-  display: inline-block;
-  position: relative; }
-
-.hamburger-inner {
-  display: block;
-  top: 50%;
-  margin-top: -2px; }
-  .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
-    width: 30px;
-    height: 2px;
-    background-color: #000;
-    border-radius: 4px;
-    position: absolute;
-    transition-property: transform;
-    transition-duration: 0.15s;
-    transition-timing-function: ease; }
-  .hamburger-inner::before, .hamburger-inner::after {
-    content: "";
-    display: block; }
-  .hamburger-inner::before {
-    top: -10px; }
-  .hamburger-inner::after {
-    bottom: -10px; }
-
- .nav-black .hamburger-inner, .nav-white .hamburger-inner::before, .nav-white .hamburger-inner::after{
-  background-color: #000;
-  transition: transform 0.15s, color 1s;
- }
-
-  .nav-white .hamburger-inner, .nav-white .hamburger-inner::before, .nav-white .hamburger-inner::after{
-  background-color: #fff  ;
-  transition: transform 0.15s, color 1s;
- }
-/*
-   * Spin
-   */
-.hamburger--spin .hamburger-inner {
-  transition-duration: 0.22s;
-  transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
-  .hamburger--spin .hamburger-inner::before {
-    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
-  .hamburger--spin .hamburger-inner::after {
-    transition: bottom 0.1s 0.25s ease-in, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19); }
-
-.hamburger--spin.is-active .hamburger-inner {
-  transform: rotate(225deg);
-  transition-delay: 0.12s;
-  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
-  .hamburger--spin.is-active .hamburger-inner::before {
-    top: 0;
-    opacity: 0;
-    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
-  .hamburger--spin.is-active .hamburger-inner::after {
-    bottom: 0;
-    transform: rotate(-90deg);
-    transition: bottom 0.1s ease-out, transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1); }
-
-.hamburger.is-active .hamburger-inner, .hamburger.is-active .hamburger-inner::before, .hamburger.is-active .hamburger-inner::after {
-    background-color: #fff;
-}*/
 
 
 /* Menu */
@@ -828,6 +608,7 @@ input:-webkit-autofill {
   transition: 1s transform;
 }
 
+
 .menu-header{
   position: absolute;
   top: 0;
@@ -842,12 +623,18 @@ input:-webkit-autofill {
   transition: opacity 0.5s;
 }
 
+.menu-wrapper .show-links .menu-links{
+  pointer-events: none;
+}
+
+.menuShown .show-links .menu-links{
+  pointer-events: initial;
+}
+
 .menuShown .menu-header img{
   opacity: 1;
   transition: opacity 1s 0.5s;
 }
-
-
 
 .menu-background-screen{
   height: 100vh;
@@ -911,7 +698,7 @@ input:-webkit-autofill {
 
 .menu-links{
   position: absolute;
-  left: 150px;
+  left: 120px;
   background: #2e2e2e;
   z-index: 200;
   padding: 10px;
@@ -930,7 +717,7 @@ input:-webkit-autofill {
 
 .menu-link{
   margin-bottom: 10px;
-  width: 35vw;
+  width: 57vw;
 }
 
 .menu-link-hidden{
@@ -1033,9 +820,10 @@ input:-webkit-autofill {
   background-color: #fff  ;
   transition: transform 0.15s, color 1s;
  }
+
 /*
-   * Spin
-   */
+* Spin
+*/
 .hamburger--spin .hamburger-inner {
   transition-duration: 0.22s;
   transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
@@ -1062,7 +850,6 @@ input:-webkit-autofill {
 }
 
 
-
 .is-selecting .hamburger{
   pointer-events: none;
   opacity: 0;
@@ -1077,6 +864,7 @@ input:-webkit-autofill {
   width: 100%;
   z-index: 10;
   padding: 20px;
+  padding-bottom: 0px;
   opacity: 1;
   transition: opacity 1s;  
 }
@@ -1167,6 +955,7 @@ input:-webkit-autofill {
   display: table-cell;
   vertical-align: middle;
   text-align: right;
+  transform: translateY(-4px);
 }
 
 .nav-context{
@@ -1311,8 +1100,12 @@ a.nav-context:hover{
 
 .select-file-instruction h2{
   font-size: 32px;
-  margin-bottom: 100px;
+  margin-bottom: 25px;
 }
+
+.select-file-instruction-inner h2.last{
+  margin-bottom: 60px;
+}  
 
 .select-file-instruction h3, .select-file-instruction h3 span{
   font-size: 30px;
@@ -1363,8 +1156,16 @@ a.nav-context:hover{
   cursor: pointer;
 }
 
+.select-file-instruction h2 span.avoid-wrap {
+  display:inline-block;
+}
+
 .select-file-instruction.is-selecting {
   pointer-events: none;
+}
+
+.select-file-instruction-inner .show-mobile button{
+  margin-bottom: 25px;
 }
 
 /*overlay*/
@@ -1384,7 +1185,6 @@ a.nav-context:hover{
   opacity: 1;
   transition: opacity 1s;
 }
-
 
 .select-file-store,
 .select-file-send,
@@ -1442,7 +1242,8 @@ a.nav-context:hover{
 }
 
 .select-mailbox-mailboxes {
-    width: 470px;
+    /*width: 470px;*/
+    width: 100%;
     float: left;
 }
 
@@ -1598,7 +1399,7 @@ a.nav-context:hover{
 
 .confirm-ui-item .confirm-ui-value{
   float: right;
-  width: 250px;
+  width: 228px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1681,6 +1482,7 @@ a.nav-context:hover{
   z-index: 5;
   border-right: 1px #2E332F;
   display: table;
+  padding: 10vw;
 }
 
 .info-content{
@@ -1765,7 +1567,7 @@ a.nav-context:hover{
   margin-bottom: 8px;
   margin-right: 8px;
 }
-
+/*
 .ui{
   top:0;
   background: #2E332F;
@@ -1793,6 +1595,16 @@ a.nav-context:hover{
 .ui a.file-link{
   color: #fff;
 }
+
+@media (max-width: 600px){
+  .ui{
+    width:100vw;
+    left:100vw;
+    height:100vh;
+    transform: translateX(100vw);
+  }
+}
+*/
 
 /*.progress*/
 
@@ -1908,7 +1720,7 @@ a.nav-context:hover{
 .inbox{
   width: 100%;
   padding: 20px;
-  min-width: 1080px;
+  /*min-width: 1080px;*/
 }
 
 .inbox table{
@@ -1917,8 +1729,8 @@ a.nav-context:hover{
 }
 
 .inbox th, .inbox td{
+  text-overflow: ellipsis;
   font-size: 12px;
-  padding: 8px;
 }
 
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
@@ -1934,7 +1746,7 @@ a.nav-context:hover{
 }
 
 .inbox tbody tr td:nth-child(4), .inbox thead tr th:nth-child(4){
-  width: 8%;
+  width: 9%;
   text-align: right;
 }
 
@@ -2001,6 +1813,26 @@ a.nav-context:hover{
   float: right;
 }
 
+.mobile-inbox-nav {
+  margin-top: 10px;
+}
+
+.mobile-inbox-nav-cell {
+  width: 29vw;
+  float: left;
+  font-size: 11px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.mobile-inbox-nav-cell img{
+  transform: scale(0.75);
+}
+
+.mobile-inbox-nav button {
+  border: 0;
+  background: transparent;
+}
 /*.icon-group .icon .info-filesize,
 .icon-group .icon .info-filesender,
 .icon-group .icon .info-filerecipient {
@@ -2031,3 +1863,180 @@ a.nav-context:hover{
   background: none;
 }
 
+.show-mobile {
+  display: none;
+}
+
+@media (max-width: 950px) {
+  .inbox-nav{
+    transform: scale(0.85);
+  }
+
+  .inbox-header, .inbox-main{
+    width: 75%;    
+  }
+}
+
+@media (max-width: 600px){
+
+  .disclaimer-content{
+    margin: 20px 20px;
+  }
+
+  .menu{
+    left: -100vw;
+    width: 100vw;
+    z-index: 101;
+  }
+
+  .menu.show{
+    transform: translateX(100vw);
+    transition: 1s transform;
+  }
+
+  .content.show {
+    transform: translateX(-100vw);
+  }
+
+  .content {
+    right: -100vw;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .content-outer {
+    width: 100vw;
+  }
+
+  .content-inner{
+    padding: 5vh 10vw;
+  }
+
+  .page-inner-wrapper {
+    width: 100%;
+    margin: auto;
+  }
+
+  .show-files .page-wrapper {
+    width: 95vw;
+    margin: 2vw;
+  }
+
+  .inbox {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .inbox-header, .inbox-main {
+    width: 100%;
+    float: none;
+  }
+
+  .show-files.page-wrapper {
+    width: 96vw;
+    margin: 2vw;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+
+  .show-mobile {
+    display: initial;
+  }
+
+  .no-events-mobile {
+    pointer-events: none;
+  }
+
+  .select-file-instruction{
+    pointer-events: initial;
+  }
+
+  .select-file-instruction {
+    margin-top: 20vh;
+  }
+
+  .select-file-instruction-inner h2{
+    margin: auto;
+    width: 76%;
+    margin-bottom: 25px;
+    font-size: 25px;
+  }
+
+  .ui-feedback {
+    text-align: center
+  }
+
+  .actions {
+    margin: 20px 0 0 0;
+  }
+
+  .btn-float-left, .btn-float-right {
+    float: none;
+  }
+
+  .nav-header-item-right {
+    margin-left:0;
+  }
+
+  .nav-key a {
+    transform: translateY(-4px);
+  }
+
+  .ui-feedback {
+    font-size: 13px;
+  }
+
+  .page-wrapper h1 {
+      margin-bottom: 40px;
+  }
+
+  .btn-grp .btn {
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
+  }
+
+  .confirm-ui-item .confirm-ui-value {
+    max-width: 172px;
+  }
+
+  .menu-footer-item img {
+    height: 22 gpx;
+  }
+
+  .menu-main {
+    top: 50px;
+    font-size: 14px;
+  }
+
+  .menu-links {
+    left: 100px;
+  }
+
+  .menu-item-header {
+    padding-left: 0px;
+  }
+
+  .show-files-ui {
+    width: 100%;
+    height: 88vh;
+  }
+
+}
+
+@media (max-height: 580px){
+
+  .nav-header-item-left {
+    margin-right: 10px;
+  }
+
+  .select-file-instruction {
+    margin-top: 15vh;
+  }
+
+  .select-file-instruction-inner h2{
+    width: 80%;
+  }
+}

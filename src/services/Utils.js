@@ -27,7 +27,7 @@ function generatePassword (){
 
 function humanFileSize(size) {
       var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['bytes', 'KB', 'MB', 'GB', 'TB'][i];
+      return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
   }
 
 function humanEntropy(password){

@@ -28,6 +28,8 @@ import Content from "./components/Content"
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
 
+import * as Sentry from '@sentry/browser';
+
 import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
@@ -80,6 +82,14 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+
+    if(process.env.NODE_ENV !== 'development'){
+      Sentry.init({ 
+        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
+        release: "datafund@"+version
+      }); 
+      window.Sentry = Sentry;     
+    }
 
     let config = {
       tokenName: 'gas',      

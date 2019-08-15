@@ -23,10 +23,12 @@ import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
 
+import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
 
   getInitialState(){
+
     this.FDS = this.props.FDS;
     let mailboxes = this.FDS.GetAccounts();
 
@@ -180,7 +182,7 @@ class Mailbox extends Component{
         shownMessages: messages
       });
     });
-  }  
+  }
 
   retrieveSentFile(message){
     message.saveAs();
@@ -257,6 +259,7 @@ class Mailbox extends Component{
         this.setSelectedMailbox(this.FDS.currentAccount);
       })
     }).catch((error)=>{
+      Sentry.captureException(error);
       this.setState(
         {
           feedbackMessage: `${error.toString()} - please try again.`,

@@ -1823,6 +1823,11 @@ a.nav-context:hover{
   font-size: 11px;
   margin-top: 15px;
   margin-bottom: 15px;
+  font-family: 'Lunchtype24-Medium-Expanded';
+}
+
+.mobile-inbox-nav-cell button.inactive{
+  font-family: 'Lunchtype24-Light-Expanded';
 }
 
 .mobile-inbox-nav-cell img{

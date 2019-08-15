@@ -62,7 +62,8 @@ class Mailbox extends Component{
           feedbackMessage: '',
           mailboxName: false,
           passwordsValid: false,
-          processingAddMailbox: false
+          processingAddMailbox: false,
+          hasErrored: false
         };
     }else
     if(mailboxes.length === 0){
@@ -81,7 +82,8 @@ class Mailbox extends Component{
         feedbackMessage: '',
         mailboxName: false,
         passwordsValid: false,
-        processingAddMailbox: false
+        processingAddMailbox: false,
+        hasErrored: false
       };
     }else
     if(mailboxes.length > 0){
@@ -100,7 +102,8 @@ class Mailbox extends Component{
         feedbackMessage: '',
         mailboxName: false,
         passwordsValid: false,
-        processingAddMailbox: false
+        processingAddMailbox: false,
+        hasErrored: false
       };
     }
   }
@@ -254,7 +257,12 @@ class Mailbox extends Component{
         this.setSelectedMailbox(this.FDS.currentAccount);
       })
     }).catch((error)=>{
-      this.setState({feedbackMessage: error});
+      this.setState(
+        {
+          feedbackMessage: `${error.toString()} - please try again.`,
+          hasErrored: true,
+          processingAddMailbox: false
+        });
     });
 
   }

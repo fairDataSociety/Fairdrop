@@ -83,31 +83,35 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    if(process.env.NODE_ENV !== 'development'){
+    // if(process.env.NODE_ENV !== 'development'){
       Sentry.init({ 
         dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
         release: "datafund@"+version
-      }); 
+      });
+      Sentry.configureScope((scope) => {
+        scope.setUser({"email": "john.doe@example.com"});
+      });
+      // test();
       window.Sentry = Sentry;     
-    }
+    // }
 
-    let config = {
-      tokenName: 'gas',      
-      swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
-      ethGateway: process.env.REACT_APP_GETH_GATEWAY,
-      faucetAddress: process.env.REACT_APP_FAUCET_URL,
-      chainID: process.env.REACT_APP_CHAIN_ID,
-      httpTimeout: 1000,
-      gasPrice: 0.1, //gwei
-      ensConfig: {
-        domain: process.env.REACT_APP_DOMAIN_NAME,
-        registryAddress: process.env.REACT_APP_ENS_ADDRESS,
-        subdomainRegistrarAddress: process.env.REACT_APP_REGISTRAR_ADDRESS,
-        resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
-      }
-    };
+    // let config = {
+    //   tokenName: 'gas',      
+    //   swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
+    //   ethGateway: process.env.REACT_APP_GETH_GATEWAY,
+    //   faucetAddress: process.env.REACT_APP_FAUCET_URL,
+    //   chainID: process.env.REACT_APP_CHAIN_ID,
+    //   httpTimeout: 1000,
+    //   gasPrice: 0.1, //gwei
+    //   ensConfig: {
+    //     domain: process.env.REACT_APP_DOMAIN_NAME,
+    //     registryAddress: process.env.REACT_APP_ENS_ADDRESS,
+    //     subdomainRegistrarAddress: process.env.REACT_APP_REGISTRAR_ADDRESS,
+    //     resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
+    //   }
+    // };
 
-    this.FDS = new FDS(config);
+    this.FDS = new FDS();
 
     this.uploadComponent = React.createRef();
     this.importMailboxInput = React.createRef();

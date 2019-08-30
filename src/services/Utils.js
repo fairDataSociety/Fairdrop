@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import Crypto from 'crypto';
-import zxcvbn from 'zxcvbn';
+// import zxcvbn from 'zxcvbn';
 
 function generatePassword (){
     return new Promise((resolve, reject)=>{
@@ -26,12 +26,12 @@ function generatePassword (){
   }
 
 function humanFileSize(size) {
-      var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
-  }
+    var i = Math.floor( Math.log(size) / Math.log(1024) );
+    return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+}
 
-function humanEntropy(password){
-    return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
-  }
+// function humanEntropy(password){
+//     return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
+// }
 
-export default {generatePassword, humanFileSize, humanEntropy}
+export default {generatePassword, humanFileSize}

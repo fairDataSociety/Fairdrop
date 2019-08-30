@@ -158,7 +158,7 @@ class Mailbox extends Component{
   }
 
   showReceived(){
-    this.FDS.currentAccount.messages('received').then((messages)=>{
+    this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
       this.setState({
         shownMessageType: 'received',
         shownMessages: messages
@@ -193,7 +193,7 @@ class Mailbox extends Component{
   }
 
   mailboxUnlocked(){
-    this.FDS.currentAccount.messages('received').then((messages)=>{
+    this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
       this.setState({
         uiState: 1,
         shownMessageType: 'received',

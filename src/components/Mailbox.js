@@ -457,9 +457,9 @@ class Mailbox extends Component{
                       <tr>
                         <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
                       </tr>
-                      <tr>
+                      {/*<tr>
                         <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={this.showConsents}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Consents</button></td>
-                      </tr>                      
+                      </tr>*/}                 
                     </tbody>
                   </table>
                 </div>

@@ -139,7 +139,7 @@ class Upload extends Component{
         this.state.isQuickFile === true
       ){
         this.setState({encryptionComplete: true});
-        return this.FDS.Account.Swarm.storeFileUnencrypted(
+        return this.FDS.Account.Store.storeFileUnencrypted(
           window.file
           // new File(
           //   [window.selectedFileArrayBuffer],

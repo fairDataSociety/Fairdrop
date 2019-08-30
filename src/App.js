@@ -83,7 +83,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    // if(process.env.NODE_ENV !== 'development'){
+    if(process.env.NODE_ENV !== 'development'){
       Sentry.init({ 
         dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
         release: "datafund@"+version
@@ -91,9 +91,8 @@ class App extends Component {
       Sentry.configureScope((scope) => {
         scope.setUser({"email": "john.doe@example.com"});
       });
-      // test();
       window.Sentry = Sentry;     
-    // }
+    }
 
     // let config = {
     //   tokenName: 'gas',      

@@ -219,10 +219,11 @@ class Mailbox extends Component{
     let subdomain = this.state.unlockingMailbox;
     let password = this.state.password;
     this.FDS.UnlockAccount(subdomain, password).then((account)=>{
-      window.Sentry.configureScope((scope) => {
-        console.log(subdomain, 1)
-        scope.setUser({"username": account.subdomain});
-      });
+      if(window.Sentry){
+        window.Sentry.configureScope((scope) => {
+          scope.setUser({"username": account.subdomain});
+        });
+      }
       this.setState({
         feedbackMessage: 'Mailbox unlocked.',
         mailboxIsUnlocked: true,
@@ -255,10 +256,11 @@ class Mailbox extends Component{
       this.setState({feedbackMessage: message});
     }).then((account)=>{
       this.FDS.UnlockAccount(this.state.mailboxName, this.state.password).then((account)=>{
-        window.Sentry.configureScope((scope) => {
-          console.log(this.state.mailboxName, 5)
-          scope.setUser({"username": this.state.mailboxName});
-        });
+        if(window.Sentry){
+          window.Sentry.configureScope((scope) => {
+            scope.setUser({"username": this.state.mailboxName});
+          });
+        }
         this.setState({
           feedbackMessage: 'Mailbox unlocked.',
           mailboxIsUnlocked: true,

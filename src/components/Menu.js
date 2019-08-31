@@ -135,7 +135,8 @@ class App extends Component {
             header="Settings"
             items={[
                     ['Import Mailbox', this.props.importMailbox],
-                    ['Export Mailboxes', this.props.exportMailboxes]
+                    ['Export Mailboxes', this.props.exportMailboxes],
+                    ['Export Legacy Mailboxes', this.props.exportLegacyMailboxes]
                     // ,
                     // ['Pro Mode', (c)=>{console.log(c)}]
                   ]}

@@ -22,6 +22,8 @@ import FileSaver from 'filesaver.js';
 import Upload from "./components/Upload";
 import Mailbox from "./components/Mailbox";
 import DisclaimerSplash from "./components/DisclaimerSplash"
+import DisclaimerSplash2 from "./components/DisclaimerSplash2"
+import DisclaimerSplash3 from "./components/DisclaimerSplash3"
 import Menu from "./components/Menu"
 import Content from "./components/Content"
 
@@ -39,7 +41,12 @@ import {version} from '../package.json';
 class App extends Component {
 
   getInitialState() {
-    let hasNotHiddenDisclaimers = localStorage.getItem('hasHiddenDisclaimers') !== "true";
+    let hasNotHiddenDisclaimer = localStorage.getItem('hasHiddenDisclaimer') !== "true";
+    let hasNotHiddenDisclaimer2 = localStorage.getItem('hasHiddenDisclaimer2') !== "true";
+
+
+    let legacyAccounts = this.FDS.GetAccounts(0);
+    let hasNotHiddenDisclaimer3 = localStorage.getItem('hasHiddenDisclaimer3') !== "true" ? legacyAccounts.length > 0 : false;
 
     return {
       navState: true,
@@ -50,7 +57,9 @@ class App extends Component {
       fileIsSelected: false,
       fileWasSelected: false,
       fileIsSelecting: false,
-      disclaimersAreShown: hasNotHiddenDisclaimers,
+      disclaimersAreShown: hasNotHiddenDisclaimer,
+      disclaimersAreShown2: hasNotHiddenDisclaimer2,
+      disclaimersAreShown3: hasNotHiddenDisclaimer3,
       menuState: false,
       appRoot: this.props.appRoot
     };
@@ -83,13 +92,12 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    // if(process.env.NODE_ENV !== 'development'){
-      Sentry.init({ 
-        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
-        release: "datafund@"+version
-      });
-      window.Sentry = Sentry;     
-    // }
+    if(
+      process.env.NODE_ENV !== 'development' &&
+      localStorage.getItem('sentryEnabled') === "true"
+      ){
+      this.initSentry();    
+    }
 
     // let config = {
     //   tokenName: 'gas',      
@@ -116,6 +124,9 @@ class App extends Component {
     this.setSelectedMailbox = this.setSelectedMailbox.bind(this);
     this.fileWasSelected = this.fileWasSelected.bind(this);
     this.hideDisclaimer = this.hideDisclaimer.bind(this);
+    this.hideDisclaimer2n = this.hideDisclaimer2n.bind(this);
+    this.hideDisclaimer2y = this.hideDisclaimer2y.bind(this);
+    this.hideDisclaimer3 = this.hideDisclaimer3.bind(this);
     this.handleSendFile = this.handleSendFile.bind(this);
     this.handleStoreFile = this.handleStoreFile.bind(this);
     this.handleQuickFile = this.handleQuickFile.bind(this);
@@ -123,6 +134,7 @@ class App extends Component {
     this.resetMailboxState = this.resetMailboxState.bind(this);
     this.handleNavigateTo = this.handleNavigateTo.bind(this);
     this.exportMailboxes = this.exportMailboxes.bind(this);
+    this.exportLegacyMailboxes = this.exportLegacyMailboxes.bind(this);
     this.importMailbox = this.importMailbox.bind(this);
     this.showContent = this.showContent.bind(this);
     this.toggleContent = this.toggleContent.bind(this);
@@ -131,15 +143,24 @@ class App extends Component {
     this.enableNav = this.enableNav.bind(this);
 
     this.state = this.getInitialState();
+  }
 
+  initSentry(){
+      console.log('initialised Sentry')
+      Sentry.init({ 
+        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
+        release: "datafund@"+version
+      });
+      window.Sentry = Sentry;  
   }
 
   unlockMailboxWallet(subdomain, password){
     this.FDS.UnlockAccount(subdomain, password).then((account)=>{
-      window.Sentry.configureScope((scope) => {
-        console.log(subdomain, 2)
-        scope.setUser({"username": account.subdomain});
-      });
+      if(window.Sentry){
+        window.Sentry.configureScope((scope) => {
+          scope.setUser({"username": account.subdomain});
+        });
+      }
       this.setState({
         feedbackMessage: 'Mailbox unlocked.',
         mailboxIsUnlocked: true,
@@ -194,9 +215,26 @@ class App extends Component {
   }
 
   hideDisclaimer(e){
-    localStorage.setItem('hasHiddenDisclaimers', true);
+    localStorage.setItem('hasHiddenDisclaimer', true);
     this.setState({disclaimersAreShown: false});
   }
+
+  hideDisclaimer2n(e){
+    localStorage.setItem('hasHiddenDisclaimer2', true);
+    this.setState({disclaimersAreShown2: false});
+  }  
+
+  hideDisclaimer2y(e){
+    localStorage.setItem('hasHiddenDisclaimer2', true);
+    localStorage.setItem('sentryEnabled', true);
+    this.initSentry();
+    this.setState({disclaimersAreShown2: false});
+  }  
+
+  hideDisclaimer3(e){
+    localStorage.setItem('hasHiddenDisclaimer3', true);
+    this.setState({disclaimersAreShown3: false});
+  }  
 
   importMailbox(e){
     this.importMailboxInput.current.click();
@@ -234,6 +272,10 @@ class App extends Component {
   exportMailboxes(){
     let zip = new JSZip();
     let accounts = this.FDS.GetAccounts();
+    if(accounts.length === 0){
+      alert('No accounts to export.')
+      return false;
+    }
     for (var i = accounts.length - 1; i >= 0; i--) {
       var file = accounts[i].getBackup();
       zip.file(file.name, file.data);
@@ -243,6 +285,23 @@ class App extends Component {
         FileSaver.saveAs(content, "fairdrop-mailboxes.zip");
     });
   }
+
+  exportLegacyMailboxes(){
+    let zip = new JSZip();
+    let accounts = this.FDS.GetAccounts(0);
+    if(accounts.length === 0){
+      alert('No accounts to export.')
+      return false;
+    }    
+    for (var i = accounts.length - 1; i >= 0; i--) {
+      var file = accounts[i].getBackup();
+      zip.file(file.name, file.data);
+    }
+    zip.generateAsync({type:"blob"})
+    .then(function(content) {
+        FileSaver.saveAs(content, "fairdrop-mailboxes.zip");
+    });
+  }  
 
   enableNav(e){
     this.setState({navState: true});
@@ -272,6 +331,15 @@ class App extends Component {
             disclaimersAreShown={this.state.disclaimersAreShown}
             hideDisclaimer={this.hideDisclaimer}
           />
+          <DisclaimerSplash2
+            disclaimersAreShown={this.state.disclaimersAreShown2}
+            hideDisclaimer2n={this.hideDisclaimer2n}
+            hideDisclaimer2y={this.hideDisclaimer2y}            
+          />  
+          <DisclaimerSplash3
+            disclaimersAreShown={this.state.disclaimersAreShown3}
+            hideDisclaimer3={this.hideDisclaimer3}
+          />                    
           <Menu
             isShown={false}
             menuToggled={(s)=>{this.setState({menuState: s})}}
@@ -280,6 +348,7 @@ class App extends Component {
             handleQuickFile={this.handleQuickFile}
             handleNavigateTo={this.handleNavigateTo}
             exportMailboxes={this.exportMailboxes}
+            exportLegacyMailboxes={this.exportLegacyMailboxes}
             importMailbox={this.importMailbox}
             appRoot={this.state.appRoot}
             toggleContent={this.toggleContent}

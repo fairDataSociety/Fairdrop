@@ -369,6 +369,10 @@ input:-webkit-autofill {
 
 /* Shared */
 
+input:disabled{
+  opacity: 0.5;
+}
+
 .hidden{
   opacity: 0;
   pointer-events: none !important;
@@ -1047,6 +1051,17 @@ a.nav-context:hover{
   margin-top: 10px;
   height: 1em;
 }
+
+.bold-click{
+  font-size: 12px;
+  color: #fff;
+  line-height: 15px;
+}
+
+.less-click{
+  color: #bfbfbf;
+}
+
 
 /* select file */
 

@@ -65,13 +65,6 @@ class ASelectFile extends Component{
       // clickable: false,
       accept: (file, done) => {
         window.file = file;
-        // var reader = new FileReader();
-        // reader.addEventListener("loadend",
-        //   function(event) {
-        //     // for now, todo -> streams...
-        //     window.selectedFileArrayBuffer = event.target.result;
-        //   });
-        // reader.readAsArrayBuffer(file);
       }
     });
 

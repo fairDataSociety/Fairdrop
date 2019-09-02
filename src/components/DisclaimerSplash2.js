@@ -24,7 +24,7 @@ class App extends Component {
       >
       <div className="disclaimer-wrapper">
         <div className="disclaimer-content">
-          Is it ok to use Sentry to help improve user experience by reporting bugs? <span className="click-to-dismiss" onClick={this.props.hideDisclaimer2n}>(No thanks)</span> <span className="click-to-dismiss" onClick={this.props.hideDisclaimer2y}>Sure!</span>
+          Is it ok to use Sentry to help improve user experience by reporting bugs? <span className="click-to-dismiss less-click" onClick={this.props.hideDisclaimer2n}>(No thanks)</span> <span className="click-to-dismiss bold-click" onClick={this.props.hideDisclaimer2y}>Sure!</span>
         </div>
       </div>
     </div>

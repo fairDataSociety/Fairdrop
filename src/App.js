@@ -65,6 +65,11 @@ class App extends Component {
     };
   }
 
+  resetState(){
+    this.setState(this.getInitialState());
+    this.props.history.push('/');
+  }
+
   resetMailboxState(){
     this.setState({
       selectedMailbox: false,
@@ -93,7 +98,6 @@ class App extends Component {
     super(props);
 
     if(
-      process.env.NODE_ENV !== 'development' &&
       localStorage.getItem('sentryEnabled') === "true"
       ){
       this.initSentry();    
@@ -141,17 +145,20 @@ class App extends Component {
     this.setFileIsSelecting = this.setFileIsSelecting.bind(this);
     this.disableNav = this.disableNav.bind(this);
     this.enableNav = this.enableNav.bind(this);
+    this.resetState = this.resetState.bind(this);
 
     this.state = this.getInitialState();
   }
 
   initSentry(){
-      console.log('initialised Sentry')
-      Sentry.init({ 
-        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
-        release: "datafund@"+version
-      });
-      window.Sentry = Sentry;  
+      if(process.env.NODE_ENV !== 'development'){
+        console.log('initialised Sentry')        
+        Sentry.init({ 
+          dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
+          release: "datafund@"+version
+        });
+        window.Sentry = Sentry;  
+      }
   }
 
   unlockMailboxWallet(subdomain, password){
@@ -382,7 +389,7 @@ class App extends Component {
                 <div className="nav-header-spacer"></div>
               </div>
               <div className="nav-header-item-left">
-                <Link to={"/"}>
+                <Link to={"/"} onClick={this.resetState}>
                   <FairdropLogo/>
                 </Link>
               </div>

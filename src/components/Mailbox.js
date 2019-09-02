@@ -145,7 +145,6 @@ class Mailbox extends Component{
 
   setSelectedMailbox(account){
     this.props.setSelectedMailbox(account);
-    this.showReceived();
   }
 
   showSent(){
@@ -199,6 +198,10 @@ class Mailbox extends Component{
         shownMessageType: 'received',
         shownMessages: messages
       });
+    }).catch((error)=>{
+      this.setState({
+        feedbackMessage: error
+      });
     });
   }
 
@@ -218,6 +221,7 @@ class Mailbox extends Component{
   unlockMailbox(e){
     let subdomain = this.state.unlockingMailbox;
     let password = this.state.password;
+
     this.FDS.UnlockAccount(subdomain, password).then((account)=>{
       if(window.Sentry){
         window.Sentry.configureScope((scope) => {
@@ -228,14 +232,15 @@ class Mailbox extends Component{
         feedbackMessage: 'Mailbox unlocked.',
         mailboxIsUnlocked: true,
       });
-      this.mailboxUnlocked();
-      this.setSelectedMailbox(this.FDS.currentAccount);
+      return this.mailboxUnlocked().then(()=>{
+        this.setSelectedMailbox(this.FDS.currentAccount);
+      });
     }).catch((error)=>{
       this.setState({
         feedbackMessage: 'Password invalid, please try again.',
         mailboxIsUnlocked: false
       });
-    });
+    })
   }
 
   handleAddMailbox(e){
@@ -252,6 +257,11 @@ class Mailbox extends Component{
 
     this.setState({processingAddMailbox: true});
 
+    // Enable navigation prompt
+    window.onbeforeunload = function() {
+        return true;
+    };
+
     this.FDS.CreateAccount(this.state.mailboxName, this.state.password, (message) => {
       this.setState({feedbackMessage: message});
     }).then((account)=>{
@@ -265,11 +275,13 @@ class Mailbox extends Component{
           feedbackMessage: 'Mailbox unlocked.',
           mailboxIsUnlocked: true,
         });
+        // Remove navigation prompt
+        window.onbeforeunload = null;        
         this.mailboxUnlocked();
         this.setSelectedMailbox(this.FDS.currentAccount);
       })
     }).catch((error)=>{
-      Sentry.captureException(error);
+      if(window.Sentry) window.Sentry.captureException(error);
       this.setState(
         {
           feedbackMessage: `${error.toString()} - please try again.`,
@@ -420,6 +432,7 @@ class Mailbox extends Component{
                         handleInputPassword={this.handleInputPassword.bind(this)}
                         handleInputPasswordVerification={this.handleInputPasswordVerification.bind(this)}
                         handleAddMailbox={this.handleAddMailbox.bind(this)}
+                        disabled={this.state.processingAddMailbox}                        
                       />
                 </div>
               }

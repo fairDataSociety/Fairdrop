@@ -396,6 +396,7 @@ class BSelectMailbox extends Component{
                       handleInputMailboxName={this.handleInputMailboxName.bind(this)}
                       handleInputPassword={this.handleInputPassword.bind(this)}
                       handleInputPasswordVerification={this.handleInputPasswordVerification.bind(this)}
+                      disabled={this.state.processingAddMailbox}
                     />
               </div>
             }
@@ -404,6 +405,7 @@ class BSelectMailbox extends Component{
             <SelectRecipient
               FDS={this.props.FDS}
               handleSelectRecipient={this.handleSelectRecipient}
+              disabled={this.state.processingAddMailbox}
             />
           }
           <div className="ui-feedback">

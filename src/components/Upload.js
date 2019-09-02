@@ -139,14 +139,13 @@ class Upload extends Component{
         this.state.isQuickFile === true
       ){
         this.setState({encryptionComplete: true});
+        let file = new File(
+            [window.file],
+            this.state.selectedFileName.replace(/ /g, '_'), //to mitigate for possible Swarm bug
+            {type: this.state.selectedFileType}
+          )
         return this.FDS.Account.Store.storeFileUnencrypted(
-          window.file
-          // new File(
-          //   [window.selectedFileArrayBuffer],
-          //   this.state.selectedFileName,
-          //   {type: this.state.selectedFileType}
-          // )
-          ,
+          file,
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){

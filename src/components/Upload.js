@@ -111,7 +111,7 @@ class Upload extends Component{
           //   {type: this.state.selectedFileType}
           // ),
           window.file,
-          '/shared/fairdrop/encrypted/'+addressee,
+          '/shared/fairdrop/encrypted',
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});

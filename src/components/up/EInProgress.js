@@ -32,7 +32,7 @@ class EInProgress extends Component{
             { this.props.parentState.isQuickFile &&
                 <div className="in-progress-ui">
                   <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "/assets/images/progress.svg"} alt="Spinning"/>Uploading</h1>
-                  <h2 className="in-progress-sub">Storing Unencrypted in Swarm network</h2>
+                  <h2 className="in-progress-sub">Storing Unencrypted using Swarm network</h2>
                   <h3 className="in-progress-sub-2">{this.props.parentState.feedbackMessage}</h3>
                   <h3 className="in-progress-sub-3">
                     {this.props.parentState.uploadProgress}

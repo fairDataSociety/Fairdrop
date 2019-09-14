@@ -1028,6 +1028,17 @@ a.show-received-alert:hover{
   line-height: 24px
 }
 
+.nav-header .show-received-alert-hidden{
+  opacity:0;
+  transition: opacity 1s;
+}
+
+.nav-header .show-received-alert-shown{
+  opacity:1;
+  transition: opacity 1s;
+}
+
+
 /*.nav-header .nav-header-items{
   display: table-cell;
   vertical-align: middle;

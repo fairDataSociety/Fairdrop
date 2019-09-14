@@ -183,29 +183,33 @@ class App extends Component {
   }
 
   componentDidMount(){
-    let interval = setInterval(()=>{
-      if(this.state.selectedMailbox){
-        this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
-          let receivedSeenCount = parseInt(localStorage.getItem(`fairdrop_receivedSeenCount_${this.FDS.currentAccount.subdomain}`) || 0);
-          let showReceivedAlert = receivedSeenCount < messages.length ? true : this.state.showReceivedAlert;
-          let newState = {
-            receivedMessages: messages,
-            receivedUnseenCount: messages.length - receivedSeenCount,
-            receivedSeenCount: receivedSeenCount,
-            showReceivedAlert: showReceivedAlert
-          };
-          this.setState(newState);          
-          if(showReceivedAlert === true){
-            this.setState({showReceivedAlert: false});
-            notify('Fairdrop: You received a file!');
-            if(this.mailboxComponent.current){
-              this.mailboxComponent.current.showReceived(null, false);            
-            }
-          }
-        });
-      }
-    },3000);
+    let interval = setInterval(this.pollForUpdates.bind(this),3000);
     this.setState({checkreceivedInterval: interval})
+  }
+
+  pollForUpdates(){
+    if(this.state.selectedMailbox){
+      this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
+        let lsCount = localStorage.getItem(`fairdrop_receivedSeenCount_${this.FDS.currentAccount.subdomain}`);
+        let receivedSeenCount = parseInt(lsCount|| 0);
+        let firstTime = lsCount === null;
+        let showReceivedAlert = receivedSeenCount < messages.length ? true : this.state.showReceivedAlert;
+        let newState = {
+          receivedMessages: messages,
+          receivedUnseenCount: messages.length - receivedSeenCount,
+          receivedSeenCount: receivedSeenCount,
+          showReceivedAlert: showReceivedAlert
+        };
+        this.setState(newState);          
+        if(showReceivedAlert === true && !firstTime){
+          this.setState({showReceivedAlert: false});
+          notify('Fairdrop: You received a file!');
+          if(this.mailboxComponent.current){
+            this.mailboxComponent.current.showReceived(null, false);            
+          }
+        }
+      });
+    }
   }
 
   unlockMailboxWallet(subdomain, password){
@@ -459,13 +463,16 @@ class App extends Component {
                   </Link>
                 </div>
               }
-              {(this.state.selectedMailbox.subdomain && this.state.showReceivedAlert) &&
-                <div className="nav-header-item-right hide-mobile">
-                  <Link className="show-received-alert" to={'/mailbox'}>
-                    {this.state.receivedUnseenCount}
-                  </Link>
-                </div>
-              }
+              <div className={"nav-header-item-right hide-mobile " + (this.state.selectedMailbox.subdomain && this.state.receivedSeenCount > 0 ? "show-received-alert-shown" : "show-received-alert-hidden")}>
+                <Link className="show-received-alert" to={'/mailbox'}>
+                  {this.state.receivedSeenCount || "-"}
+                </Link>
+              </div>
+              <div className={"nav-header-item-right hide-mobile " + (this.state.selectedMailbox.subdomain && this.state.showReceivedAlert ? "show-received-alert-shown" : "show-received-alert-hidden")}>
+                <Link className="show-received-alert" to={'/mailbox'}>
+                  {this.state.receivedUnseenCount || "-"}
+                </Link>
+              </div>
             </div>
     
             <Route exact={true} path={"/"} render={ () => {

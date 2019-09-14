@@ -151,6 +151,7 @@ class Upload extends Component{
             if(response === 100){
               this.setState({feedbackMessage: "file uploaded."});              
               this.setState({fileWasUploaded: true}); 
+              this.props.enableNav();
             }
           },
           (message)=>{

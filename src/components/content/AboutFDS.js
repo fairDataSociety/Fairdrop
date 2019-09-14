@@ -15,6 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
+import {notificationPermission} from '../../lib/FDSNotify.js'
 
 class AboutFDS extends Component{
 
@@ -34,8 +35,9 @@ class AboutFDS extends Component{
         timesHasClicked: this.state.timesHasClicked + 1
       });
     }else{
+      notificationPermission();
       localStorage.setItem('hasEnabledEasterEgg', true);
-      alert('Max file size set to 100mb!');
+      alert('Max file size set to 500mb!');
     }
   }  
 

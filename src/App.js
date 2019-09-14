@@ -32,6 +32,9 @@ import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
 
 import * as Sentry from '@sentry/browser';
 
+import {notify} from './lib/FDSNotify.js'
+
+
 import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
@@ -61,12 +64,28 @@ class App extends Component {
       disclaimersAreShown2: hasNotHiddenDisclaimer2,
       disclaimersAreShown3: hasNotHiddenDisclaimer3,
       menuState: false,
-      appRoot: this.props.appRoot
+      appRoot: this.props.appRoot,
+      receivedMessages: [],
+      showReceivedAlert: false      
     };
   }
 
-  resetState(){
-    this.setState(this.getInitialState());
+  resetState(e){
+    e.preventDefault();
+    let state = {
+      navState: true,
+      isStoringFile: false,
+      isSendingFile: false,
+      isQuickFile: false,
+      fileIsSelected: false,
+      fileWasSelected: false,
+      fileIsSelecting: false
+    };
+
+    this.setState(state);
+    if(this.uploadComponent.current){
+      this.uploadComponent.current.resetToInitialState();
+    }
     this.props.history.push('/');
   }
 
@@ -122,6 +141,8 @@ class App extends Component {
     this.FDS = new FDS();
 
     this.uploadComponent = React.createRef();
+    this.mailboxComponent = React.createRef();
+
     this.importMailboxInput = React.createRef();
     this.contentComponent = React.createRef();
 
@@ -159,6 +180,32 @@ class App extends Component {
         });
         window.Sentry = Sentry;  
       }
+  }
+
+  componentDidMount(){
+    let interval = setInterval(()=>{
+      if(this.state.selectedMailbox){
+        this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
+          let receivedSeenCount = parseInt(localStorage.getItem(`fairdrop_receivedSeenCount_${this.FDS.currentAccount.subdomain}`) || 0);
+          let showReceivedAlert = receivedSeenCount < messages.length ? true : this.state.showReceivedAlert;
+          let newState = {
+            receivedMessages: messages,
+            receivedUnseenCount: messages.length - receivedSeenCount,
+            receivedSeenCount: receivedSeenCount,
+            showReceivedAlert: showReceivedAlert
+          };
+          this.setState(newState);          
+          if(showReceivedAlert === true){
+            this.setState({showReceivedAlert: false});
+            notify('Fairdrop: You received a file!');
+            if(this.mailboxComponent.current){
+              this.mailboxComponent.current.showReceived(null, false);            
+            }
+          }
+        });
+      }
+    },3000);
+    this.setState({checkreceivedInterval: interval})
   }
 
   unlockMailboxWallet(subdomain, password){
@@ -321,10 +368,6 @@ class App extends Component {
   render() {
     return (
       <div>
-        <div className="mobile-soon-overlay">
-          <img alt="Fairdrop Logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
-          Mobile version coming soon.
-        </div>
         <div
           className={
           "parent-wrapper "+ 
@@ -416,6 +459,13 @@ class App extends Component {
                   </Link>
                 </div>
               }
+              {(this.state.selectedMailbox.subdomain && this.state.showReceivedAlert) &&
+                <div className="nav-header-item-right hide-mobile">
+                  <Link className="show-received-alert" to={'/mailbox'}>
+                    {this.state.receivedUnseenCount}
+                  </Link>
+                </div>
+              }
             </div>
     
             <Route exact={true} path={"/"} render={ () => {
@@ -432,6 +482,7 @@ class App extends Component {
                   isQuickFile={this.state.isQuickFile}
                   resetFileState={this.resetFileState}
                   appRoot={this.state.appRoot}
+                  enableNav={this.enableNav}
                   ref={this.uploadComponent}
                 />
               }
@@ -445,6 +496,7 @@ class App extends Component {
                   selectedMailbox={this.state.selectedMailbox}
                   routerArgs={routerArgs}
                   appRoot={this.state.appRoot}
+                  ref={this.mailboxComponent}
                 />
               }
             }/>

@@ -106,14 +106,14 @@ class ASelectFile extends Component{
 
     this.dropzone.on("addedfile", (file) => {
       if(localStorage.getItem('hasEnabledEasterEgg') === "true"){
-        if(file.size > (1024 * 1024 * 2000)){
-          alert('Sorry, proof of concept is restricted to 2000mb');
+        if(file.size > (1024 * 1024 * 500)){
+          alert('Sorry, proof of concept is restricted to 500mb');
           window.location.reload();
           return false;
         }
       }else{
-        if(file.size > (1024 * 1024 * 5)){
-          alert('Sorry, proof of concept is restricted to 5mb');
+        if(file.size > (1024 * 1024 * 100)){
+          alert('Sorry, proof of concept is restricted to 100mb');
           window.location.reload();
           return false;
         }

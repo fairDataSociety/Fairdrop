@@ -124,6 +124,11 @@ class Mailbox extends Component{
     this.showConsents = this.showConsents.bind(this);
 
     this.state = this.getInitialState();
+
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.state.checkreceivedInterval);
   }
 
   handleSelectMailbox(option){
@@ -156,13 +161,18 @@ class Mailbox extends Component{
     });
   }
 
-  showReceived(){
-    this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
-      this.setState({
-        shownMessageType: 'received',
-        shownMessages: messages
+  showReceived(e, force = true){
+    if(force === true || this.state.shownMessageType === 'received'){
+      this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
+        localStorage.setItem(`fairdrop_receivedSeenCount_${this.FDS.currentAccount.subdomain}`, messages.length);
+
+        this.setState({
+          shownMessageType: 'received',
+          shownMessages: messages,
+          receivedUnseenCount: 0
+        });
       });
-    });
+    }
   }
 
   showStored(){
@@ -192,7 +202,7 @@ class Mailbox extends Component{
   }
 
   mailboxUnlocked(){
-    this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
+    return this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
       this.setState({
         uiState: 1,
         shownMessageType: 'received',

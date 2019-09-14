@@ -925,6 +925,7 @@ input:disabled{
   font-size: 12px;
 }
 
+
 .nav-header-item-button{
   color: black;
   display: inline;
@@ -987,6 +988,36 @@ a.nav-context:hover{
 }
 
 .nav-white a.nav-context:hover{
+  background-color: #fff;
+  color: #FB4A36;
+  text-decoration: none;
+}
+
+.show-received-alert{
+  font-size: 14px;
+  margin-top: 10px;
+  display: block;
+  background-color: #fff;
+}
+
+a.show-received-alert{
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 0px 10px;
+  background-color: transparent;
+}
+
+.nav-white .show-received-alert{
+  border: 1px solid #fff;
+}
+
+a.show-received-alert:hover{
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-white a.show-received-alert:hover{
   background-color: #fff;
   color: #FB4A36;
   text-decoration: none;

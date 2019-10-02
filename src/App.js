@@ -81,22 +81,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    let config = {
-      swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
-      ethGateway: process.env.REACT_APP_GETH_GATEWAY,
-      faucetAddress: process.env.REACT_APP_FAUCET_URL,
-      chainID: process.env.REACT_APP_CHAIN_ID,
-      httpTimeout: 1000,
-      gasPrice: 50, //gwei
-      ensConfig: {
-        domain: process.env.REACT_APP_DOMAIN_NAME,
-        registryAddress: process.env.REACT_APP_ENS_ADDRESS,
-        fifsRegistrarContractAddress: process.env.REACT_APP_FIFS_REGISTRAR_ADDRESS,
-        resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
-      }
-    };
-
-    this.FDS = new FDS(config);
+    this.FDS = new FDS();
 
     window.FDS = this.FDS;
 

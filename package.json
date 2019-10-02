@@ -30,6 +30,6 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.0",
     "zxcvbn": "^4.4.2",
-    "fds.js": "^0.0.15"
+    "fds.js": "git+ssh://git@github.com:fairDataSociety/fds.js.git#0.0.15b"
   }
 }

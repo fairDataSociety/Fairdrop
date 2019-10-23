@@ -38,6 +38,7 @@ class ASelectFile extends Component{
   }
 
   resetToInitialState(){
+    this.props.setFileIsSelecting(false);
     this.setState(this.getInitialState());
   }
 
@@ -60,11 +61,31 @@ class ASelectFile extends Component{
     // let dd = new DDrop();
     this.dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
+      init: function() {
+          this.hiddenFileInput.setAttribute("webkitdirectory", true);
+      },
+      ignoreHiddenFiles: true,
       previewsContainer: false,
       maxFilesize: 1000,
       // clickable: false,
       accept: (file, done) => {
-        window.file = file;
+        window.files.push(file);
+        if(window.files.length === 1){
+          this.props.setParentState({
+            selectedFileName: file.name,
+            selectedFileSize: file.size,
+          });
+        }else{
+          let totalCount = window.files.length;
+          let totalSize = 0;
+          for (var i = window.files.length - 1; i >= 0; i--) {
+            totalSize += window.files[i].size;
+          }
+          this.props.setParentState({
+            selectedFileName: `${totalCount} files`,
+            selectedFileSize: totalSize,
+          });          
+        }        
       }
     });
 
@@ -108,13 +129,13 @@ class ASelectFile extends Component{
       if(localStorage.getItem('hasEnabledEasterEgg') === "true"){
         if(file.size > (1024 * 1024 * 500)){
           alert('Sorry, proof of concept is restricted to 500mb');
-          window.location.reload();
+          this.resetToInitialState();
           return false;
         }
       }else{
         if(file.size > (1024 * 1024 * 100)){
           alert('Sorry, proof of concept is restricted to 100mb');
-          window.location.reload();
+          this.resetToInitialState();
           return false;
         }
       }
@@ -127,6 +148,7 @@ class ASelectFile extends Component{
       }else{
         animationTimeout =  0;
       }
+
       setTimeout(()=>{
 
         this.props.fileWasSelected(true);
@@ -157,9 +179,6 @@ class ASelectFile extends Component{
           this.props.fileWasSelected(false);   
           this.props.setParentState({
             fileIsSelected: true,
-            selectedFileName: file.name,
-            selectedFileType: file.type,
-            selectedFileSize: file.size,
             uiState: newUIState
           });
         }, 555);
@@ -232,7 +251,7 @@ class ASelectFile extends Component{
           <div ref="dtSelectQuickFile" className="select-file-quick">
             <div className="select-file-drop-inner">
               <h2>Send in a quick way</h2>
-              <div>Send unencrypted - no mailboxes required</div>
+              <div>Send a file or folder unencrypted - no mailboxes required</div>
             </div>
           </div>
         </div>

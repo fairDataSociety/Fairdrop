@@ -32,7 +32,7 @@ class FCompleted extends Component{
             <div className="info-content">
               <div className="file-was-sent">
                 <img className="circle-tick" src="assets/images/circle-tick.svg" alt="Circle Tick"/>
-                File is {this.props.parentState.isStoringFile === false ? 'sent.' : 'stored.'}
+                {this.props.parentState.isStoringFile === false ? 'Sent.' : 'stored.'}
               </div>
               <div className="info-filename">
                 <span className="info-filename-truncated">{this.props.parentState.selectedFileName}</span>

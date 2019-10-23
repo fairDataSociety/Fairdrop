@@ -40,6 +40,7 @@ import './lib/DMist.css';
 import './lib/DDrop.css';
 
 import {version} from '../package.json';
+window.files = [];
 
 class App extends Component {
 
@@ -81,6 +82,8 @@ class App extends Component {
       fileWasSelected: false,
       fileIsSelecting: false
     };
+
+    window.files = [];    
 
     this.setState(state);
     if(this.uploadComponent.current){

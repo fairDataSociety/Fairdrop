@@ -52,6 +52,8 @@ class Upload extends Component{
       fileWasUploaded: false,
       uploadProgress: '000%',
 
+      isErrored: false,
+
       isStoringFile: this.props.isStoringFile,
       isQuickFile: this.props.isQuickFile
     };
@@ -95,7 +97,7 @@ class Upload extends Component{
     if( // ensure that we have a file saved from dropzone
       // window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
       // window.selectedFileArrayBuffer.byteLength > 0
-      window.file
+      window.files.length > 0
       )
     {
       if(
@@ -110,7 +112,7 @@ class Upload extends Component{
           //   this.state.selectedFileName,
           //   {type: this.state.selectedFileType}
           // ),
-          window.file,
+          window.files[0],
           '/shared/fairdrop/encrypted',
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
@@ -128,7 +130,7 @@ class Upload extends Component{
             this.setState({feedbackMessage: message});
           }
         ).catch((error) => {
-          this.setState({feedbackMessage: error});
+          this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         }).then(()=>{
             this.setState({feedbackMessage: "file uploaded."});              
@@ -139,13 +141,19 @@ class Upload extends Component{
         this.state.isQuickFile === true
       ){
         this.setState({encryptionComplete: true});
-        let file = new File(
-            [window.file],
-            this.state.selectedFileName.replace(/ /g, '_'), //to mitigate for possible Swarm bug
-            {type: this.state.selectedFileType}
-          )
-        return this.FDS.Account.Store.storeFileUnencrypted(
-          file,
+        let files = window.files;
+        let newFiles = [];
+        for (var i = files.length - 1; i >= 0; i--) {
+          let newFile = new File(
+            [files[i]],
+            files[i].name.replace(/ /g,'_'),
+            {type: files[i].type}
+          );
+          newFile.fullPath = files[i].fullPath.replace(/ /g,'_');
+          newFiles.push(newFile);
+        }
+        return this.FDS.Account.Store.storeFilesUnencrypted(
+          newFiles,
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
@@ -157,10 +165,7 @@ class Upload extends Component{
           (message)=>{
             this.setState({feedbackMessage: message});
           }
-        ).catch((error) => {
-          this.setState({feedbackMessage: error});
-          this.setState({fileWasUploaded: true});
-        });
+        );
       }else{
         return this.FDS.currentAccount.store(
           // new File(
@@ -185,7 +190,7 @@ class Upload extends Component{
             this.setState({feedbackMessage: message});
           }
         ).catch((error) => {
-          this.setState({feedbackMessage: error});
+          this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         });
       }
@@ -231,6 +236,7 @@ class Upload extends Component{
             appRoot={this.props.appRoot}
             parentState={this.state}
             setParentState={this.setState.bind(this)}
+            resetToInitialState={this.resetToInitialState.bind(this)}
           />
           <FCompleted
             parentState={this.state}

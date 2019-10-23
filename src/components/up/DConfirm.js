@@ -52,7 +52,11 @@ class DConfirm extends Component{
           uploadedHash: hash,
           uiState: 5
         });
-      })
+      }).catch((error)=>{
+        this.props.setParentState({
+          isErrored: true,
+        });
+      });
     }, 2000);
   }
 

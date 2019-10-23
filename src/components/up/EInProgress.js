@@ -29,7 +29,14 @@ class EInProgress extends Component{
       <div id="in-progress" className={"in-progress green page-wrapper " + (this.props.parentState.uiState === 4 ? "fade-in" : "hidden")}>
           <div className="mist"></div>
           <div className="in-progress-ui page-inner-centered">
-            { this.props.parentState.isQuickFile &&
+            { this.props.parentState.isErrored &&
+                <div className="in-progress-ui">
+                  <h1 className="in-progress-header">Error</h1>
+                  <h2 className="in-progress-sub">Sorry there was an error.</h2>
+                  <h3 className="in-progress-sub-2-action">Please <a onClick={()=>this.props.resetToInitialState()}>try again.</a></h3>
+                </div>  
+            }
+            { (!this.props.parentState.isErrored && this.props.parentState.isQuickFile) &&
                 <div className="in-progress-ui">
                   <h1 className="in-progress-header"><img className="in-progress-icon" src={this.props.appRoot + "/assets/images/progress.svg"} alt="Spinning"/>Uploading</h1>
                   <h2 className="in-progress-sub">Storing Unencrypted using Swarm network</h2>
@@ -39,7 +46,7 @@ class EInProgress extends Component{
                   </h3>
                 </div>  
             }
-            { !this.props.parentState.isQuickFile &&
+            { (!this.props.parentState.isErrored && !this.props.parentState.isQuickFile) &&
               <div>
                 { !this.props.parentState.encryptionComplete &&
                   <div className="in-progress-ui">

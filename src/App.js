@@ -67,7 +67,7 @@ class App extends Component {
       menuState: false,
       appRoot: this.props.appRoot,
       receivedMessages: [],
-      showReceivedAlert: false      
+      showReceivedAlert: false   
     };
   }
 
@@ -188,6 +188,12 @@ class App extends Component {
   componentDidMount(){
     let interval = setInterval(this.pollForUpdates.bind(this),3000);
     this.setState({checkreceivedInterval: interval})
+    document.getElementById('splash').classList.add('splash-fadeout');
+    setTimeout(()=>{
+      this.setState({menuIsRendered: true});
+      document.getElementById('splash').classList.add('splash-hidden');
+      document.getElementById('root').classList.add('root-fadein');
+    },100);  
   }
 
   pollForUpdates(){
@@ -399,6 +405,7 @@ class App extends Component {
           />                    
           <Menu
             isShown={false}
+            isRendered={this.state.menuIsRendered}
             menuToggled={(s)=>{this.setState({menuState: s})}}
             handleSendFile={this.handleSendFile}
             handleStoreFile={this.handleStoreFile}

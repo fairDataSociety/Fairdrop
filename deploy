@@ -12,7 +12,7 @@ done
 
 echo "created tunnel, uploading to $HOST"
 echo "uploading..."
-export uploaded_hash=$(swarm --bzzapi http://localhost:2000/ --defaultpath index.html --recursive up ./build)
+export uploaded_hash=$(swarm0.4.3 --bzzapi http://localhost:2000/ --defaultpath index.html --recursive up ./build)
 
 pkill -f 'ssh root@geth-noordung.fairdatasociety.org -N -L 2000:127.0.0.1:8500'
 

@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "fds.js": "^0.1.16",
+    "fds.js": "^0.1.17",
     "source-map-explorer": "^2.0.1"
   },
   "scripts": {

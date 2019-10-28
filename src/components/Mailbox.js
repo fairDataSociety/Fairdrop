@@ -312,7 +312,7 @@ class Mailbox extends Component{
 
   handleInputMailboxName(e){
     e.preventDefault();
-    let mailboxName = e.target.value;
+    let mailboxName = e.target.value.toLowerCase();
     this.setState({
       mailboxName: mailboxName,
     });

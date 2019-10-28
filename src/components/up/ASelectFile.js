@@ -62,7 +62,9 @@ class ASelectFile extends Component{
     this.dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
       init: function() {
+        if(isQuick){
           this.hiddenFileInput.setAttribute("webkitdirectory", true);
+        }
       },
       ignoreHiddenFiles: true,
       previewsContainer: false,
@@ -203,7 +205,7 @@ class ASelectFile extends Component{
       isStoringFile: false,      
     });
     this.setState({'isHandlingClick': true});
-    this.refs.dtSelectSaveFile.click();
+    this.refs.dtSelectQuickFile.click();
   }
 
   handleClickSelectFile(e){
@@ -269,9 +271,9 @@ class ASelectFile extends Component{
               <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img alt="drop file glyph" src="assets/images/fairdrop-drop.svg"/> drop a file
             </h3>
             <h3 className="show-mobile">
-              <button className="btn btn-white btn-lg send-file-unencrypted" onClick={this.handleClickQuickFile}>send unencrypted</button><br/>
-              <button className="btn btn-white btn-lg send-file-encrypted" onClick={this.handleClickSelectFile}>send encrypted</button><br/>
-              <button className="btn btn-white btn-lg store-file-encrypted" onClick={this.handleClickStoreFile}>store encrypted</button>
+              <button className="btn btn-white btn-lg send-file-unencrypted" onClick={this.handleClickQuickFile}>Send Unencrypted</button><br/>
+              <button className="btn btn-white btn-lg send-file-encrypted" onClick={this.handleClickSelectFile}>Send Encrypted</button><br/>
+              <button className="btn btn-white btn-lg store-file-encrypted" onClick={this.handleClickStoreFile}>Store Encrypted</button>
             </h3>            
           </div>
         </div>

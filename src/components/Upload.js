@@ -149,7 +149,8 @@ class Upload extends Component{
             files[i].name.replace(/ /g,'_'),
             {type: files[i].type}
           );
-          newFile.fullPath = files[i].fullPath.replace(/ /g,'_');
+          let fullPath = files[i].fullPath || files[i].webkitRelativePath;
+          newFile.fullPath = fullPath.replace(/ /g,'_');
           newFiles.push(newFile);
         }
         return this.FDS.Account.Store.storeFilesUnencrypted(
@@ -165,7 +166,25 @@ class Upload extends Component{
           (message)=>{
             this.setState({feedbackMessage: message});
           }
-        );
+        ).then((hash)=>{
+          let index_index = null;
+            console.log(files)                   
+          for (var i = files.length - 1; i >= 0; i--) {
+            var fullPath = files[i].fullPath || files[i].webkitRelativePath;   
+            if(fullPath.split('/')[1] === 'index.html'){
+              index_index = i;
+            }
+          }
+          if(index_index !== null){
+            return this.FDS.swarmGateway + '/bzz:/'+ hash.address + '/index.html'; 
+          }else{
+            if(files.length > 1){
+              return this.FDS.swarmGateway + ':/bzz-list:/'+ hash.address + '/';
+            }else{
+              return hash.gatewayLink();
+            }
+          }          
+        });
       }else{
         return this.FDS.currentAccount.store(
           // new File(

@@ -20,9 +20,25 @@ import Utils from '../../services/Utils';
 class FCompleted extends Component{
 
   handleCopyGatewayLink(){
-    var copyText = document.querySelector(".feedback-gateway-link input");
-    copyText.select();
-    document.execCommand("copy");
+    var el = document.querySelector(".feedback-gateway-link input");
+    var oldContentEditable = el.contentEditable,
+        oldReadOnly = el.readOnly,
+        range = document.createRange();
+
+    el.contentEditable = true;
+    el.readOnly = false;
+    range.selectNodeContents(el);
+
+    var s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(range);
+
+    el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
+
+    el.contentEditable = oldContentEditable;
+    el.readOnly = oldReadOnly;
+
+    document.execCommand('copy');
   }
 
   render(){
@@ -44,14 +60,15 @@ class FCompleted extends Component{
                   <img className="fairdrop-lock" src="assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
                 </div>
               }
-              {(this.props.parentState.isQuickFile === true && this.props.parentState.uploadedHash) &&
+              {(this.props.parentState.isQuickFile === true && this.props.parentState.uploadedHashLink) &&
                 <div>
                   <div className="feedback-swarmhash-message">File Download Link</div>
-                  <div className="feedback-gateway-link">
-                    <input type="text" value={this.props.parentState.uploadedHash.gatewayLink() || ""} readOnly={true}/>
-                  </div>
+                  {this.props.parentState.uploadedHashLink && 
+                    <div className="feedback-gateway-link">
+                      <input contentEditable={true} type="text" value={this.props.parentState.uploadedHashLink || ""}/>
+                    </div>                    
+                  }
                   <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</button>
-                  { /* <div className="feedback-swarmhash"><input type="text" value={this.props.parentState.uploadedHash.address || ""} readOnly={true}/></div>  */ }
                 </div>
               }
             </div>

@@ -1195,7 +1195,7 @@ a.show-received-alert:hover{
 
 .select-file-instruction.is-selecting{
   opacity: 0;
-  transition: opacity 0.7s;
+  transition: opacity 0.05s;
 }
 
 .select-file-instruction.has-dropped{
@@ -1943,6 +1943,24 @@ a.show-received-alert:hover{
 }
 
 @media (max-width: 600px){
+
+  body{
+    height:719px;
+  }
+
+  .disclaimers{
+    position: absolute;
+    z-index: 1000;
+    height: 100vh;
+    background: rgba(0,0,0,0.8);
+    opacity: 0;
+    display: none;
+  }
+
+  .disclaimers-shown{
+    opacity: 1;
+    display: block;
+  }
 
   .disclaimer-content{
     margin: 20px 20px;

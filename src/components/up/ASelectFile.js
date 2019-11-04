@@ -71,6 +71,7 @@ class ASelectFile extends Component{
       maxFilesize: 1000,
       // clickable: false,
       accept: (file, done) => {
+        window.files = [];
         window.files.push(file);
         if(window.files.length === 1){
           this.props.setParentState({

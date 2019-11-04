@@ -94,6 +94,8 @@ class Upload extends Component{
   }
 
   handleUpload(){
+    let multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted';
+    console.log(window.files, multiboxPath)
     if( // ensure that we have a file saved from dropzone
       // window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
       // window.selectedFileArrayBuffer.byteLength > 0
@@ -113,7 +115,7 @@ class Upload extends Component{
           //   {type: this.state.selectedFileType}
           // ),
           window.files[0],
-          '/shared/fairdrop/encrypted',
+          multiboxPath,
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});

@@ -490,9 +490,9 @@ class Mailbox extends Component{
                       <tr>
                         <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
                       </tr>
-                      {/*<tr>
-                        <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={this.showConsents}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Consents</button></td>
-                      </tr>*/}                 
+                      <tr id="consents-row" className="consents-hidden">
+                        <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={this.showConsents}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Consents</button></td>
+                      </tr>               
                     </tbody>
                   </table>
                 </div>
@@ -605,11 +605,26 @@ class Mailbox extends Component{
                               return;
                           }
                         }else{
-                          return <tr className={
-                                    "message-list last"
-                                  }>
-                                  <td>No messages yet...</td>
-                                </tr>
+                          switch(this.state.shownMessageType){
+                            case 'consents': 
+                              return <tr className={
+                                        "message-list last"
+                                      }>
+                                      <td>No consents yet...</td>
+                                    </tr>
+                            case 'stored': 
+                              return <tr className={
+                                        "message-list last"
+                                      }>
+                                      <td>No files yet...</td>
+                                    </tr>
+                            default:
+                              return <tr className={
+                                        "message-list last"
+                                      }>
+                                      <td>No messages yet...</td>
+                                    </tr>
+                          }
                         }
                       })()}
                     </tbody>

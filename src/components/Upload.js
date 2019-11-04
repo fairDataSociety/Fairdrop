@@ -168,7 +168,6 @@ class Upload extends Component{
           }
         ).then((hash)=>{
           let index_index = null;
-            console.log(files)                   
           for (var i = files.length - 1; i >= 0; i--) {
             var fullPath = files[i].fullPath || files[i].webkitRelativePath;   
             if(fullPath.split('/')[1] === 'index.html'){

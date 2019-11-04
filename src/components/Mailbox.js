@@ -424,7 +424,7 @@ class Mailbox extends Component{
             <div className="page-inner-wrapper">
               {this.state.isUnlockingMailbox &&
                 <div className="unlock-mailbox">
-                    <h1 className="select-account-header">Log in</h1>
+                    <h1 className="select-account-header">Log In / Register</h1>
                     <UnlockMailbox
                       dropDownOptions={this.getDropDownOptions()}
                       dropDownValue={this.state.unlockingMailbox}
@@ -436,7 +436,7 @@ class Mailbox extends Component{
               }
               {this.state.isAddingMailbox &&
                 <div className="select-mailbox">
-                    <h1 className="select-account-header">Log in</h1>
+                    <h1 className="select-account-header">Log In / Register</h1>
                       <AddMailbox
                         handleInputMailboxName={this.handleInputMailboxName.bind(this)}
                         handleInputPassword={this.handleInputPassword.bind(this)}

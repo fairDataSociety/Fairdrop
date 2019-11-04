@@ -17,28 +17,41 @@
 import React, { Component } from 'react';
 import Utils from '../../services/Utils';
 
+//deal with xbrowser copy paste issues
+var ua = window.navigator.userAgent;
+var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+var webkit = !!ua.match(/WebKit/i);
+var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+
 class FCompleted extends Component{
 
   handleCopyGatewayLink(){
-    var el = document.querySelector(".feedback-gateway-link input");
-    var oldContentEditable = el.contentEditable,
-        oldReadOnly = el.readOnly,
-        range = document.createRange();
 
-    el.contentEditable = true;
-    el.readOnly = false;
-    range.selectNodeContents(el);
+    if(iOSSafari){
+      var el = document.querySelector(".feedback-gateway-link input");
+      var oldContentEditable = el.contentEditable,
+          oldReadOnly = el.readOnly,
+          range = document.createRange();
 
-    var s = window.getSelection();
-    s.removeAllRanges();
-    s.addRange(range);
+      el.contentEditable = true;
+      el.readOnly = false;
+      range.selectNodeContents(el);
 
-    el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(range);
 
-    el.contentEditable = oldContentEditable;
-    el.readOnly = oldReadOnly;
+      el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
 
-    document.execCommand('copy');
+      el.contentEditable = oldContentEditable;
+      el.readOnly = oldReadOnly;
+
+      document.execCommand('copy');
+    }else{
+      var copyText = document.querySelector(".feedback-gateway-link input");
+      copyText.select();
+      document.execCommand("copy");
+    }
   }
 
   render(){
@@ -65,7 +78,7 @@ class FCompleted extends Component{
                   <div className="feedback-swarmhash-message">File Download Link</div>
                   {this.props.parentState.uploadedHashLink && 
                     <div className="feedback-gateway-link">
-                      <input contentEditable={true} type="text" value={this.props.parentState.uploadedHashLink || ""}/>
+                      <input onChange={()=>{/*do nothing*/}} contentEditable={true} type="text" value={this.props.parentState.uploadedHashLink || ""}/>
                     </div>                    
                   }
                   <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</button>

@@ -459,6 +459,13 @@ class App extends Component {
                   <MailboxGlyph/>
                 </Link>
               </div>
+              {!this.state.selectedMailbox.subdomain &&
+                <div className="nav-header-item-right hide-mobile">
+                  <Link className="nav-header-item-button nav-header-sign-in" to={'/mailbox'}>
+                    Log in / Register
+                   </Link>
+                </div>
+              }
               {this.state.selectedMailbox.subdomain &&
                 <div className="nav-header-item-right hide-mobile">
                   <button className="nav-header-item-button nav-header-sign-out" onClick={this.resetMailboxState}>

@@ -95,7 +95,6 @@ class Upload extends Component{
 
   handleUpload(){
     let multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted';
-    console.log(window.files, multiboxPath)
     if( // ensure that we have a file saved from dropzone
       // window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
       // window.selectedFileArrayBuffer.byteLength > 0
@@ -124,7 +123,7 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded."});              
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
               this.setState({fileWasUploaded: true}); 
             }
           },
@@ -135,7 +134,7 @@ class Upload extends Component{
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         }).then(()=>{
-            this.setState({feedbackMessage: "file uploaded."});              
+            this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
             this.setState({fileWasUploaded: true}); 
         });
       }else if(
@@ -160,7 +159,7 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded."});              
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
               this.setState({fileWasUploaded: true}); 
               this.props.enableNav();
             }
@@ -187,13 +186,25 @@ class Upload extends Component{
           }          
         });
       }else{
+        let files = window.files;
+        let newFiles = [];
+        for (var i = files.length - 1; i >= 0; i--) {
+          let newFile = new File(
+            [files[i]],
+            files[i].name.replace(/ /g,'_'),
+            {type: files[i].type}
+          );
+          let fullPath = files[i].fullPath || files[i].webkitRelativePath;
+          newFile.fullPath = fullPath.replace(/ /g,'_');
+          newFiles.push(newFile);
+        }        
         return this.FDS.currentAccount.store(
           // new File(
           //   [window.selectedFileArrayBuffer],
           //   this.state.selectedFileName,
           //   {type: this.state.selectedFileType}
           // ),
-          window.file,
+          newFiles[0],
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});
@@ -202,14 +213,17 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded."});              
-              this.setState({fileWasUploaded: true}); 
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});          
             }
           },
           (message)=>{
             this.setState({feedbackMessage: message});
           }
-        ).catch((error) => {
+        ).then((response)=>{
+          // async
+          this.props.updateStoredStats();
+          return response;
+        }).catch((error) => {
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         });
@@ -262,6 +276,7 @@ class Upload extends Component{
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
+            handleNavigateTo={this.props.handleNavigateTo}
           />
           <ProgressBar
             parentState={this.state}

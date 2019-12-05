@@ -477,10 +477,14 @@ class Mailbox extends Component{
                   <table>
                     <tbody>
                       <tr>
-                        {/*<td>
-                          <div className="show-files-mailbox-name">{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</div>
-                        </td>*/}
+                        <td><button onClick={this.props.handleSendFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Sendd</button></td>
                       </tr>
+                      <tr>
+                        <td><button onClick={this.props.handleStoreFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Store</button></td>
+                      </tr>
+                      <tr>
+                        <td><button onClick={this.props.handleQuickFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Publish</button></td>
+                      </tr>  
                       <tr>
                         <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>
@@ -497,15 +501,16 @@ class Mailbox extends Component{
                   </table>
                 </div>
                 <div className="mobile-inbox-nav show-mobile">
-                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== 'received' ? "inactive" : "")} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></div>
-                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "sent" ? "inactive" : "")} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></div>
-                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "stored" ? "inactive" : "")} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></div>
+                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== 'received' ? "inactive" : "")} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/></button></div>
+                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "sent" ? "inactive" : "")} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></div>
+                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "stored" ? "inactive" : "")} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/></button></div>
                 </div>
                 <div className="inbox-header">
                   <table>
                     <thead>
                       <tr>
                         <th className="inbox-col inbox-col-name">Name</th>
+                        <th className="inbox-col inbox-col-time hide-mobile">Pinned</th>
                         <th className="inbox-col inbox-col-name">
                           {(() => {
                             switch(this.state.shownMessageType) {
@@ -544,9 +549,10 @@ class Mailbox extends Component{
                                   key={`${message.to}-${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td>{ message.hash.file.name }</td>
-                                    <td>{ message.to }</td>
-                                    <td className="hide-mobile">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="hide-mobile"></td>                                    
+                                    <td><div className="no-overflow">{ message.to }</div></td>
+                                    <td className="hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
                                     <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                   </tr>
                               })
@@ -561,9 +567,10 @@ class Mailbox extends Component{
                                   key={`${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td>{ message.hash.file.name }</td>
-                                    <td>{ message.from }</td>
-                                    <td className="hide-mobile">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="hide-mobile"></td>                                    
+                                    <td><div className="no-overflow">{ message.from }</div></td>
+                                    <td className="hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
                                     <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                   </tr>
                               })
@@ -578,9 +585,10 @@ class Mailbox extends Component{
                                   key={`${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td>{ message.hash.file.name }</td>
-                                    <td>{ message.from }</td>
-                                    <td>{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="hide-mobile"></td>                                    
+                                    <td><div className="no-overflow">{ message.from }</div></td>
+                                    <td><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
                                     <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                   </tr>
                               })
@@ -595,7 +603,8 @@ class Mailbox extends Component{
                                   key={`${hash.address}`}
                                   onClick=
                                   { ()=>{ return hash.saveAs(); } }>
-                                     <td>{ hash.file.name }</td>
+                                    <td>{ hash.file.name }</td>
+                                    <td className="hide-mobile">{(hash.meta && hash.meta.pinned === true) ? "Pinned" : "Pin"}</td>                                    
                                     <td></td>
                                     <td className="hide-mobile">{ Moment(hash.time).format('D/MM/YYYY hh:mm ') }</td>
                                     <td>{ Utils.humanFileSize(hash.file.size) }</td>

@@ -61,7 +61,7 @@ class FCompleted extends Component{
             <div className="info-content">
               <div className="file-was-sent">
                 <img className="circle-tick" src="assets/images/circle-tick.svg" alt="Circle Tick"/>
-                {this.props.parentState.isStoringFile === false ? 'Sent.' : 'stored.'}
+                {this.props.parentState.isStoringFile === false ? 'Sent.' : 'Stored.'}
               </div>
               <div className="info-filename">
                 <span className="info-filename-truncated">{this.props.parentState.selectedFileName}</span>
@@ -73,6 +73,7 @@ class FCompleted extends Component{
                   <img className="fairdrop-lock" src="assets/images/fairdrop-lock.svg" alt="fairdrop-logo"/> Encrypted
                 </div>
               }
+
               {(this.props.parentState.isQuickFile === true && this.props.parentState.uploadedHashLink) &&
                 <div>
                   <div className="feedback-swarmhash-message">File Download Link</div>
@@ -84,6 +85,11 @@ class FCompleted extends Component{
                   <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</button>
                 </div>
               }
+
+
+              <div className="info-actions">
+                <button className="info-action" onClick={()=>{this.props.handleNavigateTo('/mailbox')}}>Click to go to files.</button>
+              </div>
             </div>
           </div> {/* ui */}
       </div>

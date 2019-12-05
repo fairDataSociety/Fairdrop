@@ -189,7 +189,7 @@ class App extends Component {
 
   componentDidMount(){
     // let interval = setInterval(this.pollForUpdates.bind(this),15000);
-    let interval = setInterval(this.updateBalance.bind(this),1500);
+    // let interval = setInterval(this.updateBalance.bind(this),1500);
     // this.setState({checkreceivedInterval: interval})
     document.getElementById('splash').classList.add('splash-fadeout');
     setTimeout(()=>{
@@ -245,7 +245,15 @@ class App extends Component {
   updateStoredStats(){
     return this.FDS.currentAccount.storedManifest().then((manifest)=>{
       let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{if(i===1){return o.file.size;}else{return o.file.size + total;}});
-      return this.saveAppState({totalStoredSize: totalStoredSize});
+      let totalPinnedSize = manifest.storedFiles.filter((o)=>{
+        return o.meta.pinned === true;
+      }).reduce((total,o,i)=>{
+        if(i===1){return o.file.size;}else{return o.file.size + total;}
+      });
+      return this.saveAppState({
+        totalStoredSize: totalStoredSize,
+        totalPinnedSize: totalPinnedSize,
+      });
     });
   }
 
@@ -300,7 +308,7 @@ class App extends Component {
     this.setState({selectedMailbox: selectedMailbox});
     let appStateUpdate = {lastLogin: new Date().toISOString()};
     return this.saveAppState(appStateUpdate).then(()=>{
-      return this.getAppState();
+      return this.updateBalance();
     });
   }
 
@@ -588,6 +596,7 @@ class App extends Component {
                   handleSendFile={this.handleSendFile}
                   handleStoreFile={this.handleStoreFile}
                   handleQuickFile={this.handleQuickFile}
+                  updateStoredStats={this.updateStoredStats}
                   routerArgs={routerArgs}
                   appRoot={this.state.appRoot}
                   ref={this.mailboxComponent}

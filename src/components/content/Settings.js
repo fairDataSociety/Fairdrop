@@ -26,10 +26,11 @@ class Settings extends Component{
     
     // console.log(props)
 
-    // this.state = {
-    //   fileSize: this.fileSize(),
-    //   truncateAddress: this.truncateAddress()
-    // }
+    this.togglePinFiles = this.togglePinFiles.bind(this);
+
+    this.state = {
+      storedFilesArePinned: false
+    }
     
   }
 
@@ -39,7 +40,15 @@ class Settings extends Component{
     }else{
       return " - "
     }
-  }  
+  } 
+
+  pinnedFileSize(){
+    if(this.props.savedAppState.totalPinnedSize){
+      return Utils.humanFileSize(this.props.savedAppState.totalPinnedSize);
+    }else{
+      return " - "
+    }
+  } 
 
   truncateAddress(){
     return Utils.truncate(this.props.selectedMailbox.address, 5, 5, 10);
@@ -47,6 +56,10 @@ class Settings extends Component{
 
   balance(){
     return Utils.formatBalance(this.props.selectedMailboxBalance)
+  }
+
+  togglePinFiles(){
+    this.setState({storedFilesArePinned: !this.state.storedFilesArePinned});
   }
 
   render(){
@@ -58,7 +71,16 @@ class Settings extends Component{
             <h2>{this.props.selectedMailbox.subdomain}</h2>
             <h3>{this.balance()}</h3>
             <h3>{this.fileSize()}</h3>
+            <h3>{this.pinnedFileSize()}</h3>
             <h3>{this.truncateAddress()}</h3>
+            <p>
+              {this.state.storedFilesArePinned ? "Stored Files are Pinned" : "Stored Files are not Pinned"}
+            </p>
+            <p>
+              <button onClick={this.togglePinFiles}>
+                {this.state.storedFilesArePinned ? "Unpin" : "Pin"}
+              </button>
+            </p>
           </div>
           <div className="content-text">
 	        <QRCode value="http://facebook.github.io/react/" />

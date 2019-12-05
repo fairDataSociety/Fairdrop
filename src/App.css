@@ -490,10 +490,10 @@ input:disabled{
   top: 0;
   right: -51vw;
   height: 100vh;
-  width: 50vw;
+  width: 51vw;
   z-index: 101;
   background: #2e2e2e;
-  transition: 1s transform;
+  transition: 0.2s transform ease-in;
 }
 
 .content-background-screen{
@@ -509,7 +509,7 @@ input:disabled{
 
 .content.show{
   transform: translateX(-51vw);
-  transition: 1s transform;
+  transition: 0.7s transform ease-out;
 }
 
 .content-outer {
@@ -1842,6 +1842,11 @@ a.show-received-alert:hover{
   text-overflow: ellipsis;
 }
 
+.inbox-pin{
+  height: 13px;
+  margin-bottom: 4px;
+}
+
 /*name*/
 .inbox tbody tr td:nth-child(1), .inbox thead tr th:nth-child(1){
   width: 63%;
@@ -1849,7 +1854,7 @@ a.show-received-alert:hover{
 
 /*pin*/
 .inbox tbody tr td:nth-child(2), .inbox thead tr th:nth-child(2){
-  width: 10%;  
+  width: 5%;  
 }
 
 /*from*/
@@ -1864,7 +1869,7 @@ a.show-received-alert:hover{
 
 /*size*/
 .inbox tbody tr td:nth-child(5), .inbox thead tr th:nth-child(5){
-  width: 5%;
+  width: 10%;
   text-align: right;
 }
 

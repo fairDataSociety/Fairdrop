@@ -23,6 +23,8 @@ import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
 
+import FDSPin from '../lib/FDSPin.js';
+
 import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
@@ -131,6 +133,27 @@ class Mailbox extends Component{
     clearInterval(this.state.checkreceivedInterval);
   }
 
+  pin(hash, state=true){
+    let fdsPin = new FDSPin(this.props.selectedMailbox);
+    if(state === true){
+      return fdsPin.pin(hash).then(()=>{
+        return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: true}).then(()=>{
+          return this.showStored().then(()=>{
+            this.props.updateStoredStats();
+          });
+        });
+      })
+    }else{
+      return fdsPin.unpin(hash).then(()=>{
+        return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: false}).then(()=>{
+          return this.showStored().then(()=>{
+            this.props.updateStoredStats();
+          });
+        });
+      })
+    }
+  }
+
   handleSelectMailbox(option){
     if(option.value === 'new-mailbox'){
       this.addMailbox();
@@ -176,7 +199,7 @@ class Mailbox extends Component{
   }
 
   showStored(){
-    this.FDS.currentAccount.stored().then((messages)=>{
+    return this.FDS.currentAccount.stored().then((messages)=>{
       this.setState({
         shownMessageType: 'stored',
         shownMessages: messages
@@ -510,7 +533,7 @@ class Mailbox extends Component{
                     <thead>
                       <tr>
                         <th className="inbox-col inbox-col-name">Name</th>
-                        <th className="inbox-col inbox-col-time hide-mobile">Pinned</th>
+                        <th className="inbox-col inbox-col-time hide-mobile"><img src={this.props.appRoot + "/assets/images/thumbtack-solid.svg"} alt="Pin" className="inbox-pin"/></th>
                         <th className="inbox-col inbox-col-name">
                           {(() => {
                             switch(this.state.shownMessageType) {
@@ -601,10 +624,18 @@ class Mailbox extends Component{
                                     + (i === (this.state.shownMessages.length - 1) ? "last" : "")
                                   }
                                   key={`${hash.address}`}
-                                  onClick=
-                                  { ()=>{ return hash.saveAs(); } }>
-                                    <td>{ hash.file.name }</td>
-                                    <td className="hide-mobile">{(hash.meta && hash.meta.pinned === true) ? "Pinned" : "Pin"}</td>                                    
+                                  >
+                                    <td onClick=
+                                      { ()=>{ return hash.saveAs(); } }
+                                    >
+                                      { hash.file.name }
+                                    </td>
+                                    <td 
+                                      onClick={ ()=>{ return this.pin(hash, (hash.meta && hash.meta.pinned === true) ? false : true); } }
+                                      className="hide-mobile"
+                                    >
+                                      {(hash.meta && hash.meta.pinned === true) ? "Pinned" : "Pin"}
+                                    </td>                                    
                                     <td></td>
                                     <td className="hide-mobile">{ Moment(hash.time).format('D/MM/YYYY hh:mm ') }</td>
                                     <td>{ Utils.humanFileSize(hash.file.size) }</td>

@@ -26,6 +26,9 @@ function generatePassword (){
   }
 
 function humanFileSize(size) {
+	if(typeof size === 'undefined'){
+		return ' - '
+	}
     var i = Math.floor( Math.log(size) / Math.log(1024) );
     return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
 }

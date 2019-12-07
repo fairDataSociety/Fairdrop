@@ -29,6 +29,7 @@ import Content from "./components/Content"
 
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
+import ProgressBar from "./components/Shared/svg/ProgressBar.js"
 
 import * as Sentry from '@sentry/browser';
 
@@ -67,7 +68,8 @@ class App extends Component {
       menuState: false,
       appRoot: this.props.appRoot,
       receivedMessages: [],
-      showReceivedAlert: false   
+      showReceivedAlert: false,
+      isLoading: false  
     };
   }
 
@@ -172,6 +174,7 @@ class App extends Component {
     this.enableNav = this.enableNav.bind(this);
     this.resetState = this.resetState.bind(this);
     this.updateStoredStats = this.updateStoredStats.bind(this);
+    this.setIsLoading = this.setIsLoading.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -318,6 +321,10 @@ class App extends Component {
 
   fileWasSelected(state = true){
     this.setState({fileWasSelected: state});
+  }
+
+  setIsLoading(state = true){
+    this.setState({isLoading: state});    
   }
 
   handleSendFile(e){
@@ -523,6 +530,11 @@ class App extends Component {
               <div className="nav-header-item-left hide-mobile">
                 <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
               </div>
+              <div className="nav-header-item-left">
+                <div className={(this.state.isLoading ? "is-loading " : " ") + "loading-icon"}>
+                  <ProgressBar/>
+                </div>
+              </div>
 
               <div className="nav-header-item-right">
                 <Link className="nav-key" to={'/mailbox'}>
@@ -599,6 +611,8 @@ class App extends Component {
                   updateStoredStats={this.updateStoredStats}
                   routerArgs={routerArgs}
                   appRoot={this.state.appRoot}
+                  isLoading={this.state.isLoading}
+                  setIsLoading={this.setIsLoading}
                   ref={this.mailboxComponent}
                 />
               }

@@ -73,6 +73,7 @@ class Settings extends Component{
             <h3>{this.fileSize()}</h3>
             <h3>{this.pinnedFileSize()}</h3>
             <h3>{this.truncateAddress()}</h3>
+            {/*
             <p>
               {this.state.storedFilesArePinned ? "Stored Files are Pinned" : "Stored Files are not Pinned"}
             </p>
@@ -81,6 +82,7 @@ class Settings extends Component{
                 {this.state.storedFilesArePinned ? "Unpin" : "Pin"}
               </button>
             </p>
+          */}
           </div>
           <div className="content-text">
 	        <QRCode value="http://facebook.github.io/react/" />

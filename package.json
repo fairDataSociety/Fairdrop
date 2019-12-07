@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "fds.js": "^0.1.24",
     "qrcode.react": "^1.0.0",
     "source-map-explorer": "^2.0.1"
   },

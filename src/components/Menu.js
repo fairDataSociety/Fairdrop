@@ -163,7 +163,7 @@ class App extends Component {
                 items={[
                         ['Import Mailbox', this.props.importMailbox],
                         ['Export Mailboxes', this.props.exportMailboxes],
-                        ['Export Legacy Mailboxes', this.props.exportLegacyMailboxes]
+                        // ['Export Legacy Mailboxes', this.props.exportLegacyMailboxes]
                         // ,
                         // ['Pro Mode', (c)=>{console.log(c)}]
                       ]}

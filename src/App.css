@@ -441,7 +441,7 @@ input:disabled{
 
   .menu.show{
     transform: translateX(100vw);
-    transition: 1s transform;
+    transition: 0.2s transform;
   }
 
   .page-wrapper {
@@ -509,7 +509,7 @@ input:disabled{
 
 .content.show{
   transform: translateX(-51vw);
-  transition: 0.7s transform ease-out;
+  transition: 0.2s transform ease-out;
 }
 
 .content-outer {
@@ -611,7 +611,7 @@ input:disabled{
 
 .menu.show{
   transform: translateX(50vw);
-  transition: 1s transform;
+  transition: 0.2s ease-in transform;
 }
 
 
@@ -678,6 +678,7 @@ input:disabled{
 
 .show-links .menu-item-header{
   color: #fff;
+  font-weight: bold;
 }
 
 .menu-header-item-left{
@@ -721,7 +722,7 @@ input:disabled{
 
 .show-links .menu-links{
   opacity: 1;
-  transition: opacity 1s;
+  transition: opacity 0.2s;
   pointer-events: all;
 }
 
@@ -776,10 +777,6 @@ input:disabled{
   border: 0;
   margin: 0;
   overflow: visible; }
-  .hamburger:hover {
-    opacity: 0.7; }
-  .hamburger.is-active:hover {
-    opacity: 0.7; }
   .hamburger.is-active .hamburger-inner,
   .hamburger.is-active .hamburger-inner::before,
   .hamburger.is-active .hamburger-inner::after {
@@ -935,6 +932,38 @@ input:disabled{
   font-size: 12px;
 }
 
+.nav-header .loading-icon{
+  position: relative;
+  top: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.nav-header .loading-icon.is-loading{
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.nav-header .loading-icon svg{
+  height: 24px;
+  width: 24px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-header .loading-icon svg path{
+  fill: #000000;
+}
+
+.nav-header .loading-icon svg path{
+  fill: #000000;
+}
+
+
+.nav-header .loading-icon{
+  position: relative;
+  top: 2px;
+}
 
 .nav-header-item-button{
   color: black;
@@ -2038,7 +2067,7 @@ a.show-received-alert:hover{
 
   .menu.show{
     transform: translateX(100vw);
-    transition: 1s transform;
+    transition: 0.2s transform;
   }
 
   .content.show {

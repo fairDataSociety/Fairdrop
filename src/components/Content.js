@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 
+import Settings from './content/Settings';
 import AboutFairdrop from './content/AboutFairdrop';
 import AboutFDS from './content/AboutFDS';
 import Terms from './content/Terms';
@@ -102,6 +103,14 @@ class App extends Component {
           }
           {this.props.displayedContent === 'Terms' &&
             <Terms appRoot={this.props.appRoot} />
+          }
+          {this.props.displayedContent === 'Settings' &&
+            <Settings 
+              appRoot={this.props.appRoot}
+              savedAppState={this.props.savedAppState}
+              selectedMailbox={this.props.selectedMailbox}
+              selectedMailboxBalance={this.props.selectedMailboxBalance}
+            />
           }
         </div>
       </div>

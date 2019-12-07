@@ -23,6 +23,8 @@ import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
 
+import FDSPin from '../lib/FDSPin.js';
+
 import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
@@ -65,7 +67,8 @@ class Mailbox extends Component{
           mailboxName: false,
           passwordsValid: false,
           processingAddMailbox: false,
-          hasErrored: false
+          hasErrored: false,
+          isLoadingMessages: false
         };
     }else
     if(mailboxes.length === 0){
@@ -85,7 +88,8 @@ class Mailbox extends Component{
         mailboxName: false,
         passwordsValid: false,
         processingAddMailbox: false,
-        hasErrored: false
+        hasErrored: false,
+        isLoadingMessages: false
       };
     }else
     if(mailboxes.length > 0){
@@ -105,7 +109,8 @@ class Mailbox extends Component{
         mailboxName: false,
         passwordsValid: false,
         processingAddMailbox: false,
-        hasErrored: false
+        hasErrored: false,
+        isLoadingMessages: false
       };
     }
   }
@@ -131,6 +136,43 @@ class Mailbox extends Component{
     clearInterval(this.state.checkreceivedInterval);
   }
 
+  updatePinState(hash, state){
+    let newShownMessages = this.state.shownMessages.map((h)=>{
+      if(h.address === hash.address){
+        h.meta.pinned = state;
+        return h;
+      }else{
+        return h;
+      }
+    });
+    this.setState({shownMessages: newShownMessages});
+  }
+
+  pin(hash, state=true){
+    this.updatePinState(hash, state);
+    this.props.setIsLoading(true); //reset then unset by showStored()
+    let fdsPin = new FDSPin(this.props.selectedMailbox);
+    if(state === true){
+      return fdsPin.pin(hash).then(()=>{
+        return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: true}).then(()=>{
+          this.props.setIsLoading(false);
+          this.props.updateStoredStats();
+        });
+      }).catch(()=>{
+        this.updatePinState(hash, !state);
+      })
+    }else{
+      return fdsPin.unpin(hash).then(()=>{
+        return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: false}).then(()=>{
+          this.props.setIsLoading(false);
+          this.props.updateStoredStats();
+        });
+      }).catch(()=>{
+        this.updatePinState(hash, !state);
+      });
+    }
+  }
+
   handleSelectMailbox(option){
     if(option.value === 'new-mailbox'){
       this.addMailbox();
@@ -153,43 +195,60 @@ class Mailbox extends Component{
   }
 
   showSent(){
+    this.props.setIsLoading(true);
+    this.setState({isLoadingMessages: true});
     this.FDS.currentAccount.messages('sent').then((messages)=>{
       this.setState({
         shownMessageType: 'sent',
-        shownMessages: messages
+        shownMessages: messages.reverse()
       });
+      this.props.setIsLoading(false);
+      this.setState({isLoadingMessages: false});
     });
   }
 
   showReceived(e, force = true){
+    this.props.setIsLoading(true);
+    this.setState({isLoadingMessages: true});
     if(force === true || this.state.shownMessageType === 'received'){
       this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
         localStorage.setItem(`fairdrop_receivedSeenCount_${this.FDS.currentAccount.subdomain}`, messages.length);
 
         this.setState({
           shownMessageType: 'received',
-          shownMessages: messages,
+          shownMessages: messages.reverse(),
           receivedUnseenCount: 0
         });
+        this.props.setIsLoading(false);
+        this.setState({isLoadingMessages: false});
       });
     }
   }
 
   showStored(){
-    this.FDS.currentAccount.stored().then((messages)=>{
+    this.props.setIsLoading(true);
+    this.setState({isLoadingMessages: true});
+    return this.FDS.currentAccount.stored().then((messages)=>{
+      console.log(messages)
       this.setState({
         shownMessageType: 'stored',
-        shownMessages: messages
+        shownMessages: messages.reverse()
       });
+      this.props.setIsLoading(false);
+      this.setState({isLoadingMessages: false});
     });
   }
 
   showConsents(){
+    this.props.setIsLoading(true);
+    this.setState({isLoadingMessages: true});
     this.FDS.currentAccount.messages('received', '/shared/consents').then((messages)=>{
       this.setState({
         shownMessageType: 'consents',
-        shownMessages: messages
+        shownMessages: messages.reverse()
       });
+      this.props.setIsLoading(false);
+      this.setState({isLoadingMessages: false});
     });
   }
 
@@ -202,17 +261,12 @@ class Mailbox extends Component{
   }
 
   mailboxUnlocked(){
-    return this.FDS.currentAccount.messages('received', '/shared/fairdrop/encrypted').then((messages)=>{
-      this.setState({
-        uiState: 1,
-        shownMessageType: 'received',
-        shownMessages: messages
-      });
-    }).catch((error)=>{
-      this.setState({
-        feedbackMessage: error
-      });
+    this.setState({
+      uiState: 1,
+      shownMessageType: 'received',
+      isLoadingMessages: true,
     });
+    return this.showReceived();
   }
 
   getDropDownOptions(){
@@ -229,6 +283,7 @@ class Mailbox extends Component{
   }
 
   unlockMailbox(e){
+    this.props.setIsLoading(true);
     let subdomain = this.state.unlockingMailbox;
     let password = this.state.password;
 
@@ -242,10 +297,10 @@ class Mailbox extends Component{
         feedbackMessage: 'Mailbox unlocked.',
         mailboxIsUnlocked: true,
       });
-      return this.mailboxUnlocked().then(()=>{
-        this.setSelectedMailbox(this.FDS.currentAccount);
-      });
+      this.mailboxUnlocked()
+      return this.setSelectedMailbox(this.FDS.currentAccount);
     }).catch((error)=>{
+      this.props.setIsLoading(false);      
       this.setState({
         feedbackMessage: 'Password invalid, please try again.',
         mailboxIsUnlocked: false
@@ -477,10 +532,14 @@ class Mailbox extends Component{
                   <table>
                     <tbody>
                       <tr>
-                        {/*<td>
-                          <div className="show-files-mailbox-name">{ this.props.selectedMailbox && this.props.selectedMailbox.subdomain }</div>
-                        </td>*/}
+                        <td><button onClick={this.props.handleSendFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Send</button></td>
                       </tr>
+                      <tr>
+                        <td><button onClick={this.props.handleStoreFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Store</button></td>
+                      </tr>
+                      <tr>
+                        <td><button onClick={this.props.handleQuickFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Publish</button></td>
+                      </tr>  
                       <tr>
                         <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>
@@ -497,15 +556,25 @@ class Mailbox extends Component{
                   </table>
                 </div>
                 <div className="mobile-inbox-nav show-mobile">
-                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== 'received' ? "inactive" : "")} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></div>
-                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "sent" ? "inactive" : "")} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></div>
-                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "stored" ? "inactive" : "")} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></div>
+                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== 'received' ? "inactive" : "")} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/></button></div>
+                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "sent" ? "inactive" : "")} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></div>
+                    <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "stored" ? "inactive" : "")} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/></button></div>
                 </div>
                 <div className="inbox-header">
                   <table>
                     <thead>
                       <tr>
                         <th className="inbox-col inbox-col-name">Name</th>
+                        <th className="inbox-col inbox-col-time hide-mobile">
+                          {(() => {
+                            switch(this.state.shownMessageType) {                              
+                              case 'stored':
+                                return <img src={this.props.appRoot + "/assets/images/thumbtack-solid.svg"} alt="Pin" className="inbox-pin"/>;
+                              default:
+                                return;
+                            }
+                          })()}
+                        </th>
                         <th className="inbox-col inbox-col-name">
                           {(() => {
                             switch(this.state.shownMessageType) {
@@ -532,6 +601,13 @@ class Mailbox extends Component{
                   <table>
                     <tbody>
                       {(() => {
+                        if(this.state.isLoadingMessages === true){
+                          return <tr className={
+                                        "message-list last"
+                                      }>
+                                      <td>Loading...</td>
+                                    </tr>
+                        }
                         if(this.state.shownMessages.length > 0){
                           switch(this.state.shownMessageType){
                             case 'sent':{
@@ -544,9 +620,10 @@ class Mailbox extends Component{
                                   key={`${message.to}-${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td>{ message.hash.file.name }</td>
-                                    <td>{ message.to }</td>
-                                    <td className="hide-mobile">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="hide-mobile"></td>                                    
+                                    <td><div className="no-overflow">{ message.to }</div></td>
+                                    <td className="hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
                                     <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                   </tr>
                               })
@@ -561,9 +638,10 @@ class Mailbox extends Component{
                                   key={`${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td>{ message.hash.file.name }</td>
-                                    <td>{ message.from }</td>
-                                    <td className="hide-mobile">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="hide-mobile"></td>                                    
+                                    <td><div className="no-overflow">{ message.from }</div></td>
+                                    <td className="hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
                                     <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                   </tr>
                               })
@@ -578,9 +656,10 @@ class Mailbox extends Component{
                                   key={`${message.hash.address}`}
                                   onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td>{ message.hash.file.name }</td>
-                                    <td>{ message.from }</td>
-                                    <td>{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</td>
+                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="hide-mobile"></td>                                    
+                                    <td><div className="no-overflow">{ message.from }</div></td>
+                                    <td><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
                                     <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
                                   </tr>
                               })
@@ -593,9 +672,26 @@ class Mailbox extends Component{
                                     + (i === (this.state.shownMessages.length - 1) ? "last" : "")
                                   }
                                   key={`${hash.address}`}
-                                  onClick=
-                                  { ()=>{ return hash.saveAs(); } }>
-                                     <td>{ hash.file.name }</td>
+                                  >
+                                    <td onClick=
+                                      { ()=>{ return hash.saveAs(); } }
+                                    >
+                                      { hash.file.name }
+                                    </td>
+                                    <td 
+                                      onClick={ ()=>{ 
+                                          return this.pin(hash, (hash.meta && hash.meta.pinned === true) ? false : true); 
+                                        } 
+                                      }
+                                      className="hide-mobile"
+                                    >
+                                      {(hash.meta && hash.meta.pinned === true) &&
+                                        <img src={this.props.appRoot + "/assets/images/thumbtack-solid.svg"} alt="Pinned" className="inbox-pin"/>
+                                      }
+                                      {(hash.meta && hash.meta.pinned !== true) &&
+                                        <img src={this.props.appRoot + "/assets/images/thumbtack-hollow.svg"} alt="Not Pinned" className="inbox-pin"/>
+                                      }
+                                    </td>
                                     <td></td>
                                     <td className="hide-mobile">{ Moment(hash.time).format('D/MM/YYYY hh:mm ') }</td>
                                     <td>{ Utils.humanFileSize(hash.file.size) }</td>

@@ -29,6 +29,7 @@ import Content from "./components/Content"
 
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
+import ProgressBar from "./components/Shared/svg/ProgressBar.js"
 
 import * as Sentry from '@sentry/browser';
 
@@ -67,7 +68,8 @@ class App extends Component {
       menuState: false,
       appRoot: this.props.appRoot,
       receivedMessages: [],
-      showReceivedAlert: false   
+      showReceivedAlert: false,
+      isLoading: false  
     };
   }
 
@@ -125,23 +127,8 @@ class App extends Component {
       this.initSentry();    
     }
 
-    // let config = {
-    //   tokenName: 'gas',      
-    //   swarmGateway: process.env.REACT_APP_SWARM_GATEWAY,
-    //   ethGateway: process.env.REACT_APP_GETH_GATEWAY,
-    //   faucetAddress: process.env.REACT_APP_FAUCET_URL,
-    //   chainID: process.env.REACT_APP_CHAIN_ID,
-    //   httpTimeout: 1000,
-    //   gasPrice: 0.1, //gwei
-    //   ensConfig: {
-    //     domain: process.env.REACT_APP_DOMAIN_NAME,
-    //     registryAddress: process.env.REACT_APP_ENS_ADDRESS,
-    //     subdomainRegistrarAddress: process.env.REACT_APP_REGISTRAR_ADDRESS,
-    //     resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS
-    //   }
-    // };
-
     this.FDS = new FDS();
+    window.FDS = this.FDS;
 
     this.uploadComponent = React.createRef();
     this.mailboxComponent = React.createRef();
@@ -170,6 +157,8 @@ class App extends Component {
     this.disableNav = this.disableNav.bind(this);
     this.enableNav = this.enableNav.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.updateStoredStats = this.updateStoredStats.bind(this);
+    this.setIsLoading = this.setIsLoading.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -186,14 +175,74 @@ class App extends Component {
   }
 
   componentDidMount(){
-    let interval = setInterval(this.pollForUpdates.bind(this),3000);
-    this.setState({checkreceivedInterval: interval})
+    let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
+    let bInterval = setInterval(this.updateBalance.bind(this),1500);
+    this.setState({checkreceivedInterval: uInterval});
+    // this.setState({checkbalanceInterval: bInterval});    
     document.getElementById('splash').classList.add('splash-fadeout');
+    setTimeout(()=>{
+      this.setState({savedAppState: this.getAppState(true)});
+    })
     setTimeout(()=>{
       this.setState({menuIsRendered: true});
       document.getElementById('splash').classList.add('splash-hidden');
       document.getElementById('root').classList.add('root-fadein');
     },100);  
+  }
+
+  async getAppState(refresh=true){
+    if(this.state.selectedMailbox){
+      if(refresh === true){
+        let appState = await this.state.selectedMailbox.retrieveDecryptedValue('fairdrop-appState-0.1');
+        let appS = JSON.parse(appState);
+        this.setState({savedAppState: appS});
+        return appS;
+      }else{
+        return this.state.savedAppState;
+      }
+    }else{
+      return false;
+    }
+  }
+
+  async saveAppState(appStateUpdate, persist = true){
+    let appState = await this.getAppState(true);
+
+
+    for (let k in appStateUpdate) {
+      appState[k] = appStateUpdate[k];
+    }
+
+    if(persist === true){
+      this.state.selectedMailbox.storeEncryptedValue('fairdrop-appState-0.1', JSON.stringify(appState));
+    }
+
+    let newAppState = await this.getAppState(false);
+    await this.setState({savedAppState: newAppState});
+    return true;
+  }
+
+  updateBalance(){
+    if(this.state.selectedMailbox){
+      this.FDS.currentAccount.getBalance().then((balance)=>{
+        this.setState({selectedMailboxBalance: balance});
+      });
+    }
+  }
+
+  updateStoredStats(){
+    return this.FDS.currentAccount.storedManifest().then((manifest)=>{
+      let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{if(i===1){return o.file.size;}else{return o.file.size + total;}});
+      let totalPinnedSize = manifest.storedFiles.filter((o)=>{
+        return o.meta.pinned === true;
+      }).reduce((total,o,i)=>{
+        if(i===1){return o.file.size;}else{return o.file.size + total;}
+      });
+      return this.saveAppState({
+        totalStoredSize: totalStoredSize,
+        totalPinnedSize: totalPinnedSize,
+      });
+    });
   }
 
   pollForUpdates(){
@@ -221,29 +270,34 @@ class App extends Component {
     }
   }
 
-  unlockMailboxWallet(subdomain, password){
-    this.FDS.UnlockAccount(subdomain, password).then((account)=>{
-      if(window.Sentry){
-        window.Sentry.configureScope((scope) => {
-          scope.setUser({"username": account.subdomain});
-        });
-      }
-      this.setState({
-        feedbackMessage: 'Mailbox unlocked.',
-        mailboxIsUnlocked: true,
-      });
-      this.props.mailboxUnlocked();
-      this.props.setSelectedMailbox(this.FDS.currentAccount);
-    }).catch((error)=>{
-      this.setState({
-        feedbackMessage: 'Password invalid, please try again.',
-        mailboxIsUnlocked: false
-      });
-    });
-  }
+  // unlockMailboxWallet(subdomain, password){
+  //   this.FDS.UnlockAccount(subdomain, password).then((account)=>{
+  //     this.updateBalance();
+  //     if(window.Sentry){
+  //       window.Sentry.configureScope((scope) => {
+  //         scope.setUser({"username": account.subdomain});
+  //       });
+  //     }
+  //     this.setState({
+  //       feedbackMessage: 'Mailbox unlocked.',
+  //       mailboxIsUnlocked: true,
+  //     });
+  //     this.props.mailboxUnlocked();
+  //     this.props.setSelectedMailbox(this.FDS.currentAccount);
+  //   }).catch((error)=>{
+  //     this.setState({
+  //       feedbackMessage: 'Password invalid, please try again.',
+  //       mailboxIsUnlocked: false
+  //     });
+  //   });
+  // }
 
   setSelectedMailbox(selectedMailbox){
     this.setState({selectedMailbox: selectedMailbox});
+    let appStateUpdate = {lastLogin: new Date().toISOString()};
+    return this.saveAppState(appStateUpdate).then(()=>{
+      return this.updateBalance();
+    });
   }
 
   setFileIsSelecting(state = true){
@@ -252,6 +306,10 @@ class App extends Component {
 
   fileWasSelected(state = true){
     this.setState({fileWasSelected: state});
+  }
+
+  setIsLoading(state = true){
+    this.setState({isLoading: state});    
   }
 
   handleSendFile(e){
@@ -421,6 +479,7 @@ class App extends Component {
             enableNav={this.enableNav}
             resetMailboxState={this.resetMailboxState}
             selectedMailbox={this.state.selectedMailbox}
+            selectedMailboxBalance={this.state.selectedMailboxBalance}
           />
           <Content
             isShown={false}
@@ -428,6 +487,9 @@ class App extends Component {
             displayContent={this.state.displayContent}
             handleNavigateTo={this.handleNavigateTo}
             appRoot={this.state.appRoot}
+            savedAppState={this.state.savedAppState}
+            selectedMailbox={this.state.selectedMailbox}
+            selectedMailboxBalance={this.state.selectedMailboxBalance}
             ref={this.contentComponent}
           />
           <div 
@@ -452,6 +514,11 @@ class App extends Component {
               </div>
               <div className="nav-header-item-left hide-mobile">
                 <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
+              </div>
+              <div className="nav-header-item-left">
+                <div className={(this.state.isLoading ? "is-loading " : " ") + "loading-icon"}>
+                  <ProgressBar/>
+                </div>
               </div>
 
               <div className="nav-header-item-right">
@@ -495,7 +562,6 @@ class App extends Component {
             <Route exact={true} path={"/"} render={ () => {
                 return <Upload 
                   FDS={this.FDS}
-                  unlockMailboxWallet={this.unlockMailboxWallet}
                   selectedMailbox={this.state.selectedMailbox}
                   setSelectedMailbox={this.setSelectedMailbox}
                   fileWasSelected={this.fileWasSelected}
@@ -507,6 +573,8 @@ class App extends Component {
                   resetFileState={this.resetFileState}
                   appRoot={this.state.appRoot}
                   enableNav={this.enableNav}
+                  handleNavigateTo={this.handleNavigateTo}
+                  updateStoredStats={this.updateStoredStats}
                   ref={this.uploadComponent}
                 />
               }
@@ -515,11 +583,16 @@ class App extends Component {
             <Route path={"/mailbox" || "/mailbox/:filter"} render={(routerArgs) => {
                 return <Mailbox
                   FDS={this.FDS}
-                  unlockMailboxWallet={this.unlockMailboxWallet}
                   setSelectedMailbox={this.setSelectedMailbox}
                   selectedMailbox={this.state.selectedMailbox}
+                  handleSendFile={this.handleSendFile}
+                  handleStoreFile={this.handleStoreFile}
+                  handleQuickFile={this.handleQuickFile}
+                  updateStoredStats={this.updateStoredStats}
                   routerArgs={routerArgs}
                   appRoot={this.state.appRoot}
+                  isLoading={this.state.isLoading}
+                  setIsLoading={this.setIsLoading}
                   ref={this.mailboxComponent}
                 />
               }

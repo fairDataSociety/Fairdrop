@@ -130,7 +130,24 @@ class App extends Component {
       this.initSentry();    
     }
 
-    this.FDS = new FDS();
+    let config = {
+      tokenName: 'gas',
+      swarmGateway: 'https://swarm.fairdrop.pro',
+      ethGateway: 'https://noordung.fairdrop.pro',
+      faucetAddress: 'https://faucet-noordung.fairdatasociety.org/gimmie',
+      chainID: '235813',
+      httpTimeout: 1000,
+      gasPrice: 0.1,
+      walletVersion: 1,
+      ensConfig: {
+        domain: 'datafund.eth',
+        registryAddress: '0xA1029cb176082eca658A67fD6807B9bDfB44A695',
+        subdomainRegistrarAddress: '0x0E6a3B5f6800145bAe95C48934B7b5a90Df50722',
+        resolverContractAddress: '0xC91AB84FFad79279D47a715eF91F5fbE86302E4D'
+      }
+    };
+
+    this.FDS = new FDS(config);
     window.FDS = this.FDS;
 
     this.uploadComponent = React.createRef();
@@ -178,9 +195,9 @@ class App extends Component {
   }
 
   componentDidMount(){
-    let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
-    let bInterval = setInterval(this.updateBalance.bind(this),1500);
-    this.setState({checkreceivedInterval: uInterval});
+    // let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
+    // let bInterval = setInterval(this.updateBalance.bind(this),1500);
+    // this.setState({checkreceivedInterval: uInterval});
     // this.setState({checkbalanceInterval: bInterval});    
     document.getElementById('splash').classList.add('splash-fadeout');
     setTimeout(()=>{

@@ -10,14 +10,12 @@ class FDSPin{
 	async pin(hash){
 		// curl -XPOST http://localhost:8080/pin -d "account=0x123&address=$ADDRESS&warrant=0x234&endBlock=1234"
 		//send pin request to oracle
-		console.log(`${this.orac}/pin`)
 		let qs = querystring.stringify({
 			account: this.acc.address,
 			address: hash,
 			warrant: "",
 			endBlock: "9999"
 		});
-		console.log(qs)		
 		let pin = await axios.post(`${this.orac}/pin`, qs);
 		console.log(pin)
 		//check for completion
@@ -32,9 +30,7 @@ class FDSPin{
 			account: this.acc.address,
 			address: hash
 		});
-		console.log(qs)
 		let unpin = await axios.post(`${this.orac}/unpin`, qs);
-		console.log(unpin)
 		//check for completion
 		return true;
 	}

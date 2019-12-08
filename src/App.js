@@ -33,6 +33,7 @@ import ProgressBar from "./components/Shared/svg/ProgressBar.js"
 
 import * as Sentry from '@sentry/browser';
 
+import FDSPin from './lib/FDSPin.js';
 import {notify} from './lib/FDSNotify.js'
 
 
@@ -42,6 +43,8 @@ import './lib/DDrop.css';
 
 import {version} from '../package.json';
 window.files = [];
+
+let pinningOracleURL = 'https://oracle.fairdrop.pro';
 
 class App extends Component {
 
@@ -310,7 +313,7 @@ class App extends Component {
   setSelectedMailbox(selectedMailbox){
     this.setState({
       selectedMailbox: selectedMailbox,
-      fdsPin: new FDSPin(selectedMailbox, 'http://localhost:8081')
+      fdsPin: new FDSPin(selectedMailbox, pinningOracleURL)
     });
     let appStateUpdate = {lastLogin: new Date().toISOString()};
     return this.saveAppState(appStateUpdate).then(()=>{

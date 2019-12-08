@@ -193,8 +193,17 @@ class App extends Component {
   async getAppState(refresh=true){
     if(this.state.selectedMailbox){
       if(refresh === true){
-        let appState = await this.state.selectedMailbox.retrieveDecryptedValue('fairdrop-appState-0.1');
-        let appS = JSON.parse(appState);
+        let appS;
+        try{
+          let appState = await this.state.selectedMailbox.retrieveDecryptedValue('fairdrop-appState-0.1');
+          appS = JSON.parse(appState);
+        }catch(error){
+          if(error.response.status){
+            appS = {};
+          }else{
+            throw new Error(error);
+          }
+        }
         this.setState({savedAppState: appS});
         return appS;
       }else{
@@ -233,11 +242,17 @@ class App extends Component {
   updateStoredStats(){
     return this.FDS.currentAccount.storedManifest().then((manifest)=>{
       let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{if(i===1){return o.file.size;}else{return o.file.size + total;}});
-      let totalPinnedSize = manifest.storedFiles.filter((o)=>{
+      let totalPinned = manifest.storedFiles.filter((o)=>{
         return o.meta.pinned === true;
-      }).reduce((total,o,i)=>{
-        if(i===1){return o.file.size;}else{return o.file.size + total;}
       });
+      let totalPinnedSize;
+      if(totalPinned.length > 0){
+        totalPinnedSize = totalPinned.reduce((total,o,i)=>{
+          if(i===1){return o.file.size;}else{return o.file.size + total;}
+        })
+      }else{
+        totalPinnedSize = 0;
+      }
       return this.saveAppState({
         totalStoredSize: totalStoredSize,
         totalPinnedSize: totalPinnedSize,
@@ -293,7 +308,10 @@ class App extends Component {
   // }
 
   setSelectedMailbox(selectedMailbox){
-    this.setState({selectedMailbox: selectedMailbox});
+    this.setState({
+      selectedMailbox: selectedMailbox,
+      fdsPin: new FDSPin(selectedMailbox, 'http://localhost:8081')
+    });
     let appStateUpdate = {lastLogin: new Date().toISOString()};
     return this.saveAppState(appStateUpdate).then(()=>{
       return this.updateBalance();
@@ -563,6 +581,7 @@ class App extends Component {
                 return <Upload 
                   FDS={this.FDS}
                   selectedMailbox={this.state.selectedMailbox}
+                  fdsPin={this.state.fdsPin}
                   setSelectedMailbox={this.setSelectedMailbox}
                   fileWasSelected={this.fileWasSelected}
                   fileIsSelecting={this.state.fileIsSelecting}
@@ -585,6 +604,7 @@ class App extends Component {
                   FDS={this.FDS}
                   setSelectedMailbox={this.setSelectedMailbox}
                   selectedMailbox={this.state.selectedMailbox}
+                  fdsPin={this.state.fdsPin}
                   handleSendFile={this.handleSendFile}
                   handleStoreFile={this.handleStoreFile}
                   handleQuickFile={this.handleQuickFile}

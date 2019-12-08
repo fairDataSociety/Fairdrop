@@ -24,7 +24,6 @@ import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
 import App from '../App';
-import FDSPin from '../lib/FDSPin.js';
 
 class Upload extends Component{
 
@@ -93,16 +92,7 @@ class Upload extends Component{
     if (progress<=999) { progress = ("00"+progress).slice(-3); }
     this.setState({uploadProgress: `${progress}%`});   
   }
-
-  pin(hash){
-    console.log(hash)
-    let selectedMailbox = this.props.selectedMailbox;
-    let fdsPin = new FDSPin(selectedMailbox);
-    return fdsPin.pin(hash).then(()=>{
-      console.log(selectedMailbox, hash)
-      return selectedMailbox.updateStoredMeta(hash, {pinned: true});
-    })
-  }  
+ 
 
   handleUpload(){
     let multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted';
@@ -208,7 +198,7 @@ class Upload extends Component{
           let fullPath = files[i].fullPath || files[i].webkitRelativePath;
           newFile.fullPath = fullPath.replace(/ /g,'_');
           newFiles.push(newFile);
-        }        
+        }
         return this.FDS.currentAccount.store(
           // new File(
           //   [window.selectedFileArrayBuffer],
@@ -229,14 +219,25 @@ class Upload extends Component{
           },
           (message)=>{
             this.setState({feedbackMessage: message});
-          }
+          },
+          {pinned: true},
+          true,
+          true
         ).then((response)=>{
-          // async
-          return this.pin(response);
+            console.log('o', response.oldStoredManifestAddress)
+            console.log('n', response.storedManifestAddress)
+            try{
+              this.props.fdsPin.unpin(response.oldStoredManifestAddress);
+            }catch{
+              console.log("couldn't unpin", response.oldStoredManifestAddress)
+            }
+            try{
+              this.props.fdsPin.pin(response.storedManifestAddress);
+            }catch{
+              console.log("couldn't pin", response.storedManifestAddress)
+            }
         }).then((response)=>{
-          console.log(response)
-          this.props.updateStoredStats();
-          return response;
+          return this.props.updateStoredStats();
         }).catch((error) => {
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});

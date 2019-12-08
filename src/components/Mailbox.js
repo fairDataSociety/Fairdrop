@@ -23,8 +23,6 @@ import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
 
-import FDSPin from '../lib/FDSPin.js';
-
 import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
@@ -138,7 +136,7 @@ class Mailbox extends Component{
 
   updatePinState(hash, state){
     let newShownMessages = this.state.shownMessages.map((h)=>{
-      if(h.address === hash.address){
+      if(h.address === hash){
         h.meta.pinned = state;
         return h;
       }else{
@@ -151,7 +149,7 @@ class Mailbox extends Component{
   pin(hash, state=true){
     this.updatePinState(hash, state);
     this.props.setIsLoading(true); //reset then unset by showStored()
-    let fdsPin = new FDSPin(this.props.selectedMailbox);
+    let fdsPin = this.props.fdsPin;
     if(state === true){
       return fdsPin.pin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: true}).then(()=>{
@@ -191,6 +189,7 @@ class Mailbox extends Component{
   }
 
   setSelectedMailbox(account){
+    window.mb = account;
     this.props.setSelectedMailbox(account);
   }
 
@@ -229,7 +228,9 @@ class Mailbox extends Component{
     this.props.setIsLoading(true);
     this.setState({isLoadingMessages: true});
     return this.FDS.currentAccount.stored().then((messages)=>{
-      console.log(messages)
+      if(typeof messages === 'undefined'){
+        messages = [];
+      }
       this.setState({
         shownMessageType: 'stored',
         shownMessages: messages.reverse()
@@ -344,6 +345,8 @@ class Mailbox extends Component{
         window.onbeforeunload = null;        
         this.mailboxUnlocked();
         this.setSelectedMailbox(this.FDS.currentAccount);
+      }).then(()=>{
+        // this.selectedMailbox();
       })
     }).catch((error)=>{
       if(window.Sentry) window.Sentry.captureException(error);
@@ -532,13 +535,13 @@ class Mailbox extends Component{
                   <table>
                     <tbody>
                       <tr>
-                        <td><button onClick={this.props.handleSendFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Send</button></td>
+                        <td><button onClick={this.props.handleSendFile}>Send<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>
                       <tr>
-                        <td><button onClick={this.props.handleStoreFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Store</button></td>
+                        <td><button onClick={this.props.handleStoreFile}>Store<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>
                       <tr>
-                        <td><button onClick={this.props.handleQuickFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Publish</button></td>
+                        <td><button onClick={this.props.handleQuickFile}>Publish<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>  
                       <tr>
                         <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
@@ -680,7 +683,7 @@ class Mailbox extends Component{
                                     </td>
                                     <td 
                                       onClick={ ()=>{ 
-                                          return this.pin(hash, (hash.meta && hash.meta.pinned === true) ? false : true); 
+                                          return this.pin(hash.address, (hash.meta && hash.meta.pinned === true) ? false : true); 
                                         } 
                                       }
                                       className="hide-mobile"

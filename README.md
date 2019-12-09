@@ -50,14 +50,14 @@ build static site
 
 `npm run build`
 
-## Fairdrop suggest edits process
+## Fairdrop pull request process
 
-1/ fork the repo at github.com
-2/ clone the forked repo `git clone ...` `cd fairdrop`
-2/ checkout the latest working branch (e.g. for beta) `git checkout beta`
-3/ install deps and run dev server
-4/ make changes
-5/ check they worked, and nothing else is broken
-6/ commit your changes git add . && git commit -m "my useful commit message"
-7/ push to github `git push origin beta`
-8/ go to github.com and make a pull request against original repo
+1. fork the repo at github.com
+2. clone the forked repo `git clone ...` `cd fairdrop`
+3. checkout the latest working branch (e.g. for beta) `git checkout beta`
+4. install deps and run dev server
+5. make changes
+6. check they worked, and nothing else is broken
+7. commit your changes git add . && git commit -m "my useful commit message"
+8. push to github `git push origin beta`
+9. go to github.com and make a pull request against original repo

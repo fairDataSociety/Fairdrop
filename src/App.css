@@ -514,8 +514,8 @@ input:disabled{
 
 .content-outer {
   height: 100vh;
-  display: table;
   width: 50vw;
+  overflow: scroll;
 }
 
 

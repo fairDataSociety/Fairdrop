@@ -64,11 +64,6 @@ class ASelectFile extends Component{
     // let dd = new DDrop();
     let dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
-      init: function() {
-        if(isQuick){
-          this.hiddenFileInput.setAttribute("webkitdirectory", true);
-        }
-      },
       ignoreHiddenFiles: true,
       previewsContainer: false,
       maxFilesize: 1000,

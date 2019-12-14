@@ -260,6 +260,7 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
+            isQuickFile={this.props.isQuickFile}
             fileIsSelecting0={this.props.fileIsSelecting0}
             fileIsSelecting1={this.props.fileIsSelecting1}
             setFileIsSelecting={this.props.setFileIsSelecting}

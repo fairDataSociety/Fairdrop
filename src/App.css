@@ -1327,7 +1327,7 @@ a.show-received-alert:hover{
 .select-file-store.dz-drag-hover .select-file-drop-inner, 
 .select-file-send.dz-drag-hover .select-file-drop-inner,
 .select-file-quick.dz-drag-hover .select-file-drop-inner{
-  background: #37bd72;
+  background: #BA2721;
   transition: 1s background-color;
 }
 

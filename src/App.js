@@ -64,7 +64,8 @@ class App extends Component {
       isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
-      fileIsSelecting: false,
+      fileIsSelecting0: false,
+      fileIsSelecting1: false,
       disclaimersAreShown: hasNotHiddenDisclaimer,
       disclaimersAreShown2: hasNotHiddenDisclaimer2,
       disclaimersAreShown3: hasNotHiddenDisclaimer3,
@@ -85,7 +86,8 @@ class App extends Component {
       isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
-      fileIsSelecting: false
+      fileIsSelecting0: false,
+      fileIsSelecting1: false
     };
 
     window.files = [];    
@@ -105,7 +107,8 @@ class App extends Component {
       isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
-      fileIsSelecting: false
+      fileIsSelecting0: false,
+      fileIsSelecting1: false
     });
     this.props.history.push('/');
   }
@@ -117,7 +120,8 @@ class App extends Component {
       isQuickFile: false,
       fileIsSelected: false,
       fileWasSelected: false,
-      fileIsSelecting: false
+      fileIsSelecting0: false,
+      fileIsSelecting1: false
     });
   }
 
@@ -195,10 +199,10 @@ class App extends Component {
   }
 
   componentDidMount(){
-    // let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
-    // let bInterval = setInterval(this.updateBalance.bind(this),1500);
-    // this.setState({checkreceivedInterval: uInterval});
-    // this.setState({checkbalanceInterval: bInterval});    
+    let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
+    let bInterval = setInterval(this.updateBalance.bind(this),1500);
+    this.setState({checkreceivedInterval: uInterval});
+    this.setState({checkbalanceInterval: bInterval});    
     document.getElementById('splash').classList.add('splash-fadeout');
     setTimeout(()=>{
       this.setState({savedAppState: this.getAppState(true)});
@@ -338,8 +342,9 @@ class App extends Component {
     });
   }
 
-  setFileIsSelecting(state = true){
-    this.setState({fileIsSelecting: state});    
+  setFileIsSelecting(state = true, i){
+    let obj = {}; obj[`fileIsSelecting${i}`] = state;
+    this.setState(obj);
   }
 
   fileWasSelected(state = true){
@@ -483,7 +488,7 @@ class App extends Component {
           + (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
           + (this.state.menuState ? "menu-shown " : "")
           + ((this.props.location.pathname.substring(0,8) === '/mailbox') ? "nav-black white " : " nav-white red ")
-          + (this.state.fileIsSelecting ? "is-selecting" : "")
+          + ((this.state.fileIsSelecting0 || this.state.fileIsSelecting1)  ? "is-selecting" : "")
           }
         >
           <DisclaimerSplash
@@ -604,7 +609,8 @@ class App extends Component {
                   fdsPin={this.state.fdsPin}
                   setSelectedMailbox={this.setSelectedMailbox}
                   fileWasSelected={this.fileWasSelected}
-                  fileIsSelecting={this.state.fileIsSelecting}
+                  fileIsSelecting0={this.state.fileIsSelecting0}
+                  fileIsSelecting1={this.state.fileIsSelecting1}
                   setFileIsSelecting={this.setFileIsSelecting}
                   isSendingFile={this.state.isSendingFile}
                   isStoringFile={this.state.isStoringFile}

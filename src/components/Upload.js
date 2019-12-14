@@ -61,7 +61,8 @@ class Upload extends Component{
 
   resetToInitialState(){
     this.setState(this.getInitialState());
-    this.props.setFileIsSelecting(false);
+    this.props.setFileIsSelecting(false, 0);
+    this.props.setFileIsSelecting(false, 1);
     App.aSelectFile.resetToInitialState();
   }
 
@@ -259,7 +260,8 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
-            fileIsSelecting={this.props.fileIsSelecting}
+            fileIsSelecting0={this.props.fileIsSelecting0}
+            fileIsSelecting1={this.props.fileIsSelecting1}
             setFileIsSelecting={this.props.setFileIsSelecting}
             ref={this.aSelectFile}
           />

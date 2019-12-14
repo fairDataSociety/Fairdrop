@@ -24,6 +24,8 @@ class ASelectFile extends Component{
   getInitialState(){
     return {
       hasDropped: false,
+      willDragLeave0: true,
+      willDragLeave1: true
     }
   }
 
@@ -38,7 +40,8 @@ class ASelectFile extends Component{
   }
 
   resetToInitialState(){
-    this.props.setFileIsSelecting(false);
+    this.props.setFileIsSelecting(false, 0);
+    this.props.setFileIsSelecting(false, 1);
     this.setState(this.getInitialState());
   }
 
@@ -57,9 +60,9 @@ class ASelectFile extends Component{
     }
   }
 
-  initDropzone(element, isStoring=false, isQuick=false){
+  initDropzone(element, isStoring=false, isQuick=false, i){
     // let dd = new DDrop();
-    this.dropzone = new Dropzone(element, {
+    let dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
       init: function() {
         if(isQuick){
@@ -92,17 +95,17 @@ class ASelectFile extends Component{
       }
     });
 
-    this.dropzone.on("dragenter", (event) => {
-      this.props.setFileIsSelecting(true);
+    dropzone.on("dragenter", (event) => {
+        event.preventDefault();
+        this.props.setFileIsSelecting(true, i);
     });
 
-    this.dropzone.on("dragleave", (event) => {
-      if(event.fromElement === null){
-        this.props.setFileIsSelecting(false);
-      }
+
+    dropzone.on("dragover", (event) => {
+      this.handleDragOver(i);
     });
 
-    this.dropzone.on("drop", (event) => {
+    dropzone.on("drop", (event) => {
 
       this.props.fileWasSelected(true);
 
@@ -123,12 +126,9 @@ class ASelectFile extends Component{
         this.props.setParentState({isQuickFile: false});
       }
 
-      // setTimeout(()=>{
-        // dd.drop('drop', event.clientX, event.clientY);
-      // }, 233);
     })
 
-    this.dropzone.on("addedfile", (file) => {
+    dropzone.on("addedfile", (file) => {
       if(localStorage.getItem('hasEnabledEasterEgg') === "true"){
         if(file.size > (1024 * 1024 * 500)){
           alert('Sorry, proof of concept is restricted to 500mb');
@@ -142,17 +142,6 @@ class ASelectFile extends Component{
           return false;
         }
       }
-
-      // solves the problem that there is no event to capture 'cancel' by doing the animation after
-      var animationTimeout = 0;
-      if(this.state.isHandlingClick === true){
-        animationTimeout =  200;
-        this.props.setFileIsSelecting(true);
-      }else{
-        animationTimeout =  0;
-      }
-
-      setTimeout(()=>{
 
         this.props.fileWasSelected(true);
         if(this.state.hasDropped === false){
@@ -185,15 +174,28 @@ class ASelectFile extends Component{
             uiState: newUIState
           });
         }, 555);
-
-      }, animationTimeout);
     });
   }
 
+  handleDragOver(i){
+    //tricky but more robust fix because dragleave event does not work for dropzone in Safari
+    let t = `willDragLeave${i}`;
+    let p = `fileIsSelecting${i}`;
+      if(this.props[p] === false){
+        this.props.setFileIsSelecting(true, i);
+      }
+      if(this.t){
+        clearTimeout(this.t);
+      }
+      this.t = setTimeout(()=>{
+        this.props.setFileIsSelecting(false, i);
+      }, 100);
+  }
+
   dropZone(){
-    this.initDropzone(this.refs.dtSelectSaveFile);
-    this.initDropzone(this.refs.dtSelectStoreFile, true);
-    this.initDropzone(this.refs.dtSelectQuickFile, false, true);
+    this.initDropzone(this.refs.dtSelectSaveFile, false, false, 0);
+    this.initDropzone(this.refs.dtSelectStoreFile, true, false, 1);
+    this.initDropzone(this.refs.dtSelectQuickFile, false, true, 2);
   }
 
   handleClickQuickFile(e){
@@ -238,7 +240,7 @@ class ASelectFile extends Component{
   render(){
     return (
       <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} >
-        <div className={"select-file-main hide-mobile drop " + (this.props.fileIsSelecting ? "is-selecting " : " ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
+        <div className={"select-file-main hide-mobile drop " + ((this.props.fileIsSelecting0 || this.props.fileIsSelecting1) ? "is-selecting " : " ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
           <div ref="dtSelectStoreFile" className="select-file-store no-events-mobile " style={{display: 'none'}}>
             <div className="select-file-drop-inner">
               <h2>Store encrypted</h2>
@@ -258,7 +260,7 @@ class ASelectFile extends Component{
             </div>
           </div>
         </div>
-        <div className={"select-file-instruction " + (this.props.fileIsSelecting && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
+        <div className={"select-file-instruction " + ((this.props.fileIsSelecting0 || this.props.fileIsSelecting1) && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
           <div className="select-file-instruction-inner">
             <h2>
               An easy and secure way to send your files.

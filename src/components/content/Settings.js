@@ -68,11 +68,15 @@ class Settings extends Component{
         <div className="content-inner">
           <div className="content-header">
             <h1>User Settings</h1>
-            <h2>{this.props.selectedMailbox.subdomain}</h2>
-            <h3>{this.balance()}</h3>
-            <h3>{this.fileSize()}</h3>
-            <h3>{this.pinnedFileSize()}</h3>
-            <h3>{this.truncateAddress()}</h3>
+            {this.props.selectedMailbox && 
+              <div>
+                <h2>{this.props.selectedMailbox.subdomain}</h2>
+                <h3>{this.balance()}</h3>
+                <h3>{this.fileSize()}</h3>
+                <h3>{this.pinnedFileSize()}</h3>
+                <h3>{this.truncateAddress()}</h3>
+              </div>
+            }
             {/*
             <p>
               {this.state.storedFilesArePinned ? "Stored Files are Pinned" : "Stored Files are not Pinned"}

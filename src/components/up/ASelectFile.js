@@ -40,6 +40,7 @@ class ASelectFile extends Component{
   }
 
   resetToInitialState(){
+    window.files = [];
     this.props.setFileIsSelecting(false, 0);
     this.props.setFileIsSelecting(false, 1);
     this.setState(this.getInitialState());
@@ -62,17 +63,24 @@ class ASelectFile extends Component{
 
   initDropzone(element, isStoring=false, isQuick=false, i){
     // let dd = new DDrop();
+    let self = this;
     let dropzone = new Dropzone(element, {
       url: 'dummy://', //dropzone requires a url even if we're not using it
+      init: function(){
+          // if(isQuick){
+          //   this.hiddenFileInput.setAttribute("webkitdirectory", true);
+          // }
+      },
       ignoreHiddenFiles: true,
       previewsContainer: false,
       maxFilesize: 1000,
+      uploadMultiple: true,
       // clickable: false,
-      accept: (file, done) => {
-        window.files = [];
+      accept: function(file, done) {
+        console.log(this)
         window.files.push(file);
         if(window.files.length === 1){
-          this.props.setParentState({
+          self.props.setParentState({
             selectedFileName: file.name,
             selectedFileSize: file.size,
           });
@@ -82,7 +90,7 @@ class ASelectFile extends Component{
           for (var i = window.files.length - 1; i >= 0; i--) {
             totalSize += window.files[i].size;
           }
-          this.props.setParentState({
+          self.props.setParentState({
             selectedFileName: `${totalCount} files`,
             selectedFileSize: totalSize,
           });          
@@ -103,7 +111,6 @@ class ASelectFile extends Component{
     dropzone.on("drop", (event) => {
 
       this.props.fileWasSelected(true);
-
       this.setState({ hasDropped: true });
       if(isStoring === true){
         this.props.setParentState({isSendingFile: false});
@@ -200,7 +207,7 @@ class ASelectFile extends Component{
     this.props.setParentState({
       isQuickFile: true,
       isSendingFile: false,
-      isStoringFile: false,      
+      isStoringFile: false,
     });
     this.setState({'isHandlingClick': true});
     this.refs.dtSelectQuickFile.click();

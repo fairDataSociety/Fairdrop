@@ -26,7 +26,7 @@ class AboutFairdrop extends Component{
             <img alt="Fairdrop Logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
           </div>
           <div className="content-text">
-            <p>Fairdrop is a free, decentralised, private and secure file transfer dapp. It’s the first blockchain product by Fair Data Society based on the Fair Data Society principles. This means that Fairdrop completely respects your privacy and doesn’t need or collect any personal data. It runs on the Ethereum network and uses Swarm’s decentralised storage system for file storing and sending. This means:</p>
+            <p>Fairdrop is a free, decentralised, private and secure file transfer dapp contributed to Fair Data Society by Datafund. It is the first blockchain product based on Fair Data Society principles. This means that Fairdrop completely respects your privacy and doesn’t need or collect any personal data. It runs on the Ethereum network and uses Swarm’s decentralised storage system for file storing and sending. This means:</p>
             <ul>
               <li>No central servers.</li>
               <li>No tracking. </li>

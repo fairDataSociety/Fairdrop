@@ -15,6 +15,8 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
+import { withRouter } from "react-router";
+import PropTypes from "prop-types";
 
 import Utils from '../services/Utils';
 
@@ -27,27 +29,18 @@ import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
 
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  };
+
   getInitialState(){
 
     this.FDS = this.props.FDS;
     let mailboxes = this.FDS.GetAccounts();
 
     if(this.props.selectedMailbox){
-
-        switch(this.props.routerArgs.match.params.filter){
-          case 'sent':
-            this.showSent();
-          break;
-          case 'stored':
-            this.showStored();
-          break;
-          case 'consents':
-            this.showConsents();
-          break;          
-          default:
-            this.showReceived();
-          break;
-        }
 
         return {
           unlockingMailbox: null,
@@ -130,6 +123,30 @@ class Mailbox extends Component{
 
   }
 
+  componentDidUpdate(prevProps) {
+    let prevLoc = prevProps.routerArgs.location.pathname;
+    let newLoc = this.props.routerArgs.location.pathname;
+    if (prevLoc !== newLoc) {
+      if(this.props.selectedMailbox){
+        switch(this.props.routerArgs.match.params.filter){
+          case 'sent':
+            this.showSent();
+          break;
+          case 'stored':
+            this.showStored();
+          break;
+          case 'consents':
+            this.showConsents();
+          break;
+          default:
+            this.showReceived();
+          break;
+        }
+      }
+    }
+  }
+
+
   componentWillUnmount(){
     clearInterval(this.state.checkreceivedInterval);
   }
@@ -189,8 +206,8 @@ class Mailbox extends Component{
   }
 
   setSelectedMailbox(account){
-    window.mb = account;
     this.props.setSelectedMailbox(account);
+    this.props.handleNavigateTo('/mailbox/received');
   }
 
   showSent(){
@@ -544,16 +561,16 @@ class Mailbox extends Component{
                         <td><button onClick={this.props.handleQuickFile}>Publish<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>  
                       <tr>
-                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
+                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
+                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/sent')}}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
                       </tr>
                       <tr>
-                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
+                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/stored')}}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
                       </tr>
                       <tr id="consents-row" className="consents-hidden">
-                        <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={this.showConsents}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Consents</button></td>
+                        <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/consents')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Consents</button></td>
                       </tr>               
                     </tbody>
                   </table>

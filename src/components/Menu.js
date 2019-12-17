@@ -150,7 +150,7 @@ class App extends Component {
               <MenuItem
                 header="My Files"
                 items={[
-                        ['Recieved Files', ()=>{this.props.handleNavigateTo('/mailbox/recieved')}],
+                        ['Received Files', ()=>{this.props.handleNavigateTo('/mailbox/received')}],
                         ['Sent Files', ()=>{this.props.handleNavigateTo('/mailbox/sent')}],
                         ['Stored Files', ()=>{this.props.handleNavigateTo('/mailbox/stored')}]
                       ]}

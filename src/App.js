@@ -585,7 +585,7 @@ class App extends Component {
               }
               {this.state.selectedMailbox.subdomain &&
                 <div className="nav-header-item-right hide-mobile">
-                  <Link className="nav-context" to={'mailbox'}>
+                  <Link className="nav-context" to={'/mailbox/received'}>
                     {this.state.selectedMailbox.subdomain}
                   </Link>
                 </div>
@@ -625,7 +625,7 @@ class App extends Component {
               }
             }/>
 
-            <Route path={"/mailbox" || "/mailbox/:filter"} render={(routerArgs) => {
+            <Route path={"/mailbox/:filter?"} render={(routerArgs) => {
                 return <Mailbox
                   FDS={this.FDS}
                   setSelectedMailbox={this.setSelectedMailbox}
@@ -634,6 +634,7 @@ class App extends Component {
                   handleSendFile={this.handleSendFile}
                   handleStoreFile={this.handleStoreFile}
                   handleQuickFile={this.handleQuickFile}
+                  handleNavigateTo={this.handleNavigateTo}
                   updateStoredStats={this.updateStoredStats}
                   routerArgs={routerArgs}
                   appRoot={this.state.appRoot}

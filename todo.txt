@@ -1,0 +1,3 @@
+- pauses
+- fix notifications bit
+- some login cookies?????

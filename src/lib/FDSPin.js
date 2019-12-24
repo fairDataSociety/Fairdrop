@@ -17,8 +17,8 @@ class FDSPin{
 			endBlock: "9999"
 		});
 		let pin = await axios.post(`${this.orac}/pin`, qs);
-		console.log(pin)
 		//check for completion
+		console.log(`pinned ${hash}`)
 		return true;
 	}
 
@@ -31,7 +31,7 @@ class FDSPin{
 			address: hash
 		});
 		let unpin = await axios.post(`${this.orac}/unpin`, qs);
-		//check for completion
+		console.log(`unpinned ${hash}`)
 		return true;
 	}
 

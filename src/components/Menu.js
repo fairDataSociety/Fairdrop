@@ -120,7 +120,7 @@ class App extends Component {
                 <div className={"menu-section"}>
                   <div
                     className="menu-item-header logged-in"
-                    onClick={()=>{this.props.showContent('Settings')}}
+                    onClick={()=>{/*this.props.showContent('Settings')*/}}
                   >
                     {this.props.selectedMailbox.subdomain} ({this.balance()})
                   </div>

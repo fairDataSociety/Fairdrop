@@ -551,6 +551,7 @@ class Mailbox extends Component{
                 <div className="inbox-nav hide-mobile">
                   <table>
                     <tbody>
+                      {/*
                       <tr>
                         <td><button onClick={this.props.handleSendFile}>Send<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>
@@ -560,6 +561,7 @@ class Mailbox extends Component{
                       <tr>
                         <td><button onClick={this.props.handleQuickFile}>Publish<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>  
+                      */}
                       <tr>
                         <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>

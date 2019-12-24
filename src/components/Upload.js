@@ -225,8 +225,6 @@ class Upload extends Component{
           true,
           true
         ).then((response)=>{
-            console.log('o', response.oldStoredManifestAddress)
-            console.log('n', response.storedManifestAddress)
             try{
               this.props.fdsPin.unpin(response.oldStoredManifestAddress);
             }catch{

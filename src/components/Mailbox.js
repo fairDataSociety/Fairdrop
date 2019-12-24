@@ -29,12 +29,6 @@ import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
 
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
-
   getInitialState(){
 
     this.FDS = this.props.FDS;

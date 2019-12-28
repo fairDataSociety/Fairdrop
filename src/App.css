@@ -1161,6 +1161,31 @@ a.show-received-alert:hover{
 }
 
 
+/* dropbox */
+
+.dropbox{
+  height:100vh;
+  width:100vw;
+  display: table;
+  background: blue;
+  margin:auto;
+  vertical-align: middle;
+}
+
+.dropbox-center{
+  display: table-cell;
+  background: red;
+  margin:auto;
+  vertical-align: middle;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dropbox-center .instruction{
+  font-size: 19px;
+  margin-top: 13px;
+}
+
 /* select file */
 
 .select-file{

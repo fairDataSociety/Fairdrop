@@ -15,11 +15,12 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import { withRouter, Link, Route } from 'react-router-dom'
+import { withRouter, Link, Route, Switch } from 'react-router-dom'
 import FDS from 'fds.js';
 import JSZip from 'jszip';
 import FileSaver from 'filesaver.js';
 import Upload from "./components/Upload";
+import Dropbox from "./components/Dropbox";
 import Mailbox from "./components/Mailbox";
 import DisclaimerSplash from "./components/DisclaimerSplash"
 import DisclaimerSplash2 from "./components/DisclaimerSplash2"
@@ -603,48 +604,57 @@ class App extends Component {
               </div>
             </div>
     
-            <Route exact={true} path={"/"} render={ () => {
-                return <Upload 
-                  FDS={this.FDS}
-                  selectedMailbox={this.state.selectedMailbox}
-                  fdsPin={this.state.fdsPin}
-                  setSelectedMailbox={this.setSelectedMailbox}
-                  fileWasSelected={this.fileWasSelected}
-                  fileIsSelecting0={this.state.fileIsSelecting0}
-                  fileIsSelecting1={this.state.fileIsSelecting1}
-                  setFileIsSelecting={this.setFileIsSelecting}
-                  isSendingFile={this.state.isSendingFile}
-                  isStoringFile={this.state.isStoringFile}
-                  isQuickFile={this.state.isQuickFile}
-                  resetFileState={this.resetFileState}
-                  appRoot={this.state.appRoot}
-                  enableNav={this.enableNav}
-                  handleNavigateTo={this.handleNavigateTo}
-                  updateStoredStats={this.updateStoredStats}
-                  ref={this.uploadComponent}
-                />
-              }
-            }/>
-
-            <Route path={"/mailbox/:filter?"} render={(routerArgs) => {
-                return <Mailbox
-                  FDS={this.FDS}
-                  setSelectedMailbox={this.setSelectedMailbox}
-                  selectedMailbox={this.state.selectedMailbox}
-                  fdsPin={this.state.fdsPin}
-                  handleSendFile={this.handleSendFile}
-                  handleStoreFile={this.handleStoreFile}
-                  handleQuickFile={this.handleQuickFile}
-                  handleNavigateTo={this.handleNavigateTo}
-                  updateStoredStats={this.updateStoredStats}
-                  routerArgs={routerArgs}
-                  appRoot={this.state.appRoot}
-                  isLoading={this.state.isLoading}
-                  setIsLoading={this.setIsLoading}
-                  ref={this.mailboxComponent}
-                />
-              }
-            }/>
+            <Switch>
+              <Route exact={true} path={"/"} render={ () => {
+                  return <Upload 
+                    FDS={this.FDS}
+                    selectedMailbox={this.state.selectedMailbox}
+                    fdsPin={this.state.fdsPin}
+                    setSelectedMailbox={this.setSelectedMailbox}
+                    fileWasSelected={this.fileWasSelected}
+                    fileIsSelecting0={this.state.fileIsSelecting0}
+                    fileIsSelecting1={this.state.fileIsSelecting1}
+                    setFileIsSelecting={this.setFileIsSelecting}
+                    isSendingFile={this.state.isSendingFile}
+                    isStoringFile={this.state.isStoringFile}
+                    isQuickFile={this.state.isQuickFile}
+                    resetFileState={this.resetFileState}
+                    appRoot={this.state.appRoot}
+                    enableNav={this.enableNav}
+                    handleNavigateTo={this.handleNavigateTo}
+                    updateStoredStats={this.updateStoredStats}
+                    ref={this.uploadComponent}
+                  />
+                }
+              }/>
+              <Route exact={true} path={"/mailbox/:filter?"} render={(routerArgs) => {
+                  return <Mailbox
+                    FDS={this.FDS}
+                    setSelectedMailbox={this.setSelectedMailbox}
+                    selectedMailbox={this.state.selectedMailbox}
+                    fdsPin={this.state.fdsPin}
+                    handleSendFile={this.handleSendFile}
+                    handleStoreFile={this.handleStoreFile}
+                    handleQuickFile={this.handleQuickFile}
+                    handleNavigateTo={this.handleNavigateTo}
+                    updateStoredStats={this.updateStoredStats}
+                    routerArgs={routerArgs}
+                    appRoot={this.state.appRoot}
+                    isLoading={this.state.isLoading}
+                    setIsLoading={this.setIsLoading}
+                    ref={this.mailboxComponent}
+                  />
+                }
+              }/>
+              <Route path={"/:dropbox?"} render={ (routerArgs) => {
+                  return <Dropbox 
+                    appRoot={this.state.appRoot}
+                    routerArgs={routerArgs}
+                    ref={this.dropbox}
+                  />
+                }
+              }/>
+            </Switch>           
 
             <input
               ref={this.importMailboxInput}

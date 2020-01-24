@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-function generatePassword (){
-    return new Promise((resolve, reject)=>{
-      Crypto.randomBytes(48, function(err, buffer) {
-        resolve(buffer.toString('hex'));
-      });
-    })
-  }
+import React, { Component } from 'react';
 
-function humanFileSize(size) {
-      var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['b', 'KB', 'MB', 'GB', 'TB'][i];
-  }
+class App extends Component {
 
-function humanEntropy(password){
-    return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
+  render(props){
+    return <div
+      className={"disclaimer " + (this.props.disclaimersAreShown === false ? 'hidden' : '')}
+      >
+      <div className="disclaimer-wrapper">
+        <div className="disclaimer-content">
+          FDS just upgraded. Mailboxes have been reset. You may export legacy mailboxes from Settings and use <a rel="noopener noreferrer" target="_blank" href="https://legacy.fairdrop.xyz">Legacy</a> for a short time only.<span className="click-to-dismiss" onClick={this.props.hideDisclaimer3}>(Dismiss)</span>
+        </div>
+      </div>
+    </div>
   }
+}
 
-export default {generatePassword, humanFileSize, humanEntropy}
+export default App;

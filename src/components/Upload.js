@@ -52,6 +52,8 @@ class Upload extends Component{
       fileWasUploaded: false,
       uploadProgress: '000%',
 
+      isErrored: false,
+
       isStoringFile: this.props.isStoringFile,
       isQuickFile: this.props.isQuickFile
     };
@@ -59,7 +61,8 @@ class Upload extends Component{
 
   resetToInitialState(){
     this.setState(this.getInitialState());
-    this.props.setFileIsSelecting(false);
+    this.props.setFileIsSelecting(false, 0);
+    this.props.setFileIsSelecting(false, 1);
     App.aSelectFile.resetToInitialState();
   }
 
@@ -90,11 +93,14 @@ class Upload extends Component{
     if (progress<=999) { progress = ("00"+progress).slice(-3); }
     this.setState({uploadProgress: `${progress}%`});   
   }
+ 
 
   handleUpload(){
+    let multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted';
     if( // ensure that we have a file saved from dropzone
-      window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
-      window.selectedFileArrayBuffer.byteLength > 0
+      // window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
+      // window.selectedFileArrayBuffer.byteLength > 0
+      window.files.length > 0
       )
     {
       if(
@@ -104,11 +110,13 @@ class Upload extends Component{
         let addressee = this.state.addressee;
         return this.FDS.currentAccount.send(
           addressee,
-          new File(
-            [window.selectedFileArrayBuffer],
-            this.state.selectedFileName,
-            {type: this.state.selectedFileType}
-          ),
+          // new File(
+          //   [window.selectedFileArrayBuffer],
+          //   this.state.selectedFileName,
+          //   {type: this.state.selectedFileType}
+          // ),
+          window.files[0],
+          multiboxPath,
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});
@@ -117,7 +125,7 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded."});              
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
               this.setState({fileWasUploaded: true}); 
             }
           },
@@ -125,10 +133,10 @@ class Upload extends Component{
             this.setState({feedbackMessage: message});
           }
         ).catch((error) => {
-          this.setState({feedbackMessage: error});
+          this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         }).then(()=>{
-            this.setState({feedbackMessage: "file uploaded."});              
+            this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
             this.setState({fileWasUploaded: true}); 
         });
       }else if(
@@ -136,33 +144,69 @@ class Upload extends Component{
         this.state.isQuickFile === true
       ){
         this.setState({encryptionComplete: true});
-        return this.FDS.Account.Swarm.storeFileUnencrypted(
-          new File(
-            [window.selectedFileArrayBuffer],
-            this.state.selectedFileName,
-            {type: this.state.selectedFileType}
-          ),
+        let files = window.files;
+        let newFiles = [];
+        for (var i = files.length - 1; i >= 0; i--) {
+          let newFile = new File(
+            [files[i]],
+            files[i].name.replace(/ /g,'_'),
+            {type: files[i].type}
+          );
+          let fullPath = files[i].fullPath || files[i].webkitRelativePath;
+          newFile.fullPath = fullPath.replace(/ /g,'_');
+          newFiles.push(newFile);
+        }
+        return this.FDS.Account.Store.storeFilesUnencrypted(
+          newFiles,
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded."});              
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
               this.setState({fileWasUploaded: true}); 
+              this.props.enableNav();
             }
           },
           (message)=>{
             this.setState({feedbackMessage: message});
           }
-        ).catch((error) => {
-          this.setState({feedbackMessage: error});
-          this.setState({fileWasUploaded: true});
+        ).then((hash)=>{
+          let index_index = null;
+          for (var i = files.length - 1; i >= 0; i--) {
+            var fullPath = files[i].fullPath || files[i].webkitRelativePath;   
+            if(fullPath.split('/')[1] === 'index.html'){
+              index_index = i;
+            }
+          }
+          if(index_index !== null){
+            return this.FDS.swarmGateway + '/bzz:/'+ hash.address + '/index.html'; 
+          }else{
+            if(files.length > 1){
+              return this.FDS.swarmGateway + ':/bzz-list:/'+ hash.address + '/';
+            }else{
+              return hash.gatewayLink();
+            }
+          }          
         });
       }else{
+        let files = window.files;
+        let newFiles = [];
+        for (var i = files.length - 1; i >= 0; i--) {
+          let newFile = new File(
+            [files[i]],
+            files[i].name.replace(/ /g,'_'),
+            {type: files[i].type}
+          );
+          let fullPath = files[i].fullPath || files[i].webkitRelativePath;
+          newFile.fullPath = fullPath.replace(/ /g,'_');
+          newFiles.push(newFile);
+        }
         return this.FDS.currentAccount.store(
-          new File(
-            [window.selectedFileArrayBuffer],
-            this.state.selectedFileName,
-            {type: this.state.selectedFileType}
-          ),
+          // new File(
+          //   [window.selectedFileArrayBuffer],
+          //   this.state.selectedFileName,
+          //   {type: this.state.selectedFileType}
+          // ),
+          newFiles[0],
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});
@@ -171,15 +215,30 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded."});              
-              this.setState({fileWasUploaded: true}); 
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});          
             }
           },
           (message)=>{
             this.setState({feedbackMessage: message});
-          }
-        ).catch((error) => {
-          this.setState({feedbackMessage: error});
+          },
+          {pinned: true},
+          true,
+          true
+        ).then((response)=>{
+            try{
+              this.props.fdsPin.unpin(response.oldStoredManifestAddress);
+            }catch{
+              console.log("couldn't unpin", response.oldStoredManifestAddress)
+            }
+            try{
+              this.props.fdsPin.pin(response.storedManifestAddress);
+            }catch{
+              console.log("couldn't pin", response.storedManifestAddress)
+            }
+        }).then((response)=>{
+          return this.props.updateStoredStats();
+        }).catch((error) => {
+          this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         });
       }
@@ -199,7 +258,9 @@ class Upload extends Component{
             selectedMailbox={this.props.selectedMailbox}
             isSendingFile={this.props.isSendingFile}
             isStoringFile={this.props.isStoringFile}
-            fileIsSelecting={this.props.fileIsSelecting}
+            isQuickFile={this.props.isQuickFile}
+            fileIsSelecting0={this.props.fileIsSelecting0}
+            fileIsSelecting1={this.props.fileIsSelecting1}
             setFileIsSelecting={this.props.setFileIsSelecting}
             ref={this.aSelectFile}
           />
@@ -225,11 +286,13 @@ class Upload extends Component{
             appRoot={this.props.appRoot}
             parentState={this.state}
             setParentState={this.setState.bind(this)}
+            resetToInitialState={this.resetToInitialState.bind(this)}
           />
           <FCompleted
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}
+            handleNavigateTo={this.props.handleNavigateTo}
           />
           <ProgressBar
             parentState={this.state}

@@ -44,6 +44,7 @@ class SelectRecipient extends Component{
               onChange={this.props.handleSelectRecipient}
               name="selectRecipient"
               ref="dtSelectRecipient"
+              disabled={this.props.disabled}
             />
             <div className="ui-feedback">{this.state.feedbackMessage}</div>
           </div>

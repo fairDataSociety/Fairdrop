@@ -31,6 +31,7 @@ class AddMailbox extends Component{
           <form onSubmit={this.proxyHandleAddMailbox.bind(this)}>
             <div className="form-group">
               <input
+                disabled={this.props.disabled}              
                 className="mailbox-add-name"
                 type="text"
                 autoComplete="new-name"
@@ -41,6 +42,7 @@ class AddMailbox extends Component{
             </div>
             <div className="form-group">
               <input
+                disabled={this.props.disabled}              
                 className="mailbox-add-password"
                 type="password"
                 placeholder="Password"
@@ -51,6 +53,7 @@ class AddMailbox extends Component{
             </div>
             <div className="form-group-last clearfix">
               <input
+                disabled={this.props.disabled}              
                 autoComplete="off"
                 className="mailbox-add-password-verification"
                 type="password"

@@ -1,0 +1,9 @@
+# CHANGELOG
+
+## 0.4.5
+
+- Improves loading sequence
+- Adds upload a directory (quick)
+- Adds host a website
+- Some UX enhancements
+- Updates fds.js

@@ -15,6 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
+import {notificationPermission} from '../../lib/FDSNotify.js'
 
 class AboutFDS extends Component{
 
@@ -34,8 +35,9 @@ class AboutFDS extends Component{
         timesHasClicked: this.state.timesHasClicked + 1
       });
     }else{
+      notificationPermission();
       localStorage.setItem('hasEnabledEasterEgg', true);
-      alert('Max file size set to 100mb!');
+      alert('Max file size set to 500mb!');
     }
   }  
 
@@ -60,7 +62,7 @@ class AboutFDS extends Component{
             </p>
 
             <p>
-              Fair Data Society recognises online privacy as <br/>a <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
+              Fair Data Society recognises online privacy as a <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">basic human right</a> and a basis for progress for all.
             </p>
           </div>
         </div>

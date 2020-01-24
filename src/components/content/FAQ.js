@@ -28,9 +28,8 @@ class FAQ extends Component{
           <div className="content-text">
             <h2>FAQs</h2>
             <p>
-              Fairdrop is a decentralised, private and secure file transfer dapp. It’s the first blockchain product 
-              by Fair Data Society and one whose design is based entirely on the Fair Data Society principles. This 
-              means that Fairdrop respects the need for privacy and doesn’t collect any personal data. It runs using 
+              Fairdrop is a decentralised, private and secure file transfer dapp. Fairdrop is a free, decentralised, private and secure file transfer dapp contributed to Fair Data Society by Datafund. It is the first blockchain product
+              based on Fair Data Society principles. This means that Fairdrop respects the need for privacy and doesn’t collect any personal data. It runs using 
               the <a rel="noopener noreferrer" target="_blank" href="https://www.ethereum.org/">Ethereum</a> blockchain and 
               uses <a rel="noopener noreferrer" target="_blank" href="https://swarm-gateways.net/bzz:/theswarm.eth/">Swarm’s</a> decentralised storage system 
               for file storing and sending. This means:
@@ -41,7 +40,7 @@ class FAQ extends Component{
               <li>No backdoors.</li>
             </ul>
             <p>
-              It also comes with a built-in 256-bit ECDSA signature algorithm and the ability to send files of up to 5 MB in size which should increase considerably in the mid-term future.
+              It also comes with a built-in 256-bit ECDSA signature algorithm and the ability to send files of up to 100 MB in size which should increase considerably in the mid-term future.
             </p>
             <h2>What are Fair Data Principles</h2>
             <p>

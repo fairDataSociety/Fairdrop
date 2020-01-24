@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 import MenuItem from './MenuItem';
+import Utils from '../services/Utils';
 
 class App extends Component {
 
@@ -72,6 +73,10 @@ class App extends Component {
     }
   }
 
+  balance(){
+    return Utils.formatBalance(this.props.selectedMailboxBalance);
+  }
+
   closeAll(){
     let promises = [
       this.refs.send.closeItem(true),
@@ -82,84 +87,125 @@ class App extends Component {
     return Promise.all(promises);
   }
 
+  resetMailboxState(){
+    this.toggleMenu();
+    this.props.resetMailboxState();
+  }
+
   render(props){
     return <div className={'menu-wrapper ' + (this.state.isShown ? 'menuShown ' : '') + (this.state.screenIsShown ? 'showScreen ' : '') + (this.state.screenIsFadedIn ? 'fadeInScreen ' : '')}>
-      <div 
-        className="menu-toggle"
-        onDragOver={this.props.disableNav}
-        onDragEnter={this.props.disableNav}
-        onDragEnd={this.props.enableNav}
-        onDragExit={this.props.enableNav}
-      >
-        <button className={ "hamburger hamburger--spin " + (this.state.isShown === true ? "is-active" : "") } type="button" onClick={this.toggleMenu.bind(this)}>
-          <span className="hamburger-box">
-            <span className="hamburger-inner"></span>
-          </span>
-        </button>
-      </div>
-      <div className={"menu-background-screen"} onClick={this.toggleMenu.bind(this)}></div>
-      <div
-        className={"menu " + (this.state.isShown === false ? '' : 'show')}>
-        <div className="menu-header">
-          <img alt="fairdrop logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
+      {this.props.isRendered === true &&
+        <div>
+          <div 
+            className="menu-toggle"
+            onDragOver={this.props.disableNav}
+            onDragEnter={this.props.disableNav}
+            onDragEnd={this.props.enableNav}
+            onDragExit={this.props.enableNav}
+          >
+            <button className={ "hamburger hamburger--spin " + (this.state.isShown === true ? "is-active" : "") } type="button" onClick={this.toggleMenu.bind(this)}>
+              <span className="hamburger-box">
+                <span className="hamburger-inner"></span>
+              </span>
+            </button>
+          </div>
+          <div className={"menu-background-screen"} onClick={this.toggleMenu.bind(this)}></div>
+          <div
+            className={"menu " + (this.state.isShown === false ? '' : 'show')}>
+            <div className="menu-header">
+              <img alt="fairdrop logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
+            </div>
+            <div className="menu-main">
+              {this.props.selectedMailbox && 
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header logged-in"
+                    onClick={()=>{/*this.props.showContent('Settings')*/}}
+                  >
+                    {this.props.selectedMailbox.subdomain} ({this.balance()})
+                  </div>
+                </div>
+              }
+              {!this.props.selectedMailbox && 
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header "
+                    onClick={()=>{this.props.handleNavigateTo('/mailbox'); this.toggleMenu();}}
+                  >
+                    Login
+                  </div>
+                </div>
+              }
+              <MenuItem
+                header="Upload"
+                items={[
+                        ['Store', this.props.handleStoreFile],
+                        ['Send', this.props.handleSendFile],
+                        ['Quick (Unencrypted)', this.props.handleQuickFile]
+                      ]}
+                closeAll={this.closeAll.bind(this)}
+                toggleMenu={this.toggleMenu.bind(this)}
+                ref={'send'}
+              />
+              <MenuItem
+                header="My Files"
+                items={[
+                        ['Received Files', ()=>{this.props.handleNavigateTo('/mailbox/received')}],
+                        ['Sent Files', ()=>{this.props.handleNavigateTo('/mailbox/sent')}],
+                        ['Stored Files', ()=>{this.props.handleNavigateTo('/mailbox/stored')}]
+                      ]}
+                closeAll={this.closeAll.bind(this)}
+                toggleMenu={this.toggleMenu.bind(this)}
+                ref={'myFiles'}
+              />
+              <MenuItem
+                header="Settings"
+                items={[
+                        ['Import Mailbox', this.props.importMailbox],
+                        ['Export Mailboxes', this.props.exportMailboxes],
+                        // ['Export Legacy Mailboxes', this.props.exportLegacyMailboxes]
+                        // ,
+                        // ['Pro Mode', (c)=>{console.log(c)}]
+                      ]}
+                closeAll={this.closeAll.bind(this)}
+                toggleMenu={this.toggleMenu.bind(this)}
+                ref={'settings'}
+              />
+              <MenuItem
+                header="About"
+                items={[
+                        ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
+                        ['About Fair Data Society', ()=>{this.props.showContent('AboutFDS')}],
+                        ['FAQs', ()=>{this.props.showContent('FAQ')}],
+                        ['Terms of Usage', ()=>{this.props.showContent('Terms')}],
+                        ['Bug Disclosure', ()=>{window.open('https://github.com/fairDataSociety/vulnerability-disclosure-policy')}]
+                      ]}
+                closeAll={this.closeAll.bind(this)}
+                toggleMenu={()=>{}}
+                ref={'about'}
+              /> 
+              {this.props.selectedMailbox.subdomain &&
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header"
+                    onClick={this.resetMailboxState.bind(this)}
+                  >
+                      Log Out
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div className="menu-footer">
+              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety"><img alt="github logo" src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
+              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://twitter.com/DataFundProject"><img alt="twitter logo" src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
+              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://datafund.io"><img alt="datafund logo" src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
+              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://gitter.im/fairdatasociety/community"><img alt="gitter logo" src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
+              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img alt="riot logo" src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>          
+            </div>
+          </div>
         </div>
-        <div className="menu-main">
-          <MenuItem
-            header="Upload"
-            items={[
-                    ['Store', this.props.handleStoreFile],
-                    ['Send', this.props.handleSendFile],
-                    ['Quick (Unencrypted)', this.props.handleQuickFile]
-                  ]}
-            closeAll={this.closeAll.bind(this)}
-            toggleMenu={this.toggleMenu.bind(this)}
-            ref={'send'}
-          />
-          <MenuItem
-            header="My Files"
-            items={[
-                    ['Inbox', ()=>{this.props.handleNavigateTo('/mailbox/recieved')}],
-                    ['Sent Files', ()=>{this.props.handleNavigateTo('/mailbox/sent')}],
-                    ['Stored Files', ()=>{this.props.handleNavigateTo('/mailbox/stored')}]
-                  ]}
-            closeAll={this.closeAll.bind(this)}
-            toggleMenu={this.toggleMenu.bind(this)}
-            ref={'myFiles'}
-          />
-          <MenuItem
-            header="Settings"
-            items={[
-                    ['Import Mailbox', this.props.importMailbox],
-                    ['Export Mailboxes', this.props.exportMailboxes]
-                    // ,
-                    // ['Pro Mode', (c)=>{console.log(c)}]
-                  ]}
-            closeAll={this.closeAll.bind(this)}
-            toggleMenu={this.toggleMenu.bind(this)}
-            ref={'settings'}
-          />
-          <MenuItem
-            header="About"
-            items={[
-                    ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
-                    ['About Fair Data Society', ()=>{this.props.showContent('AboutFDS')}],
-                    ['FAQs', ()=>{this.props.showContent('FAQ')}],
-                    ['Terms of Usage', ()=>{this.props.showContent('Terms')}],
-                    ['Bug Disclosure', ()=>{window.open('https://github.com/fairDataSociety/vulnerability-disclosure-policy')}]
-                  ]}
-            closeAll={this.closeAll.bind(this)}
-            toggleMenu={()=>{}}
-            ref={'about'}
-          />  
-        </div>
-        <div className="menu-footer">
-          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety"><img alt="github logo" src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
-          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://twitter.com/DataFundProject"><img alt="twitter logo" src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
-          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://gitter.im/fairdatasociety/community"><img alt="gitter logo" src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
-          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://datafund.io"><img alt="datafund logo" src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
-          <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img alt="riot logo" src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>
-        </div>
-      </div>
+      }
     </div>
   }
 }

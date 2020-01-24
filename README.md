@@ -1,4 +1,4 @@
-# Readme - Fairdrop
+# Fairdrop
 
 ## About Fairdrop
 Fairdrop is a free, decentralised, private and secure file transfer dapp contributed to Fair Data Society by Datafund. It is the first blockchain product based on Fair Data Society principles. This means that Fairdrop completely respects your privacy and doesn’t need or collect any personal data. It runs on the Ethereum network and uses Swarm’s decentralised storage system for file storing and sending. This means:

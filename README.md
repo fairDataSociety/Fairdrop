@@ -1,63 +1,95 @@
-# Fairdrop
+# Readme - Fairdrop
 
-Fairdrop is a file transfer dapp. It’s the first blockchain product by Fair Data Society and one whose design is based entirely on the Fair Data Society (FDS) principles. It doesn’t collect any data, runs on the Ethereum network and uses Swarm’s decentralised storage system as its functional backbone.
+## About Fairdrop
+Fairdrop is a free, decentralised, private and secure file transfer dapp contributed to Fair Data Society by Datafund. It is the first blockchain product based on Fair Data Society principles. This means that Fairdrop completely respects your privacy and doesn’t need or collect any personal data. It runs on the Ethereum network and uses Swarm’s decentralised storage system for file storing and sending. This means:
 
-clone repo
+* No central servers.
+* No tracking.
+* No backdoors.
 
-`git clone git@github.com:fairDataSociety/Fairdrop.git`
+It also comes with a built-in 256-bit ECDSA signature algorithm and the ability.
 
-`cd Fairdrop`
+An official hosted beta version of Fairdrop is available for you at fairdrop.xyz - it's free to use and all of your data is encrypted before it leaves your browser!
 
-install dependencies
+You are also able to run your own copy of the code which you may download from the [github repository](http://github.com/fairDataSociety/Fairdrop)
 
-`npm install`
+![header image](https://raw.github.com/fairdatasociety/Fairdrop/fairdrop.gif)
 
-run devserver
+## Getting Started
 
-`npm start`
+These instructions will get you a copy of the project up and running on your local machine for  development and testing purposes.
 
-to build static assets for deployment in ./build
+For technical questions, use this project's [issues](https://github.com/fairDataSociety/Fairdrop/issues).
 
-`npm build`
+### Dependencies
 
-## Fairdrop version 0.4.6 specifics (might be relevant for later releases also)
+Before we get started, you'll need to install `npm` package manager. 
 
-Make sure you have [node 12](https://nodejs.org/en/about/releases/) installed on your computer.
 
-clone repo
+```
+npm install
+```
 
-`git clone git@github.com:fairDataSociety/Fairdrop.git`
 
-`cd Fairdrop`
 
-checkout version code
+### First time setup
 
-`git checkout 0.4.6`
+The first step to running Fairdrop locally is downloading the code by cloning the repository:
 
-delete node_modules
 
-`rm -rf node_modules`
+```
+git clone git@github.com:fairDataSociety/Fairdrop.git
+```
 
-install dependencies
+If you get Permission denied error using `ssh` refer [here](https://help.github.com/en/github/authenticating-to-github/error-permission-denied-publickey) or use https link as a fallback.
 
-`npm i`
+```
+git clone https://github.com/fairDataSociety/Fairdrop.git
+```
+Go to project root directory
+```
+cd Fairdrop
+```
 
-run site to test
+Now run the devserver
 
-`npm run start`
+```
+npm run start
+```
 
-build static site
+To build static assets for deployment in ./build
+```
+npm build
+```
 
-`npm run build`
 
-## Fairdrop pull request process
+You can see your app running on http://localhost:3000/
 
-1. fork the repo at github.com
-2. clone the forked repo `git clone ...` `cd fairdrop`
-3. checkout the latest working branch (e.g. for beta) `git checkout beta`
-4. install deps and run dev server
-5. make changes
-6. check they worked, and nothing else is broken
-7. commit your changes git add . && git commit -m "my useful commit message"
-8. push to github `git push origin beta`
-9. go to github.com and make a pull request against original repo
+
+
+## Deployment
+
+Add additional notes about how to deploy this on a live system
+
+## Contributing
+
+When contributing to this repository, please first discuss the change you wish to make via [issue](https://github.com/fairDataSociety/Fairdrop/issues), email, or any other method with the owners of this repository before making a change.
+
+1. Fork the repository
+1. Clone the repository (`git clone git@github.com:your_username/Fairdrop.git`)
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Add changes to the branch (`git add <list names of changed files>`)
+4. Commit your changes (`git commit -m 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Submit your changes for review (`Create new Pull Request`)
+
+
+## Authors
+
+@significance
+@crtahlin
+@gasperx93
+
+## License
+
+This project is licensed under the GPL3 License -

@@ -28,5 +28,6 @@ console.log(`Fairdrop Version ${version} - Created by FDS`);
 
 //enables us to use subdirectory base urls with react router
 let appRoot = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(0,5).join('/') : '';
+let basename = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(3,5).join('/') : '';
 
-ReactDOM.render(<Router basename={appRoot}><App appRoot={appRoot}/></Router>, document.getElementById('root'));
+ReactDOM.render(<Router basename={basename}><App appRoot={appRoot}/></Router>, document.getElementById('root'));

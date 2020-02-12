@@ -84,6 +84,17 @@ When contributing to this repository, please first discuss the change you wish t
 5. Push to the branch (`git push origin my-new-feature`)
 6. Submit your changes for review (`Create new Pull Request`)
 
+## Donations
+For people who would like to support the development of Fairdrop we also accept donations in ETH or tokens.
+
+You can supports us via:
+
+Gitcoin: 
+https://gitcoin.co/grants/280/fairdrop-secure-private-unstoppable-file-transfer
+
+Giveth
+https://beta.giveth.io/campaigns/5c81316527ae4211c836be4e
+
 
 ## Authors
 

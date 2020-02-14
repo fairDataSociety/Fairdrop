@@ -583,6 +583,26 @@ input:disabled{
   font-size: 9px;
 }
 
+/* Settings */
+
+.settings-inner label{
+  clear: left;
+  display: block;
+  float:left;
+  width: 50%;
+  text-align: left;
+}
+
+.settings-inner label{
+  display: block;
+  float:left;
+  width: 50%;
+  text-align: left;
+}
+
+.settings-form-group{
+  clear:both;
+}
 
 /* Menu */
 

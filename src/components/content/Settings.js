@@ -50,8 +50,16 @@ class Settings extends Component{
     }
   } 
 
-  truncateAddress(){
-    return Utils.truncate(this.props.selectedMailbox.address, 5, 5, 10);
+  pinnedTimeRemaining(){
+    if(this.props.savedAppState.pinnedTimeRemainingInSecs){
+      return Utils.humanTime(this.props.savedAppState.pinnedTimeRemainingInSecs);
+    }else{
+      return " - "
+    }
+  }
+
+  mailboxAddress(){
+    return this.props.selectedMailbox.address;
   }
 
   balance(){
@@ -67,14 +75,54 @@ class Settings extends Component{
       <div className="content-outer content-fds">
         <div className="content-inner">
           <div className="content-header">
-            <h1>User Settings</h1>
+            <div className="settings-inner">
             {this.props.selectedMailbox && 
-              <div>
-                <h2>{this.props.selectedMailbox.subdomain}</h2>
-                <h3>{this.balance()}</h3>
-                <h3>{this.fileSize()}</h3>
-                <h3>{this.pinnedFileSize()}</h3>
-                <h3>{this.truncateAddress()}</h3>
+              <div className="settings-inner">
+                <h1>Mailbox Settings</h1>
+                <div className="settings-form-group">
+                  <label>Address</label>
+                  <div>
+                    <input className="mailbox-address-input" type="text" value={this.mailboxAddress()}/>
+                    <div onClick={this.handleCopyGatewayLink} className="settings-copy-address">Copy</div>
+                  </div>
+                </div>
+                <div className="settings-form-group">
+                  <label>QR Code Address</label>
+                  <QRCode value={'fds://'+this.mailboxAddress()} />
+                </div>
+                <div className="settings-form-group">
+                  <label>Balance</label>
+                  <div className="settings-inner-content">{this.balance()}</div>
+                </div>
+                <div className="settings-form-group">
+                  <label>Storage Provider</label>
+                  <Dropdown
+                    options={["FDS EUROPA POOL (1)"]}
+                    value={"FDS EUROPA POOL (1)"}
+                    placeholder="Select a mailbox"
+                  />
+                </div>
+                <div className="settings-form-group">
+                  <label>Stored Currently</label>
+                  <div className="settings-inner-content">{this.fileSize()}({this.pinnedFileSize()})</div>
+                </div>
+                <div className="settings-form-group">
+                  <label>Stored Time Remaining</label>
+                  <div className="settings-inner-content">{this.pinnedTimeRemaining()}</div>
+                </div>
+                <div className="settings-form-group">
+                  <label>Opt in for Analytics</label>
+                  <Switch onChange={this.handleChangeAnalytics} checked={this.props.savedAppState.analytics} />
+                </div>
+                <div className="settings-form-group">
+                  <label>Opt in for Pin Files</label>
+                  <Switch onChange={this.handleChangePinFiles} checked={this.props.savedAppState.pinFiles} />
+                </div>
+                <div className="settings-form-group">
+                  <label>Opt in for Honest Inbox</label>
+                  <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState.honestInbox} />
+                </div>
+
               </div>
             }
             {/*

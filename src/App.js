@@ -45,8 +45,8 @@ import './lib/DDrop.css';
 import {version} from '../package.json';
 window.files = [];
 
-// let pinningOracleURL = 'https://oracle.fairdrop.pro'; //nb this refers to swarm.fairdrop.pro oracle
-let pinningOracleURL = 'https://pinning.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
+let pinningOracleURL = 'http://localhost:8081'; //nb this refers to swarm.fairdrop.pro oracle
+// let pinningOracleURL = 'https://pinning.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
 
 class App extends Component {
 
@@ -136,24 +136,24 @@ class App extends Component {
       this.initSentry();    
     }
 
-    // let config = {
-    //   tokenName: 'gas',
-    //   swarmGateway: 'https://swarm.fairdatasociety.org',
-    //   ethGateway: 'https://noordung.fairdrop.pro',
-    //   faucetAddress: 'https://faucet-noordung.fairdatasociety.org/gimmie',
-    //   chainID: '235813',
-    //   httpTimeout: 1000,
-    //   gasPrice: 0.1,
-    //   walletVersion: 1,
-    //   ensConfig: {
-    //     domain: 'datafund.eth',
-    //     registryAddress: '0xA1029cb176082eca658A67fD6807B9bDfB44A695',
-    //     subdomainRegistrarAddress: '0x0E6a3B5f6800145bAe95C48934B7b5a90Df50722',
-    //     resolverContractAddress: '0xC91AB84FFad79279D47a715eF91F5fbE86302E4D'
-    //   }
-    // };
+    let config = {
+      tokenName: 'gas',
+      swarmGateway: 'http://localhost:8500',
+      ethGateway: 'http://localhost:8545',
+      faucetAddress: 'http://localhost:3001/gimmie',
+      chainID: '235813',
+      httpTimeout: 1000,
+      gasPrice: 0.1,
+      walletVersion: 1,
+      ensConfig: {
+        domain: 'datafund.eth',
+        registryAddress: '0x6244dE13BB15b5A30e1B3cBE03289A9929313C3D',
+        subdomainRegistrarAddress: '0x9F2d29c068DE7Ee61A3a12f63cc1643C68B2558D',
+        resolverContractAddress: '0xC109C285f693A2c44C39fFA2cddC271DD9acc990'
+      }
+    };
 
-    this.FDS = new FDS();
+    this.FDS = new FDS(config);
     window.FDS = this.FDS;
 
     this.uploadComponent = React.createRef();

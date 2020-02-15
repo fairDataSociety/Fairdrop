@@ -13,13 +13,15 @@ An official hosted beta version of Fairdrop is available for you at fairdrop.xyz
 
 You are also able to run your own copy of the code which you may download from the [github repository](http://github.com/fairDataSociety/Fairdrop)
 
-![header image](https://raw.github.com/fairdatasociety/Fairdrop/fairdrop.gif)
+![header image](https://raw.github.com/fairdatasociety/fairdrop/master/fairdrop.gif)
 
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for  development and testing purposes.
 
-For technical questions, use this project's [issues](https://github.com/fairDataSociety/Fairdrop/issues).
+
+For technical issues, use this project's [issue tracking](https://github.com/fairDataSociety/Fairdrop/issues).
+
 
 ### Dependencies
 
@@ -66,7 +68,6 @@ npm build
 You can see your app running on http://localhost:3000/
 
 
-
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
@@ -92,4 +93,8 @@ When contributing to this repository, please first discuss the change you wish t
 
 ## License
 
+<<<<<<< HEAD
 This project is licensed under the GPL3 License -
+=======
+This project is licensed under the GPL3 License - 
+>>>>>>> master

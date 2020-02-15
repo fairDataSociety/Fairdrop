@@ -185,6 +185,7 @@ class App extends Component {
     this.resetState = this.resetState.bind(this);
     this.updateStoredStats = this.updateStoredStats.bind(this);
     this.setIsLoading = this.setIsLoading.bind(this);
+    this.saveAppState = this.saveAppState.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -201,14 +202,14 @@ class App extends Component {
   }
 
   componentDidMount(){
-    let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
-    let bInterval = setInterval(this.updateBalance.bind(this),1500);
-    this.setState({checkreceivedInterval: uInterval});
-    this.setState({checkbalanceInterval: bInterval});    
+    // let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
+    // let bInterval = setInterval(this.updateBalance.bind(this),1500);
+    // this.setState({checkreceivedInterval: uInterval});
+    // this.setState({checkbalanceInterval: bInterval});    
     document.getElementById('splash').classList.add('splash-fadeout');
     setTimeout(()=>{
-      this.setState({savedAppState: this.getAppState(true)});
-    })
+      this.getAppState(true);
+    });
     setTimeout(()=>{
       this.setState({menuIsRendered: true});
       document.getElementById('splash').classList.add('splash-hidden');
@@ -267,7 +268,10 @@ class App extends Component {
 
   updateStoredStats(){
     return this.FDS.currentAccount.storedManifest().then((manifest)=>{
-      let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{if(i===1){return o.file.size;}else{return o.file.size + total;}});
+      console.log()
+      let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{
+        if(i===1){return o.file.size;}else{return o.file.size + total;}
+      });
       let totalPinned = manifest.storedFiles.filter((o)=>{
         return o.meta.pinned === true;
       });
@@ -279,9 +283,15 @@ class App extends Component {
       }else{
         totalPinnedSize = 0;
       }
+      let balance = this.state.selectedMailboxBalance;
+      let kbPerBlock = 10;
+      let blockTimeInSeconds = 1;
+      let pinnedTimeRemainingInBlocks = (balance - (kbPerBlock*totalPinnedSize));
+      let pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds;
       return this.saveAppState({
         totalStoredSize: totalStoredSize,
         totalPinnedSize: totalPinnedSize,
+        pinnedTimeRemainingInSecs: pinnedTimeRemainingInSecs,
       });
     });
   }
@@ -424,6 +434,8 @@ class App extends Component {
 
   handleNavigateTo(url){
     this.props.history.push(this.state.appRoot + url);
+    console.log(url)
+    // this.mailboxComponent.current.forceUpdate()
   }
 
   toggleContent(forceOpen){
@@ -438,6 +450,7 @@ class App extends Component {
       this.setState({displayContent: true});
     }, 1000);
   }
+
 
   exportMailboxes(){
     let zip = new JSZip();
@@ -530,9 +543,11 @@ class App extends Component {
             isShown={false}
             displayedContent={this.state.displayedContent}
             displayContent={this.state.displayContent}
+            toggleContent={this.toggleContent}
             handleNavigateTo={this.handleNavigateTo}
             appRoot={this.state.appRoot}
             savedAppState={this.state.savedAppState}
+            saveAppState={this.saveAppState}
             selectedMailbox={this.state.selectedMailbox}
             selectedMailboxBalance={this.state.selectedMailboxBalance}
             ref={this.contentComponent}
@@ -567,15 +582,22 @@ class App extends Component {
               </div>
 
               <div className="nav-header-item-right">
-                <Link className="nav-key" to={'/mailbox'}>
-                  <MailboxGlyph/>
-                </Link>
+                {(window.location.href.split('/').indexOf('mailbox') < -1 && this.state.selectedMailbox.subdomain) &&
+                  <Link className="nav-key" to={'/mailbox'}>
+                    <MailboxGlyph/>
+                  </Link>
+                }
+                {(window.location.href.split('/').indexOf('mailbox') > -1 && this.state.selectedMailbox.subdomain) &&
+                  <a className="nav-key">
+                    <img className="nav-image-cog" src={this.props.appRoot + '/assets/images/cog-solid.svg'} onClick={()=>{this.showContent('Settings')}}/>
+                  </a>
+                }
               </div>
               {!this.state.selectedMailbox.subdomain &&
                 <div className="nav-header-item-right hide-mobile">
                   <Link className="nav-header-item-button nav-header-sign-in" to={'/mailbox'}>
                     Log in / Register
-                   </Link>
+                  </Link>
                 </div>
               }
               {this.state.selectedMailbox.subdomain &&

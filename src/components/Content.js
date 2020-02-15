@@ -105,12 +105,16 @@ class App extends Component {
             <Terms appRoot={this.props.appRoot} />
           }
           {this.props.displayedContent === 'Settings' &&
-            <Settings 
-              appRoot={this.props.appRoot}
-              savedAppState={this.props.savedAppState}
-              selectedMailbox={this.props.selectedMailbox}
-              selectedMailboxBalance={this.props.selectedMailboxBalance}
-            />
+            <div className="jsx-is-a-bag-of-balls">
+              <Settings 
+                appRoot={this.props.appRoot}
+                savedAppState={this.props.savedAppState}
+                saveAppState={this.props.saveAppState}
+                selectedMailbox={this.props.selectedMailbox}
+                selectedMailboxBalance={this.props.selectedMailboxBalance}
+                toggleContent={this.props.toggleContent}
+              />
+            </div>
           }
         </div>
       </div>

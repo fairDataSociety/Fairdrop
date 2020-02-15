@@ -88,7 +88,12 @@ class FCompleted extends Component{
 
 
               <div className="info-actions">
-                <button className="info-action" onClick={()=>{this.props.handleNavigateTo('/mailbox')}}>Click to go to files.</button>
+                {this.props.parentState.isStoringFile === false && 
+                  <button className="info-action" onClick={()=>{this.props.handleNavigateTo('/mailbox')}}>Click to go to files.</button>
+                }
+                {this.props.parentState.isStoringFile === true && 
+                  <button className="info-action" onClick={()=>{this.props.handleNavigateTo('/mailbox/stored')}}>Click to go to files.</button>
+                }
               </div>
             </div>
           </div> {/* ui */}

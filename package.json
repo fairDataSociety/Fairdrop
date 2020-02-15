@@ -31,11 +31,12 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "filesaver.js": "^1.3.4",
     "jszip": "^3.1.5",
-    "moment": "^2.23.0",
+    "moment": "^2.24.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-dropdown": "^1.5.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.1.1"
+    "react-scripts": "^3.1.1",
+    "react-switch": "^5.0.1"
   }
 }

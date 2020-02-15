@@ -16,10 +16,7 @@ class FDSPin{
 			warrant: "",
 			endBlock: "9999"
 		});
-		let pin = await axios.post(`${this.orac}/pin`, qs);
-		//check for completion
-		console.log(`pinned ${hash}`)
-		return true;
+		return await axios.post(`${this.orac}/pin`, qs);
 	}
 
 	async unpin(hash){
@@ -30,11 +27,8 @@ class FDSPin{
 			account: this.acc.address,
 			address: hash
 		});
-		let unpin = await axios.post(`${this.orac}/unpin`, qs);
-		console.log(`unpinned ${hash}`)
-		return true;
+		return await axios.post(`${this.orac}/unpin`, qs).catch();
 	}
-
 }
 
 

@@ -236,7 +236,7 @@ class Upload extends Component{
               console.log("couldn't pin", response.storedManifestAddress)
             }
         }).then((response)=>{
-          return this.props.updateStoredStats();
+          setTimeout(this.props.updateStoredStats, 5000);
         }).catch((error) => {
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});

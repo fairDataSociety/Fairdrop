@@ -1105,6 +1105,12 @@ a.show-received-alert:hover{
   transition: opacity 1s;
 }
 
+.nav-image-cog{
+  margin-top: 10px;
+  height: 23px;
+  top: 10px;
+  cursor: pointer;
+}
 
 /*.nav-header .nav-header-items{
   display: table-cell;

@@ -53,7 +53,8 @@ class Mailbox extends Component{
           passwordsValid: false,
           processingAddMailbox: false,
           hasErrored: false,
-          isLoadingMessages: false
+          isLoadingMessages: false,
+          debounceUpdate: 0
         };
     }else
     if(mailboxes.length === 0){
@@ -74,7 +75,8 @@ class Mailbox extends Component{
         passwordsValid: false,
         processingAddMailbox: false,
         hasErrored: false,
-        isLoadingMessages: false
+        isLoadingMessages: false,
+        debounceUpdate: 0
       };
     }else
     if(mailboxes.length > 0){
@@ -95,7 +97,8 @@ class Mailbox extends Component{
         passwordsValid: false,
         processingAddMailbox: false,
         hasErrored: false,
-        isLoadingMessages: false
+        isLoadingMessages: false,
+        debounceUpdate: 0
       };
     }
   }
@@ -120,9 +123,20 @@ class Mailbox extends Component{
   componentDidUpdate(prevProps) {
     let prevLoc = prevProps.routerArgs.location.pathname;
     let newLoc = this.props.routerArgs.location.pathname;
-    if (prevLoc !== newLoc) {
+    let messageType = this.props.routerArgs.match.params.filter;
+    if(
+        (
+          prevLoc !== newLoc ||
+          (messageType !== undefined && this.state.shownMessageType !== messageType)
+        ) && (
+          this.debounceUpdate === undefined ||
+          this.debounceUpdate + 100 < Date.now()
+        )
+      )
+    {
+      this.debounceUpdate = Date.now();
       if(this.props.selectedMailbox){
-        switch(this.props.routerArgs.match.params.filter){
+        switch(messageType){
           case 'sent':
             this.showSent();
           break;
@@ -165,7 +179,7 @@ class Mailbox extends Component{
       return fdsPin.pin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: true}).then(()=>{
           this.props.setIsLoading(false);
-          this.props.updateStoredStats();
+          setTimeout(this.props.updateStoredStats, 5000);
         });
       }).catch(()=>{
         this.updatePinState(hash, !state);
@@ -174,7 +188,7 @@ class Mailbox extends Component{
       return fdsPin.unpin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: false}).then(()=>{
           this.props.setIsLoading(false);
-          this.props.updateStoredStats();
+          setTimeout(this.props.updateStoredStats, 5000);
         });
       }).catch(()=>{
         this.updatePinState(hash, !state);
@@ -545,7 +559,6 @@ class Mailbox extends Component{
                 <div className="inbox-nav hide-mobile">
                   <table>
                     <tbody>
-                      {/*
                       <tr>
                         <td><button onClick={this.props.handleSendFile}>Send<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>
@@ -555,7 +568,6 @@ class Mailbox extends Component{
                       <tr>
                         <td><button onClick={this.props.handleQuickFile}>Publish<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
                       </tr>  
-                      */}
                       <tr>
                         <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
                       </tr>

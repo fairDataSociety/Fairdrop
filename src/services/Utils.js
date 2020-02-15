@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import Crypto from 'crypto';
-// import zxcvbn from 'zxcvbn';
+import moment from 'moment';
 
 function generatePassword (){
     return new Promise((resolve, reject)=>{
@@ -24,6 +24,13 @@ function generatePassword (){
       });
     })
   }
+
+function humanTime(seconds) {
+  if(typeof seconds === 'undefined'){
+    return ' - '
+  }
+  return moment.duration(seconds, 'seconds').humanize();
+}
 
 function humanFileSize(size) {
 	if(typeof size === 'undefined'){
@@ -50,4 +57,4 @@ function formatBalance(wei){
 //     return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
 // }
 
-export default {generatePassword, humanFileSize, truncate, formatBalance}
+export default {generatePassword, humanFileSize, truncate, formatBalance, humanTime}

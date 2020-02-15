@@ -18,21 +18,59 @@ import React, { Component } from 'react';
 import {notificationPermission} from '../../lib/FDSNotify.js';
 import QRCode from 'qrcode.react';
 import Utils from '../../services/Utils';
+import Dropdown from 'react-dropdown';
+import Switch from "react-switch";
+
+
+//deal with xbrowser copy paste issues
+var ua = window.navigator.userAgent;
+var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+var webkit = !!ua.match(/WebKit/i);
+var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 
 class Settings extends Component{
 
   constructor(props){
     super(props);
     
-    // console.log(props)
-
-    this.togglePinFiles = this.togglePinFiles.bind(this);
-
     this.state = {
       storedFilesArePinned: false
     }
     
+    this.handleChangeAnalytics = this.handleChangeAnalytics.bind(this);
+    this.handleChangePinFiles = this.handleChangePinFiles.bind(this);
+    this.handleChangeHonestInbox = this.handleChangeHonestInbox.bind(this);
+
   }
+
+  handleCopyGatewayLink(){
+
+    if(iOSSafari){
+      var el = document.querySelector(".mailbox-address-input");
+      var oldContentEditable = el.contentEditable,
+          oldReadOnly = el.readOnly,
+          range = document.createRange();
+
+      el.contentEditable = true;
+      el.readOnly = false;
+      range.selectNodeContents(el);
+
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(range);
+
+      el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
+
+      el.contentEditable = oldContentEditable;
+      el.readOnly = oldReadOnly;
+
+      document.execCommand('copy');
+    }else{
+      var copyText = document.querySelector(".mailbox-address-input");
+      copyText.select();
+      document.execCommand("copy");
+    }
+  }  
 
   fileSize(){
     if(this.props.savedAppState.totalStoredSize){
@@ -40,7 +78,7 @@ class Settings extends Component{
     }else{
       return " - "
     }
-  } 
+  }
 
   pinnedFileSize(){
     if(this.props.savedAppState.totalPinnedSize){
@@ -48,7 +86,7 @@ class Settings extends Component{
     }else{
       return " - "
     }
-  } 
+  }
 
   pinnedTimeRemaining(){
     if(this.props.savedAppState.pinnedTimeRemainingInSecs){
@@ -63,16 +101,34 @@ class Settings extends Component{
   }
 
   balance(){
-    return Utils.formatBalance(this.props.selectedMailboxBalance)
+    return Utils.formatBalance(this.props.selectedMailboxBalance);
   }
 
-  togglePinFiles(){
-    this.setState({storedFilesArePinned: !this.state.storedFilesArePinned});
+  handleChangeAnalytics(input){
+    this.props.saveAppState({
+      analytics: input
+    });
   }
+
+  handleChangePinFiles(input){
+    this.props.saveAppState({
+      pinFiles: input
+    });
+  }
+
+  handleChangeHonestInbox(input){
+    this.props.saveAppState({
+      honestInbox: input
+    });
+  }
+
 
   render(){
     return (
       <div className="content-outer content-fds">
+        <div className="settings-outer">
+          <h2>{this.props.selectedMailbox.subdomain}</h2>
+        </div>
         <div className="content-inner">
           <div className="content-header">
             <div className="settings-inner">
@@ -122,26 +178,17 @@ class Settings extends Component{
                   <label>Opt in for Honest Inbox</label>
                   <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState.honestInbox} />
                 </div>
-
               </div>
             }
-            {/*
-            <p>
-              {this.state.storedFilesArePinned ? "Stored Files are Pinned" : "Stored Files are not Pinned"}
-            </p>
-            <p>
-              <button onClick={this.togglePinFiles}>
-                {this.state.storedFilesArePinned ? "Unpin" : "Pin"}
-              </button>
-            </p>
-          */}
+            </div>
           </div>
           <div className="content-text">
-	        <QRCode value="http://facebook.github.io/react/" />
+	        
             <p>
               Imagine a society of a completely private digital life where your privacy is not weaponised against you just to sell you more things.
             </p>
           </div>
+          <button onClick={()=>{this.props.toggleContent(false)}}>Hide</button>
         </div>
       </div>
     )

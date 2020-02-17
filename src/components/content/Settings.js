@@ -125,38 +125,46 @@ class Settings extends Component{
 
   render(){
     return (
-      <div className="content-outer content-fds">
+      <div className="content-outer content-settings">
         <div className="settings-outer">
-          <h2>{this.props.selectedMailbox.subdomain}</h2>
+          <button onClick={()=>{this.props.toggleContent(false)}}>Hide</button>
         </div>
         <div className="content-inner">
-          <div className="content-header">
-            <div className="settings-inner">
+          <div className="content-text">
             {this.props.selectedMailbox && 
               <div className="settings-inner">
                 <h1>Mailbox Settings</h1>
                 <div className="settings-form-group">
-                  <label>Address</label>
+                  <label>Mailbox Name</label>
                   <div>
+                   <h2>{this.props.selectedMailbox.subdomain}</h2>
+                  </div>
+                </div>
+                <div className="settings-form-group address-input">
+                  <label>Address</label>
+                  <div className="settings-form-address-input">
                     <input className="mailbox-address-input" type="text" value={this.mailboxAddress()}/>
                     <div onClick={this.handleCopyGatewayLink} className="settings-copy-address">Copy</div>
                   </div>
                 </div>
-                <div className="settings-form-group">
+                <div className="settings-form-group hide-mobile">
                   <label>QR Code Address</label>
                   <QRCode value={'fds://'+this.mailboxAddress()} />
                 </div>
-                <div className="settings-form-group">
+                <div className="settings-form-group settings-balance">
                   <label>Balance</label>
-                  <div className="settings-inner-content">{this.balance()}</div>
+                  <input className="mailbox-balance-input" type="text" value={this.balance()}/>
+                  <div className="settings-get-more">Get More</div>
                 </div>
-                <div className="settings-form-group">
+                <div className="settings-form-group storage-provider">
                   <label>Storage Provider</label>
-                  <Dropdown
-                    options={["FDS EUROPA POOL (1)"]}
-                    value={"FDS EUROPA POOL (1)"}
-                    placeholder="Select a mailbox"
-                  />
+                  <div class="settings-dropdown-wrapper">
+                    <Dropdown
+                      options={["FDS EUROPE POOL (1)"]}
+                      value={"FDS EUROPE POOL (1)"}
+                      placeholder="Select a mailbox"
+                    />
+                  </div>
                 </div>
                 <div className="settings-form-group">
                   <label>Stored Currently</label>
@@ -167,28 +175,20 @@ class Settings extends Component{
                   <div className="settings-inner-content">{this.pinnedTimeRemaining()}</div>
                 </div>
                 <div className="settings-form-group">
-                  <label>Opt in for Analytics</label>
+                  <label>Analytics</label>
                   <Switch onChange={this.handleChangeAnalytics} checked={this.props.savedAppState.analytics} />
                 </div>
                 <div className="settings-form-group">
-                  <label>Opt in for Pin Files</label>
+                  <label>Pin Files</label>
                   <Switch onChange={this.handleChangePinFiles} checked={this.props.savedAppState.pinFiles} />
                 </div>
                 <div className="settings-form-group">
-                  <label>Opt in for Honest Inbox</label>
+                  <label>Honest Inbox</label>
                   <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState.honestInbox} />
                 </div>
               </div>
             }
-            </div>
           </div>
-          <div className="content-text">
-	        
-            <p>
-              Imagine a society of a completely private digital life where your privacy is not weaponised against you just to sell you more things.
-            </p>
-          </div>
-          <button onClick={()=>{this.props.toggleContent(false)}}>Hide</button>
         </div>
       </div>
     )

@@ -236,7 +236,7 @@ class Upload extends Component{
               console.log("couldn't pin", response.storedManifestAddress)
             }
         }).then((response)=>{
-          setTimeout(this.props.updateStoredStats, 5000);
+          setTimeout(this.props.updateStoredStats, 1000);
         }).catch((error) => {
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
@@ -272,7 +272,9 @@ class Upload extends Component{
             isStoringFile={this.props.isStoringFile}
             setSelectedMailbox={this.setSelectedMailbox.bind(this)}
             appRoot={this.props.appRoot}
-            resetToInitialState={this.resetToInitialState.bind(this)}            
+            resetToInitialState={this.resetToInitialState.bind(this)}   
+            fdsPin={this.props.fdsPin}
+            updateBalance={this.props.updateBalance}    
           />
           <DConfirm
             parentState={this.state}

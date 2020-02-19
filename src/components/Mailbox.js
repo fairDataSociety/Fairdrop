@@ -179,7 +179,7 @@ class Mailbox extends Component{
       return fdsPin.pin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: true}).then(()=>{
           this.props.setIsLoading(false);
-          setTimeout(this.props.updateStoredStats, 5000);
+          setTimeout(this.props.updateStoredStats, 1000);
         });
       }).catch(()=>{
         this.updatePinState(hash, !state);
@@ -188,7 +188,7 @@ class Mailbox extends Component{
       return fdsPin.unpin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: false}).then(()=>{
           this.props.setIsLoading(false);
-          setTimeout(this.props.updateStoredStats, 5000);
+          setTimeout(this.props.updateStoredStats, 1000);
         });
       }).catch(()=>{
         this.updatePinState(hash, !state);
@@ -370,9 +370,19 @@ class Mailbox extends Component{
         window.onbeforeunload = null;        
         this.mailboxUnlocked();
         this.setSelectedMailbox(this.FDS.currentAccount);
-      }).then(()=>{
-        // this.selectedMailbox();
-      })
+        return account;
+      }).then(async (account)=>{
+        this.setState({feedbackMessage: "Creating warrant"});
+        let balance = await account.getBalance();
+        let warrantBalance = Math.floor(balance*80/100);
+        let fdsPin = this.props.fdsPin;
+        let wa = await fdsPin.createWarrant(warrantBalance);
+        this.props.updateBalance();
+        // console.log(wa);
+        // let wb = await fdsPin.getMyBalance();
+        // console.log(wb)
+        return account;  
+        })
     }).catch((error)=>{
       if(window.Sentry) window.Sentry.captureException(error);
       this.setState(

@@ -46,6 +46,7 @@ import {version} from '../package.json';
 window.files = [];
 
 let pinningOracleURL = 'http://localhost:8081'; //nb this refers to swarm.fairdrop.pro oracle
+let pinningManagerAddress = '0x3639a55343A061ffB98aCDf5Ae647aF3567F8cAe';
 // let pinningOracleURL = 'https://pinning.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
 
 class App extends Component {
@@ -149,9 +150,9 @@ class App extends Component {
       walletVersion: 1,
       ensConfig: {
         domain: 'datafund.eth',
-        registryAddress: '0x6244dE13BB15b5A30e1B3cBE03289A9929313C3D',
-        subdomainRegistrarAddress: '0x9F2d29c068DE7Ee61A3a12f63cc1643C68B2558D',
-        resolverContractAddress: '0xC109C285f693A2c44C39fFA2cddC271DD9acc990'
+        registryAddress: '0x3d0bcCfF638ff42400C7AA5fD7BFd311b1Deb51e',
+        subdomainRegistrarAddress: '0x28B0d340F7eB877923F339AD2D1FBf6aAA40cDee',
+        resolverContractAddress: '0x97a33f6aE3C0274BBB3e6E07c556B9DF66f5890c'
       }
     };
 
@@ -188,6 +189,7 @@ class App extends Component {
     this.updateStoredStats = this.updateStoredStats.bind(this);
     this.setIsLoading = this.setIsLoading.bind(this);
     this.saveAppState = this.saveAppState.bind(this);
+    this.updateBalance = this.updateBalance.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -270,10 +272,9 @@ class App extends Component {
 
   updateStoredStats(){
     return this.FDS.currentAccount.storedManifest().then((manifest)=>{
-      console.log()
       let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{
         if(i===1){return o.file.size;}else{return o.file.size + total;}
-      });
+      }, 0);
       let totalPinned = manifest.storedFiles.filter((o)=>{
         return o.meta.pinned === true;
       });
@@ -281,7 +282,7 @@ class App extends Component {
       if(totalPinned.length > 0){
         totalPinnedSize = totalPinned.reduce((total,o,i)=>{
           if(i===1){return o.file.size;}else{return o.file.size + total;}
-        })
+        }, 0);
       }else{
         totalPinnedSize = 0;
       }
@@ -346,9 +347,10 @@ class App extends Component {
   // }
 
   setSelectedMailbox(selectedMailbox){
+    let fdsPin = new FDSPin(selectedMailbox, pinningOracleURL, pinningManagerAddress);
     this.setState({
       selectedMailbox: selectedMailbox,
-      fdsPin: new FDSPin(selectedMailbox, pinningOracleURL)
+      fdsPin: fdsPin
     });
     let appStateUpdate = {lastLogin: new Date().toISOString()};
     return this.saveAppState(appStateUpdate).then(()=>{
@@ -645,6 +647,7 @@ class App extends Component {
                       enableNav={this.enableNav}
                       handleNavigateTo={this.handleNavigateTo}
                       updateStoredStats={this.updateStoredStats}
+                      updateBalance={this.updateBalance}
                       ref={this.uploadComponent}
                     />
                   }
@@ -664,6 +667,7 @@ class App extends Component {
                       appRoot={this.state.appRoot}
                       isLoading={this.state.isLoading}
                       setIsLoading={this.setIsLoading}
+                      updateBalance={this.updateBalance}
                       ref={this.mailboxComponent}
                     />
                   }

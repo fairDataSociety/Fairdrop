@@ -21,6 +21,8 @@ import AddMailbox from '../Shared/AddMailbox'
 import UnlockMailbox from '../Shared/UnlockMailbox'
 import SelectRecipient from '../Shared/SelectRecipient';
 
+import FDSPin from '../../lib/FDSPin.js';
+
 class BSelectMailbox extends Component{
 
   getInitialState(){
@@ -300,7 +302,19 @@ class BSelectMailbox extends Component{
         });
         this.props.setSelectedMailbox(this.FDS.currentAccount);
         this.mailboxUnlocked();
-      })
+        return account;
+      }).then(async (account)=>{
+        this.setState({feedbackMessage: "Creating warrant"});
+        let balance = await account.getBalance();
+        let warrantBalance = Math.floor(balance*80/100);
+        let fdsPin = this.props.fdsPin;
+        let wa = await fdsPin.createWarrant(warrantBalance);
+        this.props.updateBalance();
+        // console.log(wa);
+        // let wb = await fdsPin.getMyBalance();
+        // console.log(wb)
+        return account;  
+        })
     }).catch((error)=>{
       this.setState({processingAddMailbox: false});
       this.setState({feedbackMessage: error});

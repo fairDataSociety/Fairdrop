@@ -1,10 +1,26 @@
 import axios from 'axios';
 import querystring from 'querystring';
+import PinningManager from './abi/PinningManager.json';
+import PinWarrant from './abi/PinWarrant.json';
 
 class FDSPin{
-	constructor(FDSAccount, OracleURL){
+	constructor(FDSAccount, OracleURL, PinningManagerAddress){
 		this.acc = FDSAccount;
 		this.orac = OracleURL;
+		this.pma = PinningManagerAddress;
+	}
+
+	async createWarrant(value){
+		let PM = await this.acc.getContract(PinningManager.abi, this.pma);
+		await PM.send('createWarrant', [], true, 15000000, value);
+		return PM.getMyWarrant();
+	}
+
+	async getMyBalance(){
+		let PM = await this.acc.getContract(PinningManager.abi, this.pma);
+		let warrantAddress = await PM.getMyWarrant();
+		let PW = await this.acc.getContract(PinWarrant.abi, warrantAddress);
+		return PW.getBalance();
 	}
 
 	async pin(hash){

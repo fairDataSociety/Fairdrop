@@ -181,32 +181,15 @@ class Upload extends Component{
             return this.FDS.swarmGateway + '/bzz:/'+ hash.address + '/index.html'; 
           }else{
             if(files.length > 1){
-              return this.FDS.swarmGateway + ':/bzz-list:/'+ hash.address + '/';
+              return this.FDS.swarmGateway + '/bzz-list:/'+ hash.address + '/';
             }else{
               return hash.gatewayLink();
             }
           }          
         });
       }else{
-        let files = window.files;
-        let newFiles = [];
-        for (var i = files.length - 1; i >= 0; i--) {
-          let newFile = new File(
-            [files[i]],
-            files[i].name.replace(/ /g,'_'),
-            {type: files[i].type}
-          );
-          let fullPath = files[i].fullPath || files[i].webkitRelativePath;
-          newFile.fullPath = fullPath.replace(/ /g,'_');
-          newFiles.push(newFile);
-        }
         return this.FDS.currentAccount.store(
-          // new File(
-          //   [window.selectedFileArrayBuffer],
-          //   this.state.selectedFileName,
-          //   {type: this.state.selectedFileType}
-          // ),
-          newFiles[0],
+          window.files[0],
           ()=>{
             this.setState({encryptMessage: 'Encrypted'});
             this.setState({feedbackMessage: "file was encrypted, uploading file..."});

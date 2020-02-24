@@ -27,6 +27,7 @@ import DisclaimerSplash2 from "./components/DisclaimerSplash2"
 import DisclaimerSplash3 from "./components/DisclaimerSplash3"
 import Menu from "./components/Menu"
 import Content from "./components/Content"
+import Download from "./components/Download";
 
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
@@ -45,9 +46,10 @@ import './lib/DDrop.css';
 import {version} from '../package.json';
 window.files = [];
 
-let pinningOracleURL = 'http://localhost:8081'; //nb this refers to swarm.fairdrop.pro oracle
-let pinningManagerAddress = '0x3639a55343A061ffB98aCDf5Ae647aF3567F8cAe';
-// let pinningOracleURL = 'https://pinning.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
+let pinningOracleURL = 'https://pinning.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
+let pinningManagerAddress = '0x7eA127bd4A8036C583CECF786afce659F5bb9F1d';
+// let pinningOracleURL = 'http://localhost:8081'; //nb this refers to swarm.fairdrop.pro oracle
+// let pinningManagerAddress = '0x5CE2cf75F697BaC746D02c9C54d6956836A9AA87';
 
 class App extends Component {
 
@@ -139,24 +141,25 @@ class App extends Component {
       this.initSentry();    
     }
 
-    let config = {
-      tokenName: 'gas',
-      swarmGateway: 'http://localhost:8500',
-      ethGateway: 'http://localhost:8545',
-      faucetAddress: 'http://localhost:3001/gimmie',
-      chainID: '235813',
-      httpTimeout: 1000,
-      gasPrice: 0.1,
-      walletVersion: 1,
-      ensConfig: {
-        domain: 'datafund.eth',
-        registryAddress: '0x3d0bcCfF638ff42400C7AA5fD7BFd311b1Deb51e',
-        subdomainRegistrarAddress: '0x28B0d340F7eB877923F339AD2D1FBf6aAA40cDee',
-        resolverContractAddress: '0x97a33f6aE3C0274BBB3e6E07c556B9DF66f5890c'
-      }
-    };
+    // let config = {
+    //   tokenName: 'gas',
+    //   swarmGateway: 'http://localhost:8500',
+    //   ethGateway: 'http://localhost:8545',
+    //   faucetAddress: 'http://localhost:3001/gimmie',
+    //   chainID: '235813',
+    //   httpTimeout: 1000,
+    //   gasPrice: 0.1,
+    //   walletVersion: 1,
+    //   ensConfig: {
+    //     domain: 'datafund.eth',
+    //     registryAddress: '0xfFD6A92307e89DccE6718498Cca401cB9d0E2418',
+    //     subdomainRegistrarAddress: '0xDa0F381BFdc4B0e17A49323eBFb1f32feF1a3660',
+    //     resolverContractAddress: '0xB65d26810f4a78Ae3880E1147C9C3BB5a9729C69'
+    //   }
+    // };
 
-    this.FDS = new FDS(config);
+    // this.FDS = new FDS(config);
+    this.FDS = new FDS();
     window.FDS = this.FDS;
 
     this.uploadComponent = React.createRef();
@@ -190,6 +193,8 @@ class App extends Component {
     this.setIsLoading = this.setIsLoading.bind(this);
     this.saveAppState = this.saveAppState.bind(this);
     this.updateBalance = this.updateBalance.bind(this);
+    this.getAppState = this.getAppState.bind(this);
+    this.initSentry = this.initSentry.bind(this);
 
     this.state = this.getInitialState();
   }
@@ -266,6 +271,9 @@ class App extends Component {
     if(this.state.selectedMailbox){
       this.FDS.currentAccount.getBalance().then((balance)=>{
         this.setState({selectedMailboxBalance: balance});
+      });
+      this.state.fdsPin.getMyBalance().then((balance)=>{
+        this.setState({selectedMailboxWarrantBalance: balance});
       });
     }
   }
@@ -552,6 +560,8 @@ class App extends Component {
             saveAppState={this.saveAppState}
             selectedMailbox={this.state.selectedMailbox}
             selectedMailboxBalance={this.state.selectedMailboxBalance}
+            selectedMailboxWarrantBalance={this.state.selectedMailboxWarrantBalance}
+            initSentry={this.initSentry}
             ref={this.contentComponent}
           />
           <div 
@@ -631,6 +641,8 @@ class App extends Component {
               <Switch>
                 <Route exact={true} path={"(/|/bzz\:\/.+/)"} render={ () => {
                     return <Upload 
+                      getAppState={this.getAppState}
+                      saveAppState={this.saveAppState}
                       FDS={this.FDS}
                       selectedMailbox={this.state.selectedMailbox}
                       fdsPin={this.state.fdsPin}
@@ -654,6 +666,8 @@ class App extends Component {
                 }/>
                 <Route exact={true} path={"(/mailbox|/bzz\:\/.+/mailbox)/:filter?"} render={(routerArgs) => {
                     return <Mailbox
+                      getAppState={this.getAppState}
+                      saveAppState={this.saveAppState}
                       FDS={this.FDS}
                       setSelectedMailbox={this.setSelectedMailbox}
                       selectedMailbox={this.state.selectedMailbox}
@@ -673,6 +687,28 @@ class App extends Component {
                   }
                 }/>
 
+                <Route path={"(/download-list|/bzz\:\/.+/download-list)/:loc?"} render={ (routerArgs) => {
+                    return <Download
+                      fds={this.FDS}
+                      isList={true}
+                      appRoot={this.state.appRoot}
+                      routerArgs={routerArgs}
+                      ref={this.download}
+                    />
+                  }
+                }/>
+
+                <Route path={"(/download|/bzz\:\/.+/download)/:loc?"} render={ (routerArgs) => {
+                    return <Download
+                      fds={this.FDS}
+                      isList={false}
+                      appRoot={this.state.appRoot}
+                      routerArgs={routerArgs}
+                      ref={this.download}
+                    />
+                  }
+                }/>   
+
                 <Route path={"(/|/bzz\:\/.+)/:dropbox"} render={ (routerArgs) => {
                     return <Dropbox 
                       appRoot={this.state.appRoot}
@@ -689,7 +725,7 @@ class App extends Component {
                       ref={this.dropbox}
                     />
                   }
-                }/>              
+                }/> 
 
               </Switch>  
 

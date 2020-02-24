@@ -750,7 +750,7 @@ input:disabled{
     text-align: left !important;
     margin: 0 !important;
     color: white !important;
-    min-width: 120px !important;
+    min-width: 126px !important;
 }
 
 .settings-form-group canvas{
@@ -791,6 +791,10 @@ input:disabled{
   clear: both;
 }
 
+.close-settings{
+  top: 10px;
+  position: relative;
+}
 
 /* Menu */
 

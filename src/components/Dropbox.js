@@ -141,7 +141,7 @@ class App extends Component {
            <h2 className="last">
             {this.state.recipient}
           </h2>
-          <div class="dropbox-feedback">
+          <div className="dropbox-feedback">
           	{this.state.feedback}
           </div>         
         </div>

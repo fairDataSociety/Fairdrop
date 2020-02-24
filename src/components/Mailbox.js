@@ -15,8 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import { withRouter } from "react-router";
-import PropTypes from "prop-types";
 
 import Utils from '../services/Utils';
 
@@ -24,8 +22,6 @@ import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
-
-import * as Sentry from '@sentry/browser';
 
 class Mailbox extends Component{
 
@@ -313,7 +309,7 @@ class Mailbox extends Component{
     let subdomain = this.state.unlockingMailbox;
     let password = this.state.password;
 
-    this.FDS.UnlockAccount(subdomain, password).then((account)=>{
+    this.FDS.UnlockAccount(subdomain, password).then(async (account)=>{
       if(window.Sentry){
         window.Sentry.configureScope((scope) => {
           scope.setUser({"username": account.subdomain});
@@ -324,7 +320,22 @@ class Mailbox extends Component{
         mailboxIsUnlocked: true,
       });
       this.mailboxUnlocked()
-      return this.setSelectedMailbox(this.FDS.currentAccount);
+      let mailbox = await this.setSelectedMailbox(this.FDS.currentAccount);
+      let appState = await this.props.getAppState();
+      let balance = await account.getBalance();
+      if(
+        appState.warrantWasCreated === undefined && 
+        balance > 0.1
+        )
+      {
+        this.setState({feedbackMessage: "Creating warrant"});
+        let warrantBalance = Math.floor(balance*80/100);
+        let fdsPin = this.props.fdsPin;
+        await fdsPin.createWarrant(warrantBalance);
+        await this.props.saveAppState({warrantWasCreated: true});
+        this.props.updateBalance();
+      }
+      return mailbox;
     }).catch((error)=>{
       this.props.setIsLoading(false);      
       this.setState({
@@ -376,11 +387,9 @@ class Mailbox extends Component{
         let balance = await account.getBalance();
         let warrantBalance = Math.floor(balance*80/100);
         let fdsPin = this.props.fdsPin;
-        let wa = await fdsPin.createWarrant(warrantBalance);
+        await fdsPin.createWarrant(warrantBalance);
+        await this.props.saveAppState({warrantWasCreated: true});
         this.props.updateBalance();
-        // console.log(wa);
-        // let wb = await fdsPin.getMyBalance();
-        // console.log(wb)
         return account;  
         })
     }).catch((error)=>{

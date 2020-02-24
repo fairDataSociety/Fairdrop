@@ -180,7 +180,6 @@ class ASelectFile extends Component{
 
   handleDragOver(i){
     //tricky but more robust fix because dragleave event does not work for dropzone in Safari
-    let t = `willDragLeave${i}`;
     let p = `fileIsSelecting${i}`;
       if(this.props[p] === false){
         this.props.setFileIsSelecting(true, i);

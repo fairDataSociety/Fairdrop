@@ -178,12 +178,12 @@ class Upload extends Component{
             }
           }
           if(index_index !== null){
-            return this.FDS.swarmGateway + '/bzz:/'+ hash.address + '/index.html'; 
+            return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size; 
           }else{
             if(files.length > 1){
-              return this.FDS.swarmGateway + '/bzz-list:/'+ hash.address + '/';
+              return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download-list/'+ hash.address + '/';
             }else{
-              return hash.gatewayLink();
+              return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size; 
             }
           }          
         });
@@ -258,6 +258,7 @@ class Upload extends Component{
             resetToInitialState={this.resetToInitialState.bind(this)}   
             fdsPin={this.props.fdsPin}
             updateBalance={this.props.updateBalance}    
+            saveAppState={this.props.saveAppState}    
           />
           <DConfirm
             parentState={this.state}

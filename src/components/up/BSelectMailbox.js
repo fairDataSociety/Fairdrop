@@ -21,8 +21,6 @@ import AddMailbox from '../Shared/AddMailbox'
 import UnlockMailbox from '../Shared/UnlockMailbox'
 import SelectRecipient from '../Shared/SelectRecipient';
 
-import FDSPin from '../../lib/FDSPin.js';
-
 class BSelectMailbox extends Component{
 
   getInitialState(){
@@ -265,7 +263,7 @@ class BSelectMailbox extends Component{
   handleUnlockMailboxUploadAndEncrypt(e){
     let subdomain = this.state.unlockingMailbox;
     let password = this.state.password;
-    this.FDS.UnlockAccount(subdomain, password).then((account)=>{
+    this.FDS.UnlockAccount(subdomain, password).then(async (account)=>{
       if(window.Sentry){
         window.Sentry.configureScope((scope) => {
           scope.setUser({"username": account.subdomain});
@@ -276,7 +274,23 @@ class BSelectMailbox extends Component{
         mailboxIsUnlocked: true,
       });
       this.props.setSelectedMailbox(this.FDS.currentAccount);
-      this.mailboxUnlocked();
+      this.mailboxUnlocked()
+      let mailbox = await this.setSelectedMailbox(this.FDS.currentAccount);
+      let appState = await this.props.getAppState();
+      let balance = await account.getBalance();
+      if(
+        appState.warrantWasCreated === undefined && 
+        balance > 0.1
+        )
+      {
+        this.setState({feedbackMessage: "Creating warrant"});
+        let warrantBalance = Math.floor(balance*80/100);
+        let fdsPin = this.props.fdsPin;
+        await fdsPin.createWarrant(warrantBalance);
+        await this.props.saveAppState({warrantWasCreated: true});
+        this.props.updateBalance();
+      }
+      return mailbox;      
     }).catch((error)=>{
       this.setState({
         feedbackMessage: 'Password invalid, please try again.',
@@ -290,7 +304,7 @@ class BSelectMailbox extends Component{
     this.FDS.CreateAccount(this.state.mailboxName, this.state.password, (message) => {
       this.setState({feedbackMessage: message});
     }).then((account)=>{
-      this.FDS.UnlockAccount(this.state.mailboxName, this.state.password).then((account)=>{
+      this.FDS.UnlockAccount(this.state.mailboxName, this.state.password).then(async (account)=>{
         if(window.Sentry){
           window.Sentry.configureScope((scope) => {
             scope.setUser({"username": account.subdomain});
@@ -308,11 +322,9 @@ class BSelectMailbox extends Component{
         let balance = await account.getBalance();
         let warrantBalance = Math.floor(balance*80/100);
         let fdsPin = this.props.fdsPin;
-        let wa = await fdsPin.createWarrant(warrantBalance);
+        await fdsPin.createWarrant(warrantBalance);
+        await this.props.saveAppState({warrantWasCreated: true});
         this.props.updateBalance();
-        // console.log(wa);
-        // let wb = await fdsPin.getMyBalance();
-        // console.log(wb)
         return account;  
         })
     }).catch((error)=>{

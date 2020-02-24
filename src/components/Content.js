@@ -111,8 +111,9 @@ class App extends Component {
                 savedAppState={this.props.savedAppState}
                 saveAppState={this.props.saveAppState}
                 selectedMailbox={this.props.selectedMailbox}
-                selectedMailboxBalance={this.props.selectedMailboxBalance}
+                selectedMailboxWarrantBalance={this.props.selectedMailboxWarrantBalance}
                 toggleContent={this.props.toggleContent}
+                initSentry={this.props.initSentry}
               />
             </div>
           }

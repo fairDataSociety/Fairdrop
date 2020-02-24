@@ -15,7 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import {notificationPermission} from '../../lib/FDSNotify.js';
 import QRCode from 'qrcode.react';
 import Utils from '../../services/Utils';
 import Dropdown from 'react-dropdown';
@@ -34,7 +33,8 @@ class Settings extends Component{
     super(props);
     
     this.state = {
-      storedFilesArePinned: false
+      storedFilesArePinned: false,
+      analyticsState: this.analyticsState()
     }
     
     this.handleChangeAnalytics = this.handleChangeAnalytics.bind(this);
@@ -101,13 +101,27 @@ class Settings extends Component{
   }
 
   balance(){
-    return Utils.formatBalance(this.props.selectedMailboxBalance);
+    if(this.props.selectedMailboxWarrantBalance){
+      return Utils.formatBalance(this.props.selectedMailboxWarrantBalance);
+    }else{
+      return " - "
+    }
   }
 
   handleChangeAnalytics(input){
-    this.props.saveAppState({
-      analytics: input
-    });
+    if(input === true){
+      this.props.initSentry();
+    }else{
+      window.Sentry = undefined;
+    }
+    localStorage.setItem('sentryEnabled', input);
+    this.setState({analyticsState: input});
+  }
+
+  analyticsState(){
+    let state = localStorage.getItem('sentryEnabled') === "true";
+
+    return state;
   }
 
   handleChangePinFiles(input){
@@ -127,7 +141,11 @@ class Settings extends Component{
     return (
       <div className="content-outer content-settings">
         <div className="settings-outer">
-          <button onClick={()=>{this.props.toggleContent(false)}}>Hide</button>
+            <button className={ "close-settings hamburger hamburger--spin is-active" } type="button" onClick={()=>{this.props.toggleContent(false)}}>
+              <span className="hamburger-box">
+                <span className="hamburger-inner"></span>
+              </span>
+            </button>
         </div>
         <div className="content-inner">
           <div className="content-text">
@@ -158,11 +176,12 @@ class Settings extends Component{
                 </div>
                 <div className="settings-form-group storage-provider">
                   <label>Storage Provider</label>
-                  <div class="settings-dropdown-wrapper">
+                  <div className="settings-dropdown-wrapper">
                     <Dropdown
-                      options={["FDS EUROPE POOL (1)"]}
-                      value={"FDS EUROPE POOL (1)"}
+                      options={["DATAFUND (1)"]}
+                      value={"DATAFUND (1)"}
                       placeholder="Select a mailbox"
+                      readOnly
                     />
                   </div>
                 </div>
@@ -176,7 +195,7 @@ class Settings extends Component{
                 </div>
                 <div className="settings-form-group">
                   <label>Analytics</label>
-                  <Switch onChange={this.handleChangeAnalytics} checked={this.props.savedAppState.analytics} />
+                  <Switch onChange={this.handleChangeAnalytics} checked={this.state.analyticsState} />
                 </div>
                 <div className="settings-form-group">
                   <label>Pin Files</label>

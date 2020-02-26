@@ -207,17 +207,24 @@ class Upload extends Component{
           {pinned: true},
           true,
           true
-        ).then((response)=>{
-            try{
-              this.props.fdsPin.unpin(response.oldStoredManifestAddress);
-            }catch{
-              console.log("couldn't unpin", response.oldStoredManifestAddress)
+        ).then(async (response)=>{
+          await this.props.fdsPin.pin(response.storedFile.address);
+          console.log('pinned', response.storedFile.address);
+          return response;
+        }).then(async (response)=>{
+            if(response.oldStoredManifestAddress !== undefined){
+              try{
+                await this.props.fdsPin.unpin(response.oldStoredManifestAddress);
+              }catch{
+                console.log("couldn't unpin", response.oldStoredManifestAddress)
+              }
             }
             try{
-              this.props.fdsPin.pin(response.storedManifestAddress);
+              await this.props.fdsPin.pin(response.storedManifestAddress);
             }catch{
               console.log("couldn't pin", response.storedManifestAddress)
             }
+            return response;
         }).then((response)=>{
           setTimeout(this.props.updateStoredStats, 1000);
         }).catch((error) => {

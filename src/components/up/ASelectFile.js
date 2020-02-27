@@ -77,6 +77,7 @@ class ASelectFile extends Component{
       uploadMultiple: true,
       // clickable: false,
       accept: function(file, done) {
+        window.files = [];
         window.files.push(file);
         if(window.files.length === 1){
           self.props.setParentState({

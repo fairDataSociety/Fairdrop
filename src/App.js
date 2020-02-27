@@ -46,8 +46,8 @@ import './lib/DDrop.css';
 import {version} from '../package.json';
 window.files = [];
 
-let pinningOracleURL = 'https://pinning.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
-let pinningManagerAddress = '0x7eA127bd4A8036C583CECF786afce659F5bb9F1d';
+let pinningOracleURL = 'https://pinning-staging.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
+let pinningManagerAddress = '0x4B8FF9cb128bC24adC39d1bc573c7B97E95D0CFD';
 // let pinningOracleURL = 'http://localhost:8081'; //nb this refers to swarm.fairdrop.pro oracle
 // let pinningManagerAddress = '0x5CE2cf75F697BaC746D02c9C54d6956836A9AA87';
 
@@ -211,10 +211,10 @@ class App extends Component {
   }
 
   componentDidMount(){
-    // let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
-    // let bInterval = setInterval(this.updateBalance.bind(this),1500);
-    // this.setState({checkreceivedInterval: uInterval});
-    // this.setState({checkbalanceInterval: bInterval});    
+    let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
+    let bInterval = setInterval(this.updateBalance.bind(this),1500);
+    this.setState({checkreceivedInterval: uInterval});
+    this.setState({checkbalanceInterval: bInterval});    
     document.getElementById('splash').classList.add('splash-fadeout');
     setTimeout(()=>{
       this.getAppState(true);
@@ -270,9 +270,11 @@ class App extends Component {
   updateBalance(){
     if(this.state.selectedMailbox){
       this.FDS.currentAccount.getBalance().then((balance)=>{
+        console.log('wallet balance', balance)
         this.setState({selectedMailboxBalance: balance});
       });
       this.state.fdsPin.getMyBalance().then((balance)=>{
+        console.log('warrant balance', balance)
         this.setState({selectedMailboxWarrantBalance: balance});
       });
     }

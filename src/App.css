@@ -709,6 +709,7 @@ input:disabled{
 
 .settings-inner h1{
   color: white;
+  margin-left: 6px;
 }
 
 .settings-form-group{
@@ -799,6 +800,21 @@ input:disabled{
 .close-settings{
   top: 10px;
   position: relative;
+}
+
+.settings-warning {
+  color: white;
+  margin: 0 10px;
+  background: black;
+  font-family: 'Lunchtype24-Medium-Expanded';
+  padding: 9px 14px;
+  opacity: 70%;
+}
+
+.settings-warning:after{
+  content: "";
+  clear: both;
+  display: table;
 }
 
 /* Menu */

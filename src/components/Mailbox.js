@@ -168,8 +168,11 @@ class Mailbox extends Component{
   }
 
   pin(hash, state=true){
-    this.updatePinState(hash, state);
+    if(this.props.isLoading === true){
+      return false;
+    }
     this.props.setIsLoading(true); //reset then unset by showStored()
+    this.updatePinState(hash, state);
     let fdsPin = this.props.fdsPin;
     if(state === true){
       return fdsPin.pin(hash).then(()=>{

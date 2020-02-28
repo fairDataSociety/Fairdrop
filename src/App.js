@@ -251,62 +251,66 @@ class App extends Component {
   }
 
   async saveAppState(appStateUpdate, persist = true){
-    let appState = await this.getAppState(true);
+    if(this.state.selectedMailbox){
+      let appState = await this.getAppState(true);
 
 
-    for (let k in appStateUpdate) {
-      appState[k] = appStateUpdate[k];
+      for (let k in appStateUpdate) {
+        appState[k] = appStateUpdate[k];
+      }
+
+      if(persist === true){
+        this.state.selectedMailbox.storeEncryptedValue('fairdrop-appState-0.1', JSON.stringify(appState));
+      }
+
+      let newAppState = await this.getAppState(false);
+      await this.setState({savedAppState: newAppState});
+      return true;
     }
-
-    if(persist === true){
-      this.state.selectedMailbox.storeEncryptedValue('fairdrop-appState-0.1', JSON.stringify(appState));
-    }
-
-    let newAppState = await this.getAppState(false);
-    await this.setState({savedAppState: newAppState});
-    return true;
   }
 
   updateBalance(){
     if(this.state.selectedMailbox){
       this.FDS.currentAccount.getBalance().then((balance)=>{
-        console.log('wallet balance', balance)
+        // console.log('wallet balance', balance)
         this.setState({selectedMailboxBalance: balance});
       });
       this.state.fdsPin.getMyBalance().then((balance)=>{
-        console.log('warrant balance', balance)
+        // console.log('warrant balance', balance)
         this.setState({selectedMailboxWarrantBalance: balance});
       });
     }
   }
 
   updateStoredStats(){
-    return this.FDS.currentAccount.storedManifest().then((manifest)=>{
-      let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{
-        if(i===1){return o.file.size;}else{return o.file.size + total;}
-      }, 0);
-      let totalPinned = manifest.storedFiles.filter((o)=>{
-        return o.meta.pinned === true;
-      });
-      let totalPinnedSize;
-      if(totalPinned.length > 0){
-        totalPinnedSize = totalPinned.reduce((total,o,i)=>{
+    if(this.state.selectedMailbox){
+      return this.FDS.currentAccount.storedManifest().then((manifest)=>{
+        let totalStoredSize = manifest.storedFiles.reduce((total,o,i)=>{
           if(i===1){return o.file.size;}else{return o.file.size + total;}
         }, 0);
-      }else{
-        totalPinnedSize = 0;
-      }
-      let balance = this.state.selectedMailboxBalance;
-      let ndxPerKbPerBlock = 1000;
-      let blockTimeInSeconds = 1;
-      let pinnedTimeRemainingInBlocks = (balance / (ndxPerKbPerBlock*totalPinnedSize));
-      let pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds;
-      return this.saveAppState({
-        totalStoredSize: totalStoredSize,
-        totalPinnedSize: totalPinnedSize,
-        pinnedTimeRemainingInSecs: pinnedTimeRemainingInSecs,
+        let totalPinned = manifest.storedFiles.filter((o)=>{
+          return o.meta.pinned === true;
+        });
+        let totalPinnedSize;
+        if(totalPinned.length > 0){
+          totalPinnedSize = totalPinned.reduce((total,o,i)=>{
+            if(i===1){return o.file.size;}else{return o.file.size + total;}
+          }, 0);
+        }else{
+          totalPinnedSize = 0;
+        }
+        let balance = this.state.selectedMailboxBalance;
+        let ndxPerKbPerBlock = 1000;
+        let blockTimeInSeconds = 1;
+        let pinnedTimeRemainingInBlocks = (balance / (ndxPerKbPerBlock*totalPinnedSize));
+        let pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds;
+        return this.saveAppState({
+          totalStoredSize: totalStoredSize,
+          totalPinnedSize: totalPinnedSize,
+          pinnedTimeRemainingInSecs: pinnedTimeRemainingInSecs,
+        });
       });
-    });
+    }
   }
 
   pollForUpdates(){

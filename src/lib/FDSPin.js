@@ -38,7 +38,6 @@ class FDSPin{
 	async unpin(hash){
 		// curl -XPOST http://localhost:8080/unpin -d "address=$ADDRESS"
 		//send unpin request to oracle
-		console.log(`${this.orac}/unpin`)
 		let qs = querystring.stringify({
 			account: this.acc.address,
 			address: hash

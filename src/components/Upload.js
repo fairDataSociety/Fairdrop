@@ -97,9 +97,7 @@ class Upload extends Component{
 
   handleUpload(){
     let multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted';
-    if( // ensure that we have a file saved from dropzone
-      // window.selectedFileArrayBuffer.constructor === ArrayBuffer &&
-      // window.selectedFileArrayBuffer.byteLength > 0
+    if(
       window.files.length > 0
       )
     {
@@ -110,11 +108,6 @@ class Upload extends Component{
         let addressee = this.state.addressee;
         return this.FDS.currentAccount.send(
           addressee,
-          // new File(
-          //   [window.selectedFileArrayBuffer],
-          //   this.state.selectedFileName,
-          //   {type: this.state.selectedFileType}
-          // ),
           window.files[0],
           multiboxPath,
           ()=>{
@@ -282,6 +275,7 @@ class Upload extends Component{
             resetToInitialState={this.resetToInitialState.bind(this)}
           />
           <FCompleted
+            appRoot={this.props.appRoot}
             parentState={this.state}
             setParentState={this.setState.bind(this)}
             isStoringFile={this.props.isStoringFile}

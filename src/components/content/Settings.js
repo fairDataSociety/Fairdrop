@@ -34,14 +34,26 @@ class Settings extends Component{
     
     this.state = {
       storedFilesArePinned: false,
-      analyticsState: this.analyticsState()
+      analyticsState: this.analyticsState(),
     }
     
     this.handleChangeAnalytics = this.handleChangeAnalytics.bind(this);
     this.handleChangePinFiles = this.handleChangePinFiles.bind(this);
     this.handleChangeHonestInbox = this.handleChangeHonestInbox.bind(this);
+    this.hideWarning = this.hideWarning.bind(this);
 
   }
+
+  async componentDidMount(){
+    let hasDismissedSettingsWarning = await localStorage.getItem('hasDismissedSettingsWarning');
+    this.setState({hasDismissedSettingsWarning: hasDismissedSettingsWarning});
+  }
+
+  async hideWarning(){
+    let hasDismissedSettingsWarning = await localStorage.setItem('hasDismissedSettingsWarning', true);
+    this.setState({hasDismissedSettingsWarning: "true"});
+  }
+
 
   handleCopyGatewayLink(){
 
@@ -151,7 +163,7 @@ class Settings extends Component{
           <div className="content-text">
             {this.props.selectedMailbox && 
               <div className="settings-inner">
-                <h1>Mailbox Settings</h1>
+                <h1>Settings</h1>
                 <div className="settings-form-group">
                   <label>Mailbox Name</label>
                   <div>
@@ -166,8 +178,11 @@ class Settings extends Component{
                   </div>
                 </div>
                 <div className="settings-form-group hide-mobile">
-                  <label>QR Code Address</label>
+                  <label>Fairdrop Address</label>
                   <QRCode value={'fds://'+this.mailboxAddress()} />
+                  { this.state.hasDismissedSettingsWarning !== "true" && 
+                    <div className="settings-warning">Warning. While we are in Beta, we do not recommend Ethereum or any other tokens to your Fairdrop address.<span className="click-to-dismiss bold-click" onClick={this.hideWarning}>Dismiss</span></div>
+                  }
                 </div>
                 <div className="settings-form-group settings-balance">
                   <label>Balance</label>
@@ -178,7 +193,7 @@ class Settings extends Component{
                   <label>Storage Provider</label>
                   <div className="settings-dropdown-wrapper">
                     <Dropdown
-                      options={["DATAFUND (1)"]}
+                      options={["DATAFUND (1)", "more coming soon..."]}
                       value={"DATAFUND (1)"}
                       placeholder="Select a mailbox"
                       readOnly

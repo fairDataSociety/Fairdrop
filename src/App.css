@@ -142,9 +142,14 @@ h1 {
 }
 
 h2{
-  letter-spacing: 0.03em;
+  letter-spacing: 0em;
   font-weight: normal;
   color: #fff;  
+}
+
+
+h3{
+  letter-spacing: 0em;
 }
 
 .page-inner-centered, p{
@@ -1783,6 +1788,7 @@ a.show-received-alert:hover{
   font-size: 14px;
   opacity: 0.7;
   transition: opacity 0.3s;
+  text-decoration: underline;
 }
 
 .copy-gateway-link:hover{
@@ -1894,6 +1900,30 @@ a.show-received-alert:hover{
   }
 }
 */
+
+
+/*download*/
+
+.download-file{
+  font-family: 'Lunchtype24-Regular-Expanded';
+  border-radius: 100px !important;
+  font-size: 18px;
+  padding: 5px 25px 4px 25px;
+  border: none;
+  background: white !important;
+  color: black !important;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
 
 /*.progress*/
 

@@ -1913,6 +1913,18 @@ a.show-received-alert:hover{
   background: white !important;
   color: black !important;
   cursor: pointer;
+  margin-bottom: 50px;
+  display: inline-block;
+}
+
+.send-another{
+  font-family: 'Lunchtype24-Regular-Expanded';
+  border-radius: 100px !important;
+  font-size: 18px;
+  padding: 5px 25px 4px 25px;
+  border: solid 1px white !important;
+  background: none !important;
+  color: white !important;
 }
 
 

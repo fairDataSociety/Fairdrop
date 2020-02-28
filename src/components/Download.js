@@ -107,6 +107,10 @@ class App extends Component {
               <div className="info-actions">
                 <a className="download-file" href={`${this.state.swarmGateway}${this.state.loc}`} download target="=_blank" rel="noopener noreferrer">Download File</a>
               </div>
+
+              <div className="info-actions">
+                <a className="download-file send-another" href='/' target="=_blank" rel="noopener noreferrer">Send Another File</a>
+              </div>
             </div>
           </div> {/* ui */}
       </div>

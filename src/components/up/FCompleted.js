@@ -60,7 +60,7 @@ class FCompleted extends Component{
           <div className="info">
             <div className="info-content">
               <div className="file-was-sent">
-                <img className="circle-tick" src="assets/images/circle-tick.svg" alt="Circle Tick"/>
+                <img className="circle-tick" src={this.props.appRoot+"/assets/images/circle-tick.svg"} alt="Circle Tick"/>
                 {this.props.parentState.isStoringFile === false ? 'Sent.' : 'Stored.'}
               </div>
               <div className="info-filename">
@@ -82,7 +82,7 @@ class FCompleted extends Component{
                       <input onChange={()=>{/*do nothing*/}} contentEditable={true} type="text" value={this.props.parentState.uploadedHashLink || ""}/>
                     </div>                    
                   }
-                  <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Click to copy link.</button>
+                  <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Copy link.</button>
                 </div>
               }
 

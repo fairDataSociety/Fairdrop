@@ -297,9 +297,9 @@ class App extends Component {
         totalPinnedSize = 0;
       }
       let balance = this.state.selectedMailboxBalance;
-      let kbPerBlock = 10;
+      let ndxPerKbPerBlock = 1000;
       let blockTimeInSeconds = 1;
-      let pinnedTimeRemainingInBlocks = (balance - (kbPerBlock*totalPinnedSize));
+      let pinnedTimeRemainingInBlocks = (balance / (ndxPerKbPerBlock*totalPinnedSize));
       let pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds;
       return this.saveAppState({
         totalStoredSize: totalStoredSize,

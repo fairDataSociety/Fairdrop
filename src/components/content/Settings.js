@@ -73,7 +73,7 @@ class Settings extends Component{
   }  
 
   fileSize(){
-    if(this.props.savedAppState.totalStoredSize){
+    if(this.props.savedAppState && this.props.savedAppState.totalStoredSize){
       return Utils.humanFileSize(this.props.savedAppState.totalStoredSize);
     }else{
       return " - "
@@ -81,7 +81,7 @@ class Settings extends Component{
   }
 
   pinnedFileSize(){
-    if(this.props.savedAppState.totalPinnedSize){
+    if(this.props.savedAppState && this.props.savedAppState.totalPinnedSize){
       return Utils.humanFileSize(this.props.savedAppState.totalPinnedSize);
     }else{
       return " - "
@@ -89,7 +89,7 @@ class Settings extends Component{
   }
 
   pinnedTimeRemaining(){
-    if(this.props.savedAppState.pinnedTimeRemainingInSecs){
+    if(this.props.savedAppState && this.props.savedAppState.pinnedTimeRemainingInSecs){
       return Utils.humanTime(this.props.savedAppState.pinnedTimeRemainingInSecs);
     }else{
       return " - "
@@ -197,14 +197,16 @@ class Settings extends Component{
                   <label>Analytics</label>
                   <Switch onChange={this.handleChangeAnalytics} checked={this.state.analyticsState} />
                 </div>
+                { /*
                 <div className="settings-form-group">
                   <label>Pin Files</label>
-                  <Switch onChange={this.handleChangePinFiles} checked={this.props.savedAppState.pinFiles} />
+                  <Switch onChange={this.handleChangePinFiles} checked={this.props.savedAppState && this.props.savedAppState.pinFiles} />
                 </div>
                 <div className="settings-form-group">
                   <label>Honest Inbox</label>
-                  <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState.honestInbox} />
+                  <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState && this.props.savedAppState.honestInbox} />
                 </div>
+                */ }
               </div>
             }
           </div>

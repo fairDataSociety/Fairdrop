@@ -132,12 +132,12 @@ class App extends Component {
                     className="menu-item-header "
                     onClick={()=>{this.props.handleNavigateTo('/mailbox')}}
                   >
-                    Login
+                    Login >
                   </div>
                 </div>
               }
               <MenuItem
-                header="Upload"
+                header="Upload >"
                 items={[
                         ['Store', this.props.handleStoreFile],
                         ['Send', this.props.handleSendFile],
@@ -148,7 +148,7 @@ class App extends Component {
                 ref={'send'}
               />
               <MenuItem
-                header="My Files"
+                header="My Files >"
                 items={[
                         ['Received Files', ()=>{this.props.handleNavigateTo('/mailbox/received')}],
                         ['Sent Files', ()=>{this.props.handleNavigateTo('/mailbox/sent')}],
@@ -159,7 +159,7 @@ class App extends Component {
                 ref={'myFiles'}
               />
               <MenuItem
-                header="Settings"
+                header="Settings >"
                 items={[
                         ['Import Mailbox', this.props.importMailbox],
                         ['Export Mailboxes', this.props.exportMailboxes],
@@ -172,7 +172,7 @@ class App extends Component {
                 ref={'settings'}
               />
               <MenuItem
-                header="About"
+                header="About >"
                 items={[
                         ['About Fairdrop', ()=>{this.props.showContent('AboutFairdrop')}],
                         ['About Fair Data Society', ()=>{this.props.showContent('AboutFDS')}],

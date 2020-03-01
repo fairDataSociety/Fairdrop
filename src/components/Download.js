@@ -49,7 +49,7 @@ class App extends Component {
   handleCopyGatewayLink(){
 
     if(iOSSafari){
-      var el = document.querySelector(".mailbox-address-input");
+      var el = document.querySelector(".feedback-gateway-link-input");
       var oldContentEditable = el.contentEditable,
           oldReadOnly = el.readOnly,
           range = document.createRange();
@@ -69,7 +69,7 @@ class App extends Component {
 
       document.execCommand('copy');
     }else{
-      var copyText = document.querySelector(".mailbox-address-input");
+      var copyText = document.querySelector(".feedback-gateway-link-input");
       copyText.select();
       document.execCommand("copy");
     }
@@ -98,7 +98,7 @@ class App extends Component {
               <div>
                 <div className="feedback-swarmhash-message">File Download Link</div>
                   <div className="feedback-gateway-link">
-                    <input onChange={()=>{/*do nothing*/}} contentEditable={true} type="text" value={`${this.state.swarmGateway}${this.state.loc}`}/>
+                    <input className="feedback-gateway-link-input" onChange={()=>{/*do nothing*/}} contentEditable={true} type="text" value={window.location.href}/>
                   </div>
                 <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Copy link.</button>
               </div>

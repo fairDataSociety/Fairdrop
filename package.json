@@ -1,8 +1,8 @@
 {
   "name": "fairdrop",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "private": true,
-  "homepage": "./",
+  "homepage": "/",
   "dependencies": {
     "axios": "^0.19.0",
     "fds.js": "^0.1.29",

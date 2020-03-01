@@ -181,7 +181,7 @@ class Settings extends Component{
                   <label>Fairdrop Address</label>
                   <QRCode value={'fds://'+this.mailboxAddress()} />
                   { this.state.hasDismissedSettingsWarning !== "true" && 
-                    <div className="settings-warning">Warning. While we are in Beta, we do not recommend Ethereum or any other tokens to your Fairdrop address.<span className="click-to-dismiss bold-click" onClick={this.hideWarning}>Dismiss</span></div>
+                    <div className="settings-warning">Warning. While we are in Beta, we do not recommend you send Ethereum or any other tokens to your Fairdrop address.<span className="click-to-dismiss bold-click" onClick={this.hideWarning}>Dismiss</span></div>
                   }
                 </div>
                 <div className="settings-form-group settings-balance">

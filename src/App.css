@@ -1813,6 +1813,7 @@ a.show-received-alert:hover{
 }
 
 .info-content .file-was-sent{
+  margin-top: 63px;
   margin-bottom: 40px;
   font-size: 33px;
   letter-spacing: 0.03em;

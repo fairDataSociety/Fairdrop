@@ -85,7 +85,7 @@ class App extends Component {
                 Download.
               </div>
               <div className="info-filename">
-                <span className="info-filename-truncated">{this.state.fileName}</span>
+                <span className="info-filename-truncated">{Utils.truncate(this.state.fileName,20, 20, 50)}</span>
                 <span className="info-filesize"> { Utils.humanFileSize(this.state.fileSize) }</span>
               </div>
 

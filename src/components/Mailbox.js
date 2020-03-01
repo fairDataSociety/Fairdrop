@@ -22,6 +22,7 @@ import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
+import ReactTooltip from 'react-tooltip'
 
 class Mailbox extends Component{
 
@@ -178,7 +179,10 @@ class Mailbox extends Component{
       return fdsPin.pin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: true}).then(()=>{
           this.props.setIsLoading(false);
-          setTimeout(this.props.updateStoredStats, 1000);
+          setTimeout(()=>{
+            this.props.updateStoredStats();
+            this.props.setIsLoading(false);
+          }, 1000);
         });
       }).catch(()=>{
         this.updatePinState(hash, !state);
@@ -186,8 +190,10 @@ class Mailbox extends Component{
     }else{
       return fdsPin.unpin(hash).then(()=>{
         return this.props.selectedMailbox.updateStoredMeta(hash, {pinned: false}).then(()=>{
-          this.props.setIsLoading(false);
-          setTimeout(this.props.updateStoredStats, 1000);
+          setTimeout(()=>{
+            this.props.updateStoredStats();
+            this.props.setIsLoading(false);
+          }, 1000);
         });
       }).catch(()=>{
         this.updatePinState(hash, !state);
@@ -582,13 +588,9 @@ class Mailbox extends Component{
                   <table>
                     <tbody>
                       <tr>
-                        <td><button onClick={this.props.handleSendFile}>Send<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
-                      </tr>
-                      <tr>
-                        <td><button onClick={this.props.handleStoreFile}>Store<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
-                      </tr>
-                      <tr>
-                        <td><button onClick={this.props.handleQuickFile}>Publish<img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></td>
+                        <div className="inbox-action"  data-tip="Send a file."><button onClick={this.props.handleSendFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/paper-plane-solid.svg"}/></button></div>
+                        <div className="inbox-action"  data-tip="Store a file."><button onClick={this.props.handleStoreFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/file-download-solid-black.svg"}/></button></div>
+                        <div className="inbox-action"  data-tip="Publish a file."><button onClick={this.props.handleQuickFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/globe-africa-solid.svg"}/></button></div>
                       </tr>  
                       <tr>
                         <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
@@ -615,7 +617,7 @@ class Mailbox extends Component{
                     <thead>
                       <tr>
                         <th className="inbox-col inbox-col-name">Name</th>
-                        <th className="inbox-col inbox-col-time hide-mobile">
+                        <th className="inbox-col inbox-col-time hide-mobile" data-tip="Pinned files will be retained by your data provider.">
                           {(() => {
                             switch(this.state.shownMessageType) {                              
                               case 'stored':
@@ -780,6 +782,7 @@ class Mailbox extends Component{
             </div>
           </div>
         </div>
+        <ReactTooltip className="react-tooltip"/>
       </div>
     );
   }

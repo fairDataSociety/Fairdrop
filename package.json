@@ -8,6 +8,7 @@
     "fds.js": "^0.1.29",
     "qrcode.react": "^1.0.0",
     "querystring": "^0.2.0",
+    "react-tooltip": "^4.0.3",
     "source-map-explorer": "^2.0.1",
     "url-parse": "^1.4.7"
   },

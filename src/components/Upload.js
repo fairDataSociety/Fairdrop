@@ -163,6 +163,7 @@ class Upload extends Component{
             this.setState({feedbackMessage: message});
           }
         ).then((hash)=>{
+          //find the index.html
           let index_index = null;
           for (var i = files.length - 1; i >= 0; i--) {
             var fullPath = files[i].fullPath || files[i].webkitRelativePath;   
@@ -171,7 +172,7 @@ class Upload extends Component{
             }
           }
           if(index_index !== null){
-            return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size; 
+            return this.props.FDS.swarmGateway + '/bzz:/' + hash.address + '/index.html';
           }else{
             if(files.length > 1){
               return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download-list/'+ hash.address + '/';

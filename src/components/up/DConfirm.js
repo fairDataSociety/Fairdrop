@@ -48,6 +48,7 @@ class DConfirm extends Component{
     });
     setTimeout(()=>{
       this.props.handleUpload().then((link)=>{
+        window.files=[];
         this.props.setParentState({
           fileWasUploaded: true,
           uploadedHashLink: link,

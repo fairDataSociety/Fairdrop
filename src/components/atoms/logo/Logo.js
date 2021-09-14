@@ -14,28 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useState, useCallback, useEffect } from 'react'
-import styles from './App.module.css'
-import c from 'classnames'
-import Menu from './components/molecules/menu/Menu'
+import React from 'react'
+import styles from './Logo.module.css'
+import { ReactComponent as SVGLogo } from './assets/fairdrop-logo.svg'
 
-const App = ({ ...rest }) => {
-  const [menuOpened, setMenuOpened] = useState(false)
-
-  const handleToggleMenu = useCallback(() => {
-    setMenuOpened(!menuOpened)
-  }, [menuOpened])
-
-  useEffect(() => {
-    document.getElementById('splash').classList.add('splash-hidden')
-    document.getElementById('root').classList.add('root-fadein')
-  }, [])
-
-  return (
-    <div className={c(styles.container)}>
-      <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
-    </div>
-  )
+const Logo = ({ className }) => {
+  return <SVGLogo className={className} />
 }
 
-export default React.memo(App)
+export default React.memo(Logo)

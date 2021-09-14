@@ -14,28 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useState, useCallback, useEffect } from 'react'
-import styles from './App.module.css'
+import React from 'react'
+import styles from './Hamburger.module.css'
 import c from 'classnames'
-import Menu from './components/molecules/menu/Menu'
 
-const App = ({ ...rest }) => {
-  const [menuOpened, setMenuOpened] = useState(false)
-
-  const handleToggleMenu = useCallback(() => {
-    setMenuOpened(!menuOpened)
-  }, [menuOpened])
-
-  useEffect(() => {
-    document.getElementById('splash').classList.add('splash-hidden')
-    document.getElementById('root').classList.add('root-fadein')
-  }, [])
-
+const Hamburger = ({ variant = 'white', isActive, onClick, ...rest }) => {
   return (
-    <div className={c(styles.container)}>
-      <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
-    </div>
+    <button
+      className={c(styles.hamburger, styles.hamburgerSpin, styles[variant], isActive && styles.isActive)}
+      type="button"
+      onClick={onClick}
+    >
+      <span className={styles.hamburgerBox}>
+        <span className={styles.hamburgerInner}></span>
+      </span>
+    </button>
   )
 }
 
-export default React.memo(App)
+export default React.memo(Hamburger)

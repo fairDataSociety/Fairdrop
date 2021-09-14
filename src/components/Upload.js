@@ -14,19 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import ASelectFile from '../components/up/ASelectFile';
-import BSelectMailbox from '../components/up/BSelectMailbox';
-import DConfirm from '../components/up/DConfirm';
-import EInProgress from '../components/up/EInProgress';
-import FCompleted from '../components/up/FCompleted';
-import ProgressBar from '../components/up/ProgressBar';
+import ASelectFile from '../components/up/ASelectFile'
+import BSelectMailbox from '../components/up/BSelectMailbox'
+import DConfirm from '../components/up/DConfirm'
+import EInProgress from '../components/up/EInProgress'
+import FCompleted from '../components/up/FCompleted'
+import ProgressBar from '../components/up/ProgressBar'
 
-import App from '../App';
+import App from '../_App'
 
-class Upload extends Component{
-
+class Upload extends Component {
   getInitialState() {
     return {
       shouldEncrypt: false,
@@ -55,45 +54,46 @@ class Upload extends Component{
       isErrored: false,
 
       isStoringFile: this.props.isStoringFile,
-      isQuickFile: this.props.isQuickFile
-    };
+      isQuickFile: this.props.isQuickFile,
+    }
   }
 
-  resetToInitialState(){
-    this.setState(this.getInitialState());
-    this.props.setFileIsSelecting(false, 0);
-    this.props.setFileIsSelecting(false, 1);
-    App.aSelectFile.resetToInitialState();
+  resetToInitialState() {
+    this.setState(this.getInitialState())
+    this.props.setFileIsSelecting(false, 0)
+    this.props.setFileIsSelecting(false, 1)
+    App.aSelectFile.resetToInitialState()
   }
 
-  constructor(props){
-    super(props);
-    this.FDS = this.props.FDS;
+  constructor(props) {
+    super(props)
+    this.FDS = this.props.FDS
 
-    this.aSelectFile = React.createRef();
+    this.aSelectFile = React.createRef()
 
-    this.state = this.getInitialState();
+    this.state = this.getInitialState()
   }
 
-  setSelectedMailbox(account){
-    this.props.setSelectedMailbox(account);
+  setSelectedMailbox(account) {
+    this.props.setSelectedMailbox(account)
   }
 
-  setUIState(state){
+  setUIState(state) {
     this.setState({
-      uiState: state
-    });
+      uiState: state,
+    })
   }
 
-  componentWillUnmount(){
-    this.props.resetFileState();
+  componentWillUnmount() {
+    this.props.resetFileState()
   }
 
-  setUploadProgress(progress){
-    if (progress<=999) { progress = ("00"+progress).slice(-3); }
-    this.setState({uploadProgress: `${progress}%`});   
+  setUploadProgress(progress) {
+    if (progress <= 999) {
+      progress = ('00' + progress).slice(-3)
+    }
+    this.setState({ uploadProgress: `${progress}%` })
   }
- 
 
   handleUpload(){
     let multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted';
@@ -118,8 +118,8 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
-              this.setState({fileWasUploaded: true}); 
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});
+              this.setState({fileWasUploaded: true});
             }
           },
           (message)=>{
@@ -129,8 +129,8 @@ class Upload extends Component{
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
         }).then(()=>{
-            this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
-            this.setState({fileWasUploaded: true}); 
+            this.setState({feedbackMessage: "file uploaded, processing into Swarm."});
+            this.setState({fileWasUploaded: true});
         });
       }else if(
         this.state.isStoringFile === false &&
@@ -140,23 +140,19 @@ class Upload extends Component{
         let files = window.files;
         let newFiles = [];
         for (var i = files.length - 1; i >= 0; i--) {
-          let newFile = new File(
-            [files[i]],
-            files[i].name.replace(/ /g,'_'),
-            {type: files[i].type}
-          );
-          let fullPath = files[i].fullPath || files[i].webkitRelativePath;
-          newFile.fullPath = fullPath.replace(/ /g,'_');
-          newFiles.push(newFile);
+          let newFile = new File([files[i]], files[i].name.replace(/ /g, '_'), { type: files[i].type })
+          let fullPath = files[i].fullPath || files[i].webkitRelativePath
+          newFile.fullPath = fullPath.replace(/ /g, '_')
+          newFiles.push(newFile)
         }
         return this.FDS.Account.Store.storeFilesUnencrypted(
           newFiles,
-          (response)=>{
-            this.setUploadProgress(response);
-            if(response === 100){
-              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
-              this.setState({fileWasUploaded: true}); 
-              this.props.enableNav();
+          (response) => {
+            this.setUploadProgress(response)
+            if (response === 100) {
+              this.setState({ feedbackMessage: 'file uploaded, processing into Swarm.' })
+              this.setState({ fileWasUploaded: true })
+              this.props.enableNav()
             }
           },
           (message)=>{
@@ -166,9 +162,9 @@ class Upload extends Component{
           //find the index.html
           let index_index = null;
           for (var i = files.length - 1; i >= 0; i--) {
-            var fullPath = files[i].fullPath || files[i].webkitRelativePath;   
-            if(fullPath.split('/')[1] === 'index.html'){
-              index_index = i;
+            var fullPath = files[i].fullPath || files[i].webkitRelativePath
+            if (fullPath.split('/')[1] === 'index.html') {
+              index_index = i
             }
           }
           if(index_index !== null){
@@ -177,9 +173,9 @@ class Upload extends Component{
             if(files.length > 1){
               return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download-list/'+ hash.address + '/';
             }else{
-              return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size; 
+              return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size;
             }
-          }          
+          }
         });
       }else{
         return this.FDS.currentAccount.store(
@@ -192,7 +188,7 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});          
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});
             }
           },
           (message)=>{
@@ -226,9 +222,9 @@ class Upload extends Component{
           this.setState({fileWasUploaded: true});
         });
       }
-    }else{
-      this.setState({feedbackMessage: "there was an error, please try again..."});
-      return false;
+    } else {
+      this.setState({ feedbackMessage: 'there was an error, please try again...' })
+      return false
     }
   }
 
@@ -256,10 +252,10 @@ class Upload extends Component{
             isStoringFile={this.props.isStoringFile}
             setSelectedMailbox={this.setSelectedMailbox.bind(this)}
             appRoot={this.props.appRoot}
-            resetToInitialState={this.resetToInitialState.bind(this)}   
+            resetToInitialState={this.resetToInitialState.bind(this)}
             fdsPin={this.props.fdsPin}
-            updateBalance={this.props.updateBalance}    
-            saveAppState={this.props.saveAppState}    
+            updateBalance={this.props.updateBalance}
+            saveAppState={this.props.saveAppState}
           />
           <DConfirm
             parentState={this.state}
@@ -292,4 +288,4 @@ class Upload extends Component{
   }
 }
 
-export default Upload;
+export default Upload

@@ -14,20 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.css'
 
-import App from './App';
+import App from './App'
+import './index.css'
 
-import {version} from '../package.json';
+import { version } from '../package.json'
 
-console.log(`Fairdrop Version ${version} - Created by FDS`);
+console.log(`Fairdrop Version ${version} - Created by FDS`)
 
 //enables us to use subdirectory base urls with react router
-let appRoot = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(0,5).join('/') : '';
-let basename = window.location.href.match('bzz:') !== null  ? window.location.href.split('/').slice(3,5).join('/') : '';
+let appRoot = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(0, 5).join('/') : ''
+let basename = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(3, 5).join('/') : ''
 
-ReactDOM.render(<Router basename={basename}><App appRoot={appRoot}/></Router>, document.getElementById('root'));
+ReactDOM.render(
+  <Router basename={appRoot}>
+    <App appRoot={appRoot} />
+  </Router>,
+  document.getElementById('root'),
+)

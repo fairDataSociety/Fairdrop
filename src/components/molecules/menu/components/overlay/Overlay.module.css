@@ -1,0 +1,29 @@
+.overlay {
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  position: absolute;
+  z-index: 99;
+  opacity: 0.4;
+}
+
+.enter {
+  display: block;
+  opacity: 0;
+}
+
+.enterActive {
+  opacity: 0.4;
+  transition: opacity 1s;
+}
+
+.exit {
+  opacity: 0.4;
+  transition: opacity 1s;
+}
+
+.exitActive {
+  opacity: 0;
+  transition: opacity 1s;
+  display: none;
+}

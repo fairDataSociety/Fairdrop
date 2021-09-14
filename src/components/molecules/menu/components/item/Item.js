@@ -14,28 +14,37 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useState, useCallback, useEffect } from 'react'
-import styles from './App.module.css'
+import React, { useCallback } from 'react'
+import styles from './Item.module.css'
 import c from 'classnames'
-import Menu from './components/molecules/menu/Menu'
+import { Link, useLocation } from 'react-router-dom'
 
-const App = ({ ...rest }) => {
-  const [menuOpened, setMenuOpened] = useState(false)
-
-  const handleToggleMenu = useCallback(() => {
-    setMenuOpened(!menuOpened)
-  }, [menuOpened])
-
-  useEffect(() => {
-    document.getElementById('splash').classList.add('splash-hidden')
-    document.getElementById('root').classList.add('root-fadein')
-  }, [])
+const Item = ({ className, id, isOpened, label, items, onClick }) => {
+  const handleClick = useCallback(
+    (evt) => {
+      evt.preventDefault()
+      onClick?.(id)
+    },
+    [id, onClick],
+  )
 
   return (
-    <div className={c(styles.container)}>
-      <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
+    <div className={c(styles.container, className)}>
+      <a href="" className={c(styles.item, isOpened && styles.itemActive)} onClick={handleClick}>
+        {label}
+      </a>
+
+      <div className={c(styles.links, isOpened && styles.linksOpened)}>
+        {items.map(({ label, path }) => {
+          return (
+            <Link key={path} className={styles.linkItem} to={path}>
+              {label}
+            </Link>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
-export default React.memo(App)
+export default React.memo(Item)

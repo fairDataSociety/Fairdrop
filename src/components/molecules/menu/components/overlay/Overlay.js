@@ -14,28 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useState, useCallback, useEffect } from 'react'
-import styles from './App.module.css'
-import c from 'classnames'
-import Menu from './components/molecules/menu/Menu'
+import React from 'react'
+import styles from './Overlay.module.css'
+import { CSSTransition } from 'react-transition-group'
 
-const App = ({ ...rest }) => {
-  const [menuOpened, setMenuOpened] = useState(false)
-
-  const handleToggleMenu = useCallback(() => {
-    setMenuOpened(!menuOpened)
-  }, [menuOpened])
-
-  useEffect(() => {
-    document.getElementById('splash').classList.add('splash-hidden')
-    document.getElementById('root').classList.add('root-fadein')
-  }, [])
-
+const Overlay = ({ isShown, onClick }) => {
   return (
-    <div className={c(styles.container)}>
-      <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
-    </div>
+    <CSSTransition in={isShown} timeout={200} unmountOnExit classNames={{ ...styles }}>
+      <div className={styles.overlay} onClick={onClick} />
+    </CSSTransition>
   )
 }
 
-export default React.memo(App)
+export default React.memo(Overlay)

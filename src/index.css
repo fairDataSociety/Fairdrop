@@ -31,3 +31,8 @@
 * {
   font-family: 'Lunchtype24-Light-Expanded';
 }
+
+a,
+a:hover {
+  text-decoration: none;
+}

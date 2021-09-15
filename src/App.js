@@ -18,6 +18,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import styles from './App.module.css'
 import c from 'classnames'
 import Menu from './components/molecules/menu/Menu'
+import Header from './components/molecules/header/Header'
 
 const App = ({ ...rest }) => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -34,6 +35,8 @@ const App = ({ ...rest }) => {
   return (
     <div className={c(styles.container)}>
       <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
+
+      <Header />
     </div>
   )
 }

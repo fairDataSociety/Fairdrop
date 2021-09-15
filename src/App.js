@@ -19,6 +19,8 @@ import styles from './App.module.css'
 import c from 'classnames'
 import Menu from './components/molecules/menu/Menu'
 import Header from './components/molecules/header/Header'
+import { Switch, Route } from 'react-router-dom'
+import UploadMainScreen from './screens/upload/main/UploadMainScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -38,7 +40,11 @@ const App = () => {
 
       <Header />
 
-      <div className={styles.content}></div>
+      <div className={styles.content}>
+        <Switch>
+          <Route exact path="/upload" component={UploadMainScreen} />
+        </Switch>
+      </div>
     </div>
   )
 }

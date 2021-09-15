@@ -15,28 +15,15 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter as Router } from 'react-router-dom'
+import SelectFile from './steps/selectFile/SelectFile'
+import styles from './UploadMainScreen.module.css'
 
-import 'bootstrap/dist/css/bootstrap.css'
+const UploadMainScreen = ({ ...rest }) => {
+  return (
+    <div className={styles.container}>
+      <SelectFile />
+    </div>
+  )
+}
 
-import App from './App'
-import './index.css'
-
-import { version } from '../package.json'
-import FileManagerProvider from './hooks/fileManager/useFileManager'
-
-console.log(`Fairdrop Version ${version} - Created by FDS`)
-
-//enables us to use subdirectory base urls with react router
-let appRoot = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(0, 5).join('/') : ''
-let basename = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(3, 5).join('/') : ''
-
-ReactDOM.render(
-  <Router basename={appRoot}>
-    <FileManagerProvider>
-      <App appRoot={appRoot} />
-    </FileManagerProvider>
-  </Router>,
-  document.getElementById('root'),
-)
+export default React.memo(UploadMainScreen)

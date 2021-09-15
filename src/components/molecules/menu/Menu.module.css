@@ -31,6 +31,29 @@
   padding: 20px 40px 20px 80px;
   display: flex;
   justify-content: flex-end;
+  opacity: 0;
+}
+
+.headerEnter {
+  opacity: 0;
+}
+
+.headerEnterActive {
+  opacity: 1;
+  transition: opacity 0.5s 0.2s;
+}
+
+.headerEnterDone {
+  opacity: 1;
+}
+
+.headerExit {
+  opacity: 1;
+}
+
+.headerExitActive {
+  opacity: 0;
+  transition: opacity 0.5s;
 }
 
 .menu {

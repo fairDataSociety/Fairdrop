@@ -22,6 +22,7 @@ import Logo from '../../atoms/logo/Logo'
 import Overlay from './components/overlay/Overlay'
 import Item from './components/item/Item'
 import { useLocation } from 'react-router-dom'
+import { CSSTransition } from 'react-transition-group'
 
 const menuItems = [
   {
@@ -124,9 +125,24 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
       <Overlay isShown={isShown} onClick={onToggleMenu} />
 
       <div className={c(styles.content, isShown && styles.shown)}>
-        <div className={styles.header}>
-          <Logo />
-        </div>
+        <CSSTransition
+          in={isShown}
+          timeout={{
+            enter: 700,
+            exit: 500,
+          }}
+          classNames={{
+            enter: styles.headerEnter,
+            enterActive: styles.headerEnterActive,
+            enterDone: styles.headerEnterDone,
+            exit: styles.headerExit,
+            exitActive: styles.headerExitActive,
+          }}
+        >
+          <div className={styles.header}>
+            <Logo />
+          </div>
+        </CSSTransition>
 
         <div className={styles.menu}>
           {menuItems.map(({ id, label, items }) => {

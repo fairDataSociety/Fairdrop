@@ -20,7 +20,7 @@ import c from 'classnames'
 import Menu from './components/molecules/menu/Menu'
 import Header from './components/molecules/header/Header'
 
-const App = ({ ...rest }) => {
+const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
 
   const handleToggleMenu = useCallback(() => {
@@ -37,6 +37,8 @@ const App = ({ ...rest }) => {
       <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
 
       <Header />
+
+      <div className={styles.content}></div>
     </div>
   )
 }

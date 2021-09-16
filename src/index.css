@@ -30,6 +30,8 @@
 
 * {
   font-family: 'Lunchtype24-Light-Expanded';
+  margin: 0;
+  padding: 0;
 }
 
 a,
@@ -37,9 +39,14 @@ a:hover {
   text-decoration: none;
 }
 
+body {
+  transition: background-color 0.3s ease;
+}
+
 html,
 body,
 #root {
   width: 100%;
   height: 100%;
+  margin: 0;
 }

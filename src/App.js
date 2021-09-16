@@ -19,11 +19,13 @@ import styles from './App.module.css'
 import c from 'classnames'
 import Menu from './components/molecules/menu/Menu'
 import Header from './components/molecules/header/Header'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, useLocation } from 'react-router-dom'
 import UploadMainScreen from './screens/upload/main/UploadMainScreen'
+import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
+  const location = useLocation()
 
   const handleToggleMenu = useCallback(() => {
     setMenuOpened(!menuOpened)
@@ -34,6 +36,10 @@ const App = () => {
     document.getElementById('root').classList.add('root-fadein')
   }, [])
 
+  useEffect(() => {
+    setMenuOpened(false)
+  }, [location.pathname])
+
   return (
     <div className={c(styles.container)}>
       <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
@@ -43,6 +49,7 @@ const App = () => {
       <div className={styles.content}>
         <Switch>
           <Route exact path="/upload" component={UploadMainScreen} />
+          <Route exact path="/upload/flow" component={UploadFlowScreen} />
         </Switch>
       </div>
     </div>

@@ -3,6 +3,7 @@
   padding: 20px 20px 0 80px;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .version {

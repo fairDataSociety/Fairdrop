@@ -18,11 +18,12 @@
 
 .instructions h2,
 .instructions h2 span {
+  font-weight: 400;
+  font-size: 32px;
   font-family: 'Lunchtype24-Regular-Expanded';
 }
 
 .instructions h2:first-of-type {
-  font-size: 32px;
   margin-bottom: 25px;
 }
 
@@ -33,6 +34,9 @@
 .instructions h3.actions {
   font-size: 30px;
   font-family: 'Lunchtype24-Medium-Expanded';
+  font-weight: 500;
+  line-height: 1.2;
+  display: flex;
 }
 
 .actions {

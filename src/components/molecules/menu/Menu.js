@@ -31,15 +31,15 @@ const menuItems = [
     items: [
       {
         label: 'Store',
-        path: '/upload/store',
+        path: '/upload',
       },
       {
         label: 'Send',
-        path: '/upload/send',
+        path: '/upload?a=send',
       },
       {
         label: 'Quick (Unencrypted)',
-        path: '/upload/quick',
+        path: '/upload?a=quick',
       },
     ],
   },

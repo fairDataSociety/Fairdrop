@@ -18,13 +18,14 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/css/bootstrap.css'
 
 import App from './App'
 import './index.css'
 
 import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
+import { ThemeProvider } from './hooks/theme/useTheme'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -34,9 +35,11 @@ let basename = window.location.href.match('bzz:') !== null ? window.location.hre
 
 ReactDOM.render(
   <Router basename={appRoot}>
-    <FileManagerProvider>
-      <App appRoot={appRoot} />
-    </FileManagerProvider>
+    <ThemeProvider>
+      <FileManagerProvider>
+        <App appRoot={appRoot} />
+      </FileManagerProvider>
+    </ThemeProvider>
   </Router>,
   document.getElementById('root'),
 )

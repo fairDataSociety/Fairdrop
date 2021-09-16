@@ -14,15 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useEffect } from 'react'
 import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './SelectFile.module.css'
 import { useDropzone } from 'react-dropzone'
 import Option from './components/option/Option'
+import { useTheme } from '../../../../../hooks/theme/useTheme'
+import { colors } from '../../../../../config/colors'
+import { useHistory } from 'react-router-dom'
 
 const SelectFile = () => {
-  const [, { setFiles }] = useFileManager()
+  const [{ files }, { setFiles }] = useFileManager()
   const inputRef = useRef()
+  const { setVariant, setBackground } = useTheme()
+  const history = useHistory()
 
   const handleFileDrop = useCallback((type, files) => {
     // Do something with the files
@@ -41,6 +46,18 @@ const SelectFile = () => {
   }, [])
 
   const { getRootProps, isDragActive } = useDropzone({ onDrop: () => {} })
+
+  useEffect(() => {
+    setVariant('black')
+    setBackground(colors.red)
+  }, [])
+
+  useEffect(() => {
+    if (files.length === 0) {
+      return
+    }
+    history.push('/upload/flow')
+  }, [files])
 
   return (
     <div className={styles.container} {...getRootProps()}>

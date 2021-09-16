@@ -21,3 +21,15 @@
 .active {
   background: #ba2721;
 }
+
+.headline {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+  font-family: 'Lunchtype24-Regular-Expanded';
+}
+
+.description {
+  font-feature-settings: 'kern' off;
+  font-kerning: none;
+}

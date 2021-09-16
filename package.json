@@ -9,6 +9,7 @@
     "fds.js": "^0.1.26",
     "qrcode.react": "^1.0.0",
     "querystring": "^0.2.0",
+    "react-dropzone": "^11.4.0",
     "react-router-dom": "^5.3.0",
     "react-transition-group": "^4.4.2",
     "source-map-explorer": "^2.0.1"

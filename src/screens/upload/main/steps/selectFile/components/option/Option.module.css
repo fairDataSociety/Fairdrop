@@ -1,0 +1,23 @@
+.container {
+  height: 50%;
+  transition: background-color 1s;
+  display: flex;
+
+  box-sizing: border-box;
+}
+
+.wrapper {
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+.active {
+  background: #ba2721;
+}

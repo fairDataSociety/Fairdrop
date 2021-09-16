@@ -14,32 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useContext, useReducer } from 'react'
-import { CLEAN, initialState, reducer, SET_FILES } from './reducer'
+import React, { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
+import styles from './Option.module.css'
+import c from 'classnames'
 
-const FileManagerContext = React.createContext()
+const Option = ({ headline, description, type, onFileDrop }) => {
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      onFileDrop?.(type, acceptedFiles)
+    },
+    [onFileDrop],
+  )
 
-const FileManagerProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-
-  const setFiles = useCallback(({ files, type }) => {
-    dispatch({ type: SET_FILES, payload: { files, type } })
-  }, [])
-
-  const resetFileManager = useCallback(() => {
-    dispatch({ type: CLEAN })
-  }, [])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (
-    <FileManagerContext.Provider value={[state, { setFiles, resetFileManager }]}>
-      {children}
-    </FileManagerContext.Provider>
+    <div className={c(styles.container, isDragActive && styles.active)} {...getRootProps()}>
+      <div className={styles.wrapper}>
+        <h2>{headline}</h2>
+        <span>{description}</span>
+      </div>
+
+      <input {...getInputProps()} />
+    </div>
   )
 }
 
-export const useFileManager = () => {
-  const ctx = useContext(FileManagerContext)
-  return ctx
-}
-
-export default FileManagerProvider
+export default React.memo(Option)

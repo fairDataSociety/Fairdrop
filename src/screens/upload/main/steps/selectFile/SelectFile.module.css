@@ -61,3 +61,14 @@
   pointer-events: all;
   font-family: 'Lunchtype24-Medium-Expanded';
 }
+
+.options {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  background-color: #fb4a36;
+  z-index: 104;
+}

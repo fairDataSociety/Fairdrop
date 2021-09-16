@@ -15,19 +15,53 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useEffect } from 'react'
+import Stepper from '../../../components/molecules/stepper/Stepper'
 import { colors } from '../../../config/colors'
+import { useFileManager } from '../../../hooks/fileManager/useFileManager'
 import { useTheme } from '../../../hooks/theme/useTheme'
+import ConfirmStep from './steps/confirm/ConfirmStep'
 import styles from './UploadFlowScreen.module.css'
 
-const UploadFlowScreen = ({ ...rest }) => {
+const UploadFlowScreen = ({ history }) => {
   const { setVariant, setBackground } = useTheme()
+  const [{ files }] = useFileManager()
 
   useEffect(() => {
     setVariant('white')
     setBackground(colors.green)
   }, [])
 
-  return <div></div>
+  useEffect(() => {
+    if (files.length < 1) {
+      history.replace('/upload')
+    }
+  }, [files])
+
+  return (
+    <div className={styles.container}>
+      <Stepper
+        steps={[
+          {
+            label: 'Select File',
+            Component: <div />,
+          },
+          {
+            label: 'Confirm',
+            Component: <ConfirmStep />,
+          },
+          {
+            label: 'Upload',
+            Component: <div />,
+          },
+          {
+            label: 'Summary',
+            Component: <div />,
+          },
+        ]}
+        initialStep={1}
+      />
+    </div>
+  )
 }
 
 export default React.memo(UploadFlowScreen)

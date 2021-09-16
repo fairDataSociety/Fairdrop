@@ -14,47 +14,47 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import Crypto from 'crypto';
-import moment from 'moment';
+import Crypto from 'crypto'
+// import zxcvbn from 'zxcvbn';
 
-function generatePassword (){
-    return new Promise((resolve, reject)=>{
-      Crypto.randomBytes(48, function(err, buffer) {
-        resolve(buffer.toString('hex'));
-      });
+function generatePassword() {
+  return new Promise((resolve, reject) => {
+    Crypto.randomBytes(48, function (err, buffer) {
+      resolve(buffer.toString('hex'))
     })
-  }
+  })
+}
 
 function humanTime(seconds) {
   if(typeof seconds === 'undefined'){
     return ' - '
   }
-  return moment.duration(seconds, 'seconds').humanize();
+  return moment.duration(seconds, 'seconds').humanize()
 }
 
 function humanFileSize(size) {
-	if(typeof size === 'undefined'){
-		return ' - '
-	}
-    var i = Math.floor( Math.log(size) / Math.log(1024) );
-    return ( size / Math.pow(1024, i) ).toFixed(0) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+  if (typeof size === 'undefined') {
+    return ' - '
+  }
+  var i = Math.floor(Math.log(size) / Math.log(1024))
+  return (size / Math.pow(1024, i)).toFixed(0) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i]
 }
 
 function truncate(text, startChars, endChars, maxLength) {
-  	if (text.length > maxLength) {
-  	    var start = text.substring(0, startChars);
-  	    var end = text.substring(text.length - endChars, text.length);
-  	    return start + '...' + end;
-  	}
-  	return text;
+  if (text.length > maxLength) {
+    var start = text.substring(0, startChars)
+    var end = text.substring(text.length - endChars, text.length)
+    return start + '...' + end
+  }
+  return text
 }
 
-function formatBalance(wei){
-	return `NÐX ${(wei / 1000000000000000000).toFixed(2)}`
+function formatBalance(wei) {
+  return `NÐX ${(wei / 1000000000000000000).toFixed(2)}`
 }
 
 // function humanEntropy(password){
 //     return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
 // }
 
-export default {generatePassword, humanFileSize, truncate, formatBalance, humanTime}
+export default { generatePassword, humanFileSize, truncate, formatBalance }

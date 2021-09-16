@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useCallback, useRef, useEffect } from 'react'
-import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './SelectFile.module.css'
 import { useDropzone } from 'react-dropzone'
 import Option from './components/option/Option'
@@ -86,13 +86,13 @@ const SelectFile = () => {
           <Option
             headline="Send encrypted"
             description="Requires logging in to your mailbox"
-            type="encrypted"
+            type={FILE_UPLOAD_TYPES.ENCRYPTED}
             onFileDrop={handleFileDrop}
           />
           <Option
             headline="Send in a quick way"
             description="Send a file or folder unencrypted - no mailboxes required"
-            type="quick"
+            type={FILE_UPLOAD_TYPES.QUICK}
             onFileDrop={handleFileDrop}
           />
         </div>

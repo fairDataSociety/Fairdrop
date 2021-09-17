@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './ConfirmStep.module.css'
 import Utils from '../../../../../services/Utils'
+import Button from '../../../../../components/atoms/button/Button'
 
 const ConfirmStep = ({ prevStep, nextStep }) => {
   const [{ files, type }] = useFileManager()
@@ -25,6 +26,7 @@ const ConfirmStep = ({ prevStep, nextStep }) => {
           </Fragment>
         )
       })}
+      <Button variant="green">Encrypt and Send</Button>
     </div>
   )
 }

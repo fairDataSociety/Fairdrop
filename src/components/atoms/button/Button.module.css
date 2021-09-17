@@ -1,0 +1,23 @@
+.button {
+  border-radius: 18px;
+  font-size: 18px;
+  padding: 5px 25px 4px;
+  border: none;
+  margin-right: 10px;
+  height: 36px;
+  background-color: #fff;
+  font-weight: 400;
+  user-select: none;
+  transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: 0.7;
+}
+
+.green {
+  background-color: #fff;
+  color: #37bd72;
+}

@@ -18,7 +18,7 @@ import React from 'react'
 import SelectFile from './steps/selectFile/SelectFile'
 import styles from './UploadMainScreen.module.css'
 
-const UploadMainScreen = ({ ...rest }) => {
+const UploadMainScreen = () => {
   return (
     <div className={styles.container}>
       <SelectFile />

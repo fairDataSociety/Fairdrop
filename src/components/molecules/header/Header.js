@@ -20,19 +20,22 @@ import c from 'classnames'
 import Logo from '../../atoms/logo/Logo'
 import { version } from '../../../../package.json'
 import { Link } from 'react-router-dom'
+import Text from '../../atoms/text/Text'
 
 const Header = ({ className }) => {
   return (
     <header className={c(styles.container, className)}>
       <Logo />
 
-      <span className={styles.version}>
+      <Text className={styles.version} element="span" size="s">
         {`${version} ${process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ''}`}
-      </span>
+      </Text>
 
       <div className={styles.actions}>
         <Link className={styles.login} to="/mailbox">
-          Log in / Register
+          <Text element="span" size="sm" weight="500">
+            Log in / Register
+          </Text>
         </Link>
       </div>
     </header>

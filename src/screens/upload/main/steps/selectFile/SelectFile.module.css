@@ -5,26 +5,17 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  color: #fff;
 }
 
 .instructions {
-  font-family: 'Lunchtype24-Regular-Expanded';
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.instructions h2,
-.instructions h2 span {
-  font-weight: 400;
-  font-size: 32px;
-  font-family: 'Lunchtype24-Regular-Expanded';
-}
-
-.instructions h2:first-of-type {
-  margin-bottom: 25px;
+.instructions .features {
+  margin-top: 25px;
 }
 
 .noWrap {
@@ -32,9 +23,6 @@
 }
 
 .instructions h3.actions {
-  font-size: 30px;
-  font-family: 'Lunchtype24-Medium-Expanded';
-  font-weight: 500;
   line-height: 1.2;
   display: flex;
 }
@@ -63,7 +51,6 @@
   cursor: pointer;
   margin-right: 21px;
   pointer-events: all;
-  font-family: 'Lunchtype24-Medium-Expanded';
 }
 
 .options {

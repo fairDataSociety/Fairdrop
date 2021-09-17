@@ -6,9 +6,7 @@
   box-sizing: border-box;
 }
 
-.version {
-  font-size: 12px;
-  color: #fff;
+.container .version {
   margin-left: 20px;
 }
 
@@ -19,9 +17,6 @@
 }
 
 .login {
-  font-family: 'Lunchtype24-Medium-Expanded';
-  color: #fff;
-  font-size: 14px;
   line-height: 24px;
 }
 

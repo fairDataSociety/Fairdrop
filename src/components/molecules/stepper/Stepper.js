@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import styles from './Stepper.module.css'
 import c from 'classnames'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
+import Text from '../../atoms/text/Text'
 
 const Stepper = ({ className, steps, initialStep = 0 }) => {
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -49,9 +50,13 @@ const Stepper = ({ className, steps, initialStep = 0 }) => {
               className={c(styles.indicatorWrapper, idx <= currentStep && styles.indicatorWrapperComplete)}
             >
               <span className={styles.indicator} />
-              <span className={c(styles.indicatorLabel, idx === currentStep && styles.indicatorLabelActive)}>
+              <Text
+                className={c(styles.indicatorLabel, idx === currentStep && styles.indicatorLabelActive)}
+                size="ml"
+                element="span"
+              >
                 {idx + 1} {label}
-              </span>
+              </Text>
             </div>
           )
         })}

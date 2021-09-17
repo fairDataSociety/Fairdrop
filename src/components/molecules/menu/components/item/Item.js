@@ -17,7 +17,8 @@
 import React, { useCallback } from 'react'
 import styles from './Item.module.css'
 import c from 'classnames'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import Text from '../../../../atoms/text/Text'
 
 const Item = ({ className, id, isOpened, label, items, onClick }) => {
   const handleClick = useCallback(
@@ -31,14 +32,14 @@ const Item = ({ className, id, isOpened, label, items, onClick }) => {
   return (
     <div className={c(styles.container, className)}>
       <a href="" className={c(styles.item, isOpened && styles.itemActive)} onClick={handleClick}>
-        {label}
+        <Text element="span">{label}</Text>
       </a>
 
       <div className={c(styles.links, isOpened && styles.linksOpened)}>
         {items.map(({ label, path }) => {
           return (
             <Link key={path} className={styles.linkItem} to={path}>
-              {label}
+              <Text element="span">{label}</Text>
             </Link>
           )
         })}

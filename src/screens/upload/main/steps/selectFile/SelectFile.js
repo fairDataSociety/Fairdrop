@@ -22,6 +22,7 @@ import Option from './components/option/Option'
 import { useTheme } from '../../../../../hooks/theme/useTheme'
 import { colors } from '../../../../../config/colors'
 import { useHistory } from 'react-router-dom'
+import Text from '../../../../../components/atoms/text/Text'
 
 const SelectFile = () => {
   const [{ files }, { setFiles }] = useFileManager()
@@ -63,21 +64,35 @@ const SelectFile = () => {
     <div className={styles.container} {...getRootProps()}>
       {!isDragActive && (
         <div className={styles.instructions}>
-          <h2>An easy and secure way to send your files.</h2>
-          <h2>
-            <span className={styles.noWrap}>No central server.&nbsp;</span>
-            <span className={styles.noWrap}>No tracking.&nbsp;</span>
-            <span className={styles.noWrap}>No backdoors.&nbsp;</span>
-          </h2>
+          <Text element="h2" size="xxl" weight="400">
+            An easy and secure way to send your files.
+          </Text>
+          <div className={styles.features}>
+            <Text className={styles.noWrap} size="xxl" element="span" weight="400">
+              No central server.&nbsp;
+            </Text>
+            <Text className={styles.noWrap} size="xxl" element="span" weight="400">
+              No tracking.&nbsp;
+            </Text>
+            <Text className={styles.noWrap} size="xxl" element="span" weight="400">
+              No backdoors.&nbsp;
+            </Text>
+          </div>
 
-          <h3 className={styles.actions}>
+          <Text element="h3" size="xl" weight="400" className={styles.actions}>
             <img alt="click to select a file" className={styles.selectIcon} src="assets/images/fairdrop-select.svg" />{' '}
-            <span className={styles.selectFileAction} onClick={handleUploadFileClick}>
+            <Text
+              className={styles.selectFileAction}
+              size="xl"
+              element="span"
+              weight="400"
+              onClick={handleUploadFileClick}
+            >
               select
-            </span>{' '}
+            </Text>{' '}
             or <img alt="drop file glyph" className={styles.dropIcon} src="assets/images/fairdrop-drop.svg" /> drop a
             file
-          </h3>
+          </Text>
         </div>
       )}
 

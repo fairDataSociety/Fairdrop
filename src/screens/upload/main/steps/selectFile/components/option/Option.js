@@ -18,6 +18,7 @@ import React, { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from './Option.module.css'
 import c from 'classnames'
+import Text from '../../../../../../../components/atoms/text/Text'
 
 const Option = ({ headline, description, type, onFileDrop }) => {
   const onDrop = useCallback(
@@ -32,8 +33,12 @@ const Option = ({ headline, description, type, onFileDrop }) => {
   return (
     <div className={c(styles.container, isDragActive && styles.active)} {...getRootProps()}>
       <div className={styles.wrapper}>
-        <h2 className={styles.headline}>{headline}</h2>
-        <span className={styles.description}>{description}</span>
+        <Text element="h2" className={styles.headline} weight="400" size="l" align="center">
+          {headline}
+        </Text>
+        <Text className={styles.description} align="center">
+          {description}
+        </Text>
       </div>
 
       <input {...getInputProps()} />

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -26,6 +26,7 @@ import './index.css'
 import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
 import { ThemeProvider } from './hooks/theme/useTheme'
+import SplashScreen from './screens/splash/SplashScreen'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -33,13 +34,25 @@ console.log(`Fairdrop Version ${version} - Created by FDS`)
 let appRoot = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(0, 5).join('/') : ''
 let basename = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(3, 5).join('/') : ''
 
-ReactDOM.render(
-  <Router basename={appRoot}>
-    <ThemeProvider>
-      <FileManagerProvider>
-        <App appRoot={appRoot} />
-      </FileManagerProvider>
-    </ThemeProvider>
-  </Router>,
-  document.getElementById('root'),
-)
+const Root = () => {
+  const [appReady, setAppReady] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAppReady(true)
+    }, 3000)
+  }, [])
+
+  return (
+    <Router>
+      <ThemeProvider>
+        <FileManagerProvider>
+          {!appReady && <SplashScreen />}
+          {appReady && <App />}
+        </FileManagerProvider>
+      </ThemeProvider>
+    </Router>
+  )
+}
+
+ReactDOM.render(<Root />, document.getElementById('root'))

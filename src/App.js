@@ -32,11 +32,6 @@ const App = () => {
   }, [menuOpened])
 
   useEffect(() => {
-    document.getElementById('splash').classList.add('splash-hidden')
-    document.getElementById('root').classList.add('root-fadein')
-  }, [])
-
-  useEffect(() => {
     setMenuOpened(false)
   }, [location.pathname])
 

@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback } from 'react'
-import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './ConfirmStep.module.css'
 import Utils from '../../../../../services/Utils'
 import Button from '../../../../../components/atoms/button/Button'
@@ -37,7 +37,7 @@ const ConfirmStep = ({ prevStep, nextStep }) => {
 
       <div className={styles.actions}>
         <Button variant="green" onClick={nextStep}>
-          Encrypt and Send
+          {type === FILE_UPLOAD_TYPES.ENCRYPTED ? 'Encrypt and Send' : 'Send Unencrypted'}
         </Button>
 
         <TouchableOpacity onClick={handleCancelClick}>

@@ -37,7 +37,7 @@ const UploadStep = ({ prevStep, nextStep }) => {
 
         <ProgressBar className={styles.progress} value={60} />
 
-        <Text className={styles.statusDescription} size="ml" align="center">
+        <Text className={styles.statusDescription} size="ml" align="center" onClick={nextStep}>
           File uploaded, processing into Swarm.
         </Text>
       </div>

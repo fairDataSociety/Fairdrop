@@ -36,7 +36,9 @@ const ConfirmStep = ({ prevStep, nextStep }) => {
       })}
 
       <div className={styles.actions}>
-        <Button variant="green">Encrypt and Send</Button>
+        <Button variant="green" onClick={nextStep}>
+          Encrypt and Send
+        </Button>
 
         <TouchableOpacity onClick={handleCancelClick}>
           <Text>Cancel</Text>

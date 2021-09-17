@@ -20,6 +20,7 @@ import { colors } from '../../../config/colors'
 import { useFileManager } from '../../../hooks/fileManager/useFileManager'
 import { useTheme } from '../../../hooks/theme/useTheme'
 import ConfirmStep from './steps/confirm/ConfirmStep'
+import UploadStep from './steps/upload/UploadStep'
 import styles from './UploadFlowScreen.module.css'
 
 const UploadFlowScreen = ({ history }) => {
@@ -51,7 +52,7 @@ const UploadFlowScreen = ({ history }) => {
           },
           {
             label: 'Upload',
-            Component: <div />,
+            Component: <UploadStep />,
           },
           {
             label: 'Summary',

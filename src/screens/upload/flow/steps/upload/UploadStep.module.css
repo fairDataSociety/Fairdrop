@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.headline {
+  margin-bottom: 70px;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+}
+
+.loader {
+  margin-right: 12px;
+}
+
+.progress {
+  max-width: 470px;
+  margin: 40px auto;
+}

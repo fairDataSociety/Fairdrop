@@ -1,12 +1,17 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './ConfirmStep.module.css'
 import Utils from '../../../../../services/Utils'
 import Button from '../../../../../components/atoms/button/Button'
 import Text from '../../../../../components/atoms/text/Text'
+import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/TouchableOpacity'
 
 const ConfirmStep = ({ prevStep, nextStep }) => {
-  const [{ files, type }] = useFileManager()
+  const [{ files, type }, { resetFileManager }] = useFileManager()
+
+  const handleCancelClick = useCallback(() => {
+    resetFileManager?.()
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -29,7 +34,14 @@ const ConfirmStep = ({ prevStep, nextStep }) => {
           </Fragment>
         )
       })}
-      <Button variant="green">Encrypt and Send</Button>
+
+      <div className={styles.actions}>
+        <Button variant="green">Encrypt and Send</Button>
+
+        <TouchableOpacity onClick={handleCancelClick}>
+          <Text>Cancel</Text>
+        </TouchableOpacity>
+      </div>
     </div>
   )
 }

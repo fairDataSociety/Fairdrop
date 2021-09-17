@@ -1,6 +1,6 @@
 .button {
   border-radius: 18px;
-  font-size: 18px;
+  font-size: 16px;
   padding: 5px 25px 4px;
   border: none;
   margin-right: 10px;
@@ -20,4 +20,9 @@
 .green {
   background-color: #fff;
   color: #37bd72;
+}
+
+.transparent {
+  background-color: transparent;
+  color: #fff;
 }

@@ -34,3 +34,7 @@
   width: 100%;
   max-width: 470px;
 }
+
+.error {
+  margin-top: 24px;
+}

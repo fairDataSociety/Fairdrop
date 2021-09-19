@@ -57,6 +57,14 @@ const LoginScreen = ({ history }) => {
     [formik, handleAddMailbox],
   )
 
+  const getError = useCallback(() => {
+    const keys = Object.keys(formik.errors)
+    if (keys.length === 0) {
+      return ''
+    }
+    return formik.errors[keys[0]]
+  }, [formik.errors])
+
   useEffect(() => {
     setVariant('black')
     setBackground(colors.white)
@@ -89,6 +97,12 @@ const LoginScreen = ({ history }) => {
           type="password"
           onChange={formik.handleChange}
         />
+
+        {getError() && (
+          <Text className={styles.error} align="right" variant="black">
+            {getError()}
+          </Text>
+        )}
 
         <div className={styles.actions}>
           <Button

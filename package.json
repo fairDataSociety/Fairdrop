@@ -7,12 +7,14 @@
     "axios": "^0.19.0",
     "classnames": "^2.3.1",
     "fds.js": "^0.1.26",
+    "formik": "^2.2.9",
     "qrcode.react": "^1.0.0",
     "querystring": "^0.2.0",
     "react-dropzone": "^11.4.0",
     "react-router-dom": "^5.3.0",
     "react-transition-group": "^4.4.2",
-    "source-map-explorer": "^2.0.1"
+    "source-map-explorer": "^2.0.1",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "pre-commit": "pretty-quick --staged",

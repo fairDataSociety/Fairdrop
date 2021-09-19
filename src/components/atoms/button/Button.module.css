@@ -8,7 +8,7 @@
   background-color: #fff;
   font-weight: 400;
   user-select: none;
-  transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  transition: opacity 0.3s ease-in-out, color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   cursor: pointer;
 }
@@ -22,7 +22,16 @@
   color: #37bd72;
 }
 
+.black {
+  background-color: #000;
+  color: #fff;
+}
+
 .transparent {
   background-color: transparent;
   color: #fff;
+}
+
+.button[disabled] {
+  opacity: 0.3;
 }

@@ -21,8 +21,9 @@ import c from 'classnames'
 const Button = ({ className, inverted, variant, children, disabled, ...rest }) => {
   return (
     <button
-      className={c(styles.button, disabled && styles.disabled, inverted && styles.inverted, styles[variant], className)}
+      className={c(styles.button, inverted && styles.inverted, styles[variant], className)}
       type="button"
+      disabled={disabled}
       {...rest}
     >
       {children}

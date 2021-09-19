@@ -17,9 +17,20 @@
 import React from 'react'
 import styles from './Input.module.css'
 import c from 'classnames'
+import { useTheme } from '../../../hooks/theme/useTheme'
 
 const Input = ({ className, value, onChange, type = 'text', ...rest }) => {
-  return <input className={c(styles.input, className)} type={type} value={value} onChange={onChange} {...rest} />
+  const { variant } = useTheme()
+
+  return (
+    <input
+      className={c(styles.input, styles[variant], className)}
+      type={type}
+      value={value}
+      onChange={onChange}
+      {...rest}
+    />
+  )
 }
 
 export default React.memo(Input)

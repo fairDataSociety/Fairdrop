@@ -1,6 +1,9 @@
 export const routes = {
   splash: '/',
-  home: '/upload',
+  upload: {
+    home: '/upload',
+    flow: '/upload/flow',
+  },
   login: '/login',
   register: '/register',
   mailbox: '/mailbox',

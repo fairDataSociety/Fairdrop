@@ -23,6 +23,8 @@ import { Switch, Route, useLocation } from 'react-router-dom'
 import UploadMainScreen from './screens/upload/main/UploadMainScreen'
 import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 import LoginScreen from './screens/auth/login/LoginScreen'
+import { routes } from './config/routes'
+import RegisterScreen from './screens/auth/register/RegisterScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -44,9 +46,10 @@ const App = () => {
 
       <div className={styles.content}>
         <Switch>
-          <Route exact path="/login" component={LoginScreen} />
-          <Route exact path="/upload" component={UploadMainScreen} />
-          <Route exact path="/upload/flow" component={UploadFlowScreen} />
+          <Route exact path={routes.login} component={LoginScreen} />
+          <Route exact path={routes.register} component={RegisterScreen} />
+          <Route exact path={routes.upload.home} component={UploadMainScreen} />
+          <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
         </Switch>
       </div>
     </div>

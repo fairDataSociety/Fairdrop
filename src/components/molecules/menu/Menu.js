@@ -23,92 +23,101 @@ import Overlay from './components/overlay/Overlay'
 import Item from './components/item/Item'
 import { useLocation } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
-
-const menuItems = [
-  {
-    id: '/upload',
-    label: 'Upload >',
-    items: [
-      {
-        label: 'Store',
-        path: '/upload',
-      },
-      {
-        label: 'Send',
-        path: '/upload?a=send',
-      },
-      {
-        label: 'Quick (Unencrypted)',
-        path: '/upload?a=quick',
-      },
-    ],
-  },
-  {
-    id: '/mailbox',
-    label: 'My Files >',
-    items: [
-      {
-        label: 'Received Files',
-        path: '/mailbox/store',
-      },
-      {
-        label: 'Sent Files',
-        path: '/mailbox/send',
-      },
-      {
-        label: 'Stored Files',
-        path: '/mailbox/quick',
-      },
-    ],
-  },
-  {
-    id: '/settings',
-    label: 'Settings >',
-    items: [
-      {
-        label: 'Import mailbox',
-        path: '/settings/import',
-      },
-      {
-        label: 'Export mailboxes',
-        path: '/settings/export',
-      },
-    ],
-  },
-  {
-    id: '/about',
-    label: 'About >',
-    items: [
-      {
-        label: 'About Fairdrop',
-        path: '/about/fairdrop',
-      },
-      {
-        label: 'About Fair Data Society',
-        path: '/about/fair-data-society',
-      },
-      {
-        label: 'FAQs',
-        path: '/about/faqs',
-      },
-      {
-        label: 'Terms of Usage',
-        path: '/about/terms',
-      },
-      {
-        label: 'Bug Disclosure',
-        path: '/about/bug',
-        externalPath: 'https://github.com/fairDataSociety/vulnerability-disclosure-policy',
-      },
-    ],
-  },
-]
+import qs from 'qs'
+import { routes } from '../../../config/routes'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
+  const menuItems = useMemo(() => {
+    return [
+      {
+        id: routes.login,
+        label: 'Login >',
+        items: [],
+      },
+      {
+        id: routes.upload.home,
+        label: 'Upload >',
+        items: [
+          {
+            label: 'Store',
+            path: routes.upload.home,
+          },
+          {
+            label: 'Send',
+            path: `${routes.upload.home}?${qs.stringify({ a: 'send' })}`,
+          },
+          {
+            label: 'Quick (Unencrypted)',
+            path: `${routes.upload.home}?${qs.stringify({ a: 'quick' })}`,
+          },
+        ],
+      },
+      {
+        id: routes.mailbox.home,
+        label: 'My Files >',
+        items: [
+          {
+            label: 'Received Files',
+            path: routes.mailbox.home,
+          },
+          {
+            label: 'Sent Files',
+            path: routes.mailbox.sent,
+          },
+          {
+            label: 'Stored Files',
+            path: routes.mailbox.quick,
+          },
+        ],
+      },
+      {
+        id: '/settings',
+        label: 'Settings >',
+        items: [
+          {
+            label: 'Import mailbox',
+            path: '/settings/import',
+          },
+          {
+            label: 'Export mailboxes',
+            path: '/settings/export',
+          },
+        ],
+      },
+      {
+        id: '/about',
+        label: 'About >',
+        items: [
+          {
+            label: 'About Fairdrop',
+            path: '/about/fairdrop',
+          },
+          {
+            label: 'About Fair Data Society',
+            path: '/about/fair-data-society',
+          },
+          {
+            label: 'FAQs',
+            path: '/about/faqs',
+          },
+          {
+            label: 'Terms of Usage',
+            path: '/about/terms',
+          },
+          {
+            label: 'Bug Disclosure',
+            path: '/about/bug',
+            externalPath: 'https://github.com/fairDataSociety/vulnerability-disclosure-policy',
+          },
+        ],
+      },
+    ]
+  }, [])
+
   const location = useLocation()
   const locationCurrentItem = useMemo(() => {
     return menuItems.find(({ id }) => location?.pathname?.startsWith(id))?.id ?? ''
-  }, [location])
+  }, [location, menuItems])
 
   const [currentItem, setCurrentItem] = useState(locationCurrentItem)
 

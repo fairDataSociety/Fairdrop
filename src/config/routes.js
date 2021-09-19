@@ -6,5 +6,9 @@ export const routes = {
   },
   login: '/login',
   register: '/register',
-  mailbox: '/mailbox',
+  mailbox: {
+    home: '/mailbox/stored',
+    sent: '/mailbox/sent',
+    quick: '/mailbox/quick',
+  },
 }

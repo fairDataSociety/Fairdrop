@@ -49,7 +49,7 @@ const SelectFile = () => {
   const { getRootProps, isDragActive } = useDropzone({ onDrop: () => {} })
 
   useEffect(() => {
-    setVariant('black')
+    setVariant('white')
     setBackground(colors.red)
   }, [])
 

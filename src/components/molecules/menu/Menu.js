@@ -117,7 +117,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
   }, [])
 
   return (
-    <nav className={c(styles.container)}>
+    <nav className={c(styles.container, className)}>
       <div className={styles.menuToggle}>
         <Hamburger isActive={isShown} onClick={onToggleMenu} />
       </div>

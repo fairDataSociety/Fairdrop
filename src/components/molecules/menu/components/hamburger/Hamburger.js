@@ -17,8 +17,11 @@
 import React from 'react'
 import styles from './Hamburger.module.css'
 import c from 'classnames'
+import { useTheme } from '../../../../../hooks/theme/useTheme'
 
-const Hamburger = ({ variant = 'white', isActive, onClick, ...rest }) => {
+const Hamburger = ({ isActive, onClick }) => {
+  const { variant } = useTheme()
+
   return (
     <button
       className={c(styles.hamburger, styles.hamburgerSpin, styles[variant], isActive && styles.isActive)}

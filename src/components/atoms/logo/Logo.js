@@ -17,9 +17,10 @@
 import React from 'react'
 import styles from './Logo.module.css'
 import { ReactComponent as SVGLogo } from './assets/fairdrop-logo.svg'
+import c from 'classnames'
 
-const Logo = ({ className }) => {
-  return <SVGLogo className={className} />
+const Logo = ({ className, variant = 'white' }) => {
+  return <SVGLogo className={c(styles.logo, styles[variant], className)} />
 }
 
 export default React.memo(Logo)

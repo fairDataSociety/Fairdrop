@@ -21,19 +21,23 @@ import Logo from '../../atoms/logo/Logo'
 import { version } from '../../../../package.json'
 import { Link } from 'react-router-dom'
 import Text from '../../atoms/text/Text'
+import { useTheme } from '../../../hooks/theme/useTheme'
+import { routes } from '../../../config/routes'
 
 const Header = ({ className }) => {
+  const { variant } = useTheme()
+
   return (
     <header className={c(styles.container, className)}>
-      <Logo />
+      <Logo variant={variant} />
 
-      <Text className={styles.version} element="span" size="s">
+      <Text className={styles.version} element="span" size="s" variant={variant}>
         {`${version} ${process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ''}`}
       </Text>
 
       <div className={styles.actions}>
-        <Link className={styles.login} to="/mailbox">
-          <Text element="span" size="sm" weight="500">
+        <Link className={styles.login} to={routes.login}>
+          <Text element="span" size="sm" weight="500" variant={variant}>
             Log in / Register
           </Text>
         </Link>

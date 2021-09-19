@@ -74,8 +74,8 @@
 
 /* Variants */
 .black .hamburgerInner,
-.white .hamburgerInner::before,
-.white .hamburgerInner::after {
+.black .hamburgerInner::before,
+.black .hamburgerInner::after {
   background-color: #000;
   transition: transform 0.15s, color 1s;
 }

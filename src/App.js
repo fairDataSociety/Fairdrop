@@ -25,6 +25,7 @@ import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 import LoginScreen from './screens/auth/login/LoginScreen'
 import { routes } from './config/routes'
 import RegisterScreen from './screens/auth/register/RegisterScreen'
+import SlideMenu from './components/molecules/slideMenu/SlideMenu'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -52,6 +53,10 @@ const App = () => {
           <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
         </Switch>
       </div>
+
+      <SlideMenu>
+        <div>TODO</div>
+      </SlideMenu>
     </div>
   )
 }

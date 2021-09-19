@@ -1,0 +1,30 @@
+.container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 51vw;
+  z-index: 101;
+  background: #2e2e2e;
+  transition: 1s transform;
+  display: flex;
+  flex-direction: column;
+}
+
+.enter {
+  transform: translateX(51vw);
+}
+
+.enterActive {
+  transform: translateX(0);
+  transition: 0.2s ease-in transform;
+}
+
+.exit {
+  transform: translateX(0);
+}
+
+.exitActive {
+  transform: translateX(51vw);
+  transition: 1s ease-in transform;
+}

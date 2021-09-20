@@ -32,6 +32,8 @@
   display: flex;
   justify-content: flex-end;
   opacity: 0;
+  height: 72px;
+  box-sizing: border-box;
 }
 
 .headerEnter {

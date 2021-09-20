@@ -11,4 +11,7 @@ export const routes = {
     sent: '/mailbox/sent',
     quick: '/mailbox/quick',
   },
+  about: {
+    fairdrop: '/about/fairdrop',
+  },
 }

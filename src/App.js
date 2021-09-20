@@ -26,6 +26,7 @@ import LoginScreen from './screens/auth/login/LoginScreen'
 import { routes } from './config/routes'
 import RegisterScreen from './screens/auth/register/RegisterScreen'
 import SlideMenu from './components/molecules/slideMenu/SlideMenu'
+import AboutFairdropScreen from './screens/about/fairdrop/AboutFairdropScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -36,8 +37,11 @@ const App = () => {
   }, [menuOpened])
 
   useEffect(() => {
+    if (location?.state?.sideMenu) {
+      return
+    }
     setMenuOpened(false)
-  }, [location.pathname])
+  }, [location.pathname, location.state])
 
   return (
     <div className={c(styles.container)}>
@@ -55,7 +59,7 @@ const App = () => {
       </div>
 
       <SlideMenu>
-        <div>TODO</div>
+        <Route exact path={routes.about.fairdrop} component={AboutFairdropScreen} />
       </SlideMenu>
     </div>
   )

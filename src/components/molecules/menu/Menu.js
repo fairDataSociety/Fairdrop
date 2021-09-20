@@ -18,7 +18,6 @@ import React, { useState, useMemo, useCallback } from 'react'
 import styles from './Menu.module.css'
 import c from 'classnames'
 import Hamburger from './components/hamburger/Hamburger'
-import Logo from '../../atoms/logo/Logo'
 import Overlay from './components/overlay/Overlay'
 import Item from './components/item/Item'
 import { useLocation } from 'react-router-dom'
@@ -90,7 +89,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         items: [
           {
             label: 'About Fairdrop',
-            path: '/about/fairdrop',
+            path: { pathname: routes.about.fairdrop, state: { sideMenu: true } },
           },
           {
             label: 'About Fair Data Society',
@@ -148,9 +147,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
             exitActive: styles.headerExitActive,
           }}
         >
-          <div className={styles.header}>
-            <Logo />
-          </div>
+          <div className={styles.header}></div>
         </CSSTransition>
 
         <div className={styles.menu}>

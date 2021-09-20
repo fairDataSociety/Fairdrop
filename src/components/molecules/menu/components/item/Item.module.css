@@ -33,11 +33,6 @@
   color: #ccc;
 }
 
-.itemActive {
-  color: #fff;
-  font-weight: bold;
-}
-
 .linkItem {
   margin-bottom: 10px;
   width: 57vw;

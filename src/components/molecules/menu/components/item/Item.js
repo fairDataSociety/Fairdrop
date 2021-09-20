@@ -36,8 +36,10 @@ const Item = ({ className, id, isOpened, label, items, onClick }) => {
 
   return (
     <div className={c(styles.container, className)}>
-      <a href="" className={c(styles.item, isOpened && styles.itemActive)} onClick={handleClick}>
-        <Text element="span">{label}</Text>
+      <a href="" className={styles.item} onClick={handleClick}>
+        <Text element="span" weight={isOpened ? '600' : '300'}>
+          {label}
+        </Text>
       </a>
 
       <div className={c(styles.links, isOpened && styles.linksOpened)}>

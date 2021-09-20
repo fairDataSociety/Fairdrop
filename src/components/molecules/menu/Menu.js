@@ -101,7 +101,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           },
           {
             label: 'Terms of Usage',
-            path: '/about/terms',
+            path: { pathname: routes.about.terms, state: { sideMenu: true } },
           },
           {
             label: 'Bug Disclosure',

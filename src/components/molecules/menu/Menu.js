@@ -97,7 +97,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           },
           {
             label: 'FAQs',
-            path: '/about/faqs',
+            path: { pathname: routes.about.faq, state: { sideMenu: true } },
           },
           {
             label: 'Terms of Usage',

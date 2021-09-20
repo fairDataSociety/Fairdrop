@@ -28,6 +28,7 @@ import RegisterScreen from './screens/auth/register/RegisterScreen'
 import SlideMenu from './components/molecules/slideMenu/SlideMenu'
 import AboutFairdropScreen from './screens/about/fairdrop/AboutFairdropScreen'
 import AboutFairDataSocietyScreen from './screens/about/fairDataSociety/AboutFairDataSocietyScreen'
+import AboutFAQsScreen from './screens/about/faqs/AboutFAQsScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -62,6 +63,7 @@ const App = () => {
       <SlideMenu>
         <Route exact path={routes.about.fairdrop} component={AboutFairdropScreen} />
         <Route exact path={routes.about.fds} component={AboutFairDataSocietyScreen} />
+        <Route exact path={routes.about.faq} component={AboutFAQsScreen} />
       </SlideMenu>
     </div>
   )

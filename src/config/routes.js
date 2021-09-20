@@ -14,5 +14,8 @@ export const routes = {
   about: {
     fairdrop: '/about/fairdrop',
     fds: '/about/fair-data-society',
+    faq: '/about/faq',
+    terms: '/about/terms',
+    bugs: '/about/bugs',
   },
 }

@@ -14,9 +14,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-export const colors = {
-  red: '#FB4A36',
-  green: '#37bd72',
-  gray: '#2e332f',
-  white: '#ffffff',
+import React from 'react'
+import styles from './PrivateRoute.module.css'
+import { Route, Redirect } from 'react-router-dom'
+import { routes } from '../../../config/routes'
+
+const PrivateRoute = ({ component: Component, componentProps = {}, ...rest }) => {
+  const isLogged = () => Math.random() > 0.5
+
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        const computedProps = { ...props, ...componentProps }
+        return isLogged() ? (
+          <Component {...computedProps} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: routes.login,
+              state: { from: props.location },
+            }}
+          />
+        )
+      }}
+    />
+  )
 }
+
+PrivateRoute.propTypes = {}
+
+export default React.memo(PrivateRoute)

@@ -29,7 +29,7 @@ import { schema } from './schema'
 
 const NEW_MAILBOX = 'NEW_MAILBOX'
 
-const LoginScreen = ({ history }) => {
+const LoginScreen = ({ history, location }) => {
   const { setVariant, setBackground } = useTheme()
   const formik = useFormik({
     initialValues: {
@@ -39,6 +39,9 @@ const LoginScreen = ({ history }) => {
     validationSchema: schema,
     onSubmit: (values) => {
       console.info(values)
+      if (location?.state?.from) {
+        history.replace(location?.state?.from)
+      }
     },
   })
 

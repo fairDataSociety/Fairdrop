@@ -93,7 +93,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           },
           {
             label: 'About Fair Data Society',
-            path: '/about/fair-data-society',
+            path: { pathname: routes.about.fds, state: { sideMenu: true } },
           },
           {
             label: 'FAQs',

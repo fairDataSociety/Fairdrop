@@ -24,8 +24,15 @@ import { useLocation } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import qs from 'qs'
 import { routes } from '../../../config/routes'
+import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
+import AboutFairdropScreen from '../../../screens/about/fairdrop/AboutFairdropScreen'
+import AboutFAQsScreen from '../../../screens/about/faqs/AboutFAQsScreen'
+import AboutFairDataSocietyScreen from '../../../screens/about/fairDataSociety/AboutFairDataSocietyScreen'
+import AboutTermsOfUsageScreen from '../../../screens/about/terms/AboutTermsOfUsageScreen'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
+  const { showSideMenu } = useSideMenu()
+
   const menuItems = useMemo(() => {
     return [
       {
@@ -89,19 +96,31 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         items: [
           {
             label: 'About Fairdrop',
-            path: { pathname: routes.about.fairdrop, state: { sideMenu: true } },
+            path: routes.about.fairdrop,
+            onClick: function () {
+              showSideMenu({ Component: <AboutFairdropScreen /> })
+            },
           },
           {
             label: 'About Fair Data Society',
-            path: { pathname: routes.about.fds, state: { sideMenu: true } },
+            path: routes.about.fds,
+            onClick: function () {
+              showSideMenu({ Component: <AboutFairDataSocietyScreen /> })
+            },
           },
           {
             label: 'FAQs',
-            path: { pathname: routes.about.faq, state: { sideMenu: true } },
+            path: routes.about.faq,
+            onClick: function () {
+              showSideMenu({ Component: <AboutFAQsScreen /> })
+            },
           },
           {
             label: 'Terms of Usage',
-            path: { pathname: routes.about.terms, state: { sideMenu: true } },
+            path: routes.about.terms,
+            onClick: function () {
+              showSideMenu({ Component: <AboutTermsOfUsageScreen /> })
+            },
           },
           {
             label: 'Bug Disclosure',
@@ -111,7 +130,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         ],
       },
     ]
-  }, [])
+  }, [showSideMenu])
 
   const location = useLocation()
   const locationCurrentItem = useMemo(() => {

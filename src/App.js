@@ -25,26 +25,22 @@ import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 import LoginScreen from './screens/auth/login/LoginScreen'
 import { routes } from './config/routes'
 import RegisterScreen from './screens/auth/register/RegisterScreen'
-import SlideMenu from './components/molecules/slideMenu/SlideMenu'
-import AboutFairdropScreen from './screens/about/fairdrop/AboutFairdropScreen'
-import AboutFairDataSocietyScreen from './screens/about/fairDataSociety/AboutFairDataSocietyScreen'
-import AboutFAQsScreen from './screens/about/faqs/AboutFAQsScreen'
-import AboutTermsOfUsageScreen from './screens/about/terms/AboutTermsOfUsageScreen'
+import { useSideMenu } from './hooks/sideMenu/useSideMenu'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
   const location = useLocation()
+  const { hideSideMenu } = useSideMenu()
 
   const handleToggleMenu = useCallback(() => {
     setMenuOpened(!menuOpened)
-  }, [menuOpened])
+    hideSideMenu?.()
+  }, [menuOpened, hideSideMenu])
 
   useEffect(() => {
-    if (location?.state?.sideMenu) {
-      return
-    }
     setMenuOpened(false)
-  }, [location.pathname, location.state])
+    hideSideMenu?.()
+  }, [location.pathname, hideSideMenu])
 
   return (
     <div className={c(styles.container)}>
@@ -60,13 +56,6 @@ const App = () => {
           <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
         </Switch>
       </div>
-
-      <SlideMenu>
-        <Route exact path={routes.about.fairdrop} component={AboutFairdropScreen} />
-        <Route exact path={routes.about.fds} component={AboutFairDataSocietyScreen} />
-        <Route exact path={routes.about.faq} component={AboutFAQsScreen} />
-        <Route exact path={routes.about.terms} component={AboutTermsOfUsageScreen} />
-      </SlideMenu>
     </div>
   )
 }

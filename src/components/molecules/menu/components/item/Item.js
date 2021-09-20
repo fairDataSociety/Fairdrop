@@ -43,9 +43,14 @@ const Item = ({ className, id, isOpened, label, items, onClick }) => {
       </a>
 
       <div className={c(styles.links, isOpened && styles.linksOpened)}>
-        {items.map(({ label, path }) => {
+        {items.map(({ label, path, onClick }) => {
+          const handleItemClick = (evt) => {
+            evt.preventDefault()
+            evt.stopPropagation()
+            onClick?.()
+          }
           return (
-            <Link key={path} className={styles.linkItem} to={path}>
+            <Link key={path} className={styles.linkItem} to={path} onClick={onClick ? handleItemClick : null}>
               <Text element="span">{label}</Text>
             </Link>
           )

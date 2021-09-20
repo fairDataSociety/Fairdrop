@@ -24,9 +24,9 @@
 
 .exit {
   transform: translateX(0);
+  transition: 1s transform;
 }
 
 .exitActive {
   transform: translateX(51vw);
-  transition: 1s ease-in transform;
 }

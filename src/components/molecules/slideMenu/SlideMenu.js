@@ -1,15 +1,18 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
 import styles from './SlideMenu.module.css'
 import c from 'classnames'
 import { CSSTransition } from 'react-transition-group'
 
-const SlideMenu = ({ className, children }) => {
-  const location = useLocation()
-  const shown = location?.state?.sideMenu ?? false
-
+const SlideMenu = ({ className, shown, children, onEnter, onExited }) => {
   return (
-    <CSSTransition in={shown} timeout={300} classNames={{ ...styles }} unmountOnExit>
+    <CSSTransition
+      in={shown}
+      timeout={{ enter: 200, exit: 1000 }}
+      classNames={{ ...styles }}
+      unmountOnExit
+      onEnter={onEnter}
+      onExited={onExited}
+    >
       <div className={c(styles.container, className)}>{children}</div>
     </CSSTransition>
   )

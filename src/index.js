@@ -27,6 +27,7 @@ import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
 import { ThemeProvider } from './hooks/theme/useTheme'
 import SplashScreen from './screens/splash/SplashScreen'
+import { SideMenuProvider } from './hooks/sideMenu/useSideMenu'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -46,10 +47,12 @@ const Root = () => {
   return (
     <Router>
       <ThemeProvider>
-        <FileManagerProvider>
-          {!appReady && <SplashScreen />}
-          {appReady && <App />}
-        </FileManagerProvider>
+        <SideMenuProvider>
+          <FileManagerProvider>
+            {!appReady && <SplashScreen />}
+            {appReady && <App />}
+          </FileManagerProvider>
+        </SideMenuProvider>
       </ThemeProvider>
     </Router>
   )

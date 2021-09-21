@@ -17,21 +17,17 @@
 import React, { useCallback } from 'react'
 import styles from './Item.module.css'
 import c from 'classnames'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Text from '../../../../atoms/text/Text'
 
-const Item = ({ className, id, isOpened, label, items, onClick }) => {
-  const history = useHistory()
+const Item = ({ className, id, isOpened, label, items, onClick, onMenuItemOpened }) => {
   const handleClick = useCallback(
     (evt) => {
       evt.preventDefault()
-      if (!items.length) {
-        history.push(id)
-        return
-      }
-      onClick?.(id)
+      onClick?.()
+      onMenuItemOpened?.(id)
     },
-    [id, onClick, items],
+    [id, onClick, onMenuItemOpened],
   )
 
   return (

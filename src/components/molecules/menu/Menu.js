@@ -20,7 +20,7 @@ import c from 'classnames'
 import Hamburger from './components/hamburger/Hamburger'
 import Overlay from './components/overlay/Overlay'
 import Item from './components/item/Item'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import qs from 'qs'
 import { routes } from '../../../config/routes'
@@ -31,10 +31,12 @@ import AboutFairDataSocietyScreen from '../../../screens/about/fairDataSociety/A
 import AboutTermsOfUsageScreen from '../../../screens/about/terms/AboutTermsOfUsageScreen'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Utils from '../../../services/Utils'
+import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
   const { showSideMenu } = useSideMenu()
   const [{ mailbox, balance }] = useMailbox()
+  const history = useHistory()
 
   const menuItems = useMemo(() => {
     const items = []
@@ -43,12 +45,20 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
       items.push({
         id: routes.login,
         label: 'Login >',
+        onClick: function () {
+          history.push(routes.login)
+        },
         items: [],
       })
     } else {
       items.push({
         id: '/profile',
         label: `${mailbox.subdomain} (${Utils.formatBalance(balance)})`,
+        onClick: function () {
+          showSideMenu({
+            Component: <ProfileScreen />,
+          })
+        },
         items: [],
       })
     }
@@ -188,7 +198,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         </CSSTransition>
 
         <div className={styles.menu}>
-          {menuItems.map(({ id, label, items }) => {
+          {menuItems.map(({ id, label, items, onClick }) => {
             return (
               <Item
                 id={id}
@@ -196,7 +206,8 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
                 label={label}
                 items={items}
                 isOpened={id === currentItem}
-                onClick={handleOpenMenuItem}
+                onMenuItemOpened={handleOpenMenuItem}
+                onClick={onClick}
               />
             )
           })}

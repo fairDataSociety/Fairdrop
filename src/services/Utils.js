@@ -18,7 +18,7 @@ import Crypto from 'crypto'
 // import zxcvbn from 'zxcvbn';
 
 function generatePassword() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     Crypto.randomBytes(48, function (err, buffer) {
       resolve(buffer.toString('hex'))
     })
@@ -53,8 +53,35 @@ function formatBalance(wei) {
   return `NÐX ${(wei / 1000000000000000000).toFixed(2)}`
 }
 
+function copyToClipboard(text) {
+  return new Promise((resolve) => {
+    const fallback = () => {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+
+      // Avoid scrolling to bottom
+      textArea.style.top = '-10000px'
+      textArea.style.left = '-10000px'
+      textArea.style.position = 'fixed'
+
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+
+      document.execCommand('copy')
+      resolve()
+    }
+
+    if (!navigator.clipboard) {
+      return fallback()
+    }
+
+    return navigator.clipboard.writeText(text).then(resolve)
+  })
+}
+
 // function humanEntropy(password){
 //     return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
 // }
 
-export default { generatePassword, humanFileSize, truncate, formatBalance }
+export default { generatePassword, humanFileSize, truncate, formatBalance, copyToClipboard }

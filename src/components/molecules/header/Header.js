@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import styles from './Header.module.css'
 import c from 'classnames'
 import Logo from '../../atoms/logo/Logo'
@@ -26,10 +26,19 @@ import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Button from '../../atoms/button/Button'
 import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
+import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
+import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 
 const Header = ({ className }) => {
   const { variant } = useTheme()
   const [{ mailbox }, { resetMailbox }] = useMailbox()
+  const { showSideMenu } = useSideMenu()
+
+  const handleProfileClick = useCallback(() => {
+    showSideMenu({
+      Component: <ProfileScreen />,
+    })
+  }, [])
 
   return (
     <header className={c(styles.container, className)}>
@@ -49,7 +58,7 @@ const Header = ({ className }) => {
         )}
         {mailbox && (
           <>
-            <Button className={styles.profileButton} variant={variant} inverted>
+            <Button className={styles.profileButton} variant={variant} inverted onClick={handleProfileClick}>
               {mailbox.subdomain}
             </Button>
 

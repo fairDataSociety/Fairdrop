@@ -74,7 +74,10 @@ export const MailboxProvider = ({ children }) => {
   }, [])
 
   const importMailbox = useCallback(({ file }) => {
-    return FDSInstance.RestoreAccount(file)
+    return FDSInstance.RestoreAccount(file).then(() => {
+      const accounts = FDSInstance.GetAccounts() ?? []
+      dispatch({ type: SET_AVAILABLE_MAILBOXES, payload: { accounts: accounts.map(({ subdomain }) => subdomain) } })
+    })
   }, [])
 
   const initSentry = useCallback(() => {

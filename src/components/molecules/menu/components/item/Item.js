@@ -36,26 +36,28 @@ const Item = ({ className, id, isOpened, label, items, onClick }) => {
 
   return (
     <div className={c(styles.container, className)}>
-      <a href="" className={styles.item} onClick={handleClick}>
-        <Text element="span" weight={isOpened ? '600' : '300'}>
+      <a href="" className={c(styles.item, items.length === 0 && styles.noItems)} onClick={handleClick}>
+        <Text element="span" weight={isOpened ? '600' : '300'} variant={isOpened ? 'white' : 'gray'}>
           {label}
         </Text>
       </a>
 
-      <div className={c(styles.links, isOpened && styles.linksOpened)}>
-        {items.map(({ label, path, onClick }) => {
-          const handleItemClick = (evt) => {
-            evt.preventDefault()
-            evt.stopPropagation()
-            onClick?.()
-          }
-          return (
-            <Link key={path} className={styles.linkItem} to={path} onClick={onClick ? handleItemClick : null}>
-              <Text element="span">{label}</Text>
-            </Link>
-          )
-        })}
-      </div>
+      {items.length > 0 && (
+        <div className={c(styles.links, isOpened && styles.linksOpened)}>
+          {items.map(({ label, path, onClick }) => {
+            const handleItemClick = (evt) => {
+              evt.preventDefault()
+              evt.stopPropagation()
+              onClick?.()
+            }
+            return (
+              <Link key={path} className={styles.linkItem} to={path} onClick={onClick ? handleItemClick : null}>
+                <Text element="span">{label}</Text>
+              </Link>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

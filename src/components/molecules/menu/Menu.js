@@ -30,18 +30,30 @@ import AboutFAQsScreen from '../../../screens/about/faqs/AboutFAQsScreen'
 import AboutFairDataSocietyScreen from '../../../screens/about/fairDataSociety/AboutFairDataSocietyScreen'
 import AboutTermsOfUsageScreen from '../../../screens/about/terms/AboutTermsOfUsageScreen'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
+import Utils from '../../../services/Utils'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
   const { showSideMenu } = useSideMenu()
-  const [, { exportMailboxes }] = useMailbox()
+  const [{ mailbox, balance }] = useMailbox()
 
   const menuItems = useMemo(() => {
-    return [
-      {
+    const items = []
+
+    if (!mailbox) {
+      items.push({
         id: routes.login,
         label: 'Login >',
         items: [],
-      },
+      })
+    } else {
+      items.push({
+        id: '/profile',
+        label: `${mailbox.subdomain} (${Utils.formatBalance(balance)})`,
+        items: [],
+      })
+    }
+
+    items.push(
       {
         id: routes.upload.home,
         label: 'Upload >',
@@ -126,13 +138,17 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           },
           {
             label: 'Bug Disclosure',
-            path: '/about/bug',
-            externalPath: 'https://github.com/fairDataSociety/vulnerability-disclosure-policy',
+            path: routes.about.bugs,
+            onClick: function () {
+              window.open('https://github.com/fairDataSociety/vulnerability-disclosure-policy', '_blank', 'noopener')
+            },
           },
         ],
       },
-    ]
-  }, [showSideMenu])
+    )
+
+    return items
+  }, [mailbox, balance, showSideMenu])
 
   const location = useLocation()
   const locationCurrentItem = useMemo(() => {

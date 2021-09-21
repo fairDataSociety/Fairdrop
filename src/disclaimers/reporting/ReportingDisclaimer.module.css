@@ -1,0 +1,18 @@
+.actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.action {
+  height: auto;
+  padding: 6px 12px;
+}
+
+.action + .action {
+  margin-left: 12px;
+}

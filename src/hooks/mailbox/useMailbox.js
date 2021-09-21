@@ -93,7 +93,9 @@ export const MailboxProvider = ({ children }) => {
   }, [])
 
   const initSentry = useCallback(() => {
-    if (process.env.NODE_ENV !== 'development') {
+    const sentryEnabled = !!localStorage.getItem('agreedSentry')
+    console.info(!!sentryEnabled)
+    if (process.env.NODE_ENV !== 'development' && sentryEnabled) {
       console.log('initialised Sentry')
       Sentry.init({
         dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',

@@ -32,6 +32,12 @@
   color: #2e332f;
 }
 
+.red {
+  background-color: #fb4a36;
+  color: #fff;
+  font-weight: 600;
+}
+
 .transparent {
   background-color: transparent;
   color: #fff;
@@ -75,4 +81,16 @@
   opacity: 1;
   background-color: #fff;
   color: #000;
+}
+
+.inverted.red {
+  background-color: transparent;
+  border-color: #fb4a36;
+  color: #fb4a36;
+}
+
+.button.inverted.red:hover {
+  opacity: 1;
+  background-color: #fb4a36;
+  color: #fff;
 }

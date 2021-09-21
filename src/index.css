@@ -76,3 +76,8 @@ body,
   right: 0;
   z-index: 999999;
 }
+
+:root {
+  --toastify-color-dark: #2e332f;
+  --toastify-color-progress-dark: #37bd72;
+}

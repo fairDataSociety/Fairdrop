@@ -29,6 +29,7 @@ import {
   RESET,
 } from './reducer'
 import { version } from '../../../package.json'
+import { toast } from 'react-toastify'
 
 const MailboxContext = React.createContext()
 
@@ -69,7 +70,7 @@ export const MailboxProvider = ({ children }) => {
     const zip = new JSZip()
     const accounts = FDSInstance.GetAccounts()
     if (accounts.length === 0) {
-      // TODO show alert react-toastify
+      toast('🤷‍♂️ There is no mailboxes to export', { theme: 'light' })
       return false
     }
     accounts.forEach((account) => {
@@ -82,9 +83,21 @@ export const MailboxProvider = ({ children }) => {
   }, [])
 
   const importMailbox = useCallback(({ file }) => {
-    return FDSInstance.RestoreAccount(file).then(() => {
-      const accounts = FDSInstance.GetAccounts() ?? []
-      dispatch({ type: SET_AVAILABLE_MAILBOXES, payload: { accounts: accounts.map(({ subdomain }) => subdomain) } })
+    return new Promise((resolve, reject) => {
+      try {
+        FDSInstance.RestoreAccount(file)
+          .then(() => {
+            const accounts = FDSInstance.GetAccounts() ?? []
+            dispatch({
+              type: SET_AVAILABLE_MAILBOXES,
+              payload: { accounts: accounts.map(({ subdomain }) => subdomain) },
+            })
+            resolve()
+          })
+          .catch(reject)
+      } catch (error) {
+        reject(error)
+      }
     })
   }, [])
 

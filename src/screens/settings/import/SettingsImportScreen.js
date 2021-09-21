@@ -23,6 +23,7 @@ import { useTheme } from '../../../hooks/theme/useTheme'
 import styles from './SettingsImportScreen.module.css'
 import { useDropzone } from 'react-dropzone'
 import { ReactComponent as IconDrop } from './assets/iconDrop.svg'
+import { toast } from 'react-toastify'
 
 const SettingsImportScreen = () => {
   const { setVariant, setBackground } = useTheme()
@@ -30,9 +31,18 @@ const SettingsImportScreen = () => {
 
   const handleFileDrop = useCallback(async (files) => {
     const file = files[0]
-    await importMailbox({ file }).then(() => {
-      // TODO show toast
-    })
+    await importMailbox({ file })
+      .then(() => {
+        toast('🦄 Your mailbox has been imported!', {
+          theme: 'light',
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('There was a problem while importing your mailbox :(', {
+          theme: 'light',
+        })
+      })
   }, [])
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({ onDrop: handleFileDrop, noClick: true })

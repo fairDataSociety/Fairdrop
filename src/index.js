@@ -28,6 +28,8 @@ import FileManagerProvider from './hooks/fileManager/useFileManager'
 import { ThemeProvider } from './hooks/theme/useTheme'
 import SplashScreen from './screens/splash/SplashScreen'
 import { SideMenuProvider } from './hooks/sideMenu/useSideMenu'
+import { MailboxProvider } from './hooks/mailbox/useMailbox'
+import { FDSProvider } from './hooks/fds/useFDS'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -46,14 +48,18 @@ const Root = () => {
 
   return (
     <Router>
-      <ThemeProvider>
-        <SideMenuProvider>
-          <FileManagerProvider>
-            {!appReady && <SplashScreen />}
-            {appReady && <App />}
-          </FileManagerProvider>
-        </SideMenuProvider>
-      </ThemeProvider>
+      <MailboxProvider>
+        <FDSProvider>
+          <ThemeProvider>
+            <SideMenuProvider>
+              <FileManagerProvider>
+                {!appReady && <SplashScreen />}
+                {appReady && <App />}
+              </FileManagerProvider>
+            </SideMenuProvider>
+          </ThemeProvider>
+        </FDSProvider>
+      </MailboxProvider>
     </Router>
   )
 }

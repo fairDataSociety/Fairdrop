@@ -24,3 +24,14 @@
   color: #fff;
   text-decoration: underline;
 }
+
+.actions .profileButton {
+  padding: 2px 12px;
+  height: auto;
+}
+
+.actions .logoutButton {
+  padding: 2px 12px;
+  height: auto;
+  margin-left: 12px;
+}

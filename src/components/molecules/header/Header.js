@@ -23,9 +23,13 @@ import { Link } from 'react-router-dom'
 import Text from '../../atoms/text/Text'
 import { useTheme } from '../../../hooks/theme/useTheme'
 import { routes } from '../../../config/routes'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
+import Button from '../../atoms/button/Button'
+import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
 
 const Header = ({ className }) => {
   const { variant } = useTheme()
+  const [{ mailbox }] = useMailbox()
 
   return (
     <header className={c(styles.container, className)}>
@@ -36,11 +40,24 @@ const Header = ({ className }) => {
       </Text>
 
       <div className={styles.actions}>
-        <Link className={styles.login} to={routes.login}>
-          <Text element="span" size="sm" weight="500" variant={variant}>
-            Log in / Register
-          </Text>
-        </Link>
+        {!mailbox && (
+          <Link className={styles.login} to={routes.login}>
+            <Text element="span" size="sm" weight="500" variant={variant}>
+              Log in / Register
+            </Text>
+          </Link>
+        )}
+        {mailbox && (
+          <>
+            <Button className={styles.profileButton} variant={variant} inverted>
+              {mailbox.subdomain}
+            </Button>
+
+            <TouchableOpacity className={styles.logoutButton}>
+              <Text variant={variant}>Logout</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </div>
     </header>
   )

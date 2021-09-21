@@ -3,14 +3,14 @@
   font-size: 16px;
   padding: 5px 25px 4px;
   border: none;
-  margin-right: 10px;
   height: 36px;
   background-color: #fff;
   font-weight: 400;
   user-select: none;
-  transition: opacity 0.3s ease-in-out, color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: opacity 0.3s ease-in-out, color 0.3s ease-in-out, background-color 0.3s ease-in-out,
+    border-color 0.3s ease-in-out;
   cursor: pointer;
+  border: solid 1px transparent;
 }
 
 .button:hover {
@@ -39,4 +39,40 @@
 
 .button[disabled] {
   opacity: 0.3;
+}
+
+.inverted.black {
+  background-color: transparent;
+  border-color: #000;
+  color: #000;
+}
+
+.button.inverted.black:hover {
+  opacity: 1;
+  background-color: #000;
+  color: #fff;
+}
+
+.inverted.green {
+  background-color: transparent;
+  border-color: #37bd72;
+  color: #37bd72;
+}
+
+.button.inverted.green:hover {
+  opacity: 1;
+  background-color: #fff;
+  color: #37bd72;
+}
+
+.inverted.white {
+  background-color: transparent;
+  border-color: #fff;
+  color: #fff;
+}
+
+.button.inverted.white:hover {
+  opacity: 1;
+  background-color: #fff;
+  color: #000;
 }

@@ -27,6 +27,11 @@
   color: #fff;
 }
 
+.white {
+  background-color: #fff;
+  color: #2e332f;
+}
+
 .transparent {
   background-color: transparent;
   color: #fff;

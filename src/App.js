@@ -27,6 +27,7 @@ import { routes } from './config/routes'
 import RegisterScreen from './screens/auth/register/RegisterScreen'
 import { useSideMenu } from './hooks/sideMenu/useSideMenu'
 import PrivateRoute from './components/molecules/privateRoute/PrivateRoute'
+import SettingsExportScreen from './screens/settings/export/SettingsExportScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -55,6 +56,8 @@ const App = () => {
           <Route exact path={routes.register} component={RegisterScreen} />
           <Route exact path={routes.upload.home} component={UploadMainScreen} />
           <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
+
+          <Route exact path={routes.settings.export} component={SettingsExportScreen} />
 
           <PrivateRoute path={routes.mailbox.home} component={RegisterScreen} />
         </Switch>

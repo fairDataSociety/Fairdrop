@@ -26,10 +26,12 @@ import Input from '../../../components/atoms/input/Input'
 import Button from '../../../components/atoms/button/Button'
 import TouchableOpacity from '../../../components/atoms/touchableOpacity/TouchableOpacity'
 import { schema } from './schema'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 
 const NEW_MAILBOX = 'NEW_MAILBOX'
 
 const LoginScreen = ({ history, location }) => {
+  const [, { login }] = useMailbox()
   const { setVariant, setBackground } = useTheme()
   const formik = useFormik({
     initialValues: {
@@ -37,8 +39,9 @@ const LoginScreen = ({ history, location }) => {
       password: '',
     },
     validationSchema: schema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.info(values)
+      await login(values)
       if (location?.state?.from) {
         history.replace(location?.state?.from)
       }

@@ -67,18 +67,20 @@ const LoginScreen = ({ history, location }) => {
         return handleAddMailbox()
       }
 
+      formik.setFieldTouched('mailbox', true)
       formik.setFieldValue('mailbox', value)
     },
     [formik, handleAddMailbox],
   )
 
   const getError = useCallback(() => {
-    const keys = Object.keys(formik.errors)
+    const keys = Object.keys(formik.touched)
     if (keys.length === 0) {
       return ''
     }
-    return formik.errors[keys[0]]
-  }, [formik.errors])
+    const errorField = Object.keys(formik.errors).find((errorField) => !!formik.touched[errorField])
+    return formik.errors[errorField]
+  }, [formik.errors, formik.touched])
 
   useEffect(() => {
     setVariant('black')
@@ -107,6 +109,7 @@ const LoginScreen = ({ history, location }) => {
           placeholder="Password"
           type="password"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
 
         {getError() && (

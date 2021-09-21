@@ -51,12 +51,13 @@ const RegisterScreen = ({ history }) => {
   }, [history])
 
   const getError = useCallback(() => {
-    const keys = Object.keys(formik.errors)
+    const keys = Object.keys(formik.touched)
     if (keys.length === 0) {
       return ''
     }
-    return formik.errors[keys[0]]
-  }, [formik.errors])
+    const errorField = Object.keys(formik.errors).find((errorField) => !!formik.touched[errorField])
+    return formik.errors[errorField]
+  }, [formik.errors, formik.touched])
 
   useEffect(() => {
     setVariant('black')
@@ -76,6 +77,7 @@ const RegisterScreen = ({ history }) => {
           placeholder="Mailbox name"
           type="text"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
 
         <span className={styles.decorator} />
@@ -86,6 +88,7 @@ const RegisterScreen = ({ history }) => {
           placeholder="Password"
           type="password"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
 
         <span className={styles.decorator} />
@@ -96,6 +99,7 @@ const RegisterScreen = ({ history }) => {
           placeholder="Verify password"
           type="password"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
 
         {getError() && (

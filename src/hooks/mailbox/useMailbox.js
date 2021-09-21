@@ -73,7 +73,7 @@ export const MailboxProvider = ({ children }) => {
     })
   }, [])
 
-  const importMailbox = useCallback((file) => {
+  const importMailbox = useCallback(({ file }) => {
     return FDSInstance.RestoreAccount(file)
   }, [])
 

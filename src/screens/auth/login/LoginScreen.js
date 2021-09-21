@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import Text from '../../../components/atoms/text/Text'
 import { colors } from '../../../config/colors'
 import { useTheme } from '../../../hooks/theme/useTheme'
@@ -31,8 +31,8 @@ import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 const NEW_MAILBOX = 'NEW_MAILBOX'
 
 const LoginScreen = ({ history, location }) => {
-  const [, { login }] = useMailbox()
   const { setVariant, setBackground } = useTheme()
+  const [{ accounts }, { unlockMailbox }] = useMailbox()
   const formik = useFormik({
     initialValues: {
       mailbox: '',
@@ -40,13 +40,22 @@ const LoginScreen = ({ history, location }) => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      console.info(values)
-      await login(values)
+      await unlockMailbox(values)
       if (location?.state?.from) {
         history.replace(location?.state?.from)
       }
     },
   })
+
+  const options = useMemo(() => {
+    const options = accounts.map((subdomain) => {
+      return { label: subdomain, value: subdomain }
+    })
+
+    options.push({ label: 'new mailbox +', value: NEW_MAILBOX })
+
+    return options
+  }, [accounts])
 
   const handleAddMailbox = useCallback(() => {
     history.push(routes.register)
@@ -84,11 +93,7 @@ const LoginScreen = ({ history, location }) => {
         </Text>
 
         <Select
-          options={[
-            { label: 'testr', value: 'mytest-..' },
-            { label: 'testr1', value: 'mytest-..1' },
-            { label: 'new mailbox +', value: NEW_MAILBOX },
-          ]}
+          options={options}
           value={formik.values.mailbox}
           onChange={handleMailboxChange}
           placeholder="Select a mailbox"

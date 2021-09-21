@@ -14,20 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Text from '../../../components/atoms/text/Text'
 import { colors } from '../../../config/colors'
 import { useTheme } from '../../../hooks/theme/useTheme'
 import styles from './RegisterScreen.module.css'
-import { routes } from '../../../config/routes'
 import { useFormik } from 'formik'
 import Input from '../../../components/atoms/input/Input'
 import Button from '../../../components/atoms/button/Button'
 import TouchableOpacity from '../../../components/atoms/touchableOpacity/TouchableOpacity'
 import { schema } from './schema'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 
 const RegisterScreen = ({ history }) => {
   const { setVariant, setBackground } = useTheme()
+  const [, { createMailbox }] = useMailbox()
+  const [infoMessage, setInfoMessage] = useState()
   const formik = useFormik({
     initialValues: {
       mailbox: '',
@@ -35,8 +37,12 @@ const RegisterScreen = ({ history }) => {
       passwordConfirmation: '',
     },
     validationSchema: schema,
-    onSubmit: (values) => {
-      console.info(values)
+    onSubmit: async (values) => {
+      await createMailbox({
+        mailbox: values.mailbox,
+        password: values.password,
+        callback: (message) => setInfoMessage(message),
+      }).catch((e) => console.info(e))
     },
   })
 
@@ -95,6 +101,12 @@ const RegisterScreen = ({ history }) => {
         {getError() && (
           <Text className={styles.error} align="right" variant="black">
             {getError()}
+          </Text>
+        )}
+
+        {infoMessage && (
+          <Text className={styles.error} align="right" variant="black">
+            {infoMessage}
           </Text>
         )}
 

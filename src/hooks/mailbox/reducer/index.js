@@ -14,18 +14,42 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
+export const SET_MESSAGES = 'SET_MESSAGES'
+export const SET_BALANCE = 'SET_BALANCE'
 export const SET_MAILBOX = 'SET_MAILBOX'
+export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
 
 export const initialState = {
+  messages: [],
+  balance: 0,
   mailbox: null,
+  accounts: [],
 }
 
 export const reducer = (prevState, { type, payload }) => {
   switch (type) {
+    case SET_MESSAGES:
+      return {
+        ...prevState,
+        messages: payload.messages,
+      }
+
+    case SET_BALANCE:
+      return {
+        ...prevState,
+        balance: payload.balance,
+      }
+
     case SET_MAILBOX:
       return {
         ...prevState,
         mailbox: payload.mailbox,
+      }
+
+    case SET_AVAILABLE_MAILBOXES:
+      return {
+        ...prevState,
+        accounts: payload.accounts,
       }
 
     default:

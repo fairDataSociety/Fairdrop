@@ -29,9 +29,11 @@ import AboutFairdropScreen from '../../../screens/about/fairdrop/AboutFairdropSc
 import AboutFAQsScreen from '../../../screens/about/faqs/AboutFAQsScreen'
 import AboutFairDataSocietyScreen from '../../../screens/about/fairDataSociety/AboutFairDataSocietyScreen'
 import AboutTermsOfUsageScreen from '../../../screens/about/terms/AboutTermsOfUsageScreen'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
   const { showSideMenu } = useSideMenu()
+  const [, { exportMailboxes }] = useMailbox()
 
   const menuItems = useMemo(() => {
     return [
@@ -77,16 +79,16 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         ],
       },
       {
-        id: '/settings',
+        id: routes.settings.home,
         label: 'Settings >',
         items: [
           {
             label: 'Import mailbox',
-            path: '/settings/import',
+            path: routes.settings.import,
           },
           {
             label: 'Export mailboxes',
-            path: '/settings/export',
+            path: routes.settings.export,
           },
         ],
       },

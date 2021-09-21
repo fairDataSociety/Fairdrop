@@ -17,6 +17,8 @@
 import React, { useCallback, useContext, useEffect, useReducer, useRef } from 'react'
 import FDS from 'fds.js'
 import * as Sentry from '@sentry/browser'
+import JSZip from 'jszip'
+import FileSaver from 'filesaver.js'
 import { reducer, initialState, SET_MESSAGES, SET_BALANCE, SET_MAILBOX, SET_AVAILABLE_MAILBOXES } from './reducer'
 import { version } from '../../../package.json'
 
@@ -54,6 +56,26 @@ export const MailboxProvider = ({ children }) => {
     },
     [unlockMailbox],
   )
+
+  const exportMailboxes = useCallback(() => {
+    const zip = new JSZip()
+    const accounts = FDSInstance.GetAccounts()
+    if (accounts.length === 0) {
+      // TODO show alert react-toastify
+      return false
+    }
+    accounts.forEach((account) => {
+      const file = account.getBackup()
+      zip.file(file.name, file.data)
+    })
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      FileSaver.saveAs(content, 'fairdrop-mailboxes.zip')
+    })
+  }, [])
+
+  const importMailbox = useCallback((file) => {
+    return FDSInstance.RestoreAccount(file)
+  }, [])
 
   const initSentry = useCallback(() => {
     if (process.env.NODE_ENV !== 'development') {
@@ -116,7 +138,9 @@ export const MailboxProvider = ({ children }) => {
   }, [initSentry])
 
   return (
-    <MailboxContext.Provider value={[state, { unlockMailbox, createMailbox, initSentry }]}>
+    <MailboxContext.Provider
+      value={[state, { unlockMailbox, createMailbox, initSentry, exportMailboxes, importMailbox }]}
+    >
       {children}
     </MailboxContext.Provider>
   )

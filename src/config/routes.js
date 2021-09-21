@@ -34,4 +34,9 @@ export const routes = {
     terms: '/about/terms',
     bugs: '/about/bugs',
   },
+  settings: {
+    home: '/settings',
+    import: '/settings/import',
+    export: '/settings/export',
+  },
 }

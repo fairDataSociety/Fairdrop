@@ -29,7 +29,7 @@ import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
 
 const Header = ({ className }) => {
   const { variant } = useTheme()
-  const [{ mailbox }] = useMailbox()
+  const [{ mailbox }, { resetMailbox }] = useMailbox()
 
   return (
     <header className={c(styles.container, className)}>
@@ -53,8 +53,8 @@ const Header = ({ className }) => {
               {mailbox.subdomain}
             </Button>
 
-            <TouchableOpacity className={styles.logoutButton}>
-              <Text variant={variant}>Logout</Text>
+            <TouchableOpacity className={styles.logoutButton} onClick={resetMailbox}>
+              <Text variant={variant}>Log out</Text>
             </TouchableOpacity>
           </>
         )}

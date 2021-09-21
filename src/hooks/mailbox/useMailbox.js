@@ -19,7 +19,15 @@ import FDS from 'fds.js'
 import * as Sentry from '@sentry/browser'
 import JSZip from 'jszip'
 import FileSaver from 'filesaver.js'
-import { reducer, initialState, SET_MESSAGES, SET_BALANCE, SET_MAILBOX, SET_AVAILABLE_MAILBOXES } from './reducer'
+import {
+  reducer,
+  initialState,
+  SET_MESSAGES,
+  SET_BALANCE,
+  SET_MAILBOX,
+  SET_AVAILABLE_MAILBOXES,
+  RESET,
+} from './reducer'
 import { version } from '../../../package.json'
 
 const MailboxContext = React.createContext()
@@ -78,6 +86,10 @@ export const MailboxProvider = ({ children }) => {
       const accounts = FDSInstance.GetAccounts() ?? []
       dispatch({ type: SET_AVAILABLE_MAILBOXES, payload: { accounts: accounts.map(({ subdomain }) => subdomain) } })
     })
+  }, [])
+
+  const resetMailbox = useCallback(() => {
+    dispatch({ type: RESET })
   }, [])
 
   const initSentry = useCallback(() => {
@@ -142,7 +154,7 @@ export const MailboxProvider = ({ children }) => {
 
   return (
     <MailboxContext.Provider
-      value={[state, { unlockMailbox, createMailbox, initSentry, exportMailboxes, importMailbox }]}
+      value={[state, { unlockMailbox, createMailbox, initSentry, exportMailboxes, importMailbox, resetMailbox }]}
     >
       {children}
     </MailboxContext.Provider>

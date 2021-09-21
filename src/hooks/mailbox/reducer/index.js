@@ -18,6 +18,7 @@ export const SET_MESSAGES = 'SET_MESSAGES'
 export const SET_BALANCE = 'SET_BALANCE'
 export const SET_MAILBOX = 'SET_MAILBOX'
 export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
+export const RESET = 'RESET'
 
 export const initialState = {
   messages: [],
@@ -50,6 +51,12 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         accounts: payload.accounts,
+      }
+
+    case RESET:
+      return {
+        ...initialState,
+        accounts: prevState.accounts,
       }
 
     default:

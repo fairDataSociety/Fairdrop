@@ -14,11 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useFileManager } from '../../../hooks/fileManager/useFileManager'
 import SelectFile from './steps/selectFile/SelectFile'
 import styles from './UploadMainScreen.module.css'
 
 const UploadMainScreen = () => {
+  const [, { resetFileManager }] = useFileManager()
+
+  useEffect(() => {
+    resetFileManager?.()
+  }, [resetFileManager])
+
   return (
     <div className={styles.container}>
       <SelectFile />

@@ -45,3 +45,9 @@
 .input {
   margin: 12px 0;
 }
+
+.action {
+  margin-top: 36px;
+  align-self: center;
+  min-width: 120px;
+}

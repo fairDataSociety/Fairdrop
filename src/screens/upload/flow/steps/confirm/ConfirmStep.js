@@ -22,18 +22,21 @@ import Button from '../../../../../components/atoms/button/Button'
 import Text from '../../../../../components/atoms/text/Text'
 import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/TouchableOpacity'
 import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
+import { routes } from '../../../../../config/routes'
+import { useHistory } from 'react-router-dom'
 
 const ConfirmStep = ({ nextStep }) => {
-  const [{ files, type, recipient }, { resetFileManager }] = useFileManager()
+  const [{ files, type, recipient }] = useFileManager()
   const [{ mailbox }] = useMailbox()
+  const history = useHistory()
 
   const isEncrypted = useMemo(() => {
     return type === FILE_UPLOAD_TYPES.ENCRYPTED
   }, [type])
 
   const handleCancelClick = useCallback(() => {
-    resetFileManager?.()
-  }, [])
+    history.replace(routes.upload.home)
+  }, [history])
 
   return (
     <div className={styles.container}>

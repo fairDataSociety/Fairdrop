@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './SummaryStep.module.css'
 import Text from '../../../../../components/atoms/text/Text'
@@ -24,10 +24,28 @@ import { colors } from '../../../../../config/colors'
 import Utils from '../../../../../services/Utils'
 import Input from '../../../../../components/atoms/input/Input'
 import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/TouchableOpacity'
+import Button from '../../../../../components/atoms/button/Button'
+import { routes } from '../../../../../config/routes'
+import { useHistory } from 'react-router-dom'
 
-const SummaryStep = ({ nextStep }) => {
+const SummaryStep = () => {
   const [{ files, type, link }] = useFileManager()
   const { setVariant, setBackground } = useTheme()
+  const [copied, setCopied] = useState(false)
+  const history = useHistory()
+
+  const handleCopyLink = useCallback(() => {
+    Utils.copyToClipboard(link).then(() => {
+      setCopied(true)
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
+    })
+  }, [link])
+
+  const handleFinishClick = useCallback(() => {
+    history.replace(routes.upload.home)
+  }, [])
 
   useEffect(() => {
     setVariant('white')
@@ -54,12 +72,16 @@ const SummaryStep = ({ nextStep }) => {
 
           <Input className={styles.input} defaultValue={link} />
 
-          <TouchableOpacity>
+          <TouchableOpacity onClick={handleCopyLink}>
             <Text size="sm" align="center">
-              Copy link
+              {copied ? 'Copied!' : 'Copy link'}
             </Text>
           </TouchableOpacity>
         </div>
+
+        <Button className={styles.action} variant="white" type="submit" onClick={handleFinishClick}>
+          Finish
+        </Button>
       </div>
     </div>
   )

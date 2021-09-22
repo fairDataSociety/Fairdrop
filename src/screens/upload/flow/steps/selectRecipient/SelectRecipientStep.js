@@ -30,7 +30,7 @@ import { toast } from 'react-toastify'
 import { routes } from '../../../../../config/routes'
 
 const SelectRecipientStep = ({ nextStep }) => {
-  const [, { resetFileManager, setRecipient }] = useFileManager()
+  const [, { setRecipient }] = useFileManager()
   const [{ mailbox }] = useMailbox()
   const history = useHistory()
   const location = useLocation()
@@ -47,8 +47,8 @@ const SelectRecipientStep = ({ nextStep }) => {
   })
 
   const handleCancelClick = useCallback(() => {
-    resetFileManager?.()
-  }, [])
+    history.replace(routes.upload.home)
+  }, [history])
 
   const getError = useCallback(() => {
     const keys = Object.keys(formik.touched)

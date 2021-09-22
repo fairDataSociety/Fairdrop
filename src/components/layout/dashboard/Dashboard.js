@@ -20,6 +20,7 @@ import { colors } from '../../../config/colors'
 import { routes } from '../../../config/routes'
 import { useTheme } from '../../../hooks/theme/useTheme'
 import DashboardReceivedScreen from '../../../screens/auth/dashboard/received/DashboardReceivedScreen'
+import DashboardSentScreen from '../../../screens/auth/dashboard/sent/DashboardSentScreen'
 import Text from '../../atoms/text/Text'
 import styles from './Dashboard.module.css'
 
@@ -54,6 +55,7 @@ const Dashboard = () => {
       </nav>
       <div className={styles.content}>
         <Route exact path={routes.mailbox.received} component={DashboardReceivedScreen} />
+        <Route exact path={routes.mailbox.sent} component={DashboardSentScreen} />
         <Redirect exact path={routes.mailbox.dashboard} to={routes.mailbox.received} />
       </div>
     </div>

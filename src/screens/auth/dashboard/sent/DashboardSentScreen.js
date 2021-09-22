@@ -14,15 +14,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
 import Utils from '../../../../services/Utils'
-import styles from './DashboardReceivedScreen.module.css'
+import styles from './DashboardSentScreen.module.css'
 import { DateTime } from 'luxon'
+import { toast } from 'react-toastify'
+import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 
-const DashboardReceivedScreen = () => {
-  const [{ received }] = useMailbox()
+const DashboardSentScreen = () => {
+  const [{ sent }, { getSentMessages }] = useMailbox()
+  const [isFetchingMessages, setIsFetchingMessages] = useState(true)
+
+  useEffect(() => {
+    getSentMessages()
+      .then(() => {
+        setIsFetchingMessages(false)
+      })
+      .catch(() => {
+        toast.error('🔥 Something went wrong while trying to retrieve your sent files :(')
+        setIsFetchingMessages(false)
+      })
+  }, [])
+
+  if (isFetchingMessages) {
+    return <WorkingLayout headline="We are getting your data..." />
+  }
 
   return (
     <div className={styles.container}>
@@ -35,7 +53,7 @@ const DashboardReceivedScreen = () => {
 
         <div className={styles.header}>
           <Text size="sm" weight="500" variant="black">
-            From
+            To
           </Text>
         </div>
 
@@ -51,8 +69,8 @@ const DashboardReceivedScreen = () => {
           </Text>
         </div>
 
-        {received.length > 0 &&
-          received.reverse().map((message) => {
+        {sent.length > 0 &&
+          sent.reverse().map((message) => {
             const { hash = {}, from } = message
             const { file = {} } = hash
 
@@ -84,10 +102,10 @@ const DashboardReceivedScreen = () => {
               </Fragment>
             )
           })}
-        {received.length === 0 && (
+        {sent.length === 0 && (
           <div className={styles.row}>
             <Text size="sm" variant="black">
-              There is no received files yet...
+              There is no sent files yet...
             </Text>
           </div>
         )}
@@ -96,4 +114,4 @@ const DashboardReceivedScreen = () => {
   )
 }
 
-export default React.memo(DashboardReceivedScreen)
+export default React.memo(DashboardSentScreen)

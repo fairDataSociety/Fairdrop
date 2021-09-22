@@ -42,6 +42,11 @@
   border-bottom-color: transparent;
 }
 
+.container.black span::before {
+  border-color: #000;
+  border-bottom-color: transparent;
+}
+
 @-webkit-keyframes loader {
   0% {
     -webkit-transform: rotate(0deg);
@@ -91,6 +96,10 @@
 
 .container.white span::after {
   background: #fff;
+}
+
+.container.black span::after {
+  background: #000;
 }
 
 @-webkit-keyframes loader-2 {

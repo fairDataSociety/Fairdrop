@@ -22,7 +22,8 @@ import FileSaver from 'filesaver.js'
 import {
   reducer,
   initialState,
-  SET_MESSAGES,
+  SET_SENT_MESSAGES,
+  SET_RECEIVED_MESSAGES,
   SET_BALANCE,
   SET_MAILBOX,
   SET_AVAILABLE_MAILBOXES,
@@ -105,6 +106,15 @@ export const MailboxProvider = ({ children }) => {
     dispatch({ type: RESET })
   }, [])
 
+  const getSentMessages = useCallback(() => {
+    return FDSInstance.currentAccount
+      ?.messages('sent')
+      .then((messages) => {
+        dispatch({ type: SET_SENT_MESSAGES, payload: { messages } })
+      })
+      .catch((error) => console.info(error))
+  }, [])
+
   const initSentry = useCallback(() => {
     const sentryEnabled = !!localStorage.getItem('agreedSentry')
     console.info(!!sentryEnabled)
@@ -127,7 +137,7 @@ export const MailboxProvider = ({ children }) => {
         // const firstTime = lsCount === null
         // const showReceivedAlert = receivedSeenCount < messages.length
         // console.info(lsCount, receivedSeenCount, firstTime, showReceivedAlert)
-        dispatch({ type: SET_MESSAGES, payload: { messages } })
+        dispatch({ type: SET_RECEIVED_MESSAGES, payload: { messages } })
       })
       .catch((error) => console.info(error))
   }, [])
@@ -169,7 +179,10 @@ export const MailboxProvider = ({ children }) => {
 
   return (
     <MailboxContext.Provider
-      value={[state, { unlockMailbox, createMailbox, initSentry, exportMailboxes, importMailbox, resetMailbox }]}
+      value={[
+        state,
+        { unlockMailbox, createMailbox, initSentry, exportMailboxes, importMailbox, resetMailbox, getSentMessages },
+      ]}
     >
       {children}
     </MailboxContext.Provider>

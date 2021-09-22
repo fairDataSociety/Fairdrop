@@ -28,6 +28,7 @@ import {
   SET_MAILBOX,
   SET_AVAILABLE_MAILBOXES,
   RESET,
+  SET_CONSENTS_MESSAGES,
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
@@ -115,6 +116,15 @@ export const MailboxProvider = ({ children }) => {
       .catch((error) => console.info(error))
   }, [])
 
+  const getConsentsMessages = useCallback(() => {
+    return FDSInstance.currentAccount
+      ?.messages('received', '/shared/consents')
+      .then((messages) => {
+        dispatch({ type: SET_CONSENTS_MESSAGES, payload: { messages } })
+      })
+      .catch((error) => console.info(error))
+  }, [])
+
   const initSentry = useCallback(() => {
     const sentryEnabled = !!localStorage.getItem('agreedSentry')
     console.info(!!sentryEnabled)
@@ -181,7 +191,16 @@ export const MailboxProvider = ({ children }) => {
     <MailboxContext.Provider
       value={[
         state,
-        { unlockMailbox, createMailbox, initSentry, exportMailboxes, importMailbox, resetMailbox, getSentMessages },
+        {
+          unlockMailbox,
+          createMailbox,
+          initSentry,
+          exportMailboxes,
+          importMailbox,
+          resetMailbox,
+          getSentMessages,
+          getConsentsMessages,
+        },
       ]}
     >
       {children}

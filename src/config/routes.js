@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 export const routes = {
-  splash: '/',
+  root: '/',
   upload: {
     home: '/upload',
     flow: '/upload/flow',

@@ -21,7 +21,7 @@ import styles from './App.module.css'
 import c from 'classnames'
 import Menu from './components/molecules/menu/Menu'
 import Header from './components/molecules/header/Header'
-import { Switch, Route, useLocation } from 'react-router-dom'
+import { Switch, Route, useLocation, Redirect } from 'react-router-dom'
 import UploadMainScreen from './screens/upload/main/UploadMainScreen'
 import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 import LoginScreen from './screens/auth/login/LoginScreen'
@@ -67,6 +67,8 @@ const App = () => {
           <Route exact path={routes.settings.import} component={SettingsImportScreen} />
 
           <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
+
+          <Redirect exact from={routes.root} to={routes.upload.home} />
         </Switch>
       </div>
 

@@ -23,7 +23,7 @@
   transition: opacity 0.3s ease;
 }
 
-.link:global(.active) > span {
+.link.active > span {
   font-weight: 700;
 }
 

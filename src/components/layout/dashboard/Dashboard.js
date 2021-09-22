@@ -23,7 +23,7 @@ import DashboardReceivedScreen from '../../../screens/auth/dashboard/received/Da
 import Text from '../../atoms/text/Text'
 import styles from './Dashboard.module.css'
 
-const Dashboard = ({ history }) => {
+const Dashboard = () => {
   const { setVariant, setBackground } = useTheme()
 
   useEffect(() => {
@@ -34,19 +34,19 @@ const Dashboard = ({ history }) => {
   return (
     <div className={styles.container}>
       <nav className={styles.menu}>
-        <NavLink className={styles.link} to={routes.mailbox.received}>
+        <NavLink className={styles.link} to={routes.mailbox.received} activeClassName={styles.active} exact>
           <Text element="span" variant="black">
             {'> Received'}
           </Text>
         </NavLink>
 
-        <NavLink className={styles.link} to={routes.mailbox.sent}>
+        <NavLink className={styles.link} to={routes.mailbox.sent} activeClassName={styles.active} exact>
           <Text element="span" variant="black">
             {'> Sent'}
           </Text>
         </NavLink>
 
-        <NavLink className={styles.link} to={routes.mailbox.consents}>
+        <NavLink className={styles.link} to={routes.mailbox.consents} activeClassName={styles.active} exact>
           <Text element="span" variant="black">
             {'> Consents'}
           </Text>

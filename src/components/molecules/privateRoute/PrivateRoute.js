@@ -14,20 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import styles from './PrivateRoute.module.css'
 import { Route, Redirect } from 'react-router-dom'
 import { routes } from '../../../config/routes'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 
 const PrivateRoute = ({ component: Component, componentProps = {}, ...rest }) => {
-  const isLogged = () => Math.random() > 0.5
+  const [{ mailbox }] = useMailbox()
+
+  const isLogged = useMemo(() => {
+    return !!mailbox?.subdomain ?? false
+  }, [mailbox])
 
   return (
     <Route
       {...rest}
       render={(props) => {
         const computedProps = { ...props, ...componentProps }
-        return isLogged() ? (
+        return isLogged ? (
           <Component {...computedProps} />
         ) : (
           <Redirect

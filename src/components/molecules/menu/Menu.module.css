@@ -13,6 +13,7 @@
   transition: 1s transform;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .content.shown {
@@ -62,9 +63,4 @@
   flex: 1;
   overflow: hidden;
   padding: 0 20px;
-}
-
-.footer {
-  height: 60px;
-  padding: 10px;
 }

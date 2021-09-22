@@ -32,6 +32,7 @@ import AboutTermsOfUsageScreen from '../../../screens/about/terms/AboutTermsOfUs
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Utils from '../../../services/Utils'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
+import Footer from './components/footer/Footer'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
   const { showSideMenu } = useSideMenu()
@@ -213,7 +214,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           })}
         </div>
 
-        <div className={styles.footer}></div>
+        <Footer />
       </div>
     </nav>
   )

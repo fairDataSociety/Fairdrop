@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './SummaryStep.module.css'
 import Text from '../../../../../components/atoms/text/Text'
 import CircleLoader from '../../../../../components/atoms/circleLoader/CircleLoader'
@@ -27,12 +27,18 @@ import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/T
 import Button from '../../../../../components/atoms/button/Button'
 import { routes } from '../../../../../config/routes'
 import { useHistory } from 'react-router-dom'
+import { ReactComponent as IconLock } from './assets/fairdrop-lock.svg'
+import { ReactComponent as IconCircleTick } from './assets/circle-tick.svg'
 
 const SummaryStep = () => {
   const [{ files, type, link }] = useFileManager()
   const { setVariant, setBackground } = useTheme()
   const [copied, setCopied] = useState(false)
   const history = useHistory()
+
+  const isEncrypted = useMemo(() => {
+    return type === FILE_UPLOAD_TYPES.ENCRYPTED
+  }, [type])
 
   const handleCopyLink = useCallback(() => {
     Utils.copyToClipboard(link).then(() => {
@@ -55,7 +61,7 @@ const SummaryStep = () => {
   return (
     <div className={styles.container}>
       <Text className={styles.headline} element="h1" size="l" weight="500">
-        <CircleLoader className={styles.loader} /> Sent.
+        <IconCircleTick className={styles.icon} /> Sent.
       </Text>
 
       <div className={styles.content}>
@@ -67,17 +73,25 @@ const SummaryStep = () => {
             </div>
           )
         })}
-        <div className={styles.download}>
-          <Text align="center">File Download Link</Text>
+        {!isEncrypted && (
+          <div className={styles.download}>
+            <Text align="center">File Download Link</Text>
 
-          <Input className={styles.input} defaultValue={link} />
+            <Input className={styles.input} defaultValue={link} />
 
-          <TouchableOpacity onClick={handleCopyLink}>
-            <Text size="sm" align="center">
-              {copied ? 'Copied!' : 'Copy link'}
-            </Text>
-          </TouchableOpacity>
-        </div>
+            <TouchableOpacity onClick={handleCopyLink}>
+              <Text size="sm" align="center">
+                {copied ? 'Copied!' : 'Copy link'}
+              </Text>
+            </TouchableOpacity>
+          </div>
+        )}
+
+        {isEncrypted && (
+          <Text className={styles.encrypted} align="center">
+            <IconLock className={styles.icon} /> Encrypted
+          </Text>
+        )}
 
         <Button className={styles.action} variant="white" type="submit" onClick={handleFinishClick}>
           Finish

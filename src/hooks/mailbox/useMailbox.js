@@ -139,6 +139,11 @@ export const MailboxProvider = ({ children }) => {
     )
   }, [])
 
+  const uploadEncryptedFile = useCallback(({ to, files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {
+    const multiboxPath = localStorage.getItem('fairdrop_application_domain') || '/shared/fairdrop/encrypted'
+    return FDSInstance.currentAccount.send(to, files[0], multiboxPath, onEncryptedEnd, onProgressUpdate, onStatusChange)
+  }, [])
+
   const initSentry = useCallback(() => {
     const sentryEnabled = !!localStorage.getItem('agreedSentry')
     if (process.env.NODE_ENV !== 'development' && sentryEnabled) {
@@ -213,6 +218,7 @@ export const MailboxProvider = ({ children }) => {
           getSentMessages,
           getConsentsMessages,
           uploadUnencryptedFile,
+          uploadEncryptedFile,
         },
       ]}
     >

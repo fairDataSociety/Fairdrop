@@ -21,10 +21,11 @@ import Text from '../../../../../components/atoms/text/Text'
 import ProgressBar from '../../../../../components/molecules/progressBar/ProgressBar'
 import CircleLoader from '../../../../../components/atoms/circleLoader/CircleLoader'
 import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
+import { toast } from 'react-toastify'
 
 const UploadStep = ({ nextStep }) => {
-  const [{ files, type }, { setDownloadLink }] = useFileManager()
-  const [, { uploadUnencryptedFile }] = useMailbox()
+  const [{ files, type, recipient }, { setDownloadLink }] = useFileManager()
+  const [, { uploadUnencryptedFile, uploadEncryptedFile }] = useMailbox()
   const [infoMessage, setInfoMessage] = useState()
   const [progress, setProgress] = useState(0)
 
@@ -34,7 +35,24 @@ const UploadStep = ({ nextStep }) => {
 
   useEffect(() => {
     if (isEncrypted) {
-      // TODO
+      uploadEncryptedFile({
+        to: recipient,
+        files,
+        onEncryptedEnd: () => setInfoMessage('The file was encrypted, uploading file...'),
+        onProgressUpdate: (response) => {
+          if (response > 100) {
+            return
+          }
+          setProgress(response)
+        },
+        onStatusChange: (message) => setInfoMessage(message),
+      })
+        .catch((error) => {
+          toast.error(`💩 ${error.message}`)
+        })
+        .then(() => {
+          nextStep?.()
+        })
     } else {
       uploadUnencryptedFile({
         files,
@@ -51,7 +69,7 @@ const UploadStep = ({ nextStep }) => {
         nextStep?.()
       })
     }
-  }, [files, isEncrypted, setDownloadLink])
+  }, [files, recipient, isEncrypted, setDownloadLink])
 
   return (
     <div className={styles.container}>

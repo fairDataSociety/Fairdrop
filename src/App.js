@@ -33,6 +33,7 @@ import SettingsExportScreen from './screens/settings/export/SettingsExportScreen
 import SettingsImportScreen from './screens/settings/import/SettingsImportScreen'
 import ProductDisclaimer from './disclaimers/product/ProductDisclaimer'
 import ReportingDisclaimer from './disclaimers/reporting/ReportingDisclaimer'
+import Dashboard from './components/layout/dashboard/Dashboard'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -65,7 +66,7 @@ const App = () => {
           <Route exact path={routes.settings.export} component={SettingsExportScreen} />
           <Route exact path={routes.settings.import} component={SettingsImportScreen} />
 
-          <PrivateRoute path={routes.mailbox.home} component={RegisterScreen} />
+          <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
         </Switch>
       </div>
 

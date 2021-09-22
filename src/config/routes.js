@@ -23,9 +23,11 @@ export const routes = {
   login: '/login',
   register: '/register',
   mailbox: {
-    home: '/mailbox/stored',
+    dashboard: '/mailbox',
+    received: '/mailbox/received',
     sent: '/mailbox/sent',
-    quick: '/mailbox/quick',
+    stored: '/mailbox/stored',
+    consents: '/mailbox/consents',
   },
   about: {
     fairdrop: '/about/fairdrop',

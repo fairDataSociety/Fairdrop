@@ -43,6 +43,8 @@ const LoginScreen = ({ history, location }) => {
       await unlockMailbox(values)
       if (location?.state?.from) {
         history.replace(location?.state?.from)
+      } else {
+        history.replace(routes.upload.home)
       }
     },
   })

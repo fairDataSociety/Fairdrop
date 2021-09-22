@@ -84,12 +84,12 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         ],
       },
       {
-        id: routes.mailbox.home,
+        id: routes.mailbox.dashboard,
         label: 'My Files >',
         items: [
           {
             label: 'Received Files',
-            path: routes.mailbox.home,
+            path: routes.mailbox.received,
           },
           {
             label: 'Sent Files',

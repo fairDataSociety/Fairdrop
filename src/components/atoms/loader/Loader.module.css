@@ -10,8 +10,19 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #fff;
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.loader.green span {
+  background: #37bd72;
+}
+
+.loader.white span {
+  background: #fff;
+}
+
+.loader.black span {
+  background: #000;
 }
 
 .loader span:nth-child(1) {

@@ -14,16 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useMemo } from 'react'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './ConfirmStep.module.css'
 import Utils from '../../../../../services/Utils'
 import Button from '../../../../../components/atoms/button/Button'
 import Text from '../../../../../components/atoms/text/Text'
 import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/TouchableOpacity'
+import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
 
-const ConfirmStep = ({ prevStep, nextStep }) => {
-  const [{ files, type }, { resetFileManager }] = useFileManager()
+const ConfirmStep = ({ nextStep }) => {
+  const [{ files, type, recipient }, { resetFileManager }] = useFileManager()
+  const [{ mailbox }] = useMailbox()
+
+  const isEncrypted = useMemo(() => {
+    return type === FILE_UPLOAD_TYPES.ENCRYPTED
+  }, [type])
 
   const handleCancelClick = useCallback(() => {
     resetFileManager?.()
@@ -47,13 +53,27 @@ const ConfirmStep = ({ prevStep, nextStep }) => {
               <Text>Size</Text>
               <Text>{Utils.humanFileSize(file.size)}</Text>
             </div>
+
+            {isEncrypted && (
+              <>
+                <div className={styles.row}>
+                  <Text>Sender</Text>
+                  <Text>{`${mailbox?.subdomain}.datafund.eth`}</Text>
+                </div>
+
+                <div className={styles.row}>
+                  <Text>Recipient</Text>
+                  <Text>{`${recipient}.datafund.eth`}</Text>
+                </div>
+              </>
+            )}
           </Fragment>
         )
       })}
 
       <div className={styles.actions}>
         <Button variant="green" onClick={nextStep}>
-          {type === FILE_UPLOAD_TYPES.ENCRYPTED ? 'Encrypt and Send' : 'Send Unencrypted'}
+          {isEncrypted ? 'Encrypt and Send' : 'Send Unencrypted'}
         </Button>
 
         <TouchableOpacity onClick={handleCancelClick}>

@@ -65,7 +65,6 @@ const RegisterScreen = ({ history }) => {
     setBackground(colors.white)
   }, [])
 
-  console.info(formik.errors)
   return (
     <div className={styles.container}>
       <form className={styles.content} onSubmit={formik.handleSubmit} autoComplete="off">

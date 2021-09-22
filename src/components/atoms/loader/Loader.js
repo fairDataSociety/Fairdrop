@@ -18,9 +18,9 @@ import React from 'react'
 import styles from './Loader.module.css'
 import c from 'classnames'
 
-const Loader = ({ className }) => {
+const Loader = ({ className, variant = 'white' }) => {
   return (
-    <div className={c(styles.loader, className)}>
+    <div className={c(styles.loader, styles[variant], className)}>
       <span />
       <span />
       <span />

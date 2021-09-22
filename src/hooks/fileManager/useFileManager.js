@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useCallback, useContext, useReducer } from 'react'
-import { CLEAN, initialState, reducer, SET_FILES } from './reducer'
+import { CLEAN, initialState, reducer, SET_FILES, SET_RECIPIENT } from './reducer'
 
 const FileManagerContext = React.createContext()
 
@@ -26,12 +26,16 @@ const FileManagerProvider = ({ children }) => {
     dispatch({ type: SET_FILES, payload: { files, type } })
   }, [])
 
+  const setRecipient = useCallback(({ recipient }) => {
+    dispatch({ type: SET_RECIPIENT, payload: { recipient } })
+  }, [])
+
   const resetFileManager = useCallback(() => {
     dispatch({ type: CLEAN })
   }, [])
 
   return (
-    <FileManagerContext.Provider value={[state, { setFiles, resetFileManager }]}>
+    <FileManagerContext.Provider value={[state, { setFiles, resetFileManager, setRecipient }]}>
       {children}
     </FileManagerContext.Provider>
   )

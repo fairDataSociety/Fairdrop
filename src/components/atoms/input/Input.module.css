@@ -16,7 +16,16 @@
   color: #000;
 }
 
+.input.black::placeholder {
+  color: #000;
+}
+
 .input.white {
+  color: #fff;
+  border-color: #fff;
+}
+
+.input.white::placeholder {
   color: #fff;
 }
 

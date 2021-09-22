@@ -14,19 +14,54 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Stepper from '../../../components/molecules/stepper/Stepper'
 import { colors } from '../../../config/colors'
-import { useFileManager } from '../../../hooks/fileManager/useFileManager'
+import { routes } from '../../../config/routes'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../hooks/fileManager/useFileManager'
 import { useTheme } from '../../../hooks/theme/useTheme'
 import ConfirmStep from './steps/confirm/ConfirmStep'
+import SelectRecipientStep from './steps/selectRecipient/SelectRecipientStep'
 import SummaryStep from './steps/summary/SummaryStep'
 import UploadStep from './steps/upload/UploadStep'
 import styles from './UploadFlowScreen.module.css'
 
 const UploadFlowScreen = ({ history }) => {
   const { setVariant, setBackground } = useTheme()
-  const [{ files }] = useFileManager()
+  const [{ files, type }] = useFileManager()
+
+  const steps = useMemo(() => {
+    let steps = [
+      {
+        label: 'Select File',
+        Component: <div />,
+      },
+    ]
+
+    if (type === FILE_UPLOAD_TYPES.ENCRYPTED) {
+      steps.push({
+        label: 'Select Recipient',
+        Component: <SelectRecipientStep />,
+      })
+    }
+
+    steps.push(
+      {
+        label: 'Confirm',
+        Component: <ConfirmStep />,
+      },
+      {
+        label: 'Upload',
+        Component: <UploadStep />,
+      },
+      {
+        label: 'Summary',
+        Component: <SummaryStep />,
+      },
+    )
+
+    return steps
+  }, [type])
 
   useEffect(() => {
     setVariant('white')
@@ -35,33 +70,13 @@ const UploadFlowScreen = ({ history }) => {
 
   useEffect(() => {
     if (files.length < 1) {
-      history.replace('/upload')
+      history.replace(routes.upload.home)
     }
   }, [files])
 
   return (
     <div className={styles.container}>
-      <Stepper
-        steps={[
-          {
-            label: 'Select File',
-            Component: <div />,
-          },
-          {
-            label: 'Confirm',
-            Component: <ConfirmStep />,
-          },
-          {
-            label: 'Upload',
-            Component: <UploadStep />,
-          },
-          {
-            label: 'Summary',
-            Component: <SummaryStep />,
-          },
-        ]}
-        initialStep={1}
-      />
+      <Stepper steps={steps} initialStep={1} />
     </div>
   )
 }

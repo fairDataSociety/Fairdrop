@@ -14,37 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-export const SET_FILES = 'SET_FILES'
-export const SET_RECIPIENT = 'SET_RECIPIENT'
-export const CLEAN = 'CLEAN'
+import * as yup from 'yup'
+import { FDSInstance } from '../../../../../../hooks/mailbox/useMailbox'
 
-export const initialState = {
-  files: [],
-  type: 'quick',
-  recipient: '',
-}
-
-export const reducer = (prevState, { type, payload }) => {
-  switch (type) {
-    case SET_FILES:
-      return {
-        ...prevState,
-        files: payload?.files ?? [],
-        type: payload?.type ?? 'quick',
-      }
-
-    case SET_RECIPIENT:
-      return {
-        ...prevState,
-        recipient: payload?.recipient ?? '',
-      }
-
-    case CLEAN:
-      return {
-        ...initialState,
-      }
-
-    default:
-      return prevState
-  }
-}
+export const schema = yup.object().shape({
+  mailbox: yup
+    .string()
+    .required('You must enter a mailbox name.')
+    .test('mailboxAvailability', 'Sorry, we could not find that mailbox!', (value) => {
+      return new Promise((resolve) => {
+        if (!value) {
+          return resolve(false)
+        }
+        FDSInstance.Account.isMailboxNameAvailable(value)
+          .then((result) => {
+            return resolve(!result)
+          })
+          .catch((error) => {
+            console.info(error)
+            resolve(false)
+          })
+      })
+    }),
+})

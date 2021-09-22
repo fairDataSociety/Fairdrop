@@ -25,8 +25,8 @@ import Utils from '../../../../../services/Utils'
 import Input from '../../../../../components/atoms/input/Input'
 import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/TouchableOpacity'
 
-const SummaryStep = ({ prevStep, nextStep }) => {
-  const [{ files, type }] = useFileManager()
+const SummaryStep = ({ nextStep }) => {
+  const [{ files, type, link }] = useFileManager()
   const { setVariant, setBackground } = useTheme()
 
   useEffect(() => {
@@ -52,10 +52,7 @@ const SummaryStep = ({ prevStep, nextStep }) => {
         <div className={styles.download}>
           <Text align="center">File Download Link</Text>
 
-          <Input
-            className={styles.input}
-            defaultValue="https://beeta.fairdrop.xyz/#/download/f865d3f68a978aa07fd21556e8563d6649ce55713b9298be57ce3b5c401df0dd/spinner-white.gif?size=69389"
-          />
+          <Input className={styles.input} defaultValue={link} />
 
           <TouchableOpacity>
             <Text size="sm" align="center">

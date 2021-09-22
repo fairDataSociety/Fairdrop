@@ -125,9 +125,22 @@ export const MailboxProvider = ({ children }) => {
       .catch((error) => console.info(error))
   }, [])
 
+  const uploadUnencryptedFile = useCallback(({ files, onProgressUpdate, onStatusChange }) => {
+    const sanitizedFiles = files.map((file) => {
+      const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
+      const fullPath = file.fullPath || file.webkitRelativePath
+      newFile.fullPath = fullPath.replace(/ /g, '_')
+      return newFile
+    })
+    return FDSInstance.Account.Store.storeFilesUnencrypted(sanitizedFiles, onProgressUpdate, onStatusChange).then(
+      (hash) => {
+        return hash.gatewayLink()
+      },
+    )
+  }, [])
+
   const initSentry = useCallback(() => {
     const sentryEnabled = !!localStorage.getItem('agreedSentry')
-    console.info(!!sentryEnabled)
     if (process.env.NODE_ENV !== 'development' && sentryEnabled) {
       console.log('initialised Sentry')
       Sentry.init({
@@ -175,7 +188,6 @@ export const MailboxProvider = ({ children }) => {
 
   // Get all accounts
   useEffect(() => {
-    console.info(FDSInstance.GetAccounts())
     const accounts = FDSInstance.GetAccounts() ?? []
     dispatch({ type: SET_AVAILABLE_MAILBOXES, payload: { accounts: accounts.map(({ subdomain }) => subdomain) } })
   }, [])
@@ -200,6 +212,7 @@ export const MailboxProvider = ({ children }) => {
           resetMailbox,
           getSentMessages,
           getConsentsMessages,
+          uploadUnencryptedFile,
         },
       ]}
     >

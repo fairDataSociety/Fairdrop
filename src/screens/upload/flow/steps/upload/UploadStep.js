@@ -14,15 +14,44 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react'
-import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
+import React, { useEffect, useMemo, useState } from 'react'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './UploadStep.module.css'
 import Text from '../../../../../components/atoms/text/Text'
 import ProgressBar from '../../../../../components/molecules/progressBar/ProgressBar'
 import CircleLoader from '../../../../../components/atoms/circleLoader/CircleLoader'
+import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
 
-const UploadStep = ({ prevStep, nextStep }) => {
-  const [{ files, type }] = useFileManager()
+const UploadStep = ({ nextStep }) => {
+  const [{ files, type }, { setDownloadLink }] = useFileManager()
+  const [, { uploadUnencryptedFile }] = useMailbox()
+  const [infoMessage, setInfoMessage] = useState()
+  const [progress, setProgress] = useState(0)
+
+  const isEncrypted = useMemo(() => {
+    return type === FILE_UPLOAD_TYPES.ENCRYPTED
+  }, [type])
+
+  useEffect(() => {
+    if (isEncrypted) {
+      // TODO
+    } else {
+      uploadUnencryptedFile({
+        files,
+        onProgressUpdate: (response) => {
+          if (response > 100) {
+            return
+          }
+          setProgress(response)
+        },
+        onStatusChange: (message) => setInfoMessage(message),
+      }).then((link) => {
+        console.info(link)
+        setDownloadLink({ link })
+        nextStep?.()
+      })
+    }
+  }, [files, isEncrypted, setDownloadLink])
 
   return (
     <div className={styles.container}>
@@ -32,13 +61,15 @@ const UploadStep = ({ prevStep, nextStep }) => {
 
       <div className={styles.content}>
         <Text className={styles.statusHeadline} element="h2" size="l" align="center">
-          Storing Unencrypted using Swarm network
+          {isEncrypted
+            ? 'Encrypting using AES-256 military grade encryption'
+            : 'Storing Unencrypted using Swarm network'}
         </Text>
 
-        <ProgressBar className={styles.progress} value={60} />
+        <ProgressBar className={styles.progress} value={progress} />
 
-        <Text className={styles.statusDescription} size="ml" align="center" onClick={nextStep}>
-          File uploaded, processing into Swarm.
+        <Text className={styles.statusDescription} size="ml" align="center">
+          {infoMessage}
         </Text>
       </div>
     </div>

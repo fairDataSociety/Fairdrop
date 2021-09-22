@@ -18,7 +18,8 @@
     "document": true,
     "window": true,
     "localStorage": true,
-    "navigator": true
+    "navigator": true,
+    "File": true
   },
   "rules": {
     "indent": [

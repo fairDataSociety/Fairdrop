@@ -16,12 +16,14 @@
 
 export const SET_FILES = 'SET_FILES'
 export const SET_RECIPIENT = 'SET_RECIPIENT'
+export const SET_LINK = 'SET_LINK'
 export const CLEAN = 'CLEAN'
 
 export const initialState = {
   files: [],
   type: 'quick',
   recipient: '',
+  link: '',
 }
 
 export const reducer = (prevState, { type, payload }) => {
@@ -37,6 +39,12 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         recipient: payload?.recipient ?? '',
+      }
+
+    case SET_LINK:
+      return {
+        ...prevState,
+        link: payload?.link ?? '',
       }
 
     case CLEAN:

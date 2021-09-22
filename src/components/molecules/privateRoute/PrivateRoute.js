@@ -15,7 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useMemo } from 'react'
-import styles from './PrivateRoute.module.css'
 import { Route, Redirect } from 'react-router-dom'
 import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'

@@ -35,6 +35,10 @@
   max-width: 470px;
 }
 
+.submitButton {
+  min-width: 150px;
+}
+
 .error {
   margin-top: 24px;
 }

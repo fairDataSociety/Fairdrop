@@ -25,6 +25,7 @@ import Button from '../../../components/atoms/button/Button'
 import TouchableOpacity from '../../../components/atoms/touchableOpacity/TouchableOpacity'
 import { schema } from './schema'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
+import Loader from '../../../components/atoms/loader/Loader'
 
 const RegisterScreen = ({ history }) => {
   const { setVariant, setBackground } = useTheme()
@@ -64,6 +65,7 @@ const RegisterScreen = ({ history }) => {
     setBackground(colors.white)
   }, [])
 
+  console.info(formik.errors)
   return (
     <div className={styles.container}>
       <form className={styles.content} onSubmit={formik.handleSubmit} autoComplete="off">
@@ -116,12 +118,13 @@ const RegisterScreen = ({ history }) => {
 
         <div className={styles.actions}>
           <Button
+            className={styles.submitButton}
             variant="black"
             type="submit"
             onClick={formik.handleSubmit}
             disabled={!formik.isValid || formik.isSubmitting}
           >
-            Add mailbox
+            {formik.isValidating || formik.isSubmitting ? <Loader /> : 'Add mailbox'}
           </Button>
 
           <TouchableOpacity onClick={handleGoBack}>

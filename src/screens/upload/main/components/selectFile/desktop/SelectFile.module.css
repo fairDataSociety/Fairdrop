@@ -63,4 +63,6 @@
   box-sizing: border-box;
   background-color: #fb4a36;
   z-index: 104;
+  display: flex;
+  flex-wrap: wrap;
 }

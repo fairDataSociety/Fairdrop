@@ -19,7 +19,7 @@ import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../../hooks/fileM
 import styles from './SelectFile.module.css'
 import { useTheme } from '../../../../../../hooks/theme/useTheme'
 import { colors } from '../../../../../../config/colors'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import Text from '../../../../../../components/atoms/text/Text'
 import { routes } from '../../../../../../config/routes'
 import { ReactComponent as IconLock } from './assets/lock.svg'
@@ -32,6 +32,7 @@ const SelectFile = () => {
   const inputRef = useRef()
   const { setVariant, setBackground } = useTheme()
   const history = useHistory()
+  const location = useLocation()
 
   const handleFileChange = useCallback((evt) => {
     const { files } = evt.target
@@ -48,6 +49,11 @@ const SelectFile = () => {
     inputRef?.current?.click()
   }, [])
 
+  const handleStoreClick = useCallback(() => {
+    setType({ type: FILE_UPLOAD_TYPES.STORE })
+    inputRef?.current?.click()
+  }, [])
+
   useEffect(() => {
     setVariant('white')
     setBackground(colors.red)
@@ -59,6 +65,36 @@ const SelectFile = () => {
     }
     history.push(routes.upload.flow)
   }, [files])
+
+  useEffect(() => {
+    const query = new URLSearchParams(location?.search)
+    const type = query.get('t') ?? ''
+    const isValidType =
+      type === FILE_UPLOAD_TYPES.ENCRYPTED || type === FILE_UPLOAD_TYPES.QUICK || type === FILE_UPLOAD_TYPES.STORE
+
+    if (!isValidType) {
+      return
+    }
+
+    setTimeout(() => {
+      switch (type) {
+        case FILE_UPLOAD_TYPES.ENCRYPTED:
+          handleEncryptedClick?.()
+          break
+
+        case FILE_UPLOAD_TYPES.QUICK:
+          handleEncryptedClick?.()
+          break
+
+        case FILE_UPLOAD_TYPES.STORE:
+          handleStoreClick?.()
+          break
+
+        default:
+          break
+      }
+    }, 500)
+  }, [location?.search, handleUnencryptedClick, handleEncryptedClick, handleStoreClick])
 
   return (
     <div className={styles.container}>
@@ -80,6 +116,10 @@ const SelectFile = () => {
       </div>
 
       <div className={styles.actions}>
+        <Button className={styles.uploadButton} variant="white" onClick={handleStoreClick}>
+          <IconLock className={c(styles.icon, styles.encrypted)} /> Store Encrypted
+        </Button>
+
         <Button className={styles.uploadButton} variant="white" onClick={handleEncryptedClick}>
           <IconLock className={c(styles.icon, styles.encrypted)} /> Send Encrypted
         </Button>

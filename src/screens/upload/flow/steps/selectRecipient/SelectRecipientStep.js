@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './SelectRecipientStep.module.css'
 import Button from '../../../../../components/atoms/button/Button'
@@ -24,16 +24,12 @@ import { useFormik } from 'formik'
 import { schema } from './schema'
 import Input from '../../../../../components/atoms/input/Input'
 import Loader from '../../../../../components/atoms/loader/Loader'
-import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
-import { useHistory, useLocation } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import { useHistory } from 'react-router-dom'
 import { routes } from '../../../../../config/routes'
 
 const SelectRecipientStep = ({ nextStep }) => {
   const [, { setRecipient }] = useFileManager()
-  const [{ mailbox }] = useMailbox()
   const history = useHistory()
-  const location = useLocation()
 
   const formik = useFormik({
     initialValues: {
@@ -58,13 +54,6 @@ const SelectRecipientStep = ({ nextStep }) => {
     const errorField = Object.keys(formik.errors).find((errorField) => !!formik.touched[errorField])
     return formik.errors[errorField]
   }, [formik.errors, formik.touched])
-
-  useEffect(() => {
-    if (!mailbox) {
-      toast('👋 You need to log in your mailbox to send encrypted files.')
-      history.replace(routes.login, { from: location })
-    }
-  }, [mailbox, history, location])
 
   return (
     <div className={styles.container}>

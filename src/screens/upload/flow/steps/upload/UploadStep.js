@@ -28,14 +28,14 @@ import { routes } from '../../../../../config/routes'
 
 const UploadStep = ({ nextStep }) => {
   const [{ files, type, recipient }, { setDownloadLink }] = useFileManager()
-  const [, { uploadUnencryptedFile, uploadEncryptedFile }] = useMailbox()
+  const [, { uploadUnencryptedFile, uploadEncryptedFile, storeEncryptedFile }] = useMailbox()
   const [infoMessage, setInfoMessage] = useState()
   const [progress, setProgress] = useState(0)
   const [uploadFailed, setUploadFailed] = useState(false)
   const history = useHistory()
 
   const isEncrypted = useMemo(() => {
-    return type === FILE_UPLOAD_TYPES.ENCRYPTED
+    return type === FILE_UPLOAD_TYPES.ENCRYPTED || type === FILE_UPLOAD_TYPES.STORE
   }, [type])
 
   const handleTryAgainClick = useCallback(() => {
@@ -43,43 +43,69 @@ const UploadStep = ({ nextStep }) => {
   }, [history])
 
   useEffect(() => {
-    if (isEncrypted) {
-      uploadEncryptedFile({
-        to: recipient,
-        files,
-        onEncryptedEnd: () => setInfoMessage('The file was encrypted, uploading file...'),
-        onProgressUpdate: (response) => {
-          if (response > 100) {
-            return
-          }
-          setProgress(response)
-        },
-        onStatusChange: (message) => setInfoMessage(message),
-      })
-        .then(() => {
+    switch (type) {
+      case FILE_UPLOAD_TYPES.ENCRYPTED:
+        uploadEncryptedFile({
+          to: recipient,
+          files,
+          onEncryptedEnd: () => setInfoMessage('The file was encrypted, uploading file...'),
+          onProgressUpdate: (response) => {
+            if (response >= 100) {
+              setInfoMessage('File uploaded, processing into Swarm.')
+              return
+            }
+            setProgress(response)
+          },
+          onStatusChange: (message) => setInfoMessage(message),
+        })
+          .then(() => {
+            nextStep?.()
+          })
+          .catch((error) => {
+            toast.error(`💩 ${error.message}`)
+            setUploadFailed(true)
+          })
+        break
+      case FILE_UPLOAD_TYPES.QUICK:
+        uploadUnencryptedFile({
+          files,
+          onProgressUpdate: (response) => {
+            if (response >= 100) {
+              setInfoMessage('File uploaded, processing into Swarm.')
+              return
+            }
+            setProgress(response)
+          },
+          onStatusChange: (message) => setInfoMessage(message),
+        }).then((link) => {
+          console.info(link)
+          setDownloadLink({ link })
           nextStep?.()
         })
-        .catch((error) => {
-          toast.error(`💩 ${error.message}`)
-          setUploadFailed(true)
+        break
+      case FILE_UPLOAD_TYPES.STORE:
+        storeEncryptedFile({
+          files,
+          onEncryptedEnd: () => setInfoMessage('The file was encrypted, uploading file...'),
+          onProgressUpdate: (response) => {
+            if (response >= 100) {
+              setInfoMessage('File uploaded, processing into Swarm.')
+              return
+            }
+            setProgress(response)
+          },
+          onStatusChange: (message) => setInfoMessage(message),
         })
-    } else {
-      uploadUnencryptedFile({
-        files,
-        onProgressUpdate: (response) => {
-          if (response > 100) {
-            return
-          }
-          setProgress(response)
-        },
-        onStatusChange: (message) => setInfoMessage(message),
-      }).then((link) => {
-        console.info(link)
-        setDownloadLink({ link })
-        nextStep?.()
-      })
+          .then(() => {
+            nextStep?.()
+          })
+          .catch((error) => {
+            toast.error(`💩 ${error.message}`)
+            setUploadFailed(true)
+          })
+        break
     }
-  }, [files, recipient, isEncrypted, setDownloadLink])
+  }, [files, recipient, type, setDownloadLink])
 
   return (
     <div className={styles.container}>

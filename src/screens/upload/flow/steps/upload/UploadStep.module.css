@@ -33,6 +33,7 @@
 .progress {
   max-width: 470px;
   margin: 40px auto;
+  width: 100%;
 }
 
 .action {

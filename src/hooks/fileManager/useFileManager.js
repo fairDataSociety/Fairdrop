@@ -59,6 +59,7 @@ export const useFileManager = () => {
 export const FILE_UPLOAD_TYPES = {
   QUICK: 'quick',
   ENCRYPTED: 'encrypted',
+  STORE: 'store',
 }
 
 export default FileManagerProvider

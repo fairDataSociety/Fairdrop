@@ -26,8 +26,8 @@ import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Button from '../../atoms/button/Button'
 import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
-import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
+import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 
 const Header = ({ className }) => {
   const { variant } = useTheme()

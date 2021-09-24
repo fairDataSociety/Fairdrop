@@ -1,7 +1,9 @@
 .container {
-  height: 50%;
   transition: background-color 1s;
   display: flex;
+  flex: 1;
+  min-width: 50%;
+  flex-grow: 1;
 
   box-sizing: border-box;
 }

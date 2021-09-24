@@ -38,6 +38,19 @@ const ConfirmStep = ({ nextStep }) => {
     history.replace(routes.upload.home)
   }, [history])
 
+  const confirmButtonLabel = useMemo(() => {
+    switch (type) {
+      case FILE_UPLOAD_TYPES.ENCRYPTED:
+        return 'Encrypt and Send'
+
+      case FILE_UPLOAD_TYPES.QUICK:
+        return 'Send Unencrypted'
+
+      case FILE_UPLOAD_TYPES.STORE:
+        return 'Encrypt and Store'
+    }
+  }, [type])
+
   return (
     <div className={styles.container}>
       <Text className={styles.headline} element="h1" size="l" weight="500">
@@ -76,7 +89,7 @@ const ConfirmStep = ({ nextStep }) => {
 
       <div className={styles.actions}>
         <Button variant="green" onClick={nextStep}>
-          {isEncrypted ? 'Encrypt and Send' : 'Send Unencrypted'}
+          {confirmButtonLabel}
         </Button>
 
         <TouchableOpacity onClick={handleCancelClick}>

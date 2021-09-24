@@ -33,7 +33,7 @@ import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Utils from '../../../services/Utils'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 import Footer from './components/footer/Footer'
-import { useFileManager } from '../../../hooks/fileManager/useFileManager'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../hooks/fileManager/useFileManager'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
   const { showSideMenu } = useSideMenu()
@@ -74,26 +74,26 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         items: [
           {
             label: 'Store',
-            path: routes.upload.home,
+            path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.STORE })}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(routes.upload.home)
+              history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.STORE })}`)
             },
           },
           {
             label: 'Send',
-            path: `${routes.upload.home}?${qs.stringify({ a: 'send' })}`,
+            path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.ENCRYPTED })}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(`${routes.upload.home}?${qs.stringify({ a: 'send' })}`)
+              history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.ENCRYPTED })}`)
             },
           },
           {
             label: 'Quick (Unencrypted)',
-            path: `${routes.upload.home}?${qs.stringify({ a: 'quick' })}`,
+            path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.QUICK })}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(`${routes.upload.home}?${qs.stringify({ a: 'quick' })}`)
+              history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.QUICK })}`)
             },
           },
         ],

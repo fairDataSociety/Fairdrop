@@ -42,22 +42,32 @@ export const MailboxProvider = ({ children }) => {
   const balanceInterval = useRef()
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const unlockMailbox = useCallback(({ mailbox, password }) => {
-    return FDSInstance.UnlockAccount(mailbox, password).then((account) => {
-      // if(window.Sentry){
-      //   window.Sentry.configureScope((scope) => {
-      //     scope.setUser({"username": account.subdomain});
-      //   });
-      // }
-      console.info(account)
-      dispatch({
-        type: SET_MAILBOX,
-        payload: {
-          mailbox: FDSInstance.currentAccount,
-        },
+  const initSentry = useCallback(() => {
+    const sentryEnabled = !!localStorage.getItem('agreedSentry')
+    if (process.env.NODE_ENV !== 'development' && sentryEnabled) {
+      console.log('initialised Sentry')
+      Sentry.init({
+        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
+        release: 'datafund@' + version,
       })
-    })
+    }
   }, [])
+
+  const unlockMailbox = useCallback(
+    ({ mailbox, password }) => {
+      return FDSInstance.UnlockAccount(mailbox, password).then((account) => {
+        initSentry?.()
+        console.info(account)
+        dispatch({
+          type: SET_MAILBOX,
+          payload: {
+            mailbox: FDSInstance.currentAccount,
+          },
+        })
+      })
+    },
+    [initSentry],
+  )
 
   const createMailbox = useCallback(
     ({ mailbox, password, callback }) => {
@@ -144,15 +154,13 @@ export const MailboxProvider = ({ children }) => {
     return FDSInstance.currentAccount.send(to, files[0], multiboxPath, onEncryptedEnd, onProgressUpdate, onStatusChange)
   }, [])
 
-  const initSentry = useCallback(() => {
-    const sentryEnabled = !!localStorage.getItem('agreedSentry')
-    if (process.env.NODE_ENV !== 'development' && sentryEnabled) {
-      console.log('initialised Sentry')
-      Sentry.init({
-        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
-        release: 'datafund@' + version,
+  const storeEncryptedFile = useCallback(({ files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {
+    return FDSInstance.currentAccount
+      .store(files[0], onEncryptedEnd, onProgressUpdate, onStatusChange, { pinned: true }, true, true)
+      .then((response) => {
+        console.info(response)
+        // TODO Pin file
       })
-    }
   }, [])
 
   const pollUpdate = useCallback(() => {
@@ -219,6 +227,7 @@ export const MailboxProvider = ({ children }) => {
           getConsentsMessages,
           uploadUnencryptedFile,
           uploadEncryptedFile,
+          storeEncryptedFile,
         },
       ]}
     >

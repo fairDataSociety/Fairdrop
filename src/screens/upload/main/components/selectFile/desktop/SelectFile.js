@@ -64,15 +64,15 @@ const SelectFile = () => {
 
   useEffect(() => {
     const query = new URLSearchParams(location?.search)
-    const action = query.get('a') ?? ''
-    const isValidAction = action === 'send' || action === 'quick'
+    const type = query.get('t') ?? ''
+    const isValidType =
+      type === FILE_UPLOAD_TYPES.ENCRYPTED || type === FILE_UPLOAD_TYPES.QUICK || type === FILE_UPLOAD_TYPES.STORE
 
-    if (!isValidAction) {
+    if (!isValidType) {
       return
     }
-    console.info(action)
     setTimeout(() => {
-      setType({ type: action === 'send' ? FILE_UPLOAD_TYPES.ENCRYPTED : FILE_UPLOAD_TYPES.QUICK })
+      setType({ type })
       inputRef?.current?.click()
     }, 500)
   }, [location?.search])
@@ -114,6 +114,12 @@ const SelectFile = () => {
 
       {isDragActive && (
         <div className={styles.options}>
+          <Option
+            headline="Store encrypted"
+            description="Requires logging in to your mailbox"
+            type={FILE_UPLOAD_TYPES.STORE}
+            onFileDrop={handleFileDrop}
+          />
           <Option
             headline="Send encrypted"
             description="Requires logging in to your mailbox"

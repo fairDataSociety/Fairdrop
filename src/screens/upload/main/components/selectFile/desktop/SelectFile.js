@@ -21,27 +21,29 @@ import { useDropzone } from 'react-dropzone'
 import Option from './components/option/Option'
 import { useTheme } from '../../../../../../hooks/theme/useTheme'
 import { colors } from '../../../../../../config/colors'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import Text from '../../../../../../components/atoms/text/Text'
 import { routes } from '../../../../../../config/routes'
 
 const SelectFile = () => {
-  const [{ files }, { setFiles }] = useFileManager()
+  const [{ files }, { setFiles, setType }] = useFileManager()
   const inputRef = useRef()
   const { setVariant, setBackground } = useTheme()
   const history = useHistory()
+  const location = useLocation()
 
   const handleFileDrop = useCallback((type, files) => {
     setFiles({ type, files })
   }, [])
 
   const handleUploadFileClick = useCallback(() => {
+    setType({ type: FILE_UPLOAD_TYPES.ENCRYPTED })
     inputRef?.current?.click()
   }, [])
 
   const handleFileChange = useCallback((evt) => {
     const { files } = evt.target
-    setFiles({ type: 'encrypted', files: [files[0]] })
+    setFiles({ files: [files[0]] })
   }, [])
 
   const { getRootProps, isDragActive } = useDropzone({ onDrop: () => {} })
@@ -57,6 +59,20 @@ const SelectFile = () => {
     }
     history.push(routes.upload.flow)
   }, [files])
+
+  useEffect(() => {
+    const query = new URLSearchParams(location?.search)
+    const action = query.get('a') ?? ''
+    const isValidAction = action === 'send' || action === 'quick'
+
+    if (!isValidAction) {
+      return
+    }
+    setType({ type: action === 'send' ? FILE_UPLOAD_TYPES.ENCRYPTED : FILE_UPLOAD_TYPES.QUICK })
+    setTimeout(() => {
+      inputRef?.current?.click()
+    }, 500)
+  }, [location?.search])
 
   return (
     <div className={styles.container} {...getRootProps()}>

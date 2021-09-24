@@ -33,10 +33,12 @@ import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Utils from '../../../services/Utils'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 import Footer from './components/footer/Footer'
+import { useFileManager } from '../../../hooks/fileManager/useFileManager'
 
 const Menu = ({ className, isShown, onToggleMenu }) => {
   const { showSideMenu } = useSideMenu()
   const [{ mailbox, balance }] = useMailbox()
+  const [, { resetFileManager }] = useFileManager()
   const history = useHistory()
 
   const menuItems = useMemo(() => {
@@ -73,14 +75,26 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           {
             label: 'Store',
             path: routes.upload.home,
+            onClick: () => {
+              resetFileManager?.()
+              history.push(routes.upload.home)
+            },
           },
           {
             label: 'Send',
             path: `${routes.upload.home}?${qs.stringify({ a: 'send' })}`,
+            onClick: () => {
+              resetFileManager?.()
+              history.push(`${routes.upload.home}?${qs.stringify({ a: 'send' })}`)
+            },
           },
           {
             label: 'Quick (Unencrypted)',
             path: `${routes.upload.home}?${qs.stringify({ a: 'quick' })}`,
+            onClick: () => {
+              resetFileManager?.()
+              history.push(`${routes.upload.home}?${qs.stringify({ a: 'quick' })}`)
+            },
           },
         ],
       },

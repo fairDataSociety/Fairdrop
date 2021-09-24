@@ -48,7 +48,7 @@ const App = () => {
   useEffect(() => {
     setMenuOpened(false)
     hideSideMenu?.()
-  }, [location.pathname, hideSideMenu])
+  }, [location.pathname, location.search, hideSideMenu])
 
   return (
     <div className={c(styles.container)}>

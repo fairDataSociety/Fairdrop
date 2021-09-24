@@ -33,7 +33,7 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         files: payload?.files ?? [],
-        type: payload?.type ?? 'quick',
+        type: payload?.type ?? prevState.type,
       }
 
     case SET_RECIPIENT:

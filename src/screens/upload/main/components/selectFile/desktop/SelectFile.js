@@ -68,8 +68,9 @@ const SelectFile = () => {
     if (!isValidAction) {
       return
     }
-    setType({ type: action === 'send' ? FILE_UPLOAD_TYPES.ENCRYPTED : FILE_UPLOAD_TYPES.QUICK })
+    console.info(action)
     setTimeout(() => {
+      setType({ type: action === 'send' ? FILE_UPLOAD_TYPES.ENCRYPTED : FILE_UPLOAD_TYPES.QUICK })
       inputRef?.current?.click()
     }, 500)
   }, [location?.search])

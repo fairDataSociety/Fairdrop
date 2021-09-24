@@ -13,6 +13,19 @@
   align-items: center;
 }
 
+.errorHeadline {
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .loader {
   margin-right: 12px;
 }
@@ -20,4 +33,8 @@
 .progress {
   max-width: 470px;
   margin: 40px auto;
+}
+
+.action {
+  margin-top: 42px;
 }

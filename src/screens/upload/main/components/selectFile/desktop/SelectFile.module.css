@@ -32,14 +32,14 @@
   margin-top: 60px;
 }
 
-.instructions img.selectIcon {
+.instructions .selectIcon {
   height: 44px;
   top: -11px;
   position: relative;
   margin-right: 2px;
 }
 
-.instructions img.dropIcon {
+.instructions .dropIcon {
   height: 44px;
   top: -5px;
   position: relative;

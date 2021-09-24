@@ -24,6 +24,8 @@ import { colors } from '../../../../../../config/colors'
 import { useHistory, useLocation } from 'react-router-dom'
 import Text from '../../../../../../components/atoms/text/Text'
 import { routes } from '../../../../../../config/routes'
+import { ReactComponent as IconDrop } from './assets/fairdrop-drop.svg'
+import { ReactComponent as IconSelect } from './assets/fairdrop-select.svg'
 
 const SelectFile = () => {
   const [{ files }, { setFiles, setType }] = useFileManager()
@@ -95,7 +97,7 @@ const SelectFile = () => {
           </div>
 
           <Text element="h3" size="xl" weight="400" className={styles.actions}>
-            <img alt="click to select a file" className={styles.selectIcon} src="assets/images/fairdrop-select.svg" />{' '}
+            <IconSelect className={styles.selectIcon} />{' '}
             <Text
               className={styles.selectFileAction}
               size="xl"
@@ -105,8 +107,7 @@ const SelectFile = () => {
             >
               select
             </Text>{' '}
-            or <img alt="drop file glyph" className={styles.dropIcon} src="assets/images/fairdrop-drop.svg" /> drop a
-            file
+            or <IconDrop className={styles.dropIcon} /> drop a file
           </Text>
         </div>
       )}

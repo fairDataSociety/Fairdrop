@@ -49,24 +49,24 @@ const ConfirmStep = ({ nextStep }) => {
           <Fragment key={`${idx}-${file.name}`}>
             <div className={styles.row}>
               <Text>File name</Text>
-              <Text>{file.name}</Text>
+              <Text align="right">{file.name}</Text>
             </div>
 
             <div className={styles.row}>
               <Text>Size</Text>
-              <Text>{Utils.humanFileSize(file.size)}</Text>
+              <Text align="right">{Utils.humanFileSize(file.size)}</Text>
             </div>
 
             {isEncrypted && (
               <>
                 <div className={styles.row}>
                   <Text>Sender</Text>
-                  <Text>{`${mailbox?.subdomain}.datafund.eth`}</Text>
+                  <Text align="right">{`${mailbox?.subdomain}.datafund.eth`}</Text>
                 </div>
 
                 <div className={styles.row}>
                   <Text>Recipient</Text>
-                  <Text>{`${recipient}.datafund.eth`}</Text>
+                  <Text align="right">{`${recipient}.datafund.eth`}</Text>
                 </div>
               </>
             )}

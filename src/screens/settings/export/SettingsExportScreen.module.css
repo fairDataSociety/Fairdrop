@@ -6,6 +6,9 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  padding: 36px 24px;
+  box-sizing: border-box;
 }
 
 .content {

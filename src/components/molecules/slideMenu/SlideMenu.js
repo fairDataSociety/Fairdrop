@@ -2,8 +2,12 @@ import React from 'react'
 import styles from './SlideMenu.module.css'
 import c from 'classnames'
 import { CSSTransition } from 'react-transition-group'
+import { ReactComponent as IconArrowLeft } from './assets/iconArrowLeft.svg'
+import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 
-const SlideMenu = ({ className, shown, children, onEnter, onExited }) => {
+const SlideMenu = ({ className, shown, showBack = true, children, onEnter, onExited }) => {
+  const { hideSideMenu } = useSideMenu()
+
   return (
     <CSSTransition
       in={shown}
@@ -13,7 +17,16 @@ const SlideMenu = ({ className, shown, children, onEnter, onExited }) => {
       onEnter={onEnter}
       onExited={onExited}
     >
-      <div className={c(styles.container, className)}>{children}</div>
+      <div className={c(styles.container, className)}>
+        {showBack && (
+          <div className={styles.header}>
+            <button className={styles.back} onClick={hideSideMenu}>
+              <IconArrowLeft className={styles.icon} />
+            </button>
+          </div>
+        )}
+        {children}
+      </div>
     </CSSTransition>
   )
 }

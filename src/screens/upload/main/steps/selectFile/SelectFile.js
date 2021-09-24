@@ -31,8 +31,6 @@ const SelectFile = () => {
   const history = useHistory()
 
   const handleFileDrop = useCallback((type, files) => {
-    // Do something with the files
-    console.info(type, files)
     setFiles({ type, files })
   }, [])
 
@@ -42,7 +40,6 @@ const SelectFile = () => {
 
   const handleFileChange = useCallback((evt) => {
     const { files } = evt.target
-    console.info(files)
     setFiles({ type: 'encrypted', files: [files[0]] })
   }, [])
 
@@ -64,7 +61,7 @@ const SelectFile = () => {
     <div className={styles.container} {...getRootProps()}>
       {!isDragActive && (
         <div className={styles.instructions}>
-          <Text element="h2" size="xxl" weight="400">
+          <Text element="h2" size="xxl" weight="400" align="center">
             An easy and secure way to send your files.
           </Text>
           <div className={styles.features}>

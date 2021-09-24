@@ -1,23 +1,21 @@
-.container {
-  position: relative;
-}
-
 .content {
   position: absolute;
   top: 0;
-  left: -50vw;
-  height: 100vh;
-  width: 50vw;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
   z-index: 101;
   background: #2e2e2e;
   transition: 1s transform;
   display: flex;
   flex-direction: column;
   overflow: auto;
+  transform: translateX(-100%);
 }
 
 .content.shown {
-  transform: translateX(50vw);
+  transform: translateX(0%);
   transition: 0.2s ease-in transform;
 }
 
@@ -63,4 +61,10 @@
   flex: 1;
   overflow: hidden;
   padding: 0 20px;
+}
+
+@media (max-width: 500px) {
+  .content {
+    width: 100%;
+  }
 }

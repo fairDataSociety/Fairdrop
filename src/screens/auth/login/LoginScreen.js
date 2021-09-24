@@ -122,6 +122,7 @@ const LoginScreen = ({ history, location }) => {
 
         <div className={styles.actions}>
           <Button
+            className={styles.submitButton}
             variant="black"
             type="submit"
             onClick={formik.handleSubmit}

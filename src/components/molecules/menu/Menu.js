@@ -58,6 +58,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         onClick: function () {
           showSideMenu({
             Component: <ProfileScreen />,
+            showBack: false,
           })
         },
         items: [],

@@ -35,3 +35,13 @@
   height: auto;
   margin-left: 12px;
 }
+
+@media (max-width: 500px) {
+  .version {
+    display: none;
+  }
+
+  .actions {
+    display: none;
+  }
+}

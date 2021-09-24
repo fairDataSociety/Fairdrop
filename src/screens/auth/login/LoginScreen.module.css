@@ -5,6 +5,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 36px 24px;
+  box-sizing: border-box;
 }
 
 .content {
@@ -37,4 +39,18 @@
 
 .error {
   margin-top: 24px;
+}
+
+@media (max-width: 400px) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions .submitButton {
+    margin-bottom: 24px;
+  }
+
+  p.error {
+    text-align: center;
+  }
 }

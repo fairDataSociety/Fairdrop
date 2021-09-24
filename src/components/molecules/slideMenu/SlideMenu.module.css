@@ -2,9 +2,9 @@
   position: absolute;
   top: 0;
   right: 0;
-  height: 100vh;
-  width: 51vw;
-  z-index: 101;
+  height: 100%;
+  width: 51%;
+  z-index: 104;
   background: #2e2e2e;
   transition: 1s transform;
   display: flex;
@@ -14,7 +14,7 @@
 }
 
 .enter {
-  transform: translateX(51vw);
+  transform: translateX(100%);
 }
 
 .enterActive {
@@ -28,5 +28,48 @@
 }
 
 .exitActive {
-  transform: translateX(51vw);
+  transform: translateX(100%);
+}
+
+.header {
+  display: none;
+  margin-bottom: 24px;
+}
+
+.back {
+  border: 0;
+  background: transparent;
+  outline: none;
+}
+
+.icon {
+  fill: #fff;
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 500px) {
+  .container {
+    width: 100%;
+  }
+
+  .enter {
+    transform: translateX(100%);
+  }
+
+  .enterActive {
+    transform: translateX(0);
+  }
+
+  .exit {
+    transform: translateX(0);
+  }
+
+  .exitActive {
+    transform: translateX(100%);
+  }
+
+  .header {
+    display: block;
+  }
 }

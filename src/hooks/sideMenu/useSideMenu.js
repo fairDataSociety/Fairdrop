@@ -56,6 +56,7 @@ export const SideMenuProvider = ({ target, children }) => {
       <SlideMenu
         shown={sideMenuOpened}
         target={portalTarget}
+        showBack={sideMenuParams?.showBack ?? true}
         onEnter={handleSideMenuOpened}
         onExited={hadleSideMenuClosed}
       >

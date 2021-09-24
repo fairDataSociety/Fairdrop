@@ -44,6 +44,7 @@ const RegisterScreen = ({ history }) => {
         password: values.password,
         callback: (message) => setInfoMessage(message),
       }).catch((e) => console.info(e))
+      // TODO navigate to upload
     },
   })
 

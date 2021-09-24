@@ -15,14 +15,15 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useCallback, useRef, useEffect } from 'react'
-import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
 import styles from './SelectFile.module.css'
 import { useDropzone } from 'react-dropzone'
 import Option from './components/option/Option'
-import { useTheme } from '../../../../../hooks/theme/useTheme'
-import { colors } from '../../../../../config/colors'
+import { useTheme } from '../../../../../../hooks/theme/useTheme'
+import { colors } from '../../../../../../config/colors'
 import { useHistory } from 'react-router-dom'
-import Text from '../../../../../components/atoms/text/Text'
+import Text from '../../../../../../components/atoms/text/Text'
+import { routes } from '../../../../../../config/routes'
 
 const SelectFile = () => {
   const [{ files }, { setFiles }] = useFileManager()
@@ -54,7 +55,7 @@ const SelectFile = () => {
     if (files.length === 0) {
       return
     }
-    history.push('/upload/flow')
+    history.push(routes.upload.flow)
   }, [files])
 
   return (

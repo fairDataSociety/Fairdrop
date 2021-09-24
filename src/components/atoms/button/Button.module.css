@@ -85,12 +85,18 @@
 
 .inverted.red {
   background-color: transparent;
-  border-color: #fb4a36;
-  color: #fb4a36;
+  border-color: #ff6f58;
+  color: #ff6f58;
 }
 
 .button.inverted.red:hover {
   opacity: 1;
-  background-color: #fb4a36;
+  background-color: #ff6f58;
   color: #fff;
+}
+
+@media (max-width: 500px) {
+  .button {
+    height: 42px;
+  }
 }

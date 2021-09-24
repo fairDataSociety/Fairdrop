@@ -15,12 +15,15 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useEffect } from 'react'
+import { useDimensions } from '../../../hooks/dimensions/useDimensions'
 import { useFileManager } from '../../../hooks/fileManager/useFileManager'
-import SelectFile from './steps/selectFile/SelectFile'
+import SelectFileDesktop from './components/selectFile/desktop/SelectFile'
+import SelectFileMobile from './components/selectFile/mobile/SelectFile'
 import styles from './UploadMainScreen.module.css'
 
 const UploadMainScreen = () => {
   const [, { resetFileManager }] = useFileManager()
+  const { isMobile } = useDimensions()
 
   useEffect(() => {
     resetFileManager?.()
@@ -28,7 +31,8 @@ const UploadMainScreen = () => {
 
   return (
     <div className={styles.container}>
-      <SelectFile />
+      {!isMobile && <SelectFileDesktop />}
+      {isMobile && <SelectFileMobile />}
     </div>
   )
 }

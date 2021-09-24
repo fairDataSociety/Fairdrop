@@ -18,7 +18,7 @@ import React, { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from './Option.module.css'
 import c from 'classnames'
-import Text from '../../../../../../../components/atoms/text/Text'
+import Text from '../../../../../../../../components/atoms/text/Text'
 
 const Option = ({ headline, description, type, onFileDrop }) => {
   const onDrop = useCallback(

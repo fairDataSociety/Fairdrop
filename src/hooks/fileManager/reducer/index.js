@@ -17,6 +17,7 @@
 export const SET_FILES = 'SET_FILES'
 export const SET_RECIPIENT = 'SET_RECIPIENT'
 export const SET_LINK = 'SET_LINK'
+export const SET_TYPE = 'SET_TYPESET_TYPE'
 export const CLEAN = 'CLEAN'
 
 export const initialState = {
@@ -45,6 +46,12 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         link: payload?.link ?? '',
+      }
+
+    case SET_TYPE:
+      return {
+        ...prevState,
+        type: payload?.type ?? 'quick',
       }
 
     case CLEAN:

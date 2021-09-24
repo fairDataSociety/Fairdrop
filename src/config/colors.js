@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 export const colors = {
-  red: '#FB4A36',
+  red: '#ff6f58',
   green: '#37bd72',
   gray: '#2e332f',
   white: '#ffffff',

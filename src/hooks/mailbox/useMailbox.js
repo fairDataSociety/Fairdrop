@@ -39,6 +39,8 @@ const MailboxContext = React.createContext()
 
 export const FDSInstance = new FDS()
 
+const APP_STATE_KEY = 'fairdrop-appState-0.1'
+
 export const MailboxProvider = ({ children }) => {
   const updatesInterval = useRef()
   const balanceInterval = useRef()
@@ -54,6 +56,64 @@ export const MailboxProvider = ({ children }) => {
       })
     }
   }, [])
+
+  const getAppState = useCallback(async () => {
+    if (!FDSInstance.currentAccount) {
+      return Promise.reject(new Error('No mailbox selected'))
+    }
+
+    try {
+      let appState = FDSInstance.currentAccount.retrieveDecryptedValue(APP_STATE_KEY)
+      appState = JSON.parse(appState)
+      return appState
+    } catch (error) {
+      console.error(error)
+      if (error?.response?.status) {
+        return {}
+      }
+
+      throw new Error(error)
+    }
+  }, [])
+
+  const updateAppState = useCallback(
+    async ({ state = {} }) => {
+      if (!FDSInstance.currentAccount) {
+        return Promise.reject(new Error('No mailbox selected'))
+      }
+
+      const currentAppState = await getAppState()
+      const newAppState = {
+        ...(currentAppState ?? {}),
+        ...state,
+      }
+      await FDSInstance.currentAccount.storeEncryptedValue(APP_STATE_KEY, JSON.stringify(newAppState))
+    },
+    [getAppState],
+  )
+
+  const updateStoredStats = useCallback(async () => {
+    if (!state.mailbox) {
+      return Promise.reject(new Error('No mailbox selected'))
+    }
+
+    const manifest = await FDSInstance.currentAccount.storedManifest()
+    const totalStoredSize = manifest.storedFiles.reduce((total, o) => {
+      return total + o?.file?.size ?? 0
+    }, 0)
+    const totalPinnedSize = manifest.storedFiles
+      .filter((o) => {
+        return o.meta.pinned === true
+      })
+      .reduce((total, o) => {
+        return total + o?.file?.size ?? 0
+      }, 0)
+
+    await updateAppState({
+      totalStoredSize,
+      totalPinnedSize,
+    })
+  }, [state?.mailbox, updateAppState])
 
   const unlockMailbox = useCallback(
     ({ mailbox, password }) => {
@@ -223,8 +283,9 @@ export const MailboxProvider = ({ children }) => {
             console.log('could not pin', response.storedManifestAddress)
           }
         })
+        .then(updateStoredStats)
     },
-    [unpin, pin],
+    [unpin, pin, updateStoredStats],
   )
 
   const pollUpdate = useCallback(() => {
@@ -294,6 +355,9 @@ export const MailboxProvider = ({ children }) => {
           storeEncryptedFile,
           pin,
           unpin,
+          getAppState,
+          updateAppState,
+          updateStoredStats,
         },
       ]}
     >

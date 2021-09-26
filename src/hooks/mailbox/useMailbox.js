@@ -32,6 +32,8 @@ import {
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
+import axios from 'axios'
+import qs from 'qs'
 
 const MailboxContext = React.createContext()
 
@@ -135,6 +137,50 @@ export const MailboxProvider = ({ children }) => {
       .catch((error) => console.info(error))
   }, [])
 
+  const pin = useCallback(
+    (hash) => {
+      if (!state?.mailbox?.address) {
+        return Promise.reject(new Error('No mailbox selected'))
+      }
+
+      return axios
+        .post(
+          `${process.env.REACT_APP_PINNING_ORACLE_URL}/pin`,
+          qs.stringify({
+            account: state?.mailbox?.address,
+            address: hash,
+            warrant: '',
+            endBlock: '9999',
+          }),
+        )
+        .then((result) => {
+          console.info(result)
+        })
+    },
+    [state?.mailbox],
+  )
+
+  const unpin = useCallback(
+    (hash) => {
+      if (!state?.mailbox?.address) {
+        return Promise.reject(new Error('No mailbox selected'))
+      }
+
+      return axios
+        .post(
+          `${process.env.REACT_APP_PINNING_ORACLE_URL}/unpin`,
+          qs.stringify({
+            account: state?.mailbox?.address,
+            address: hash,
+          }),
+        )
+        .then((result) => {
+          console.info(result)
+        })
+    },
+    [state?.mailbox],
+  )
+
   const uploadUnencryptedFile = useCallback(({ files, onProgressUpdate, onStatusChange }) => {
     const sanitizedFiles = files.map((file) => {
       const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
@@ -154,14 +200,32 @@ export const MailboxProvider = ({ children }) => {
     return FDSInstance.currentAccount.send(to, files[0], multiboxPath, onEncryptedEnd, onProgressUpdate, onStatusChange)
   }, [])
 
-  const storeEncryptedFile = useCallback(({ files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {
-    return FDSInstance.currentAccount
-      .store(files[0], onEncryptedEnd, onProgressUpdate, onStatusChange, { pinned: true }, true, true)
-      .then((response) => {
-        console.info(response)
-        // TODO Pin file
+  const storeEncryptedFile = useCallback(
+    ({ files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {
+      const sanitizedFiles = files.map((file) => {
+        const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
+        const fullPath = file.fullPath || file.webkitRelativePath
+        newFile.fullPath = fullPath.replace(/ /g, '_')
+        return newFile
       })
-  }, [])
+      return FDSInstance.currentAccount
+        .store(sanitizedFiles[0], onEncryptedEnd, onProgressUpdate, onStatusChange, { pinned: true }, true, true)
+        .then(async (response) => {
+          console.info(response)
+          try {
+            unpin(response.oldStoredManifestAddress)
+          } catch {
+            console.info('could not unpin', response.oldStoredManifestAddress)
+          }
+          try {
+            pin(response.storedManifestAddress)
+          } catch {
+            console.log('could not pin', response.storedManifestAddress)
+          }
+        })
+    },
+    [unpin, pin],
+  )
 
   const pollUpdate = useCallback(() => {
     FDSInstance.currentAccount
@@ -228,6 +292,8 @@ export const MailboxProvider = ({ children }) => {
           uploadUnencryptedFile,
           uploadEncryptedFile,
           storeEncryptedFile,
+          pin,
+          unpin,
         },
       ]}
     >

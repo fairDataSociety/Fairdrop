@@ -22,6 +22,7 @@ import { useTheme } from '../../../hooks/theme/useTheme'
 import DashboardConsentsScreen from '../../../screens/auth/dashboard/consents/DashboardConsentsScreen'
 import DashboardReceivedScreen from '../../../screens/auth/dashboard/received/DashboardReceivedScreen'
 import DashboardSentScreen from '../../../screens/auth/dashboard/sent/DashboardSentScreen'
+import DashboardStoredScreen from '../../../screens/auth/dashboard/stored/DashboardStoredScreen'
 import Text from '../../atoms/text/Text'
 import styles from './Dashboard.module.css'
 
@@ -48,6 +49,12 @@ const Dashboard = () => {
           </Text>
         </NavLink>
 
+        <NavLink className={styles.link} to={routes.mailbox.stored} activeClassName={styles.active} exact>
+          <Text element="span" variant="black">
+            {'> Stored'}
+          </Text>
+        </NavLink>
+
         <NavLink className={styles.link} to={routes.mailbox.consents} activeClassName={styles.active} exact>
           <Text element="span" variant="black">
             {'> Consents'}
@@ -57,6 +64,7 @@ const Dashboard = () => {
       <div className={styles.content}>
         <Route exact path={routes.mailbox.received} component={DashboardReceivedScreen} />
         <Route exact path={routes.mailbox.sent} component={DashboardSentScreen} />
+        <Route exact path={routes.mailbox.stored} component={DashboardStoredScreen} />
         <Route exact path={routes.mailbox.consents} component={DashboardConsentsScreen} />
         <Redirect exact path={routes.mailbox.dashboard} to={routes.mailbox.received} />
       </div>

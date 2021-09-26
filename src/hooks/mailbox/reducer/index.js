@@ -17,6 +17,7 @@
 export const SET_RECEIVED_MESSAGES = 'SET_RECEIVED_MESSAGES'
 export const SET_SENT_MESSAGES = 'SET_SENT_MESSAGES'
 export const SET_CONSENTS_MESSAGES = 'SET_CONSENTS_MESSAGES'
+export const SET_STORED_MESSAGES = 'SET_STORED_MESSAGES'
 export const SET_BALANCE = 'SET_BALANCE'
 export const SET_MAILBOX = 'SET_MAILBOX'
 export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
@@ -27,6 +28,7 @@ export const initialState = {
   received: [],
   sent: [],
   consents: [],
+  stored: [],
   balance: 0,
   mailbox: null,
   accounts: [],
@@ -38,19 +40,25 @@ export const reducer = (prevState, { type, payload }) => {
     case SET_RECEIVED_MESSAGES:
       return {
         ...prevState,
-        received: payload.messages,
+        received: payload.messages ?? [],
       }
 
     case SET_SENT_MESSAGES:
       return {
         ...prevState,
-        sent: payload.messages,
+        sent: payload.messages ?? [],
       }
 
     case SET_CONSENTS_MESSAGES:
       return {
         ...prevState,
-        consents: payload.messages,
+        consents: payload.messages ?? [],
+      }
+
+    case SET_STORED_MESSAGES:
+      return {
+        ...prevState,
+        stored: payload.messages ?? [],
       }
 
     case SET_BALANCE:

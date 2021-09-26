@@ -29,6 +29,7 @@ import {
   SET_AVAILABLE_MAILBOXES,
   RESET,
   SET_CONSENTS_MESSAGES,
+  SET_STORED_MESSAGES,
   SET_APP_STATE,
 } from './reducer'
 import { version } from '../../../package.json'
@@ -201,21 +202,36 @@ export const MailboxProvider = ({ children }) => {
   }, [])
 
   const getSentMessages = useCallback(() => {
-    return FDSInstance.currentAccount
-      ?.messages('sent')
-      .then((messages) => {
-        dispatch({ type: SET_SENT_MESSAGES, payload: { messages } })
-      })
-      .catch((error) => console.info(error))
+    return (
+      FDSInstance.currentAccount
+        ?.messages('sent')
+        .then((messages) => {
+          dispatch({ type: SET_SENT_MESSAGES, payload: { messages } })
+        })
+        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+    )
   }, [])
 
   const getConsentsMessages = useCallback(() => {
-    return FDSInstance.currentAccount
-      ?.messages('received', '/shared/consents')
-      .then((messages) => {
-        dispatch({ type: SET_CONSENTS_MESSAGES, payload: { messages } })
-      })
-      .catch((error) => console.info(error))
+    return (
+      FDSInstance.currentAccount
+        ?.messages('received', '/shared/consents')
+        .then((messages) => {
+          dispatch({ type: SET_CONSENTS_MESSAGES, payload: { messages } })
+        })
+        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+    )
+  }, [])
+
+  const getStoredMessages = useCallback(() => {
+    return (
+      FDSInstance.currentAccount
+        ?.stored()
+        .then((messages) => {
+          dispatch({ type: SET_STORED_MESSAGES, payload: { messages } })
+        })
+        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+    )
   }, [])
 
   const pin = useCallback(
@@ -371,6 +387,7 @@ export const MailboxProvider = ({ children }) => {
           resetMailbox,
           getSentMessages,
           getConsentsMessages,
+          getStoredMessages,
           uploadUnencryptedFile,
           uploadEncryptedFile,
           storeEncryptedFile,

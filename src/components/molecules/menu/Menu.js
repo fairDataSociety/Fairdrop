@@ -111,6 +111,10 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
             path: routes.mailbox.sent,
           },
           {
+            label: 'Stored Files',
+            path: routes.mailbox.stored,
+          },
+          {
             label: 'Consents',
             path: routes.mailbox.consents,
           },

@@ -29,6 +29,7 @@ import {
   SET_AVAILABLE_MAILBOXES,
   RESET,
   SET_CONSENTS_MESSAGES,
+  SET_APP_STATE,
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
@@ -88,6 +89,12 @@ export const MailboxProvider = ({ children }) => {
         ...state,
       }
       await FDSInstance.currentAccount.storeEncryptedValue(APP_STATE_KEY, JSON.stringify(newAppState))
+      dispatch({
+        type: SET_APP_STATE,
+        payload: {
+          appState: newAppState,
+        },
+      })
     },
     [getAppState],
   )
@@ -117,18 +124,32 @@ export const MailboxProvider = ({ children }) => {
 
   const unlockMailbox = useCallback(
     ({ mailbox, password }) => {
-      return FDSInstance.UnlockAccount(mailbox, password).then((account) => {
+      return FDSInstance.UnlockAccount(mailbox, password).then(async (account) => {
         initSentry?.()
         console.info(account)
+
         dispatch({
           type: SET_MAILBOX,
           payload: {
             mailbox: FDSInstance.currentAccount,
           },
         })
+
+        // Init app state on login
+        const appState = await getAppState()
+          .catch((e) => console.info(e))
+          .then(() => {
+            return {}
+          })
+        dispatch({
+          type: SET_APP_STATE,
+          payload: {
+            appState,
+          },
+        })
       })
     },
-    [initSentry],
+    [initSentry, getAppState],
   )
 
   const createMailbox = useCallback(

@@ -20,6 +20,7 @@ export const SET_CONSENTS_MESSAGES = 'SET_CONSENTS_MESSAGES'
 export const SET_BALANCE = 'SET_BALANCE'
 export const SET_MAILBOX = 'SET_MAILBOX'
 export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
+export const SET_APP_STATE = 'SET_APP_STATESET_APP_STATE'
 export const RESET = 'RESET'
 
 export const initialState = {
@@ -29,6 +30,7 @@ export const initialState = {
   balance: 0,
   mailbox: null,
   accounts: [],
+  appState: {},
 }
 
 export const reducer = (prevState, { type, payload }) => {
@@ -67,6 +69,12 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         accounts: payload.accounts,
+      }
+
+    case SET_APP_STATE:
+      return {
+        ...prevState,
+        appState: payload.appState,
       }
 
     case RESET:

@@ -64,7 +64,7 @@ export const MailboxProvider = ({ children }) => {
     }
 
     try {
-      let appState = FDSInstance.currentAccount.retrieveDecryptedValue(APP_STATE_KEY)
+      let appState = (await FDSInstance.currentAccount.retrieveDecryptedValue(APP_STATE_KEY)) ?? {}
       appState = JSON.parse(appState)
       return appState
     } catch (error) {

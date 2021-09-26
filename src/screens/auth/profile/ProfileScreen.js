@@ -25,7 +25,7 @@ import Utils from '../../../services/Utils'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 
 const ProfileScreen = () => {
-  const [{ mailbox, balance }] = useMailbox()
+  const [{ mailbox, balance, appState }] = useMailbox()
   const [copied, setCopied] = useState(false)
   const { hideSideMenu } = useSideMenu()
 
@@ -82,6 +82,22 @@ const ProfileScreen = () => {
           </Text>
 
           <Text weight="500">{Utils.formatBalance(balance)}</Text>
+        </div>
+
+        <div className={styles.infoRow}>
+          <Text className={styles.label} variant="gray">
+            Stored Currently
+          </Text>
+
+          <Text weight="500">{Utils.humanFileSize(appState?.totalStoredSize ?? undefined)}</Text>
+        </div>
+
+        <div className={styles.infoRow}>
+          <Text className={styles.label} variant="gray">
+            Stored Pinned Currently
+          </Text>
+
+          <Text weight="500">{Utils.humanFileSize(appState?.totalPinnedSize ?? undefined)}</Text>
         </div>
       </div>
     </div>

@@ -26,13 +26,6 @@ function generatePassword() {
   })
 }
 
-function humanTime(seconds) {
-  if(typeof seconds === 'undefined'){
-    return ' - '
-  }
-  return moment.duration(seconds, 'seconds').humanize()
-}
-
 function humanFileSize(size) {
   if (typeof size === 'undefined') {
     return ' - '

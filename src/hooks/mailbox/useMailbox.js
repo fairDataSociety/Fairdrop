@@ -117,11 +117,17 @@ export const MailboxProvider = ({ children }) => {
         return total + o?.file?.size ?? 0
       }, 0)
 
+    const kbPerBlock = 10
+    const blockTimeInSeconds = 1
+    const pinnedTimeRemainingInBlocks = state?.balance ?? 0 - kbPerBlock * totalPinnedSize
+    const pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds
+
     await updateAppState({
       totalStoredSize,
       totalPinnedSize,
+      pinnedTimeRemainingInSecs,
     })
-  }, [state?.mailbox, updateAppState])
+  }, [state?.mailbox, updateAppState, state?.balance])
 
   const unlockMailbox = useCallback(
     ({ mailbox, password }) => {

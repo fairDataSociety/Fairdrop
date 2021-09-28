@@ -89,15 +89,18 @@ const ProfileScreen = () => {
             Stored Currently
           </Text>
 
-          <Text weight="500">{Utils.humanFileSize(appState?.totalStoredSize ?? undefined)}</Text>
+          <Text weight="500">
+            {Utils.humanFileSize(appState?.totalStoredSize ?? undefined)} (
+            {Utils.humanFileSize(appState?.totalPinnedSize ?? undefined)})
+          </Text>
         </div>
 
         <div className={styles.infoRow}>
           <Text className={styles.label} variant="gray">
-            Stored Pinned Currently
+            Stored Time Remaining
           </Text>
 
-          <Text weight="500">{Utils.humanFileSize(appState?.totalPinnedSize ?? undefined)}</Text>
+          <Text weight="500">{Utils.humanTime(appState?.pinnedTimeRemainingInSecs ?? undefined)}</Text>
         </div>
       </div>
     </div>

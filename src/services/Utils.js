@@ -15,6 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import Crypto from 'crypto'
+import { Duration } from 'luxon'
 // import zxcvbn from 'zxcvbn';
 
 function generatePassword() {
@@ -80,8 +81,11 @@ function copyToClipboard(text) {
   })
 }
 
-// function humanEntropy(password){
-//     return zxcvbn(password).crack_times_display.offline_fast_hashing_1e10_per_second;
-// }
+function humanTime(seconds) {
+  if (typeof seconds === 'undefined') {
+    return ' - '
+  }
+  return Duration.fromObject({ seconds })
+}
 
-export default { generatePassword, humanFileSize, truncate, formatBalance, copyToClipboard }
+export default { generatePassword, humanFileSize, truncate, formatBalance, copyToClipboard, humanTime }

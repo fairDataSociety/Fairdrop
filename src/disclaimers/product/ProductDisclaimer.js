@@ -29,7 +29,7 @@ const ProductDisclaimer = () => {
   }, [])
 
   useEffect(() => {
-    setShown(typeof localStorage.getItem('agreedProductDisclaimer') === 'undefined')
+    setShown(!localStorage.getItem('agreedProductDisclaimer'))
   }, [])
 
   if (!shown) {

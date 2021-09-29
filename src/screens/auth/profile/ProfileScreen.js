@@ -24,6 +24,7 @@ import TouchableOpacity from '../../../components/atoms/touchableOpacity/Touchab
 import Utils from '../../../services/Utils'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 import Switch from 'react-switch'
+import QR from '../../../components/atoms/qr/QR'
 
 const ProfileScreen = () => {
   const [{ mailbox, balance, appState }, { initSentry }] = useMailbox()
@@ -32,7 +33,7 @@ const ProfileScreen = () => {
   const { hideSideMenu } = useSideMenu()
 
   const handleCopyAddress = useCallback(() => {
-    Utils.copyToClipboard(mailbox.address).then(() => {
+    Utils.copyToClipboard(mailbox?.address).then(() => {
       setCopied(true)
       setTimeout(() => {
         setCopied(false)
@@ -44,7 +45,11 @@ const ProfileScreen = () => {
     (value) => {
       value && initSentry()
       setSentryEnabled(value)
-      localStorage.setItem('sentryEnabled', value)
+      if (!value) {
+        localStorage.removeItem('agreedSentry')
+      } else {
+        localStorage.setItem('agreedSentry', Date.now())
+      }
     },
     [initSentry],
   )
@@ -69,7 +74,7 @@ const ProfileScreen = () => {
             Mailbox Name
           </Text>
 
-          <Text weight="500">{mailbox.subdomain}</Text>
+          <Text weight="500">{mailbox?.subdomain}</Text>
         </div>
 
         <div className={c(styles.infoRow, styles.address)}>
@@ -78,13 +83,21 @@ const ProfileScreen = () => {
           </Text>
 
           <div className={styles.addressWrapper}>
-            <Input className={styles.addressInput} defaultValue={mailbox.address} />
+            <Input className={styles.addressInput} defaultValue={mailbox?.address} />
             <TouchableOpacity className={styles.copyAddress} onClick={handleCopyAddress}>
               <Text element="span" size="sm">
                 {copied ? 'Copied!' : 'Copy'}
               </Text>
             </TouchableOpacity>
           </div>
+        </div>
+
+        <div className={c(styles.infoRow, styles.qr)}>
+          <Text className={styles.label} variant="gray">
+            Fairdrop Address
+          </Text>
+
+          <QR darkColor="#fff" resource={`fds://${mailbox?.address ?? ''}`} size={128} />
         </div>
 
         <div className={styles.infoRow}>

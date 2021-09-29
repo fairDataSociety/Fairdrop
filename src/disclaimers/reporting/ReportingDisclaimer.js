@@ -39,7 +39,7 @@ const ReportingDisclaimer = () => {
   }, [])
 
   useEffect(() => {
-    setShown(typeof localStorage.getItem('agreedReportingDisclaimer') === 'undefined')
+    setShown(!localStorage.getItem('agreedReportingDisclaimer'))
   }, [])
 
   if (!shown) {

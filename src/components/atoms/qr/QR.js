@@ -1,7 +1,7 @@
 import QRCode from 'qrcode'
 import React, { useEffect, useState } from 'react'
 
-export const QR = ({ resource, size = 263 }) => {
+export const QR = ({ resource, size = 263, lightColor = '#fffff00', darkColor = '#000' }) => {
   const [url, setUrl] = useState()
 
   useEffect(() => {
@@ -11,8 +11,8 @@ export const QR = ({ resource, size = 263 }) => {
         width: size,
         height: size,
         color: {
-          light: '#fffff00',
-          dark: '#000',
+          light: lightColor,
+          dark: darkColor,
         },
         margin: 1,
       },

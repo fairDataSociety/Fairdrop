@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Text from '../../../components/atoms/text/Text'
 import { colors } from '../../../config/colors'
 import { useTheme } from '../../../hooks/theme/useTheme'
@@ -32,7 +32,8 @@ const NEW_MAILBOX = 'NEW_MAILBOX'
 
 const LoginScreen = ({ history, location }) => {
   const { setVariant, setBackground } = useTheme()
-  const [{ accounts }, { unlockMailbox }] = useMailbox()
+  const [{ accounts }, { unlockMailbox, createWarrant }] = useMailbox()
+  const [infoMessage, setInfoMessage] = useState()
   const formik = useFormik({
     initialValues: {
       mailbox: '',
@@ -40,11 +41,19 @@ const LoginScreen = ({ history, location }) => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      await unlockMailbox(values)
-      if (location?.state?.from) {
-        history.replace(location?.state?.from)
-      } else {
-        history.replace(routes.upload.home)
+      try {
+        await unlockMailbox(values)
+
+        setInfoMessage('Creating warrant')
+        await createWarrant()
+
+        if (location?.state?.from) {
+          history.replace(location?.state?.from)
+        } else {
+          history.replace(routes.upload.home)
+        }
+      } catch (error) {
+        console.info(error)
       }
     },
   })
@@ -117,6 +126,12 @@ const LoginScreen = ({ history, location }) => {
         {getError() && (
           <Text className={styles.error} align="right" variant="black">
             {getError()}
+          </Text>
+        )}
+
+        {infoMessage && (
+          <Text className={styles.error} align="right" variant="black">
+            {infoMessage}
           </Text>
         )}
 

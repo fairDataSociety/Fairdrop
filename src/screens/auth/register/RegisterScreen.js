@@ -26,10 +26,11 @@ import TouchableOpacity from '../../../components/atoms/touchableOpacity/Touchab
 import { schema } from './schema'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Loader from '../../../components/atoms/loader/Loader'
+import { routes } from '../../../config/routes'
 
-const RegisterScreen = ({ history }) => {
+const RegisterScreen = ({ history, location }) => {
   const { setVariant, setBackground } = useTheme()
-  const [, { createMailbox }] = useMailbox()
+  const [, { createMailbox, createWarrant }] = useMailbox()
   const [infoMessage, setInfoMessage] = useState()
   const formik = useFormik({
     initialValues: {
@@ -39,12 +40,24 @@ const RegisterScreen = ({ history }) => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      await createMailbox({
-        mailbox: values.mailbox,
-        password: values.password,
-        callback: (message) => setInfoMessage(message),
-      }).catch((e) => console.info(e))
-      // TODO navigate to upload
+      try {
+        await createMailbox({
+          mailbox: values.mailbox,
+          password: values.password,
+          callback: (message) => setInfoMessage(message),
+        }).catch((e) => console.info(e))
+        setInfoMessage('Creating warrant')
+        await createWarrant()
+
+        if (location?.state?.from) {
+          history.replace(location?.state?.from)
+        } else {
+          history.replace(routes.upload.home)
+        }
+      } catch (error) {
+        console.info(error)
+        // TODO handle error
+      }
     },
   })
 

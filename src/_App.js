@@ -27,6 +27,7 @@ import DisclaimerSplash2 from './components/DisclaimerSplash2'
 import DisclaimerSplash3 from './components/DisclaimerSplash3'
 import Menu from './components/Menu'
 import Content from './components/Content'
+import Download from './components/Download'
 
 import FairdropLogo from './components/Shared/svg/FairdropLogo.js'
 import MailboxGlyph from './components/Shared/svg/MailboxGlyph.js'
@@ -44,8 +45,10 @@ import './lib/DDrop.css'
 import { version } from '../package.json'
 window.files = []
 
-// let pinningOracleURL = 'https://oracle.fairdrop.pro'; //nb this refers to swarm.fairdrop.pro oracle
-let pinningOracleURL = 'https://pinning.fairdrop.pro' //nb this refers to swarm2.fairdatasociety.org's oracle
+let pinningOracleURL = 'https://pinning-staging.fairdrop.pro' //nb this refers to swarm2.fairdatasociety.org's oracle
+let pinningManagerAddress = '0xd77d6De39fc1a5B23c1649CC379DfFffC22be887'
+// let pinningOracleURL = 'http://localhost:8081'; //nb this refers to swarm.fairdrop.pro oracle
+// let pinningManagerAddress = '0x5CE2cf75F697BaC746D02c9C54d6956836A9AA87';
 
 class App extends Component {
   getInitialState() {
@@ -134,21 +137,22 @@ class App extends Component {
 
     // let config = {
     //   tokenName: 'gas',
-    //   swarmGateway: 'https://swarm.fairdatasociety.org',
-    //   ethGateway: 'https://noordung.fairdrop.pro',
-    //   faucetAddress: 'https://faucet-noordung.fairdatasociety.org/gimmie',
+    //   swarmGateway: 'http://localhost:8500',
+    //   ethGateway: 'http://localhost:8545',
+    //   faucetAddress: 'http://localhost:3001/gimmie',
     //   chainID: '235813',
     //   httpTimeout: 1000,
     //   gasPrice: 0.1,
     //   walletVersion: 1,
     //   ensConfig: {
     //     domain: 'datafund.eth',
-    //     registryAddress: '0xA1029cb176082eca658A67fD6807B9bDfB44A695',
-    //     subdomainRegistrarAddress: '0x0E6a3B5f6800145bAe95C48934B7b5a90Df50722',
-    //     resolverContractAddress: '0xC91AB84FFad79279D47a715eF91F5fbE86302E4D'
+    //     registryAddress: '0xfFD6A92307e89DccE6718498Cca401cB9d0E2418',
+    //     subdomainRegistrarAddress: '0xDa0F381BFdc4B0e17A49323eBFb1f32feF1a3660',
+    //     resolverContractAddress: '0xB65d26810f4a78Ae3880E1147C9C3BB5a9729C69'
     //   }
     // };
 
+    // this.FDS = new FDS(config);
     this.FDS = new FDS()
     window.FDS = this.FDS
 
@@ -181,6 +185,10 @@ class App extends Component {
     this.resetState = this.resetState.bind(this)
     this.updateStoredStats = this.updateStoredStats.bind(this)
     this.setIsLoading = this.setIsLoading.bind(this)
+    this.saveAppState = this.saveAppState.bind(this)
+    this.updateBalance = this.updateBalance.bind(this)
+    this.getAppState = this.getAppState.bind(this)
+    this.initSentry = this.initSentry.bind(this)
 
     this.state = this.getInitialState()
   }
@@ -203,7 +211,7 @@ class App extends Component {
     this.setState({ checkbalanceInterval: bInterval })
     document.getElementById('splash').classList.add('splash-fadeout')
     setTimeout(() => {
-      this.setState({ savedAppState: this.getAppState(true) })
+      this.getAppState(true)
     })
     setTimeout(() => {
       this.setState({ menuIsRendered: true })
@@ -237,58 +245,73 @@ class App extends Component {
   }
 
   async saveAppState(appStateUpdate, persist = true) {
-    let appState = await this.getAppState(true)
+    if (this.state.selectedMailbox) {
+      let appState = await this.getAppState(true)
 
-    for (let k in appStateUpdate) {
-      appState[k] = appStateUpdate[k]
+      for (let k in appStateUpdate) {
+        appState[k] = appStateUpdate[k]
+      }
+
+      if (persist === true) {
+        this.state.selectedMailbox.storeEncryptedValue('fairdrop-appState-0.1', JSON.stringify(appState))
+      }
+
+      let newAppState = await this.getAppState(false)
+      await this.setState({ savedAppState: newAppState })
+      return true
     }
-
-    if (persist === true) {
-      this.state.selectedMailbox.storeEncryptedValue('fairdrop-appState-0.1', JSON.stringify(appState))
-    }
-
-    let newAppState = await this.getAppState(false)
-    await this.setState({ savedAppState: newAppState })
-    return true
   }
 
   updateBalance() {
     if (this.state.selectedMailbox) {
       this.FDS.currentAccount.getBalance().then((balance) => {
+        // console.log('wallet balance', balance)
         this.setState({ selectedMailboxBalance: balance })
+      })
+      this.state.fdsPin.getMyBalance().then((balance) => {
+        // console.log('warrant balance', balance)
+        this.setState({ selectedMailboxWarrantBalance: balance })
       })
     }
   }
 
   updateStoredStats() {
-    return this.FDS.currentAccount.storedManifest().then((manifest) => {
-      let totalStoredSize = manifest.storedFiles.reduce((total, o, i) => {
-        if (i === 1) {
-          return o.file.size
-        } else {
-          return o.file.size + total
-        }
-      })
-      let totalPinned = manifest.storedFiles.filter((o) => {
-        return o.meta.pinned === true
-      })
-      let totalPinnedSize
-      if (totalPinned.length > 0) {
-        totalPinnedSize = totalPinned.reduce((total, o, i) => {
+    if (this.state.selectedMailbox) {
+      return this.FDS.currentAccount.storedManifest().then((manifest) => {
+        let totalStoredSize = manifest.storedFiles.reduce((total, o, i) => {
           if (i === 1) {
             return o.file.size
           } else {
             return o.file.size + total
           }
+        }, 0)
+        let totalPinned = manifest.storedFiles.filter((o) => {
+          return o.meta.pinned === true
         })
-      } else {
-        totalPinnedSize = 0
-      }
-      return this.saveAppState({
-        totalStoredSize: totalStoredSize,
-        totalPinnedSize: totalPinnedSize,
+        let totalPinnedSize
+        if (totalPinned.length > 0) {
+          totalPinnedSize = totalPinned.reduce((total, o, i) => {
+            if (i === 1) {
+              return o.file.size
+            } else {
+              return o.file.size + total
+            }
+          }, 0)
+        } else {
+          totalPinnedSize = 0
+        }
+        let balance = this.state.selectedMailboxBalance
+        let ndxPerKbPerBlock = 1000
+        let blockTimeInSeconds = 1
+        let pinnedTimeRemainingInBlocks = balance / (ndxPerKbPerBlock * totalPinnedSize)
+        let pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds
+        return this.saveAppState({
+          totalStoredSize: totalStoredSize,
+          totalPinnedSize: totalPinnedSize,
+          pinnedTimeRemainingInSecs: pinnedTimeRemainingInSecs,
+        })
       })
-    })
+    }
   }
 
   pollForUpdates() {
@@ -339,9 +362,10 @@ class App extends Component {
   // }
 
   setSelectedMailbox(selectedMailbox) {
+    let fdsPin = new FDSPin(selectedMailbox, pinningOracleURL, pinningManagerAddress)
     this.setState({
       selectedMailbox: selectedMailbox,
-      fdsPin: new FDSPin(selectedMailbox, pinningOracleURL),
+      fdsPin: fdsPin,
     })
     let appStateUpdate = { lastLogin: new Date().toISOString() }
     return this.saveAppState(appStateUpdate).then(() => {
@@ -535,11 +559,15 @@ class App extends Component {
             isShown={false}
             displayedContent={this.state.displayedContent}
             displayContent={this.state.displayContent}
+            toggleContent={this.toggleContent}
             handleNavigateTo={this.handleNavigateTo}
             appRoot={this.state.appRoot}
             savedAppState={this.state.savedAppState}
+            saveAppState={this.saveAppState}
             selectedMailbox={this.state.selectedMailbox}
             selectedMailboxBalance={this.state.selectedMailboxBalance}
+            selectedMailboxWarrantBalance={this.state.selectedMailboxWarrantBalance}
+            initSentry={this.initSentry}
             ref={this.contentComponent}
           />
           <div
@@ -575,9 +603,22 @@ class App extends Component {
               </div>
 
               <div className="nav-header-item-right">
-                <Link className="nav-key" to={'/mailbox'}>
-                  <MailboxGlyph />
-                </Link>
+                {window.location.href.split('/').indexOf('mailbox') < -1 && this.state.selectedMailbox.subdomain && (
+                  <Link className="nav-key" to={'/mailbox'}>
+                    <MailboxGlyph />
+                  </Link>
+                )}
+                {window.location.href.split('/').indexOf('mailbox') > -1 && this.state.selectedMailbox.subdomain && (
+                  <a className="nav-key">
+                    <img
+                      className="nav-image-cog"
+                      src={this.props.appRoot + '/assets/images/cog-solid.svg'}
+                      onClick={() => {
+                        this.showContent('Settings')
+                      }}
+                    />
+                  </a>
+                )}
               </div>
               {!this.state.selectedMailbox.subdomain && (
                 <div className="nav-header-item-right hide-mobile">
@@ -629,10 +670,12 @@ class App extends Component {
             <Switch>
               <Route
                 exact={true}
-                path={'/'}
+                path={'(/|/bzz:/.+/)'}
                 render={() => {
                   return (
                     <Upload
+                      getAppState={this.getAppState}
+                      saveAppState={this.saveAppState}
                       FDS={this.FDS}
                       selectedMailbox={this.state.selectedMailbox}
                       fdsPin={this.state.fdsPin}
@@ -649,6 +692,7 @@ class App extends Component {
                       enableNav={this.enableNav}
                       handleNavigateTo={this.handleNavigateTo}
                       updateStoredStats={this.updateStoredStats}
+                      updateBalance={this.updateBalance}
                       ref={this.uploadComponent}
                     />
                   )
@@ -656,10 +700,12 @@ class App extends Component {
               />
               <Route
                 exact={true}
-                path={'/mailbox/:filter?'}
+                path={'(/mailbox|/bzz:/.+/mailbox)/:filter?'}
                 render={(routerArgs) => {
                   return (
                     <Mailbox
+                      getAppState={this.getAppState}
+                      saveAppState={this.saveAppState}
                       FDS={this.FDS}
                       setSelectedMailbox={this.setSelectedMailbox}
                       selectedMailbox={this.state.selectedMailbox}
@@ -673,13 +719,52 @@ class App extends Component {
                       appRoot={this.state.appRoot}
                       isLoading={this.state.isLoading}
                       setIsLoading={this.setIsLoading}
+                      updateBalance={this.updateBalance}
                       ref={this.mailboxComponent}
                     />
                   )
                 }}
               />
+
               <Route
-                path={'/:dropbox?'}
+                path={'(/download-list|/bzz:/.+/download-list)/:loc?'}
+                render={(routerArgs) => {
+                  return (
+                    <Download
+                      fds={this.FDS}
+                      isList={true}
+                      appRoot={this.state.appRoot}
+                      routerArgs={routerArgs}
+                      ref={this.download}
+                    />
+                  )
+                }}
+              />
+
+              <Route
+                path={'(/download|/bzz:/.+/download)/:loc?'}
+                render={(routerArgs) => {
+                  return (
+                    <Download
+                      fds={this.FDS}
+                      isList={false}
+                      appRoot={this.state.appRoot}
+                      routerArgs={routerArgs}
+                      ref={this.download}
+                    />
+                  )
+                }}
+              />
+
+              <Route
+                path={'(/|/bzz:/.+)/:dropbox'}
+                render={(routerArgs) => {
+                  return <Dropbox appRoot={this.state.appRoot} routerArgs={routerArgs} ref={this.dropbox} />
+                }}
+              />
+
+              <Route
+                path={'/:dropbox'}
                 render={(routerArgs) => {
                   return <Dropbox appRoot={this.state.appRoot} routerArgs={routerArgs} ref={this.dropbox} />
                 }}

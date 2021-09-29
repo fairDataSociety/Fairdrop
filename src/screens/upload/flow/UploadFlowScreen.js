@@ -78,7 +78,7 @@ const UploadFlowScreen = ({ history, location }) => {
   }, [files])
 
   useEffect(() => {
-    if (!mailbox) {
+    if (!mailbox && type !== FILE_UPLOAD_TYPES.QUICK) {
       const copy =
         type === FILE_UPLOAD_TYPES.ENCRYPTED
           ? '👋 You need to log in your mailbox to send encrypted files.'

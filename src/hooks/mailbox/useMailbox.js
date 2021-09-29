@@ -36,6 +36,8 @@ import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import qs from 'qs'
+import PinningManager from '../../lib/abi/PinningManager.json'
+import PinWarrant from '../../lib/abi/PinWarrant.json'
 
 const MailboxContext = React.createContext()
 
@@ -46,16 +48,26 @@ const APP_STATE_KEY = 'fairdrop-appState-0.1'
 export const MailboxProvider = ({ children }) => {
   const updatesInterval = useRef()
   const balanceInterval = useRef()
+  const sentryInitialized = useRef(false)
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const initSentry = useCallback(() => {
+  const initSentry = useCallback((account) => {
     const sentryEnabled = !!localStorage.getItem('agreedSentry')
     if (process.env.NODE_ENV !== 'development' && sentryEnabled) {
-      console.log('initialised Sentry')
-      Sentry.init({
-        dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
-        release: 'datafund@' + version,
-      })
+      if (!sentryInitialized.current) {
+        console.log('initialised Sentry')
+        Sentry.init({
+          dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
+          release: 'datafund@' + version,
+        })
+        sentryInitialized.current = true
+      }
+
+      if (account) {
+        Sentry.configureScope((scope) => {
+          scope.setUser({ username: account.subdomain })
+        })
+      }
     }
   }, [])
 
@@ -132,7 +144,7 @@ export const MailboxProvider = ({ children }) => {
   const unlockMailbox = useCallback(
     ({ mailbox, password }) => {
       return FDSInstance.UnlockAccount(mailbox, password).then(async (account) => {
-        initSentry?.()
+        initSentry?.(account)
         console.info(account)
 
         dispatch({
@@ -305,14 +317,8 @@ export const MailboxProvider = ({ children }) => {
 
   const storeEncryptedFile = useCallback(
     ({ files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {
-      const sanitizedFiles = files.map((file) => {
-        const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
-        const fullPath = file.fullPath || file.webkitRelativePath
-        newFile.fullPath = fullPath.replace(/ /g, '_')
-        return newFile
-      })
       return FDSInstance.currentAccount
-        .store(sanitizedFiles[0], onEncryptedEnd, onProgressUpdate, onStatusChange, { pinned: true }, true, true)
+        .store(files[0], onEncryptedEnd, onProgressUpdate, onStatusChange, { pinned: true }, true, true)
         .then(async (response) => {
           console.info(response)
           try {
@@ -346,10 +352,51 @@ export const MailboxProvider = ({ children }) => {
       .catch((error) => console.info(error))
   }, [])
 
-  const handleUpdateBalance = useCallback(() => {
-    FDSInstance.currentAccount?.getBalance().then((balance) => {
+  const getBalance = useCallback(() => {
+    return FDSInstance.currentAccount?.getBalance().then((balance) => {
       dispatch({ type: SET_BALANCE, payload: { balance } })
+      return balance
     })
+  }, [])
+
+  const createWarrant = useCallback(async () => {
+    try {
+      const balance = await getBalance()
+      const warrantBalance = Math.floor((balance * 80) / 100)
+
+      const PM = await FDSInstance.currentAccount.getContract(
+        PinningManager.abi,
+        process.env.REACT_APP_PINNING_MANAGER_ADDRESS,
+      )
+
+      await PM.send('createWarrant', [], true, 15000000, warrantBalance)
+      const warrant = PM.getMyWarrant()
+
+      await updateAppState({ warrantWasCreated: true })
+      await getBalance()
+
+      return warrant
+    } catch (error) {
+      // TODO handle error
+      console.info(error)
+      throw new Error(error)
+    }
+  }, [getBalance, updateAppState])
+
+  const getMyBalance = useCallback(async () => {
+    try {
+      const PM = await FDSInstance.currentAccount.getContract(
+        PinningManager.abi,
+        process.env.REACT_APP_PINNING_MANAGER_ADDRESS,
+      )
+      const warrantAddress = await PM.getMyWarrant()
+      const PW = await FDSInstance.currentAccount.getContract(PinWarrant.abi, warrantAddress)
+      return PW.getBalance()
+    } catch (error) {
+      // TODO handle error
+      console.info(error)
+      throw new Error(error)
+    }
   }, [])
 
   // Listen to mailbox updates
@@ -359,13 +406,13 @@ export const MailboxProvider = ({ children }) => {
     }
 
     updatesInterval.current = setInterval(pollUpdate, 15000)
-    balanceInterval.current = setInterval(handleUpdateBalance, 1500)
+    balanceInterval.current = setInterval(getBalance, 1500)
 
     return () => {
       clearInterval(updatesInterval.current)
       clearInterval(balanceInterval.current)
     }
-  }, [state.mailbox, pollUpdate, handleUpdateBalance])
+  }, [state.mailbox, pollUpdate, getBalance])
 
   // Get all accounts
   useEffect(() => {
@@ -402,6 +449,8 @@ export const MailboxProvider = ({ children }) => {
           getAppState,
           updateAppState,
           updateStoredStats,
+          createWarrant,
+          getMyBalance,
         },
       ]}
     >

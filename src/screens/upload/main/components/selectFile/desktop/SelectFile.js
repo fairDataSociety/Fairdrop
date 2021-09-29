@@ -35,6 +35,7 @@ const SelectFile = () => {
   const location = useLocation()
 
   const handleFileDrop = useCallback((type, files) => {
+    console.info(type, files)
     setFiles({ type, files })
   }, [])
 

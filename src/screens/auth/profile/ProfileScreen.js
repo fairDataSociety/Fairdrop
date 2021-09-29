@@ -23,10 +23,12 @@ import Input from '../../../components/atoms/input/Input'
 import TouchableOpacity from '../../../components/atoms/touchableOpacity/TouchableOpacity'
 import Utils from '../../../services/Utils'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
+import Switch from 'react-switch'
 
 const ProfileScreen = () => {
-  const [{ mailbox, balance, appState }] = useMailbox()
+  const [{ mailbox, balance, appState }, { initSentry }] = useMailbox()
   const [copied, setCopied] = useState(false)
+  const [sentryEnabled, setSentryEnabled] = useState(!!localStorage.getItem('agreedSentry'))
   const { hideSideMenu } = useSideMenu()
 
   const handleCopyAddress = useCallback(() => {
@@ -37,6 +39,15 @@ const ProfileScreen = () => {
       }, 2000)
     })
   }, [mailbox])
+
+  const handleSentryAnalyticsChange = useCallback(
+    (value) => {
+      value && initSentry()
+      setSentryEnabled(value)
+      localStorage.setItem('sentryEnabled', value)
+    },
+    [initSentry],
+  )
 
   return (
     <div className={styles.container}>
@@ -101,6 +112,14 @@ const ProfileScreen = () => {
           </Text>
 
           <Text weight="500">{Utils.humanTime(appState?.pinnedTimeRemainingInSecs ?? undefined)}</Text>
+        </div>
+
+        <div className={styles.infoRow}>
+          <Text className={styles.label} variant="gray">
+            Analytics
+          </Text>
+
+          <Switch onChange={handleSentryAnalyticsChange} checked={sentryEnabled} />
         </div>
       </div>
     </div>

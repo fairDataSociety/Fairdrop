@@ -19,6 +19,7 @@ export const SET_SENT_MESSAGES = 'SET_SENT_MESSAGES'
 export const SET_CONSENTS_MESSAGES = 'SET_CONSENTS_MESSAGES'
 export const SET_STORED_MESSAGES = 'SET_STORED_MESSAGES'
 export const SET_BALANCE = 'SET_BALANCE'
+export const SET_WARRANT_BALANCE = 'SET_WARRANT_BALANCE'
 export const SET_MAILBOX = 'SET_MAILBOX'
 export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
 export const SET_APP_STATE = 'SET_APP_STATESET_APP_STATE'
@@ -30,6 +31,7 @@ export const initialState = {
   consents: [],
   stored: [],
   balance: 0,
+  warrantBalance: 0,
   mailbox: null,
   accounts: [],
   appState: {},
@@ -65,6 +67,12 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         balance: payload.balance,
+      }
+
+    case SET_WARRANT_BALANCE:
+      return {
+        ...prevState,
+        warrantBalance: payload.warrantBalance,
       }
 
     case SET_MAILBOX:

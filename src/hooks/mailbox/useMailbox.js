@@ -31,6 +31,7 @@ import {
   SET_CONSENTS_MESSAGES,
   SET_STORED_MESSAGES,
   SET_APP_STATE,
+  SET_WARRANT_BALANCE,
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
@@ -352,16 +353,46 @@ export const MailboxProvider = ({ children }) => {
       .catch((error) => console.info(error))
   }, [])
 
+  const getMyBalance = useCallback(async () => {
+    try {
+      const PM = await FDSInstance.currentAccount.getContract(
+        PinningManager.abi,
+        process.env.REACT_APP_PINNING_MANAGER_ADDRESS,
+      )
+      const warrantAddress = await PM.getMyWarrant()
+      const PW = await FDSInstance.currentAccount.getContract(PinWarrant.abi, warrantAddress)
+      const warrantBalance = PW.getBalance()
+      dispatch({ type: SET_WARRANT_BALANCE, payload: { warrantBalance } })
+    } catch (error) {
+      // TODO handle error
+      console.info(error)
+      throw new Error(error)
+    }
+  }, [])
+
   const getBalance = useCallback(() => {
-    return FDSInstance.currentAccount?.getBalance().then((balance) => {
-      dispatch({ type: SET_BALANCE, payload: { balance } })
-      return balance
-    })
+    if (!FDSInstance.currentAccount) {
+      return Promise.resolve()
+    }
+
+    return Promise.all([
+      FDSInstance.currentAccount?.getBalance().then((balance) => {
+        dispatch({ type: SET_BALANCE, payload: { balance } })
+        return balance
+      }),
+      getMyBalance(),
+    ])
   }, [])
 
   const createWarrant = useCallback(async () => {
     try {
+      const appState = await getAppState()
       const balance = await getBalance()
+
+      // TODO check balance
+      if (appState?.warrantWasCreated) {
+        return
+      }
       const warrantBalance = Math.floor((balance * 80) / 100)
 
       const PM = await FDSInstance.currentAccount.getContract(
@@ -381,23 +412,7 @@ export const MailboxProvider = ({ children }) => {
       console.info(error)
       throw new Error(error)
     }
-  }, [getBalance, updateAppState])
-
-  const getMyBalance = useCallback(async () => {
-    try {
-      const PM = await FDSInstance.currentAccount.getContract(
-        PinningManager.abi,
-        process.env.REACT_APP_PINNING_MANAGER_ADDRESS,
-      )
-      const warrantAddress = await PM.getMyWarrant()
-      const PW = await FDSInstance.currentAccount.getContract(PinWarrant.abi, warrantAddress)
-      return PW.getBalance()
-    } catch (error) {
-      // TODO handle error
-      console.info(error)
-      throw new Error(error)
-    }
-  }, [])
+  }, [getBalance, updateAppState, getAppState])
 
   // Listen to mailbox updates
   useEffect(() => {

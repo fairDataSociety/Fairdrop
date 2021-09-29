@@ -155,21 +155,14 @@ export const MailboxProvider = ({ children }) => {
           },
         })
 
-        // Init app state on login
-        const appState = await getAppState()
+        await updateAppState({ lastLogin: new Date().toISOString() })
           .catch((e) => console.info(e))
           .then(() => {
             return {}
           })
-        dispatch({
-          type: SET_APP_STATE,
-          payload: {
-            appState,
-          },
-        })
       })
     },
-    [initSentry, getAppState],
+    [initSentry, updateAppState],
   )
 
   const createMailbox = useCallback(

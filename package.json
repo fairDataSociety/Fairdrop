@@ -9,6 +9,7 @@
     "fds.js": "^0.1.26",
     "formik": "^2.2.9",
     "luxon": "^2.0.2",
+    "qrcode": "^1.4.4",
     "qrcode.react": "^1.0.0",
     "qs": "^6.10.1",
     "querystring": "^0.2.0",

@@ -130,9 +130,9 @@ export const MailboxProvider = ({ children }) => {
         return total + o?.file?.size ?? 0
       }, 0)
 
-    const kbPerBlock = 10
+    const ndxPerKbPerBlock = 1000
     const blockTimeInSeconds = 1
-    const pinnedTimeRemainingInBlocks = state?.balance ?? 0 - kbPerBlock * totalPinnedSize
+    const pinnedTimeRemainingInBlocks = state?.balance ?? 0 / (ndxPerKbPerBlock * totalPinnedSize)
     const pinnedTimeRemainingInSecs = pinnedTimeRemainingInBlocks / blockTimeInSeconds
 
     await updateAppState({
@@ -321,11 +321,20 @@ export const MailboxProvider = ({ children }) => {
       return FDSInstance.currentAccount
         .store(files[0], onEncryptedEnd, onProgressUpdate, onStatusChange, { pinned: true }, true, true)
         .then(async (response) => {
-          console.info(response)
           try {
-            unpin(response.oldStoredManifestAddress)
-          } catch {
-            console.info('could not unpin', response.oldStoredManifestAddress)
+            await pin(response.storedFile.address)
+          } catch (error) {
+            console.info('could not pin', response.storedFile.address)
+          }
+          return response
+        })
+        .then(async (response) => {
+          if (response.oldStoredManifestAddress !== undefined) {
+            try {
+              await unpin(response.oldStoredManifestAddress)
+            } catch {
+              console.info('could not unpin', response.oldStoredManifestAddress)
+            }
           }
           try {
             pin(response.storedManifestAddress)
@@ -333,7 +342,11 @@ export const MailboxProvider = ({ children }) => {
             console.log('could not pin', response.storedManifestAddress)
           }
         })
-        .then(updateStoredStats)
+        .then(() => {
+          setTimeout(() => {
+            updateStoredStats()
+          }, 1000)
+        })
     },
     [unpin, pin, updateStoredStats],
   )

@@ -93,9 +93,16 @@ const ProfileScreen = () => {
         </div>
 
         <div className={c(styles.infoRow, styles.qr)}>
-          <Text className={styles.label} variant="gray">
-            Fairdrop Address
-          </Text>
+          <div className={styles.qrLabelWrapper}>
+            <Text className={styles.label} variant="gray">
+              Fairdrop Address
+            </Text>
+
+            <Text size="sm" variant="white">
+              Warning. While we are in Beta, we do not recommend you send Ethereum or any other tokens to your Fairdrop
+              address.
+            </Text>
+          </div>
 
           <QR darkColor="#fff" resource={`fds://${mailbox?.address ?? ''}`} size={128} />
         </div>

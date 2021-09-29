@@ -49,6 +49,10 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         id: routes.login,
         label: 'Login >',
         onClick: function () {
+          showSideMenu({
+            Component: <ProfileScreen />,
+            showBack: false,
+          })
           history.push(routes.login)
         },
         items: [],

@@ -107,6 +107,17 @@
   margin-left: 12px;
 }
 
+.qrLabelWrapper {
+  flex-grow: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 200px);
+}
+
+.qrLabelWrapper .label {
+  margin-bottom: 6px;
+}
+
 .qr {
   align-items: flex-start;
 }

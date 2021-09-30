@@ -39,6 +39,8 @@ import axios from 'axios'
 import qs from 'qs'
 import PinningManager from '../../lib/abi/PinningManager.json'
 import PinWarrant from '../../lib/abi/PinWarrant.json'
+import { generatePath } from 'react-router-dom'
+import { routes } from '../../config/routes'
 
 const MailboxContext = React.createContext()
 
@@ -299,7 +301,31 @@ export const MailboxProvider = ({ children }) => {
     })
     return FDSInstance.Account.Store.storeFilesUnencrypted(sanitizedFiles, onProgressUpdate, onStatusChange).then(
       (hash) => {
-        return hash.gatewayLink()
+        //return hash.gatewayLink()
+        const index_idx = files.findIndex((file) => {
+          const fullPath = files[i].fullPath || files[i].webkitRelativePath
+          if (fullPath.split('/')[1] === 'index.html') {
+            return true
+          }
+
+          return false
+        })
+
+        // We have an index.html
+        if (index_idx !== -1) {
+          return `${FDSInstance.swarmGateway}/bzz:/${hash.address}/index.html`
+        }
+
+        if (files.length > 1) {
+          return generatePath(routes.downloads.multiple, { address: hash.address })
+        } else {
+          return generatePath(
+            `${routes.downloads.single}?${qs.stringify({
+              size: hash?.file?.size ?? 0,
+            })}`,
+            { address: hash.address, name: hash?.file?.name },
+          )
+        }
       },
     )
   }, [])

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './SummaryStep.module.css'
 import Text from '../../../../../components/atoms/text/Text'
@@ -22,31 +22,21 @@ import { useTheme } from '../../../../../hooks/theme/useTheme'
 import { colors } from '../../../../../config/colors'
 import Utils from '../../../../../services/Utils'
 import Input from '../../../../../components/atoms/input/Input'
-import TouchableOpacity from '../../../../../components/atoms/touchableOpacity/TouchableOpacity'
 import Button from '../../../../../components/atoms/button/Button'
 import { routes } from '../../../../../config/routes'
 import { useHistory } from 'react-router-dom'
 import { ReactComponent as IconLock } from './assets/fairdrop-lock.svg'
 import { ReactComponent as IconCircleTick } from './assets/circle-tick.svg'
+import CopyToClipboard from '../../../../../components/molecules/copyToClipboard/CopyToClipboard'
 
 const SummaryStep = () => {
   const [{ files, type, link }] = useFileManager()
   const { setVariant, setBackground } = useTheme()
-  const [copied, setCopied] = useState(false)
   const history = useHistory()
 
   const isEncrypted = useMemo(() => {
     return type === FILE_UPLOAD_TYPES.ENCRYPTED
   }, [type])
-
-  const handleCopyLink = useCallback(() => {
-    Utils.copyToClipboard(link).then(() => {
-      setCopied(true)
-      setTimeout(() => {
-        setCopied(false)
-      }, 2000)
-    })
-  }, [link])
 
   const handleFinishClick = useCallback(() => {
     history.replace(routes.upload.home)
@@ -78,11 +68,7 @@ const SummaryStep = () => {
 
             <Input className={styles.input} defaultValue={link} />
 
-            <TouchableOpacity onClick={handleCopyLink}>
-              <Text size="sm" align="center">
-                {copied ? 'Copied!' : 'Copy link'}
-              </Text>
-            </TouchableOpacity>
+            <CopyToClipboard textToCopy={link} />
           </div>
         )}
 

@@ -25,6 +25,7 @@ import DashboardSentScreen from '../../../screens/auth/dashboard/sent/DashboardS
 import DashboardStoredScreen from '../../../screens/auth/dashboard/stored/DashboardStoredScreen'
 import Text from '../../atoms/text/Text'
 import styles from './Dashboard.module.css'
+import ReactTooltip from 'react-tooltip'
 
 const Dashboard = () => {
   const { setVariant, setBackground } = useTheme()
@@ -68,6 +69,8 @@ const Dashboard = () => {
         <Route exact path={routes.mailbox.consents} component={DashboardConsentsScreen} />
         <Redirect exact path={routes.mailbox.dashboard} to={routes.mailbox.received} />
       </div>
+
+      <ReactTooltip className={styles.tooltip} />
     </div>
   )
 }

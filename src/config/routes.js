@@ -41,4 +41,8 @@ export const routes = {
     import: '/settings/import',
     export: '/settings/export',
   },
+  downloads: {
+    single: '/download/:address/:name',
+    multiple: '/download/list/:address',
+  },
 }

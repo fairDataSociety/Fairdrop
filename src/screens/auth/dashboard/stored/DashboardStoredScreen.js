@@ -51,7 +51,7 @@ const DashboardStoredScreen = () => {
           </Text>
         </div>
 
-        <div className={styles.header}>
+        <div className={styles.header} data-tip="Pinned files will be retained by your data provider.">
           <Text size="sm" weight="500" variant="black">
             Pinned
           </Text>

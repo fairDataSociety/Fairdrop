@@ -37,3 +37,7 @@
   padding: 24px;
   height: 100%;
 }
+
+.tooltip {
+  z-index: 199;
+}

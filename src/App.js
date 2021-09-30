@@ -34,6 +34,7 @@ import SettingsImportScreen from './screens/settings/import/SettingsImportScreen
 import ProductDisclaimer from './disclaimers/product/ProductDisclaimer'
 import ReportingDisclaimer from './disclaimers/reporting/ReportingDisclaimer'
 import Dashboard from './components/layout/dashboard/Dashboard'
+import DownloadScreen from './screens/download/DownloadScreen'
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -67,6 +68,9 @@ const App = () => {
           <Route exact path={routes.settings.import} component={SettingsImportScreen} />
 
           <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
+
+          <Route path={routes.downloads.single} component={DownloadScreen} />
+          <Route path={routes.downloads.multiple} component={DownloadScreen} />
 
           <Redirect exact from={routes.root} to={routes.upload.home} />
         </Switch>

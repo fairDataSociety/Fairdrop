@@ -69,8 +69,8 @@ const App = () => {
 
           <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
 
-          <Route path={routes.downloads.single} component={DownloadScreen} />
           <Route path={routes.downloads.multiple} component={DownloadScreen} />
+          <Route path={routes.downloads.single} component={DownloadScreen} />
 
           <Redirect exact from={routes.root} to={routes.upload.home} />
         </Switch>

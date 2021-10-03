@@ -27,7 +27,9 @@ const DownloadScreen = ({ location }) => {
     return url
   }, [isMultiDownload, address, fileSize, name])
 
-  const handleDownloadClick = useCallback(() => {}, [])
+  const handleDownloadClick = useCallback(() => {
+    // TODO
+  }, [])
 
   useEffect(() => {
     setVariant('white')

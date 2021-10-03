@@ -34,4 +34,9 @@
 
 .download {
   margin-top: 24px;
+  width: 100%;
+}
+
+.download .input {
+  margin-bottom: 12px;
 }

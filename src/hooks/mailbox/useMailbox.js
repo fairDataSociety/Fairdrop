@@ -303,7 +303,7 @@ export const MailboxProvider = ({ children }) => {
       (hash) => {
         //return hash.gatewayLink()
         const index_idx = files.findIndex((file) => {
-          const fullPath = files[i].fullPath || files[i].webkitRelativePath
+          const fullPath = file.fullPath || file.webkitRelativePath
           if (fullPath.split('/')[1] === 'index.html') {
             return true
           }

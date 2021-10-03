@@ -36,8 +36,29 @@
   flex: 1;
   padding: 24px;
   height: 100%;
+  overflow: auto;
 }
 
 .tooltip {
   z-index: 199;
+}
+
+@media (max-width: 500px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .menu {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    border: none;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .link {
+    margin: 0 12px;
+  }
 }

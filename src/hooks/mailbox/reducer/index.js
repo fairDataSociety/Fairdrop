@@ -32,7 +32,10 @@ export const initialState = {
   stored: [],
   balance: 0,
   warrantBalance: 0,
-  mailbox: null,
+  mailbox: {
+    address: 'bla bla bla',
+    subdomain: 'invent',
+  },
   accounts: [],
   appState: {},
 }

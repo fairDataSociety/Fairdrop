@@ -25,6 +25,12 @@ export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
 export const SET_APP_STATE = 'SET_APP_STATESET_APP_STATE'
 export const RESET = 'RESET'
 
+const fakeMailbox = {
+  address: 'bla bla bla',
+  subdomain: 'invent',
+}
+
+const search = new URLSearchParams(window.location.search)
 export const initialState = {
   received: [],
   sent: [],
@@ -32,10 +38,7 @@ export const initialState = {
   stored: [],
   balance: 0,
   warrantBalance: 0,
-  mailbox: {
-    address: 'bla bla bla',
-    subdomain: 'invent',
-  },
+  mailbox: search.get('mock') === 'true' ? fakeMailbox : null,
   accounts: [],
   appState: {},
 }

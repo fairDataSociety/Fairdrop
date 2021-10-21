@@ -39,8 +39,9 @@ import axios from 'axios'
 import qs from 'qs'
 import PinningManager from '../../lib/abi/PinningManager.json'
 import PinWarrant from '../../lib/abi/PinWarrant.json'
-import { generatePath } from 'react-router-dom'
-import { routes } from '../../config/routes'
+// import { generatePath } from 'react-router-dom'
+// import { routes } from '../../config/routes'
+import { Bee } from '@ethersphere/bee-js'
 
 const MailboxContext = React.createContext()
 
@@ -292,42 +293,68 @@ export const MailboxProvider = ({ children }) => {
     [state?.mailbox],
   )
 
-  const uploadUnencryptedFile = useCallback(({ files, onProgressUpdate, onStatusChange }) => {
-    const sanitizedFiles = files.map((file) => {
-      const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
-      const fullPath = file.fullPath || file.webkitRelativePath
-      newFile.fullPath = fullPath.replace(/ /g, '_')
-      return newFile
-    })
-    return FDSInstance.Account.Store.storeFilesUnencrypted(sanitizedFiles, onProgressUpdate, onStatusChange).then(
-      (hash) => {
-        //return hash.gatewayLink()
-        const index_idx = files.findIndex((file) => {
-          const fullPath = file.fullPath || file.webkitRelativePath
-          if (fullPath.split('/')[1] === 'index.html') {
-            return true
-          }
+  const uploadUnencryptedFile = useCallback(async ({ files, onProgressUpdate, onStatusChange }) => {
+    const file = files[0]
+    const bee = new Bee('https://bee-0.gateway.ethswarm.org')
+    // const lastModified = file.lastModified
 
-          return false
-        })
+    const metadata = {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    }
 
-        // We have an index.html
-        if (index_idx !== -1) {
-          return `${FDSInstance.swarmGateway}/bzz:/${hash.address}/index.html`
-        }
+    // const metafile = new File([JSON.stringify(metadata)], '.swarmgatewaymeta.json', {
+    //   type: 'application/json',
+    //   lastModified,
+    // })
 
-        if (files.length > 1) {
-          return generatePath(routes.downloads.multiple, { address: hash.address })
-        } else {
-          return generatePath(
-            `${routes.downloads.single}?${qs.stringify({
-              size: hash?.file?.size ?? 0,
-            })}`,
-            { address: hash.address, name: hash?.file?.name },
-          )
-        }
-      },
+    const sanitizedFiles = [file]
+    onStatusChange?.('Uploading file')
+    const hash = await bee.uploadFiles(
+      '0000000000000000000000000000000000000000000000000000000000000000',
+      sanitizedFiles,
+      { indexDocument: metadata.name },
     )
+    onProgressUpdate?.(100)
+    return `https://bee-0.gateway.ethswarm.org/bzz/${hash?.reference}`
+
+    // const sanitizedFiles = files.map((file) => {
+    //   const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
+    //   const fullPath = file.fullPath || file.webkitRelativePath
+    //   newFile.fullPath = fullPath.replace(/ /g, '_')
+    //   return newFile
+    // })
+    // return FDSInstance.Account.Store.storeFilesUnencrypted(sanitizedFiles, onProgressUpdate, onStatusChange).then(
+    //   (hash) => {
+    //     console.info(hash)
+    //     //return hash.gatewayLink()
+    //     const index_idx = files.findIndex((file) => {
+    //       const fullPath = file.fullPath || file.webkitRelativePath
+    //       if (fullPath.split('/')[1] === 'index.html') {
+    //         return true
+    //       }
+
+    //       return false
+    //     })
+
+    //     // We have an index.html
+    //     if (index_idx !== -1) {
+    //       return `${FDSInstance.swarmGateway}/bzz:/${hash.address}/index.html`
+    //     }
+
+    //     if (files.length > 1) {
+    //       return generatePath(routes.downloads.multiple, { address: hash.address })
+    //     } else {
+    //       return generatePath(
+    //         `${routes.downloads.single}?${qs.stringify({
+    //           size: hash?.file?.size ?? 0,
+    //         })}`,
+    //         { address: hash.address, name: hash?.file?.name },
+    //       )
+    //     }
+    //   },
+    // )
   }, [])
 
   const uploadEncryptedFile = useCallback(({ to, files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {

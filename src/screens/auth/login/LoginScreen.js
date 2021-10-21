@@ -45,7 +45,7 @@ const LoginScreen = ({ history, location }) => {
         await unlockMailbox(values)
 
         setInfoMessage('Creating warrant')
-        await createWarrant()
+        await createWarrant().catch((e) => console.info('warrant', e))
 
         if (location?.state?.from) {
           history.replace(location?.state?.from)

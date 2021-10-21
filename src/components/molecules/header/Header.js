@@ -48,7 +48,7 @@ const Header = ({ className }) => {
         {`${version} ${process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ''}`}
       </Text>
 
-      <div className={styles.actions}>
+      {/* <div className={styles.actions}>
         {!mailbox && (
           <Link className={styles.login} to={routes.login}>
             <Text element="span" size="sm" weight="500" variant={variant}>
@@ -67,7 +67,7 @@ const Header = ({ className }) => {
             </TouchableOpacity>
           </>
         )}
-      </div>
+      </div> */}
     </header>
   )
 }

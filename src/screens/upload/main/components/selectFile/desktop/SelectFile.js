@@ -26,6 +26,7 @@ import Text from '../../../../../../components/atoms/text/Text'
 import { routes } from '../../../../../../config/routes'
 import { ReactComponent as IconDrop } from './assets/fairdrop-drop.svg'
 import { ReactComponent as IconSelect } from './assets/fairdrop-select.svg'
+import { toast } from 'react-toastify'
 
 const SelectFile = () => {
   const [{ files }, { setFiles, setType }] = useFileManager()
@@ -35,12 +36,15 @@ const SelectFile = () => {
   const location = useLocation()
 
   const handleFileDrop = useCallback((type, files) => {
-    console.info(type, files)
+    if (type !== FILE_UPLOAD_TYPES.QUICK) {
+      toast('👩‍💻 Our team is working hard to bring you new features!')
+      return
+    }
     setFiles({ type, files })
   }, [])
 
   const handleUploadFileClick = useCallback(() => {
-    setType({ type: FILE_UPLOAD_TYPES.ENCRYPTED })
+    setType({ type: FILE_UPLOAD_TYPES.QUICK })
     inputRef?.current?.click()
   }, [])
 

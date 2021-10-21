@@ -26,6 +26,7 @@ import { ReactComponent as IconLock } from './assets/lock.svg'
 import { ReactComponent as IconUnlock } from './assets/unlock.svg'
 import Button from '../../../../../../components/atoms/button/Button'
 import c from 'classnames'
+import { toast } from 'react-toastify'
 
 const SelectFile = () => {
   const [{ files }, { setFiles, setType }] = useFileManager()
@@ -45,13 +46,17 @@ const SelectFile = () => {
   }, [])
 
   const handleEncryptedClick = useCallback(() => {
-    setType({ type: FILE_UPLOAD_TYPES.ENCRYPTED })
-    inputRef?.current?.click()
+    toast('👩‍💻 Our team is working hard to bring you new features!')
+    return
+    // setType({ type: FILE_UPLOAD_TYPES.ENCRYPTED })
+    // inputRef?.current?.click()
   }, [])
 
   const handleStoreClick = useCallback(() => {
-    setType({ type: FILE_UPLOAD_TYPES.STORE })
-    inputRef?.current?.click()
+    toast('👩‍💻 Our team is working hard to bring you new features!')
+    return
+    // setType({ type: FILE_UPLOAD_TYPES.STORE })
+    // inputRef?.current?.click()
   }, [])
 
   useEffect(() => {

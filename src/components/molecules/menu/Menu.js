@@ -45,14 +45,14 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
     const items = []
 
     if (!mailbox) {
-      items.push({
-        id: routes.login,
-        label: 'Login >',
-        onClick: function () {
-          history.push(routes.login)
-        },
-        items: [],
-      })
+      // items.push({
+      //   id: routes.login,
+      //   label: 'Login >',
+      //   onClick: function () {
+      //     history.push(routes.login)
+      //   },
+      //   items: [],
+      // })
     } else {
       items.push({
         id: '/profile',

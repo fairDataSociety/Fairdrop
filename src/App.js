@@ -59,8 +59,8 @@ const App = () => {
 
       <div className={styles.content}>
         <Switch>
-          <Route exact path={routes.login} component={LoginScreen} />
-          <Route exact path={routes.register} component={RegisterScreen} />
+          {/* <Route exact path={routes.login} component={LoginScreen} />
+          <Route exact path={routes.register} component={RegisterScreen} /> */}
           <Route exact path={routes.upload.home} component={UploadMainScreen} />
           <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
 

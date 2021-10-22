@@ -95,12 +95,13 @@ export const MailboxProvider = ({ children }) => {
   }, [])
 
   const updateAppState = useCallback(
-    async ({ state = {} }) => {
+    async (state = {}) => {
       if (!FDSInstance.currentAccount) {
         return Promise.reject(new Error('No mailbox selected'))
       }
 
-      const currentAppState = await getAppState()
+      const currentAppState = await getAppState().catch(() => {})
+
       const newAppState = {
         ...(currentAppState ?? {}),
         ...state,
@@ -439,7 +440,7 @@ export const MailboxProvider = ({ children }) => {
         dispatch({ type: SET_BALANCE, payload: { balance } })
         return balance
       }),
-      getMyBalance(),
+      // getMyBalance(),
     ])
   }, [])
 

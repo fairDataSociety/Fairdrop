@@ -22,6 +22,7 @@ import styles from './DashboardSentScreen.module.css'
 import { DateTime } from 'luxon'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
+import Download from '../components/download/Download'
 
 const DashboardSentScreen = () => {
   const [{ sent }, { getSentMessages }] = useMailbox()
@@ -77,6 +78,7 @@ const DashboardSentScreen = () => {
             return (
               <Fragment key={message?.hash?.address}>
                 <div className={styles.row}>
+                  <Download className={styles.icon} message={message} />
                   <Text size="sm" variant="black">
                     {file?.name ?? 'Unkown'}
                   </Text>
@@ -90,7 +92,7 @@ const DashboardSentScreen = () => {
 
                 <div className={styles.row}>
                   <Text size="sm" variant="black">
-                    {hash.time ? DateTime.fromISO(hash.time).toFormat('dd/LL/yyy HH:mm') : 'Unkown'}
+                    {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
                   </Text>
                 </div>
 

@@ -20,10 +20,11 @@ import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
 import Utils from '../../../../services/Utils'
 import styles from './DashboardReceivedScreen.module.css'
 import { DateTime } from 'luxon'
+import Download from '../components/download/Download'
 
 const DashboardReceivedScreen = () => {
   const [{ received }] = useMailbox()
-
+  console.info(received)
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -59,6 +60,7 @@ const DashboardReceivedScreen = () => {
             return (
               <Fragment key={message?.hash?.address}>
                 <div className={styles.row}>
+                  <Download className={styles.icon} message={message} />
                   <Text size="sm" variant="black">
                     {file?.name ?? 'Unkown'}
                   </Text>
@@ -72,7 +74,7 @@ const DashboardReceivedScreen = () => {
 
                 <div className={styles.row}>
                   <Text size="sm" variant="black">
-                    {hash.time ? DateTime.fromISO(hash.time).toFormat('dd/LL/yyy HH:mm') : 'Unkown'}
+                    {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
                   </Text>
                 </div>
 

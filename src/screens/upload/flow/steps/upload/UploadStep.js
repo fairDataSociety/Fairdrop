@@ -62,6 +62,7 @@ const UploadStep = ({ nextStep }) => {
             nextStep?.()
           })
           .catch((error) => {
+            console.info(error)
             toast.error(`💩 ${error.message}`)
             setUploadFailed(true)
           })

@@ -1,9 +1,11 @@
 .container {
   transition: background-color 1s;
   display: flex;
-  flex: 1;
-  min-width: 50%;
-  flex-grow: 1;
+  /* flex: 1; */
+  /* min-width: 50%; */
+  width: 100%;
+  /* flex-grow: 1;
+  flex-wrap: wrap; */
 
   box-sizing: border-box;
 }

@@ -24,7 +24,7 @@ import Download from '../components/download/Download'
 
 const DashboardReceivedScreen = () => {
   const [{ received }] = useMailbox()
-  console.info(received)
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>

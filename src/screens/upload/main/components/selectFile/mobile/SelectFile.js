@@ -116,9 +116,9 @@ const SelectFile = () => {
       </div>
 
       <div className={styles.actions}>
-        <Button className={styles.uploadButton} variant="white" onClick={handleStoreClick}>
+        {/* <Button className={styles.uploadButton} variant="white" onClick={handleStoreClick}>
           <IconLock className={c(styles.icon, styles.encrypted)} /> Store Encrypted
-        </Button>
+        </Button> */}
 
         <Button className={styles.uploadButton} variant="white" onClick={handleEncryptedClick}>
           <IconLock className={c(styles.icon, styles.encrypted)} /> Send Encrypted

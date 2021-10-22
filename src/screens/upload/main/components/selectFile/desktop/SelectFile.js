@@ -114,12 +114,12 @@ const SelectFile = () => {
 
       {isDragActive && (
         <div className={styles.options}>
-          <Option
+          {/* <Option
             headline="Store encrypted"
             description="Requires logging in to your mailbox"
             type={FILE_UPLOAD_TYPES.STORE}
             onFileDrop={handleFileDrop}
-          />
+          /> */}
           <Option
             headline="Send encrypted"
             description="Requires logging in to your mailbox"

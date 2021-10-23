@@ -72,14 +72,14 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
         id: routes.upload.home,
         label: 'Upload >',
         items: [
-          {
-            label: 'Store',
-            path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.STORE })}`,
-            onClick: () => {
-              resetFileManager?.()
-              history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.STORE })}`)
-            },
-          },
+          // {
+          //   label: 'Store',
+          //   path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.STORE })}`,
+          //   onClick: () => {
+          //     resetFileManager?.()
+          //     history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.STORE })}`)
+          //   },
+          // },
           {
             label: 'Send',
             path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.ENCRYPTED })}`,

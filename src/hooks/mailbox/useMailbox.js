@@ -41,7 +41,6 @@ import PinningManager from '../../lib/abi/PinningManager.json'
 import PinWarrant from '../../lib/abi/PinWarrant.json'
 // import { generatePath } from 'react-router-dom'
 // import { routes } from '../../config/routes'
-import { Bee } from '@ethersphere/bee-js'
 
 const MailboxContext = React.createContext()
 
@@ -217,6 +216,23 @@ export const MailboxProvider = ({ children }) => {
     dispatch({ type: RESET })
   }, [])
 
+  const getReceivedMessages = useCallback(() => {
+    return (
+      FDSInstance.currentAccount
+        ?.messages('received', '/shared/fairdrop/encrypted')
+        .then((messages) => {
+          // const key = `fairdrop_receivedSeenCount_${FDSInstance.currentAccount.subdomain}`
+          // // const lsCount = window.localStorage.getItem(key)
+          // const receivedSeenCount = parseInt(lsCount || 0)
+          // const firstTime = lsCount === null
+          // const showReceivedAlert = receivedSeenCount < messages.length
+          // console.info(lsCount, receivedSeenCount, firstTime, showReceivedAlert)
+          dispatch({ type: SET_RECEIVED_MESSAGES, payload: { messages } })
+        })
+        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+    )
+  }, [])
+
   const getSentMessages = useCallback(() => {
     return (
       FDSInstance.currentAccount
@@ -295,67 +311,36 @@ export const MailboxProvider = ({ children }) => {
   )
 
   const uploadUnencryptedFile = useCallback(async ({ files, onProgressUpdate, onStatusChange }) => {
-    const file = files[0]
-    const bee = new Bee('https://bee-0.gateway.ethswarm.org')
-    // const lastModified = file.lastModified
-
-    const metadata = {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-    }
-
-    // const metafile = new File([JSON.stringify(metadata)], '.swarmgatewaymeta.json', {
-    //   type: 'application/json',
-    //   lastModified,
-    // })
-
-    const sanitizedFiles = [file]
-    onStatusChange?.('Uploading file')
-    const hash = await bee.uploadFiles(
-      '0000000000000000000000000000000000000000000000000000000000000000',
-      sanitizedFiles,
-      { indexDocument: metadata.name },
-    )
     onProgressUpdate?.(100)
-    return `https://bee-0.gateway.ethswarm.org/bzz/${hash?.reference}`
+    return FDSInstance.Account.Store.storeFilesUnencrypted(files, onProgressUpdate, onStatusChange).then((hash) => {
+      onProgressUpdate?.(100)
+      console.info(hash)
+      return hash
+      // const index_idx = files.findIndex((file) => {
+      //   const fullPath = file.fullPath || file.webkitRelativePath
+      //   if (fullPath.split('/')[1] === 'index.html') {
+      //     return true
+      //   }
 
-    // const sanitizedFiles = files.map((file) => {
-    //   const newFile = new File([file], file.name.replace(/ /g, '_'), { type: file.type })
-    //   const fullPath = file.fullPath || file.webkitRelativePath
-    //   newFile.fullPath = fullPath.replace(/ /g, '_')
-    //   return newFile
-    // })
-    // return FDSInstance.Account.Store.storeFilesUnencrypted(sanitizedFiles, onProgressUpdate, onStatusChange).then(
-    //   (hash) => {
-    //     console.info(hash)
-    //     //return hash.gatewayLink()
-    //     const index_idx = files.findIndex((file) => {
-    //       const fullPath = file.fullPath || file.webkitRelativePath
-    //       if (fullPath.split('/')[1] === 'index.html') {
-    //         return true
-    //       }
+      //   return false
+      // })
 
-    //       return false
-    //     })
+      // // We have an index.html
+      // if (index_idx !== -1) {
+      //   return `${FDSInstance.swarmGateway}/bzz:/${hash.address}/index.html`
+      // }
 
-    //     // We have an index.html
-    //     if (index_idx !== -1) {
-    //       return `${FDSInstance.swarmGateway}/bzz:/${hash.address}/index.html`
-    //     }
-
-    //     if (files.length > 1) {
-    //       return generatePath(routes.downloads.multiple, { address: hash.address })
-    //     } else {
-    //       return generatePath(
-    //         `${routes.downloads.single}?${qs.stringify({
-    //           size: hash?.file?.size ?? 0,
-    //         })}`,
-    //         { address: hash.address, name: hash?.file?.name },
-    //       )
-    //     }
-    //   },
-    // )
+      // if (files.length > 1) {
+      //   return generatePath(routes.downloads.multiple, { address: hash.address })
+      // } else {
+      //   return generatePath(
+      //     `${routes.downloads.single}?${qs.stringify({
+      //       size: hash?.file?.size ?? 0,
+      //     })}`,
+      //     { address: hash.address, name: hash?.file?.name },
+      //   )
+      // }
+    })
   }, [])
 
   const uploadEncryptedFile = useCallback(({ to, files, onEncryptedEnd, onProgressUpdate, onStatusChange }) => {
@@ -397,21 +382,6 @@ export const MailboxProvider = ({ children }) => {
     },
     [unpin, pin, updateStoredStats],
   )
-
-  const pollUpdate = useCallback(() => {
-    FDSInstance.currentAccount
-      ?.messages('received', '/shared/fairdrop/encrypted')
-      .then((messages) => {
-        // const key = `fairdrop_receivedSeenCount_${FDSInstance.currentAccount.subdomain}`
-        // // const lsCount = window.localStorage.getItem(key)
-        // const receivedSeenCount = parseInt(lsCount || 0)
-        // const firstTime = lsCount === null
-        // const showReceivedAlert = receivedSeenCount < messages.length
-        // console.info(lsCount, receivedSeenCount, firstTime, showReceivedAlert)
-        dispatch({ type: SET_RECEIVED_MESSAGES, payload: { messages } })
-      })
-      .catch((error) => console.info(error))
-  }, [])
 
   const getMyBalance = useCallback(async () => {
     try {
@@ -480,14 +450,14 @@ export const MailboxProvider = ({ children }) => {
       return
     }
 
-    updatesInterval.current = setInterval(pollUpdate, 15000)
+    updatesInterval.current = setInterval(getReceivedMessages, 15000)
     balanceInterval.current = setInterval(getBalance, 1500)
 
     return () => {
       clearInterval(updatesInterval.current)
       clearInterval(balanceInterval.current)
     }
-  }, [state.mailbox, pollUpdate, getBalance])
+  }, [state.mailbox, getReceivedMessages, getBalance])
 
   // Get all accounts
   useEffect(() => {
@@ -513,6 +483,7 @@ export const MailboxProvider = ({ children }) => {
           exportMailboxes,
           importMailbox,
           resetMailbox,
+          getReceivedMessages,
           getSentMessages,
           getConsentsMessages,
           getStoredMessages,

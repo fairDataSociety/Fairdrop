@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useEffect } from 'react'
-import { Route, Redirect, NavLink } from 'react-router-dom'
+import { Route, NavLink } from 'react-router-dom'
 import { colors } from '../../../config/colors'
 import { routes } from '../../../config/routes'
 import { useTheme } from '../../../hooks/theme/useTheme'
@@ -67,7 +67,6 @@ const Dashboard = () => {
         <Route exact path={routes.mailbox.sent} component={DashboardSentScreen} />
         <Route exact path={routes.mailbox.stored} component={DashboardStoredScreen} />
         <Route exact path={routes.mailbox.consents} component={DashboardConsentsScreen} />
-        <Redirect exact path={routes.mailbox.dashboard} to={routes.mailbox.received} />
       </div>
 
       <ReactTooltip className={styles.tooltip} />

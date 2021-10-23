@@ -14,51 +14,77 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { Fragment } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
 import Utils from '../../../../services/Utils'
 import styles from './DashboardReceivedScreen.module.css'
 import { DateTime } from 'luxon'
 import Download from '../components/download/Download'
+import { toast } from 'react-toastify'
+import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 
 const DashboardReceivedScreen = () => {
-  const [{ received }] = useMailbox()
+  const [{ received }, { getReceivedMessages }] = useMailbox()
+  const [isFetchingMessages, setIsFetchingMessages] = useState(true)
+
+  const sortedMessages = useMemo(() => {
+    return received.sort((a, b) => {
+      return b?.hash?.time - a?.hash?.time
+    })
+  }, [received])
+
+  useEffect(() => {
+    getReceivedMessages()
+      .then(() => {
+        setIsFetchingMessages(false)
+      })
+      .catch(() => {
+        toast.error('🔥 Something went wrong while trying to retrieve your sent files :(')
+        setIsFetchingMessages(false)
+      })
+  }, [])
+
+  if (isFetchingMessages) {
+    return <WorkingLayout headline="We are getting your data..." />
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            Name
-          </Text>
-        </div>
+        <div className={styles.rowWrapper}>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              Name
+            </Text>
+          </div>
 
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            From
-          </Text>
-        </div>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              From
+            </Text>
+          </div>
 
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            Time
-          </Text>
-        </div>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              Time
+            </Text>
+          </div>
 
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            Size
-          </Text>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              Size
+            </Text>
+          </div>
         </div>
 
         {received.length > 0 &&
-          received.reverse().map((message) => {
+          sortedMessages.map((message) => {
             const { hash = {}, from } = message
             const { file = {} } = hash
 
             return (
-              <Fragment key={message?.hash?.address}>
+              <div className={styles.rowWrapper} key={message?.hash?.address}>
                 <div className={styles.row}>
                   <Download className={styles.icon} message={message} />
                   <Text size="sm" variant="black">
@@ -83,7 +109,7 @@ const DashboardReceivedScreen = () => {
                     {Utils.humanFileSize(file?.size) ?? 'Unkown'}
                   </Text>
                 </div>
-              </Fragment>
+              </div>
             )
           })}
         {received.length === 0 && (

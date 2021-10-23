@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
 import Utils from '../../../../services/Utils'
@@ -26,6 +26,12 @@ import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 const DashboardConsentsScreen = () => {
   const [{ consents }, { getConsentsMessages }] = useMailbox()
   const [isFetchingMessages, setIsFetchingMessages] = useState(true)
+
+  const sortedMessages = useMemo(() => {
+    return consents.sort((a, b) => {
+      return b?.hash?.time - a?.hash?.time
+    })
+  }, [consents])
 
   useEffect(() => {
     getConsentsMessages()
@@ -45,37 +51,39 @@ const DashboardConsentsScreen = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            Name
-          </Text>
-        </div>
+        <div className={styles.rowWrapper}>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              Name
+            </Text>
+          </div>
 
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            From
-          </Text>
-        </div>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              From
+            </Text>
+          </div>
 
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            Time
-          </Text>
-        </div>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              Time
+            </Text>
+          </div>
 
-        <div className={styles.header}>
-          <Text size="sm" weight="500" variant="black">
-            Size
-          </Text>
+          <div className={styles.header}>
+            <Text size="sm" weight="500" variant="black">
+              Size
+            </Text>
+          </div>
         </div>
 
         {consents.length > 0 &&
-          consents.reverse().map((message) => {
+          sortedMessages.map((message) => {
             const { hash = {}, from } = message
             const { file = {} } = hash
 
             return (
-              <Fragment key={message?.hash?.address}>
+              <div className={styles.rowWrapper} key={message?.hash?.address}>
                 <div className={styles.row}>
                   <Text size="sm" variant="black">
                     {file?.name ?? 'Unkown'}
@@ -99,7 +107,7 @@ const DashboardConsentsScreen = () => {
                     {Utils.humanFileSize(file?.size) ?? 'Unkown'}
                   </Text>
                 </div>
-              </Fragment>
+              </div>
             )
           })}
         {consents.length === 0 && (

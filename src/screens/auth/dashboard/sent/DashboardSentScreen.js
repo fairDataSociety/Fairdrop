@@ -80,7 +80,7 @@ const DashboardSentScreen = () => {
 
         {sent.length > 0 &&
           sortedMessages.map((message) => {
-            const { hash = {}, from } = message
+            const { hash = {}, to } = message
             const { file = {} } = hash
 
             return (
@@ -94,7 +94,7 @@ const DashboardSentScreen = () => {
 
                 <div className={styles.row}>
                   <Text size="sm" variant="black">
-                    {from ?? 'Unkown'}
+                    {to ?? 'Unkown'}
                   </Text>
                 </div>
 

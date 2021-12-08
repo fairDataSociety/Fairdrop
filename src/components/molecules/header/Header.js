@@ -45,7 +45,7 @@ const Header = ({ className }) => {
       <Logo variant={variant} />
 
       <Text className={styles.version} element="span" size="s" variant={variant}>
-        {`${version} ${process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ''}`}
+        {`${version}`}
       </Text>
 
       <div className={styles.actions}>

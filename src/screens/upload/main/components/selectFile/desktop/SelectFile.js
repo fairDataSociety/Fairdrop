@@ -26,6 +26,7 @@ import Text from '../../../../../../components/atoms/text/Text'
 import { routes } from '../../../../../../config/routes'
 import { ReactComponent as IconDrop } from './assets/fairdrop-drop.svg'
 import { ReactComponent as IconSelect } from './assets/fairdrop-select.svg'
+import { useMailbox } from '../../../../../../hooks/mailbox/useMailbox'
 
 const SelectFile = () => {
   const [{ files }, { setFiles, setType }] = useFileManager()
@@ -33,6 +34,7 @@ const SelectFile = () => {
   const { setVariant, setBackground } = useTheme()
   const history = useHistory()
   const location = useLocation()
+  const [{ mailbox }] = useMailbox()
 
   const handleFileDrop = useCallback((type, files) => {
     setFiles({ type, files })
@@ -120,12 +122,14 @@ const SelectFile = () => {
             type={FILE_UPLOAD_TYPES.STORE}
             onFileDrop={handleFileDrop}
           /> */}
-          <Option
-            headline="Send encrypted"
-            description="Requires logging in to your mailbox"
-            type={FILE_UPLOAD_TYPES.ENCRYPTED}
-            onFileDrop={handleFileDrop}
-          />
+          {!!mailbox && (
+            <Option
+              headline="Send encrypted"
+              description="Requires logging in to your mailbox"
+              type={FILE_UPLOAD_TYPES.ENCRYPTED}
+              onFileDrop={handleFileDrop}
+            />
+          )}
           <Option
             headline="Send in a quick way"
             description="Send a file or folder unencrypted - no mailboxes required"

@@ -27,10 +27,11 @@ import { schema } from './schema'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Loader from '../../../components/atoms/loader/Loader'
 import { routes } from '../../../config/routes'
+import { toast } from 'react-toastify'
 
 const RegisterScreen = ({ history, location }) => {
   const { setVariant, setBackground } = useTheme()
-  const [, { createMailbox, createWarrant }] = useMailbox()
+  const [, { createMailbox }] = useMailbox()
   const [infoMessage, setInfoMessage] = useState()
   const formik = useFormik({
     initialValues: {
@@ -45,9 +46,9 @@ const RegisterScreen = ({ history, location }) => {
           mailbox: values.mailbox,
           password: values.password,
           callback: (message) => setInfoMessage(message),
-        }).catch((e) => console.info(e))
-        setInfoMessage('Creating warrant')
-        await createWarrant()
+        })
+        // setInfoMessage('Creating warrant')
+        // await createWarrant()
 
         if (location?.state?.from) {
           history.replace(location?.state?.from)
@@ -56,7 +57,7 @@ const RegisterScreen = ({ history, location }) => {
         }
       } catch (error) {
         console.info(error)
-        // TODO handle error
+        toast.error('🔥 Something went wrong while trying to create your mailbox :(')
       }
     },
   })

@@ -170,9 +170,11 @@ export const MailboxProvider = ({ children }) => {
 
   const createMailbox = useCallback(
     ({ mailbox, password, callback }) => {
-      return FDSInstance.CreateAccount(mailbox, password, callback).then(() => {
-        return unlockMailbox({ mailbox, password })
-      })
+      return FDSInstance.CreateAccount(mailbox, password, callback)
+        .then(() => {
+          return unlockMailbox({ mailbox, password })
+        })
+        .catch((error) => console.info(error))
     },
     [unlockMailbox],
   )
@@ -221,26 +223,24 @@ export const MailboxProvider = ({ children }) => {
       FDSInstance.currentAccount
         ?.messages('received', '/shared/fairdrop/encrypted')
         .then(async (messages) => {
-          // const key = `fairdrop_receivedSeenCount_${FDSInstance.currentAccount.subdomain}`
-          // // const lsCount = window.localStorage.getItem(key)
-          // const receivedSeenCount = parseInt(lsCount || 0)
-          // const firstTime = lsCount === null
-          // const showReceivedAlert = receivedSeenCount < messages.length
-          // console.info(lsCount, receivedSeenCount, firstTime, showReceivedAlert)
-          const appState = await getAppState()
-          const lastMessage = Math.max(
-            ...(messages ?? []).reduce((times, message) => {
-              times.push(message?.hash?.time ?? 0)
-              return times
-            }, []),
-          )
-          if (lastMessage && appState?.lastReceivedMessage !== lastMessage) {
-            await updateAppState({
-              lastReceivedMessage: lastMessage,
-            })
-            toast('🎉 Yay! You have received a new file!')
+          if (messages?.length > 0) {
+            const appState = await getAppState()
+            const lastMessage = Math.max(
+              ...(messages ?? []).reduce((times, message) => {
+                times.push(message?.hash?.time ?? 0)
+                return times
+              }, []),
+            )
+
+            if (lastMessage && appState?.lastReceivedMessage !== lastMessage) {
+              await updateAppState({
+                lastReceivedMessage: lastMessage,
+              })
+              toast('🎉 Yay! You have received a new file!')
+            }
           }
-          dispatch({ type: SET_RECEIVED_MESSAGES, payload: { messages } })
+
+          dispatch({ type: SET_RECEIVED_MESSAGES, payload: { messages: messages ?? [] } })
         })
         .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
     )

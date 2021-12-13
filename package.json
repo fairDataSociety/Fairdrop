@@ -27,7 +27,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "deploy": "npm run build && docker build -t ghcr.io/mancas/fairdrop . && docker push ghcr.io/mancas/fairdrop"
   },
   "browserslist": [
     ">0.2%",

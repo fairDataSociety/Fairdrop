@@ -27,6 +27,8 @@ import { routes } from '../../../../../../config/routes'
 import { ReactComponent as IconDrop } from './assets/fairdrop-drop.svg'
 import { ReactComponent as IconSelect } from './assets/fairdrop-select.svg'
 import { useMailbox } from '../../../../../../hooks/mailbox/useMailbox'
+import { parameters } from '../../../../../../config/parameters'
+import { toast } from 'react-toastify'
 
 const SelectFile = () => {
   const [{ files }, { setFiles, setType }] = useFileManager()
@@ -36,8 +38,21 @@ const SelectFile = () => {
   const location = useLocation()
   const [{ mailbox }] = useMailbox()
 
+  const checkFileSize = useCallback((file) => {
+    const hasEasterEggEnabled = parseInt(localStorage.getItem('hasEnabledMaxFileSizeEasterEgg')) === 1
+    const maxFileSize = hasEasterEggEnabled ? parameters.easterEggMaxFileSize : parameters.maxFileSize
+    const isValidSize = file.size <= maxFileSize
+    if (!isValidSize) {
+      toast.error(`🐝 Sorry but the file size is restricted to ${maxFileSize / (1024 * 1024)}mb`, { theme: 'light' })
+    }
+    return isValidSize
+  }, [])
+
   const handleFileDrop = useCallback((type, files) => {
-    setFiles({ type, files })
+    if (!checkFileSize(files[0])) {
+      return
+    }
+    setFiles({ type, files: [files[0]] })
   }, [])
 
   const handleUploadFileClick = useCallback(() => {
@@ -47,6 +62,9 @@ const SelectFile = () => {
 
   const handleFileChange = useCallback((evt) => {
     const { files } = evt.target
+    if (!checkFileSize(files[0])) {
+      return
+    }
     setFiles({ files: [files[0]] })
   }, [])
 

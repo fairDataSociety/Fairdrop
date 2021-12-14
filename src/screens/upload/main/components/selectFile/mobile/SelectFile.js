@@ -26,6 +26,8 @@ import { ReactComponent as IconLock } from './assets/lock.svg'
 import { ReactComponent as IconUnlock } from './assets/unlock.svg'
 import Button from '../../../../../../components/atoms/button/Button'
 import c from 'classnames'
+import { parameters } from '../../../../../../config/parameters'
+import { toast } from 'react-toastify'
 
 const SelectFile = () => {
   const [{ files }, { setFiles, setType }] = useFileManager()
@@ -34,8 +36,21 @@ const SelectFile = () => {
   const history = useHistory()
   const location = useLocation()
 
+  const checkFileSize = useCallback((file) => {
+    const hasEasterEggEnabled = parseInt(localStorage.getItem('hasEnabledMaxFileSizeEasterEgg')) === 1
+    const maxFileSize = hasEasterEggEnabled ? parameters.easterEggMaxFileSize : parameters.maxFileSize
+    const isValidSize = file.size <= maxFileSize
+    if (!isValidSize) {
+      toast.error(`🐝 Sorry but the file size is restricted to ${maxFileSize / (1024 * 1024)}mb`, { theme: 'light' })
+    }
+    return isValidSize
+  }, [])
+
   const handleFileChange = useCallback((evt) => {
     const { files } = evt.target
+    if (!checkFileSize(files[0])) {
+      return
+    }
     setFiles({ files: [files[0]] })
   }, [])
 

@@ -14,15 +14,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React from 'react'
+import React, { useCallback, useRef } from 'react'
+import { toast } from 'react-toastify'
 import Text from '../../../components/atoms/text/Text'
 import styles from './AboutFairDataSocietyScreen.module.css'
 import { ReactComponent as FDSLogo } from './assets/fair-data-society.svg'
 
 const AboutFairDataSocietyScreen = () => {
+  const timesClicked = useRef(0)
+  const easterEggEnabled = useRef(parseInt(localStorage.getItem('hasEnabledMaxFileSizeEasterEgg')) === 1)
+
+  const handleEnableEasterEgg = useCallback((evt) => {
+    evt.preventDefault()
+    evt.stopPropagation()
+    if (easterEggEnabled.current) {
+      return
+    }
+
+    timesClicked.current = timesClicked.current + 1
+
+    if (timesClicked.current === 10) {
+      localStorage.setItem('hasEnabledMaxFileSizeEasterEgg', 1)
+      easterEggEnabled.current = true
+      toast('🖖 Easter egg discovered! Your file size limit has been set to 500mb!', {
+        theme: 'light',
+      })
+    }
+  }, [])
+
   return (
     <div className={styles.container}>
-      <FDSLogo className={styles.logo} />
+      <a href="" onClick={handleEnableEasterEgg}>
+        <FDSLogo className={styles.logo} />
+      </a>
 
       <Text className={styles.p} align="center">
         Imagine a society of a completely private digital life where your privacy is not weaponised against you just to

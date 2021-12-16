@@ -61,7 +61,7 @@ export const MailboxProvider = ({ children }) => {
         console.log('initialised Sentry')
         Sentry.init({
           dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
-          release: 'datafund@' + version,
+          release: 'fairdrop@' + version,
         })
         sentryInitialized.current = true
       }
@@ -170,11 +170,9 @@ export const MailboxProvider = ({ children }) => {
 
   const createMailbox = useCallback(
     ({ mailbox, password, callback }) => {
-      return FDSInstance.CreateAccount(mailbox, password, callback)
-        .then(() => {
-          return unlockMailbox({ mailbox, password })
-        })
-        .catch((error) => console.info(error))
+      return FDSInstance.CreateAccount(mailbox, password, callback).then(() => {
+        return unlockMailbox({ mailbox, password })
+      })
     },
     [unlockMailbox],
   )
@@ -460,6 +458,8 @@ export const MailboxProvider = ({ children }) => {
   // Listen to mailbox updates
   useEffect(() => {
     if (!state.mailbox) {
+      clearInterval(updatesInterval.current)
+      clearInterval(balanceInterval.current)
       return
     }
 

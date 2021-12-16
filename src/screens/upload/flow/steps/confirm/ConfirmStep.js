@@ -74,12 +74,12 @@ const ConfirmStep = ({ nextStep }) => {
               <>
                 <div className={styles.row}>
                   <Text>Sender</Text>
-                  <Text align="right">{`${mailbox?.subdomain}.datafund.eth`}</Text>
+                  <Text align="right">{`${mailbox?.subdomain}.fairdrop.eth`}</Text>
                 </div>
 
                 <div className={styles.row}>
                   <Text>Recipient</Text>
-                  <Text align="right">{`${recipient}.datafund.eth`}</Text>
+                  <Text align="right">{`${recipient}.fairdrop.eth`}</Text>
                 </div>
               </>
             )}

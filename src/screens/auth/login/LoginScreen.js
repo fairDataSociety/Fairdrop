@@ -27,6 +27,7 @@ import Button from '../../../components/atoms/button/Button'
 import TouchableOpacity from '../../../components/atoms/touchableOpacity/TouchableOpacity'
 import { schema } from './schema'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
+import Loader from '../../../components/atoms/loader/Loader'
 
 const NEW_MAILBOX = 'NEW_MAILBOX'
 
@@ -133,7 +134,7 @@ const LoginScreen = ({ history, location }) => {
             onClick={formik.handleSubmit}
             disabled={!formik.isValid || formik.isSubmitting}
           >
-            Unlock mailbox
+            {formik.isValidating || formik.isSubmitting ? <Loader /> : 'Unlock mailbox'}
           </Button>
 
           <TouchableOpacity onClick={handleAddMailbox}>

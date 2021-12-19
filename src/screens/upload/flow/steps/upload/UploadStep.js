@@ -18,19 +18,18 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './UploadStep.module.css'
 import Text from '../../../../../components/atoms/text/Text'
-import ProgressBar from '../../../../../components/molecules/progressBar/ProgressBar'
 import CircleLoader from '../../../../../components/atoms/circleLoader/CircleLoader'
 import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
 import { toast } from 'react-toastify'
 import Button from '../../../../../components/atoms/button/Button'
 import { useHistory } from 'react-router-dom'
 import { routes } from '../../../../../config/routes'
+import InfiniteProgressBar from '../../../../../components/molecules/infiniteProgressBar/InfiniteProgressBar'
 
 const UploadStep = ({ nextStep }) => {
   const [{ files, type, recipient }, { setDownloadLink }] = useFileManager()
   const [, { uploadUnencryptedFile, uploadEncryptedFile, storeEncryptedFile }] = useMailbox()
   const [infoMessage, setInfoMessage] = useState()
-  const [progress, setProgress] = useState(0)
   const [uploadFailed, setUploadFailed] = useState(false)
   const history = useHistory()
 
@@ -54,7 +53,7 @@ const UploadStep = ({ nextStep }) => {
               setInfoMessage('File uploaded, processing into Swarm.')
               return
             }
-            setProgress(response)
+            console.info(response)
           },
           onStatusChange: (message) => setInfoMessage(message),
         })
@@ -75,7 +74,7 @@ const UploadStep = ({ nextStep }) => {
               setInfoMessage('File uploaded, processing into Swarm.')
               return
             }
-            setProgress(response)
+            console.info(response)
           },
           onStatusChange: (message) => setInfoMessage(message),
         }).then((link) => {
@@ -93,7 +92,7 @@ const UploadStep = ({ nextStep }) => {
               setInfoMessage('File uploaded, processing into Swarm.')
               return
             }
-            setProgress(response)
+            console.info(response)
           },
           onStatusChange: (message) => setInfoMessage(message),
         })
@@ -123,7 +122,7 @@ const UploadStep = ({ nextStep }) => {
                 : 'Storing Unencrypted using Swarm network'}
             </Text>
 
-            <ProgressBar className={styles.progress} value={progress} />
+            <InfiniteProgressBar className={styles.progress} />
 
             <Text className={styles.statusDescription} size="ml" align="center">
               {infoMessage}

@@ -44,7 +44,7 @@ function truncate(text, startChars, endChars, maxLength) {
 }
 
 function formatBalance(wei) {
-  return `NÐX ${(wei / 1000000000000000000).toFixed(2)}`
+  return `xDAI ${(wei / 1000000000000000000).toFixed(2)}`
 }
 
 function copyToClipboard(text) {

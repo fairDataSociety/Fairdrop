@@ -28,6 +28,7 @@ import TouchableOpacity from '../../../components/atoms/touchableOpacity/Touchab
 import { schema } from './schema'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import Loader from '../../../components/atoms/loader/Loader'
+import { toast } from 'react-toastify'
 
 const NEW_MAILBOX = 'NEW_MAILBOX'
 
@@ -51,6 +52,7 @@ const LoginScreen = ({ history, location }) => {
         }
       } catch (error) {
         console.info(error)
+        toast.error('💩 We could not unlock your mailbox. Please check your mailbox name and password')
       }
     },
   })

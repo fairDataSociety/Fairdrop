@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.0.0
+
+- Improves CSS and HTML Markup
+- Updates dependencies to support node >= 14.0.0
+- Adds screens to import/export mailboxes
+- Some UX enhancements
+- Refactor code, make it more legible and more scalable
+
 ## 0.4.5
 
 - Improves loading sequence

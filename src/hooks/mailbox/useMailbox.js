@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useCallback, useContext, useEffect, useReducer, useRef } from 'react'
-import FDS from 'fds.js'
+import FDS from '@fairdatasociety/fds'
 import * as Sentry from '@sentry/browser'
 import JSZip from 'jszip'
 import FileSaver from 'filesaver.js'

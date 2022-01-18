@@ -33,3 +33,12 @@
   width: 100%;
   max-width: 470px;
 }
+
+.label {
+  flex-shrink: 0;
+}
+
+.filename {
+  flex: 1;
+  margin-left: 12px;
+}

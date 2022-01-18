@@ -61,8 +61,10 @@ const ConfirmStep = ({ nextStep }) => {
         return (
           <Fragment key={`${idx}-${file.name}`}>
             <div className={styles.row}>
-              <Text>File name</Text>
-              <Text align="right">{file.name}</Text>
+              <Text className={styles.label}>File name</Text>
+              <Text className={styles.filename} align="right" truncate>
+                {file.name}
+              </Text>
             </div>
 
             <div className={styles.row}>

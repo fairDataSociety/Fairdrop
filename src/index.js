@@ -18,8 +18,6 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-// import 'bootstrap/dist/css/bootstrap.css'
-
 import App from './App'
 import './index.css'
 
@@ -33,8 +31,7 @@ import { MailboxProvider } from './hooks/mailbox/useMailbox'
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
 //enables us to use subdirectory base urls with react router
-// let appRoot = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(0, 5).join('/') : ''
-// let basename = window.location.href.match('bzz:') !== null ? window.location.href.split('/').slice(3, 5).join('/') : ''
+let basename = window.location.href.match('bzz') !== null ? window.location.href.split('/').slice(3, 6).join('/') : ''
 
 const Root = () => {
   const [appReady, setAppReady] = useState(false)
@@ -46,7 +43,7 @@ const Root = () => {
   }, [])
 
   return (
-    <Router>
+    <Router basename={`/${basename}`}>
       <MailboxProvider>
         <ThemeProvider>
           <SideMenuProvider>

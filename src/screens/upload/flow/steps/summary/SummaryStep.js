@@ -57,7 +57,9 @@ const SummaryStep = () => {
         {files.map((file, idx) => {
           return (
             <div key={`${idx}-${file.name}`} className={styles.fileInfo}>
-              <Text size="ml">{file.name}</Text>
+              <Text size="ml" className={styles.filename} truncate>
+                {file.name}
+              </Text>
               <Text className={styles.fileSize}>{Utils.humanFileSize(file.size)}</Text>
             </div>
           )

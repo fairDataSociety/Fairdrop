@@ -32,7 +32,13 @@
   justify-content: center;
 }
 
+.filename {
+  flex: 1;
+  margin-right: 12px;
+}
+
 .fileSize {
+  flex-shrink: 0;
   margin-left: 12px;
 }
 

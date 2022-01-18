@@ -17,8 +17,8 @@
 export const routes = {
   root: '/',
   upload: {
-    home: '/upload',
-    flow: '/upload/flow',
+    home: '/',
+    flow: '/flow',
   },
   login: '/login',
   register: '/register',

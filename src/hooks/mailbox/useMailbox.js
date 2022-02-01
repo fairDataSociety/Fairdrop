@@ -35,12 +35,8 @@ import {
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
-import axios from 'axios'
-import qs from 'qs'
 import PinningManager from '../../lib/abi/PinningManager.json'
 import PinWarrant from '../../lib/abi/PinWarrant.json'
-// import { generatePath } from 'react-router-dom'
-// import { routes } from '../../config/routes'
 
 const MailboxContext = React.createContext()
 
@@ -283,19 +279,9 @@ export const MailboxProvider = ({ children }) => {
         return Promise.reject(new Error('No mailbox selected'))
       }
 
-      return axios
-        .post(
-          `${process.env.REACT_APP_PINNING_ORACLE_URL}/pin`,
-          qs.stringify({
-            account: state?.mailbox?.address,
-            address: hash,
-            warrant: '',
-            endBlock: '9999',
-          }),
-        )
-        .then((result) => {
-          console.info(result)
-        })
+      return fetch(
+        `${process.env.REACT_APP_PINNING_ORACLE_URL}/pin?acount=${state?.mailbox?.address}&address=${hash}&warrant=&endBlock=9999`,
+      ).then((response) => console.info(response))
     },
     [state?.mailbox],
   )
@@ -306,17 +292,9 @@ export const MailboxProvider = ({ children }) => {
         return Promise.reject(new Error('No mailbox selected'))
       }
 
-      return axios
-        .post(
-          `${process.env.REACT_APP_PINNING_ORACLE_URL}/unpin`,
-          qs.stringify({
-            account: state?.mailbox?.address,
-            address: hash,
-          }),
-        )
-        .then((result) => {
-          console.info(result)
-        })
+      return fetch(
+        `${process.env.REACT_APP_PINNING_ORACLE_URL}/unpin?acount=${state?.mailbox?.address}&address=${hash}`,
+      ).then((response) => console.info(response))
     },
     [state?.mailbox],
   )

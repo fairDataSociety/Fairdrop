@@ -22,7 +22,6 @@ import Overlay from './components/overlay/Overlay'
 import Item from './components/item/Item'
 import { useLocation, useHistory } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
-import qs from 'qs'
 import { routes } from '../../../config/routes'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 import AboutFairdropScreen from '../../../screens/about/fairdrop/AboutFairdropScreen'
@@ -82,18 +81,18 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
           // },
           {
             label: 'Send',
-            path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.ENCRYPTED })}`,
+            path: `${routes.upload.home}?a=${FILE_UPLOAD_TYPES.ENCRYPTED}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.ENCRYPTED })}`)
+              history.push(`${routes.upload.home}?a=${FILE_UPLOAD_TYPES.ENCRYPTED}`)
             },
           },
           {
             label: 'Quick (Unencrypted)',
-            path: `${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.QUICK })}`,
+            path: `${routes.upload.home}?a=${FILE_UPLOAD_TYPES.QUICK}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(`${routes.upload.home}?${qs.stringify({ a: FILE_UPLOAD_TYPES.QUICK })}`)
+              history.push(`${routes.upload.home}?a=${FILE_UPLOAD_TYPES.QUICK}`)
             },
           },
         ],

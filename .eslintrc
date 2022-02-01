@@ -19,7 +19,8 @@
     "window": true,
     "localStorage": true,
     "navigator": true,
-    "File": true
+    "File": true,
+    "fetch": true
   },
   "rules": {
     "indent": [

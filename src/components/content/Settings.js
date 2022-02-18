@@ -15,84 +15,215 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import {notificationPermission} from '../../lib/FDSNotify.js';
 import QRCode from 'qrcode.react';
 import Utils from '../../services/Utils';
+import Dropdown from 'react-dropdown';
+import Switch from "react-switch";
+
+
+//deal with xbrowser copy paste issues
+var ua = window.navigator.userAgent;
+var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+var webkit = !!ua.match(/WebKit/i);
+var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 
 class Settings extends Component{
 
   constructor(props){
     super(props);
     
-    // console.log(props)
-
-    this.togglePinFiles = this.togglePinFiles.bind(this);
-
     this.state = {
-      storedFilesArePinned: false
+      storedFilesArePinned: false,
+      analyticsState: this.analyticsState(),
     }
     
+    this.handleChangeAnalytics = this.handleChangeAnalytics.bind(this);
+    this.handleChangePinFiles = this.handleChangePinFiles.bind(this);
+    this.handleChangeHonestInbox = this.handleChangeHonestInbox.bind(this);
+    this.hideWarning = this.hideWarning.bind(this);
+
   }
 
+  async componentDidMount(){
+    let hasDismissedSettingsWarning = await localStorage.getItem('hasDismissedSettingsWarning');
+    this.setState({hasDismissedSettingsWarning: hasDismissedSettingsWarning});
+  }
+
+  async hideWarning(){
+    let hasDismissedSettingsWarning = await localStorage.setItem('hasDismissedSettingsWarning', true);
+    this.setState({hasDismissedSettingsWarning: "true"});
+  }
+
+
+  handleCopyGatewayLink(){
+
+    if(iOSSafari){
+      var el = document.querySelector(".mailbox-address-input");
+      var oldContentEditable = el.contentEditable,
+          oldReadOnly = el.readOnly,
+          range = document.createRange();
+
+      el.contentEditable = true;
+      el.readOnly = false;
+      range.selectNodeContents(el);
+
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(range);
+
+      el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
+
+      el.contentEditable = oldContentEditable;
+      el.readOnly = oldReadOnly;
+
+      document.execCommand('copy');
+    }else{
+      var copyText = document.querySelector(".mailbox-address-input");
+      copyText.select();
+      document.execCommand("copy");
+    }
+  }  
+
   fileSize(){
-    if(this.props.savedAppState.totalStoredSize){
+    if(this.props.savedAppState && this.props.savedAppState.totalStoredSize){
       return Utils.humanFileSize(this.props.savedAppState.totalStoredSize);
     }else{
       return " - "
     }
-  } 
+  }
 
   pinnedFileSize(){
-    if(this.props.savedAppState.totalPinnedSize){
+    if(this.props.savedAppState && this.props.savedAppState.totalPinnedSize){
       return Utils.humanFileSize(this.props.savedAppState.totalPinnedSize);
     }else{
       return " - "
     }
-  } 
+  }
 
-  truncateAddress(){
-    return Utils.truncate(this.props.selectedMailbox.address, 5, 5, 10);
+  pinnedTimeRemaining(){
+    if(this.props.savedAppState && this.props.savedAppState.pinnedTimeRemainingInSecs){
+      return Utils.humanTime(this.props.savedAppState.pinnedTimeRemainingInSecs);
+    }else{
+      return " - "
+    }
+  }
+
+  mailboxAddress(){
+    return this.props.selectedMailbox.address;
   }
 
   balance(){
-    return Utils.formatBalance(this.props.selectedMailboxBalance)
+    if(this.props.selectedMailboxWarrantBalance){
+      return Utils.formatBalance(this.props.selectedMailboxWarrantBalance);
+    }else{
+      return " - "
+    }
   }
 
-  togglePinFiles(){
-    this.setState({storedFilesArePinned: !this.state.storedFilesArePinned});
+  handleChangeAnalytics(input){
+    if(input === true){
+      this.props.initSentry();
+    }else{
+      window.Sentry = undefined;
+    }
+    localStorage.setItem('sentryEnabled', input);
+    this.setState({analyticsState: input});
   }
+
+  analyticsState(){
+    let state = localStorage.getItem('sentryEnabled') === "true";
+
+    return state;
+  }
+
+  handleChangePinFiles(input){
+    this.props.saveAppState({
+      pinFiles: input
+    });
+  }
+
+  handleChangeHonestInbox(input){
+    this.props.saveAppState({
+      honestInbox: input
+    });
+  }
+
 
   render(){
     return (
-      <div className="content-outer content-fds">
+      <div className="content-outer content-settings">
+        <div className="settings-outer">
+            <button className={ "close-settings hamburger hamburger--spin is-active" } type="button" onClick={()=>{this.props.toggleContent(false)}}>
+              <span className="hamburger-box">
+                <span className="hamburger-inner"></span>
+              </span>
+            </button>
+        </div>
         <div className="content-inner">
-          <div className="content-header">
-            <h1>User Settings</h1>
+          <div className="content-text">
             {this.props.selectedMailbox && 
-              <div>
-                <h2>{this.props.selectedMailbox.subdomain}</h2>
-                <h3>{this.balance()}</h3>
-                <h3>{this.fileSize()}</h3>
-                <h3>{this.pinnedFileSize()}</h3>
-                <h3>{this.truncateAddress()}</h3>
+              <div className="settings-inner">
+                <h1>Settings</h1>
+                <div className="settings-form-group">
+                  <label>Mailbox Name</label>
+                  <div>
+                   <h2>{this.props.selectedMailbox.subdomain}</h2>
+                  </div>
+                </div>
+                <div className="settings-form-group address-input">
+                  <label>Address</label>
+                  <div className="settings-form-address-input">
+                    <input className="mailbox-address-input" type="text" value={this.mailboxAddress()}/>
+                    <div onClick={this.handleCopyGatewayLink} className="settings-copy-address">Copy</div>
+                  </div>
+                </div>
+                <div className="settings-form-group hide-mobile">
+                  <label>Fairdrop Address</label>
+                  <QRCode value={'fds://'+this.mailboxAddress()} />
+                  { this.state.hasDismissedSettingsWarning !== "true" && 
+                    <div className="settings-warning">Warning. While we are in Beta, we do not recommend you send Ethereum or any other tokens to your Fairdrop address.<span className="click-to-dismiss bold-click" onClick={this.hideWarning}>Dismiss</span></div>
+                  }
+                </div>
+                <div className="settings-form-group settings-balance">
+                  <label>Balance</label>
+                  <input className="mailbox-balance-input" type="text" value={this.balance()}/>
+                  <div className="settings-get-more">Get More</div>
+                </div>
+                <div className="settings-form-group storage-provider">
+                  <label>Storage Provider</label>
+                  <div className="settings-dropdown-wrapper">
+                    <Dropdown
+                      options={["DATAFUND (1)", "more coming soon..."]}
+                      value={"DATAFUND (1)"}
+                      placeholder="Select a mailbox"
+                      readOnly
+                    />
+                  </div>
+                </div>
+                <div className="settings-form-group">
+                  <label>Stored Currently</label>
+                  <div className="settings-inner-content">{this.fileSize()}({this.pinnedFileSize()})</div>
+                </div>
+                <div className="settings-form-group">
+                  <label>Stored Time Remaining</label>
+                  <div className="settings-inner-content">{this.pinnedTimeRemaining()}</div>
+                </div>
+                <div className="settings-form-group">
+                  <label>Analytics</label>
+                  <Switch onChange={this.handleChangeAnalytics} checked={this.state.analyticsState} />
+                </div>
+                { /*
+                <div className="settings-form-group">
+                  <label>Pin Files</label>
+                  <Switch onChange={this.handleChangePinFiles} checked={this.props.savedAppState && this.props.savedAppState.pinFiles} />
+                </div>
+                <div className="settings-form-group">
+                  <label>Honest Inbox</label>
+                  <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState && this.props.savedAppState.honestInbox} />
+                </div>
+                */ }
               </div>
             }
-            {/*
-            <p>
-              {this.state.storedFilesArePinned ? "Stored Files are Pinned" : "Stored Files are not Pinned"}
-            </p>
-            <p>
-              <button onClick={this.togglePinFiles}>
-                {this.state.storedFilesArePinned ? "Unpin" : "Pin"}
-              </button>
-            </p>
-          */}
-          </div>
-          <div className="content-text">
-	        <QRCode value="http://facebook.github.io/react/" />
-            <p>
-              Imagine a society of a completely private digital life where your privacy is not weaponised against you just to sell you more things.
-            </p>
           </div>
         </div>
       </div>

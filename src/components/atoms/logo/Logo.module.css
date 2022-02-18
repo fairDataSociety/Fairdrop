@@ -1,0 +1,11 @@
+.logo {
+  transition: fill 0.3s ease;
+}
+
+.white {
+  fill: #fff;
+}
+
+.black {
+  fill: #000;
+}

@@ -1,0 +1,29 @@
+.container {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  padding: 36px 24px;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 470px;
+  width: 100%;
+}
+
+.headline {
+  margin-bottom: 24px;
+}
+
+.action {
+  margin-top: 42px;
+}

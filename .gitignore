@@ -27,3 +27,4 @@ yarn-error.log*
 .env.production
 .env.testnet*
 .env.local
+.env.development

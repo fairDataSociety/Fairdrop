@@ -1,4 +1,4 @@
-# Fairdrop
+# Readme - Fairdrop
 
 ## About Fairdrop
 Fairdrop is a free, decentralised, private and secure file transfer dapp contributed to Fair Data Society by Datafund. It is the first blockchain product based on Fair Data Society principles. This means that Fairdrop completely respects your privacy and doesn’t need or collect any personal data. It runs on the Ethereum network and uses Swarm’s decentralised storage system for file storing and sending. This means:
@@ -18,6 +18,7 @@ You are also able to run your own copy of the code which you may download from t
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for  development and testing purposes.
+
 
 For technical issues, use this project's [issue tracking](https://github.com/fairDataSociety/Fairdrop/issues).
 
@@ -67,7 +68,6 @@ npm build
 You can see your app running on http://localhost:3000/
 
 
-
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
@@ -104,4 +104,8 @@ https://beta.giveth.io/campaigns/5c81316527ae4211c836be4e
 
 ## License
 
+<<<<<<< HEAD
+This project is licensed under the GPL3 License -
+=======
 This project is licensed under the GPL3 License - 
+>>>>>>> master

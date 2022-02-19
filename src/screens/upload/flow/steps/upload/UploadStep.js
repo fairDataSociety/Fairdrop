@@ -74,10 +74,16 @@ const UploadStep = ({ nextStep }) => {
             }
           },
           onStatusChange: (message) => setInfoMessage(message),
-        }).then((link) => {
-          setDownloadLink({ link })
-          nextStep?.()
         })
+          .then((link) => {
+            setDownloadLink({ link })
+            nextStep?.()
+          })
+          .catch((error) => {
+            console.info(error)
+            toast.error(`💩 ${error.message}`)
+            setUploadFailed(true)
+          })
         break
       case FILE_UPLOAD_TYPES.STORE:
         storeEncryptedFile({

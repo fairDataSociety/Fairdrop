@@ -145,7 +145,6 @@ export const MailboxProvider = ({ children }) => {
     ({ mailbox, password }) => {
       return FDSInstance.UnlockAccount(mailbox, password).then(async (account) => {
         initSentry?.(account)
-        console.info(account)
 
         dispatch({
           type: SET_MAILBOX,
@@ -155,7 +154,7 @@ export const MailboxProvider = ({ children }) => {
         })
 
         await updateAppState({ lastLogin: new Date().toISOString() })
-          .catch((e) => console.info(e))
+          .catch(() => {})
           .then(() => {
             return {}
           })
@@ -236,7 +235,7 @@ export const MailboxProvider = ({ children }) => {
 
           dispatch({ type: SET_RECEIVED_MESSAGES, payload: { messages: messages ?? [] } })
         })
-        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+        .catch((error) => Promise.reject(error)) ?? Promise.reject(new Error('No mailbox selected'))
     )
   }, [getAppState, updateAppState])
 
@@ -247,7 +246,7 @@ export const MailboxProvider = ({ children }) => {
         .then((messages) => {
           dispatch({ type: SET_SENT_MESSAGES, payload: { messages } })
         })
-        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+        .catch((error) => Promise.reject(error)) ?? Promise.reject(new Error('No mailbox selected'))
     )
   }, [])
 
@@ -258,7 +257,7 @@ export const MailboxProvider = ({ children }) => {
         .then((messages) => {
           dispatch({ type: SET_CONSENTS_MESSAGES, payload: { messages } })
         })
-        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+        .catch((error) => Promise.reject(error)) ?? Promise.reject(new Error('No mailbox selected'))
     )
   }, [])
 
@@ -269,7 +268,7 @@ export const MailboxProvider = ({ children }) => {
         .then((messages) => {
           dispatch({ type: SET_STORED_MESSAGES, payload: { messages } })
         })
-        .catch((error) => console.info(error)) ?? Promise.reject(new Error('No mailbox selected'))
+        .catch((error) => Promise.reject(error)) ?? Promise.reject(new Error('No mailbox selected'))
     )
   }, [])
 
@@ -281,7 +280,7 @@ export const MailboxProvider = ({ children }) => {
 
       return fetch(
         `${process.env.REACT_APP_PINNING_ORACLE_URL}/pin?acount=${state?.mailbox?.address}&address=${hash}&warrant=&endBlock=9999`,
-      ).then((response) => console.info(response))
+      )
     },
     [state?.mailbox],
   )
@@ -294,7 +293,7 @@ export const MailboxProvider = ({ children }) => {
 
       return fetch(
         `${process.env.REACT_APP_PINNING_ORACLE_URL}/unpin?acount=${state?.mailbox?.address}&address=${hash}`,
-      ).then((response) => console.info(response))
+      )
     },
     [state?.mailbox],
   )
@@ -303,32 +302,7 @@ export const MailboxProvider = ({ children }) => {
     onProgressUpdate?.(100)
     return FDSInstance.Account.Store.storeFilesUnencrypted(files, onProgressUpdate, onStatusChange).then((hash) => {
       onProgressUpdate?.(100)
-      console.info(hash)
       return hash
-      // const index_idx = files.findIndex((file) => {
-      //   const fullPath = file.fullPath || file.webkitRelativePath
-      //   if (fullPath.split('/')[1] === 'index.html') {
-      //     return true
-      //   }
-
-      //   return false
-      // })
-
-      // // We have an index.html
-      // if (index_idx !== -1) {
-      //   return `${FDSInstance.swarmGateway}/bzz:/${hash.address}/index.html`
-      // }
-
-      // if (files.length > 1) {
-      //   return generatePath(routes.downloads.multiple, { address: hash.address })
-      // } else {
-      //   return generatePath(
-      //     `${routes.downloads.single}?${qs.stringify({
-      //       size: hash?.file?.size ?? 0,
-      //     })}`,
-      //     { address: hash.address, name: hash?.file?.name },
-      //   )
-      // }
     })
   }, [])
 
@@ -345,7 +319,7 @@ export const MailboxProvider = ({ children }) => {
           try {
             await pin(response.storedFile.address)
           } catch (error) {
-            console.info('could not pin', response.storedFile.address)
+            Promise.reject(new Error('Could not pin'))
           }
           return response
         })
@@ -354,13 +328,13 @@ export const MailboxProvider = ({ children }) => {
             try {
               await unpin(response.oldStoredManifestAddress)
             } catch {
-              console.info('could not unpin', response.oldStoredManifestAddress)
+              Promise.reject(new Error('Could not unpin'))
             }
           }
           try {
             pin(response.storedManifestAddress)
           } catch {
-            console.log('could not pin', response.storedManifestAddress)
+            Promise.reject(new Error('Could not pin'))
           }
         })
         .then(() => {
@@ -383,8 +357,6 @@ export const MailboxProvider = ({ children }) => {
       const warrantBalance = PW.getBalance()
       dispatch({ type: SET_WARRANT_BALANCE, payload: { warrantBalance } })
     } catch (error) {
-      // TODO handle error
-      console.info(error)
       throw new Error(error)
     }
   }, [])
@@ -394,13 +366,10 @@ export const MailboxProvider = ({ children }) => {
       return Promise.resolve()
     }
 
-    return Promise.all([
-      FDSInstance.currentAccount?.getBalance().then((balance) => {
-        dispatch({ type: SET_BALANCE, payload: { balance } })
-        return balance
-      }),
-      // getMyBalance(),
-    ])
+    return FDSInstance.currentAccount?.getBalance().then((balance) => {
+      dispatch({ type: SET_BALANCE, payload: { balance } })
+      return balance
+    })
   }, [])
 
   const createWarrant = useCallback(async () => {
@@ -408,7 +377,6 @@ export const MailboxProvider = ({ children }) => {
       const appState = await getAppState()
       const balance = await getBalance()
 
-      // TODO check balance
       if (appState?.warrantWasCreated) {
         return
       }
@@ -427,8 +395,6 @@ export const MailboxProvider = ({ children }) => {
 
       return warrant
     } catch (error) {
-      // TODO handle error
-      console.info(error)
       throw new Error(error)
     }
   }, [getBalance, updateAppState, getAppState])

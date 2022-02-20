@@ -30,8 +30,7 @@ export const schema = yup.object().shape({
           .then((result) => {
             return resolve(!result)
           })
-          .catch((error) => {
-            console.info(error)
+          .catch(() => {
             resolve(false)
           })
       })

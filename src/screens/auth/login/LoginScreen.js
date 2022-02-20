@@ -50,8 +50,7 @@ const LoginScreen = ({ history, location }) => {
         } else {
           history.replace(routes.upload.home)
         }
-      } catch (error) {
-        console.info(error)
+      } catch {
         toast.error('💩 We could not unlock your mailbox. Please check your mailbox name and password')
       }
     },

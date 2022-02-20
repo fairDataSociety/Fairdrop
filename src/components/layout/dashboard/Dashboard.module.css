@@ -68,6 +68,10 @@
     flex-wrap: wrap;
   }
 
+  .bottomMenu {
+    min-width: 100%;
+  }
+
   .link {
     margin: 0 12px;
   }

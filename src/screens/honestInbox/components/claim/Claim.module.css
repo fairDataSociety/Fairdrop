@@ -1,0 +1,17 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cta {
+  align-self: flex-start;
+}
+
+.claim {
+  max-width: 23ch;
+}
+
+.claim .extraSize {
+  font-size: 36px;
+}

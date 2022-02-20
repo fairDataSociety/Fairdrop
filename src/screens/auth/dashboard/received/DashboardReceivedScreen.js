@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
 import Utils from '../../../../services/Utils'
@@ -23,16 +23,25 @@ import { DateTime } from 'luxon'
 import Download from '../components/download/Download'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
+import Notification from '../../../../components/molecules/notification/Notification'
 
 const DashboardReceivedScreen = () => {
   const [{ received }, { getReceivedMessages }] = useMailbox()
   const [isFetchingMessages, setIsFetchingMessages] = useState(true)
+  const [shouldOpenNotification, setShouldOpenNotification] = useState(
+    !localStorage.getItem('honestInboxDidYouKnowNotification'),
+  )
 
   const sortedMessages = useMemo(() => {
     return received.sort((a, b) => {
       return b?.hash?.time - a?.hash?.time
     })
   }, [received])
+
+  const onCloseNotification = useCallback(() => {
+    localStorage.setItem('honestInboxDidYouKnowNotification', Date.now())
+    setShouldOpenNotification(false)
+  }, [])
 
   useEffect(() => {
     getReceivedMessages()
@@ -120,6 +129,19 @@ const DashboardReceivedScreen = () => {
           </div>
         )}
       </div>
+
+      <Notification opened={shouldOpenNotification} onCloseRequest={onCloseNotification}>
+        <div>
+          <Text weight="500">Hey! Did you know...</Text>
+          <Text>
+            ...you can use your{' '}
+            <Text weight="500" element="span">
+              Honest Inbox
+            </Text>{' '}
+            so people can send you files anonymously?
+          </Text>
+        </div>
+      </Notification>
     </div>
   )
 }

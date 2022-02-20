@@ -26,6 +26,7 @@ import DashboardStoredScreen from '../../../screens/auth/dashboard/stored/Dashbo
 import Text from '../../atoms/text/Text'
 import styles from './Dashboard.module.css'
 import ReactTooltip from 'react-tooltip'
+import Button from '../../atoms/button/Button'
 
 const Dashboard = () => {
   const { setVariant, setBackground } = useTheme()
@@ -61,6 +62,12 @@ const Dashboard = () => {
             {'> Consents'}
           </Text>
         </NavLink>
+
+        <div className={styles.bottomMenu}>
+          <Button className={styles.profileButton} variant="black" onClick={() => {}}>
+            My Honest Inbox
+          </Button>
+        </div>
       </nav>
       <div className={styles.content}>
         <Route exact path={routes.mailbox.received} component={DashboardReceivedScreen} />

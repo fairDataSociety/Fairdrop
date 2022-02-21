@@ -442,7 +442,7 @@ export const MailboxProvider = ({ children }) => {
     }
 
     updatesInterval.current = setInterval(getReceivedMessages, 15000)
-    balanceInterval.current = setInterval(getBalance, 1500)
+    balanceInterval.current = setInterval(getBalance, 30000)
 
     return () => {
       clearInterval(updatesInterval.current)

@@ -53,7 +53,6 @@ const UploadStep = ({ nextStep }) => {
               setInfoMessage('File uploaded, processing into Swarm.')
               return
             }
-            console.info(response)
           },
           onStatusChange: (message) => setInfoMessage(message),
         })
@@ -61,7 +60,6 @@ const UploadStep = ({ nextStep }) => {
             nextStep?.()
           })
           .catch((error) => {
-            console.info(error)
             toast.error(`💩 ${error.message}`)
             setUploadFailed(true)
           })
@@ -74,11 +72,9 @@ const UploadStep = ({ nextStep }) => {
               setInfoMessage('File uploaded, processing into Swarm.')
               return
             }
-            console.info(response)
           },
           onStatusChange: (message) => setInfoMessage(message),
         }).then((link) => {
-          console.info(link)
           setDownloadLink({ link })
           nextStep?.()
         })
@@ -92,7 +88,6 @@ const UploadStep = ({ nextStep }) => {
               setInfoMessage('File uploaded, processing into Swarm.')
               return
             }
-            console.info(response)
           },
           onStatusChange: (message) => setInfoMessage(message),
         })

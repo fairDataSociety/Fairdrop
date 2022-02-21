@@ -55,8 +55,7 @@ const RegisterScreen = ({ history, location }) => {
         } else {
           history.replace(routes.upload.home)
         }
-      } catch (error) {
-        console.info(error)
+      } catch {
         toast.error('🔥 Something went wrong while trying to create your mailbox :(')
       }
     },

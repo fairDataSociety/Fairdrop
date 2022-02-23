@@ -12,7 +12,7 @@ import InfiniteProgressBar from '../../../../components/molecules/infiniteProgre
 const Upload = ({ className, ens }) => {
   const [file, setFile] = useState()
   const [uploading, setUploading] = useState()
-  const [infoMessage, setInfoMessage] = useState('File uploaded, processing into Swarm')
+  const [infoMessage, setInfoMessage] = useState('Processing request...')
   const [uploadFailed, setUploadFailed] = useState(false)
   const [, { createAnonymousMailbox, uploadEncryptedFile, resetMailbox, txToFaucet }] = useMailbox()
 
@@ -27,7 +27,6 @@ const Upload = ({ className, ens }) => {
   }, [])
 
   const handleSendFileClick = useCallback(async () => {
-    console.info(file)
     setUploading(true)
     const createAccount = async () => {
       try {
@@ -53,10 +52,10 @@ const Upload = ({ className, ens }) => {
             return
           }
         },
-        onStatusChange: (message) => console.info(message) && setInfoMessage(message),
+        onStatusChange: (message) => setInfoMessage(message),
       })
       await txToFaucet()
-      toast('🎉 Yay! Your files has been sent!')
+      toast('🎉 Yay! Your file has been sent!')
       resetMailbox?.()
       setFile(null)
       setUploading(false)
@@ -73,7 +72,7 @@ const Upload = ({ className, ens }) => {
         {!uploadFailed && (
           <>
             <div className={styles.uploadingMessage}>
-              <Text className={styles.headline} variant="black" size="l">
+              <Text className={styles.headline} variant="black" size="l" weight="500">
                 Sending your file...
               </Text>
 
@@ -87,7 +86,7 @@ const Upload = ({ className, ens }) => {
         {uploadFailed && (
           <>
             <div className={styles.uploadingMessage}>
-              <Text className={styles.headline} variant="black" size="l">
+              <Text className={styles.headline} variant="black" size="l" weight="500">
                 Something went wrong
               </Text>
 

@@ -8,6 +8,16 @@
 
   padding: 36px 124px;
   box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.container:after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  z-index: -1;
+  background: url(./assets/background.jpg) no-repeat center / cover;
 }
 
 .logo {

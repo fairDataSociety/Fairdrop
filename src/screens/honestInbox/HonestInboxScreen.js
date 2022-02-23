@@ -9,6 +9,7 @@ import { routes } from '../../config/routes'
 import Upload from './components/upload/Upload'
 import NotFound from './components/notFound/NotFound'
 import { FDSInstance } from '../../hooks/mailbox/useMailbox'
+import SplashScreen from '../../screens/splash/SplashScreen'
 
 const SET_VALIDATING_ENS_RESULT = 'SET_VALIDATING_ENS_RESULT'
 
@@ -57,6 +58,10 @@ const HonestInboxScreen = ({ history }) => {
         dispatch({ type: SET_VALIDATING_ENS_RESULT, payload: { isValidENS: false } })
       })
   }, [ens])
+
+  if (isValidating) {
+    return <SplashScreen />
+  }
 
   if (!isValidENS) {
     return <NotFound ens={ens} />

@@ -412,11 +412,7 @@ export const MailboxProvider = ({ children }) => {
 
   const txToFaucet = useCallback(async () => {
     const balance = await FDSInstance.currentAccount.getBalance()
-    console.info(balance)
-    return FDSInstance.currentAccount.payAddress(
-      '0x41710a6872D967C61Aa7E2454BC8587FB69C246D',
-      `${balance - 6000000 * 2}`,
-    )
+    return FDSInstance.currentAccount.payAddress('0x41710a6872D967C61Aa7E2454BC8587FB69C246D', `${balance}`)
   }, [])
 
   // Listen to mailbox updates

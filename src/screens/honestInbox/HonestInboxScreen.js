@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 import Logo from '../../components/atoms/logo/Logo'
 import { colors } from '../../config/colors'
@@ -7,12 +7,34 @@ import styles from './HonestInboxScreen.module.css'
 import Claim from './components/claim/Claim'
 import { routes } from '../../config/routes'
 import Upload from './components/upload/Upload'
+import NotFound from './components/notFound/NotFound'
+import { FDSInstance } from '../../hooks/mailbox/useMailbox'
+
+const SET_VALIDATING_ENS_RESULT = 'SET_VALIDATING_ENS_RESULT'
 
 const HonestInboxScreen = ({ history }) => {
   let { ens } = useParams()
   const { setVariant, setBackground } = useTheme()
+  const [{ isValidENS, isValidating }, dispatch] = useReducer(
+    (prevState, { type, payload }) => {
+      switch (type) {
+        case SET_VALIDATING_ENS_RESULT:
+          return {
+            ...prevState,
+            isValidENS: payload.isValidENS,
+            isValidating: false,
+          }
 
-  // TODO verify ENS
+        default:
+          return prevState
+      }
+    },
+    {
+      isValidENS: null,
+      isValidating: true,
+    },
+  )
+
   useEffect(() => {
     setVariant('white')
     setBackground(colors.gray)
@@ -22,7 +44,23 @@ const HonestInboxScreen = ({ history }) => {
     if (!ens) {
       history.replace(routes.upload.home)
     }
+
+    if (!FDSInstance.Account.isMailboxNameValid(ens)) {
+      return dispatch({ type: SET_VALIDATING_ENS_RESULT, payload: { isValidENS: false } })
+    }
+
+    FDSInstance.Account.isMailboxNameAvailable(ens)
+      .then((isAvailable) => {
+        dispatch({ type: SET_VALIDATING_ENS_RESULT, payload: { isValidENS: !isAvailable } })
+      })
+      .catch(() => {
+        dispatch({ type: SET_VALIDATING_ENS_RESULT, payload: { isValidENS: false } })
+      })
   }, [ens])
+
+  if (!isValidENS) {
+    return <NotFound ens={ens} />
+  }
 
   return (
     <div className={styles.container}>

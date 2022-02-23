@@ -21,6 +21,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import App from './App'
 import './index.css'
 
+import { ToastContainer, Flip } from 'react-toastify'
 import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
 import { ThemeProvider } from './hooks/theme/useTheme'
@@ -57,6 +58,7 @@ const Root = () => {
                   <Route component={App} />
                 </Switch>
               )}
+              <ToastContainer limit={3} transition={Flip} theme="dark" />
             </FileManagerProvider>
           </SideMenuProvider>
         </ThemeProvider>

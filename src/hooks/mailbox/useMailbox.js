@@ -172,6 +172,17 @@ export const MailboxProvider = ({ children }) => {
     [unlockMailbox],
   )
 
+  const createAnonymousMailbox = useCallback(
+    ({ callback } = {}) => {
+      const mailbox = `anonymous-${Date.now()}`
+      const password = 'ANONYMOUS-PASS'
+      return FDSInstance.CreateAccount(mailbox, password, callback).then(() => {
+        return FDSInstance.UnlockAccount(mailbox, password)
+      })
+    },
+    [unlockMailbox],
+  )
+
   const exportMailboxes = useCallback(() => {
     const zip = new JSZip()
     const accounts = FDSInstance.GetAccounts()
@@ -399,6 +410,15 @@ export const MailboxProvider = ({ children }) => {
     }
   }, [getBalance, updateAppState, getAppState])
 
+  const txToFaucet = useCallback(async () => {
+    const balance = await FDSInstance.currentAccount.getBalance()
+    console.info(balance)
+    return FDSInstance.currentAccount.payAddress(
+      '0x41710a6872D967C61Aa7E2454BC8587FB69C246D',
+      `${balance - 6000000 * 2}`,
+    )
+  }, [])
+
   // Listen to mailbox updates
   useEffect(() => {
     if (!state.mailbox) {
@@ -436,6 +456,7 @@ export const MailboxProvider = ({ children }) => {
         {
           unlockMailbox,
           createMailbox,
+          createAnonymousMailbox,
           initSentry,
           exportMailboxes,
           importMailbox,
@@ -454,6 +475,7 @@ export const MailboxProvider = ({ children }) => {
           updateStoredStats,
           createWarrant,
           getMyBalance,
+          txToFaucet,
         },
       ]}
     >

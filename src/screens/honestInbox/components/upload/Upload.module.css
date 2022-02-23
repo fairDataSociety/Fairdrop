@@ -10,7 +10,6 @@
 
 .headline {
   max-width: 16ch;
-  margin-top: 6px;
 }
 
 .actions {
@@ -156,4 +155,18 @@
   100% {
     transform: rotateX(0);
   }
+}
+
+.uploadingMessage {
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.progress {
+  max-width: 100%;
+  margin: 40px 0 0;
+  width: 100%;
+  align-self: flex-end;
 }

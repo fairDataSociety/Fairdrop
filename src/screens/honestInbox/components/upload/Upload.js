@@ -5,9 +5,16 @@ import c from 'classnames'
 import Text from '../../../../components/atoms/text/Text'
 import Utils from '../../../../services/Utils'
 import Button from '../../../../components/atoms/button/Button'
+import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
+import { toast } from 'react-toastify'
+import InfiniteProgressBar from '../../../../components/molecules/infiniteProgressBar/InfiniteProgressBar'
 
 const Upload = ({ className, ens }) => {
   const [file, setFile] = useState()
+  const [uploading, setUploading] = useState()
+  const [infoMessage, setInfoMessage] = useState('File uploaded, processing into Swarm')
+  const [uploadFailed, setUploadFailed] = useState(false)
+  const [, { createAnonymousMailbox, uploadEncryptedFile, resetMailbox, txToFaucet }] = useMailbox()
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0])
@@ -19,9 +26,82 @@ const Upload = ({ className, ens }) => {
     inputRef?.current?.click()
   }, [])
 
-  const handleSendFileClick = useCallback(() => {
+  const handleSendFileClick = useCallback(async () => {
     console.info(file)
+    setUploading(true)
+    const createAccount = async () => {
+      try {
+        const account = await createAnonymousMailbox()
+        console.info(account)
+      } catch (error) {
+        console.info(error)
+        txToFaucet()
+        resetMailbox?.()
+        toast.error(`💩 ${error.message}`)
+      }
+    }
+
+    try {
+      await createAccount()
+      await uploadEncryptedFile({
+        to: ens,
+        files: [file],
+        onEncryptedEnd: () => setInfoMessage('The file was encrypted, uploading file...'),
+        onProgressUpdate: (response) => {
+          if (response >= 100) {
+            setInfoMessage('File uploaded, processing into Swarm.')
+            return
+          }
+        },
+        onStatusChange: (message) => console.info(message) && setInfoMessage(message),
+      })
+      await txToFaucet()
+      toast('🎉 Yay! Your files has been sent!')
+      resetMailbox?.()
+      setFile(null)
+      setUploading(false)
+    } catch (error) {
+      console.info(error)
+      toast.error(`💩 ${error.message}`)
+      setUploadFailed(true)
+    }
   }, [file])
+
+  if (uploading) {
+    return (
+      <div className={c(styles.container, className)}>
+        {!uploadFailed && (
+          <>
+            <div className={styles.uploadingMessage}>
+              <Text className={styles.headline} variant="black" size="l">
+                Sending your file...
+              </Text>
+
+              <Text variant="black">{infoMessage}</Text>
+            </div>
+
+            <InfiniteProgressBar className={styles.progress} variant="dark" />
+          </>
+        )}
+
+        {uploadFailed && (
+          <>
+            <div className={styles.uploadingMessage}>
+              <Text className={styles.headline} variant="black" size="l">
+                Something went wrong
+              </Text>
+
+              <Text variant="black">We are so sorry, but we could not sent your file. Do you want to try again?</Text>
+            </div>
+
+            <Button variant="black" onClick={handleSendFileClick}>
+              Retry
+            </Button>
+          </>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className={c(styles.container, className)} {...getRootProps()}>

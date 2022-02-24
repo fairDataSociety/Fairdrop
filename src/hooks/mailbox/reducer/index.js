@@ -22,6 +22,7 @@ export const SET_BALANCE = 'SET_BALANCE'
 export const SET_WARRANT_BALANCE = 'SET_WARRANT_BALANCE'
 export const SET_MAILBOX = 'SET_MAILBOX'
 export const SET_AVAILABLE_MAILBOXES = 'SET_AVAILABLE_MAILBOXES'
+export const REMOVE_AVAILABLE_MAILBOX = 'REMOVE_AVAILABLE_MAILBOX'
 export const SET_APP_STATE = 'SET_APP_STATESET_APP_STATE'
 export const RESET = 'RESET'
 
@@ -91,6 +92,12 @@ export const reducer = (prevState, { type, payload }) => {
       return {
         ...prevState,
         accounts: payload.accounts,
+      }
+
+    case REMOVE_AVAILABLE_MAILBOX:
+      return {
+        ...prevState,
+        accounts: prevState.accounts.filter((subdomain) => subdomain !== payload.mailbox),
       }
 
     case SET_APP_STATE:

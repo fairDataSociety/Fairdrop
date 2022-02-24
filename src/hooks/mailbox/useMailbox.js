@@ -32,6 +32,7 @@ import {
   SET_STORED_MESSAGES,
   SET_APP_STATE,
   SET_WARRANT_BALANCE,
+  REMOVE_AVAILABLE_MAILBOX,
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
@@ -415,6 +416,15 @@ export const MailboxProvider = ({ children }) => {
     return FDSInstance.currentAccount.payAddress('0x41710a6872D967C61Aa7E2454BC8587FB69C246D', `${balance}`)
   }, [])
 
+  const removeMailbox = useCallback((mailbox) => {
+    const success = FDSInstance.DeleteAccount(mailbox)
+    if (!success) {
+      throw new Error(`Cannot remove ${mailbox} mailbox`)
+    }
+
+    dispatch({ type: REMOVE_AVAILABLE_MAILBOX, payload: { mailbox } })
+  }, [])
+
   // Listen to mailbox updates
   useEffect(() => {
     if (!state.mailbox) {
@@ -472,6 +482,7 @@ export const MailboxProvider = ({ children }) => {
           createWarrant,
           getMyBalance,
           txToFaucet,
+          removeMailbox,
         },
       ]}
     >

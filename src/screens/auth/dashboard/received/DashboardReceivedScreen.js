@@ -25,6 +25,8 @@ import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 import Notification from '../../../../components/molecules/notification/Notification'
 
+const honestInboxRegex = /anonymous-\d{13}/gm
+
 const DashboardReceivedScreen = () => {
   const [{ received }, { getReceivedMessages }] = useMailbox()
   const [isFetchingMessages, setIsFetchingMessages] = useState(true)
@@ -91,6 +93,10 @@ const DashboardReceivedScreen = () => {
           sortedMessages.map((message) => {
             const { hash = {}, from } = message
             const { file = {} } = hash
+            let sanitizedFrom = from
+            if (new RegExp(honestInboxRegex).test(from)) {
+              sanitizedFrom = 'Honest Inbox'
+            }
 
             return (
               <div className={styles.rowWrapper} key={message?.hash?.address}>
@@ -103,7 +109,7 @@ const DashboardReceivedScreen = () => {
 
                 <div className={styles.row}>
                   <Text size="sm" variant="black">
-                    {from ?? 'Unkown'}
+                    {sanitizedFrom ?? 'Unkown'}
                   </Text>
                 </div>
 

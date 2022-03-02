@@ -32,6 +32,7 @@ import {
   SET_STORED_MESSAGES,
   SET_APP_STATE,
   SET_WARRANT_BALANCE,
+  REMOVE_AVAILABLE_MAILBOX,
 } from './reducer'
 import { version } from '../../../package.json'
 import { toast } from 'react-toastify'
@@ -167,6 +168,17 @@ export const MailboxProvider = ({ children }) => {
     ({ mailbox, password, callback }) => {
       return FDSInstance.CreateAccount(mailbox, password, callback).then(() => {
         return unlockMailbox({ mailbox, password })
+      })
+    },
+    [unlockMailbox],
+  )
+
+  const createAnonymousMailbox = useCallback(
+    ({ callback } = {}) => {
+      const mailbox = `anonymous-${Date.now()}`
+      const password = 'ANONYMOUS-PASS'
+      return FDSInstance.CreateAccount(mailbox, password, callback).then(() => {
+        return FDSInstance.UnlockAccount(mailbox, password)
       })
     },
     [unlockMailbox],
@@ -399,6 +411,20 @@ export const MailboxProvider = ({ children }) => {
     }
   }, [getBalance, updateAppState, getAppState])
 
+  const txToFaucet = useCallback(async () => {
+    const balance = await FDSInstance.currentAccount.getBalance()
+    return FDSInstance.currentAccount.payAddress('0x41710a6872D967C61Aa7E2454BC8587FB69C246D', `${balance}`)
+  }, [])
+
+  const removeMailbox = useCallback((mailbox) => {
+    const success = FDSInstance.DeleteAccount(mailbox)
+    if (!success) {
+      throw new Error(`Cannot remove ${mailbox} mailbox`)
+    }
+
+    dispatch({ type: REMOVE_AVAILABLE_MAILBOX, payload: { mailbox } })
+  }, [])
+
   // Listen to mailbox updates
   useEffect(() => {
     if (!state.mailbox) {
@@ -407,7 +433,7 @@ export const MailboxProvider = ({ children }) => {
       return
     }
 
-    updatesInterval.current = setInterval(getReceivedMessages, 15000)
+    updatesInterval.current = setInterval(getReceivedMessages, 30000)
     balanceInterval.current = setInterval(getBalance, 30000)
 
     return () => {
@@ -436,6 +462,7 @@ export const MailboxProvider = ({ children }) => {
         {
           unlockMailbox,
           createMailbox,
+          createAnonymousMailbox,
           initSentry,
           exportMailboxes,
           importMailbox,
@@ -454,6 +481,8 @@ export const MailboxProvider = ({ children }) => {
           updateStoredStats,
           createWarrant,
           getMyBalance,
+          txToFaucet,
+          removeMailbox,
         },
       ]}
     >

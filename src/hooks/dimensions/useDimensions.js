@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 
 export const useDimensions = () => {
-  const [dimensions, setDimensions] = useState()
+  const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight })
 
   useEffect(() => {
     let timeoutId = null
@@ -14,10 +14,6 @@ export const useDimensions = () => {
     return () => {
       window.removeEventListener('resize', resizeListener)
     }
-  }, [])
-
-  useEffect(() => {
-    setDimensions({ width: window.innerWidth, height: window.innerHeight })
   }, [])
 
   const isMobile = useMemo(() => {

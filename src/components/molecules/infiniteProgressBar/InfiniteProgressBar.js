@@ -18,9 +18,9 @@ import React from 'react'
 import styles from './InfiniteProgressBar.module.css'
 import c from 'classnames'
 
-const InfiniteProgressBar = ({ className }) => {
+const InfiniteProgressBar = ({ className, variant = 'light' }) => {
   return (
-    <div className={c(styles.slider, className)}>
+    <div className={c(styles.slider, styles[variant], className)}>
       <div className={styles.line}></div>
       <div className={c(styles.subline, styles.inc)}></div>
       <div className={c(styles.subline, styles.dec)}></div>

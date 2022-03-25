@@ -58,7 +58,6 @@ const Upload = ({ className, ens }) => {
         },
         onStatusChange: (message) => setInfoMessage(message),
       })
-      await txToFaucet()
       toast('🎉 Yay! Your file has been sent!')
       resetMailbox?.()
       removeMailbox(account?.subdomain)
@@ -71,6 +70,8 @@ const Upload = ({ className, ens }) => {
       toast.error(`💩 ${error.message}`)
       setUploadFailed(true)
     }
+
+    await txToFaucet().catch((error) => console.info(error))
   }, [file])
 
   if (uploading) {
@@ -119,7 +120,7 @@ const Upload = ({ className, ens }) => {
               <Text element="span" size="l" weight="500" variant="black">
                 {ens}
               </Text>{' '}
-              anonimously
+              anonymously
             </Text>
           </div>
 

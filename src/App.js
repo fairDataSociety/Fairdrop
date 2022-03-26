@@ -34,16 +34,6 @@ import ProductDisclaimer from './disclaimers/product/ProductDisclaimer'
 import ReportingDisclaimer from './disclaimers/reporting/ReportingDisclaimer'
 import Dashboard from './components/layout/dashboard/Dashboard'
 import DownloadScreen from './screens/download/DownloadScreen'
-import { ThemeProvider } from 'styled-components'
-import { theme } from './theme/theme'
-
-import { createGlobalStyle } from 'styled-components'
-
-const GlobalCSS = createGlobalStyle`
-  * {
-    font-family: ${({ theme }) => theme.font.fontFamily.default}
-  }
-`
 
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
@@ -61,35 +51,32 @@ const App = () => {
   }, [location.pathname, location.search, hideSideMenu])
 
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalCSS />
-      <div className={c(styles.container)}>
-        <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
+    <div className={c(styles.container)}>
+      <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
 
-        <Header />
+      <Header />
 
-        <div className={styles.content}>
-          <Switch>
-            <Route exact path={routes.login} component={LoginScreen} />
-            <Route exact path={routes.register} component={RegisterScreen} />
-            <Route exact path={routes.upload.home} component={UploadMainScreen} />
-            <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
+      <div className={styles.content}>
+        <Switch>
+          <Route exact path={routes.login} component={LoginScreen} />
+          <Route exact path={routes.register} component={RegisterScreen} />
+          <Route exact path={routes.upload.home} component={UploadMainScreen} />
+          <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
 
-            <Route exact path={routes.settings.export} component={SettingsExportScreen} />
-            <Route exact path={routes.settings.import} component={SettingsImportScreen} />
+          <Route exact path={routes.settings.export} component={SettingsExportScreen} />
+          <Route exact path={routes.settings.import} component={SettingsImportScreen} />
 
-            <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
+          <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
 
-            <Route path={routes.downloads.multiple} component={DownloadScreen} />
-            <Route path={routes.downloads.single} component={DownloadScreen} />
-          </Switch>
-        </div>
-
-        <ProductDisclaimer />
-
-        <ReportingDisclaimer />
+          <Route path={routes.downloads.multiple} component={DownloadScreen} />
+          <Route path={routes.downloads.single} component={DownloadScreen} />
+        </Switch>
       </div>
-    </ThemeProvider>
+
+      <ProductDisclaimer />
+
+      <ReportingDisclaimer />
+    </div>
   )
 }
 

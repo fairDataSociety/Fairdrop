@@ -56,7 +56,8 @@
     "react-dom": "^17.0.0",
     "react-dropdown": "^1.5.0",
     "react-scripts": "4.0.3",
-    "source-map-explorer": "^2.5.2"
+    "source-map-explorer": "^2.5.2",
+    "storybook-addon-styled-component-theme": "^2.0.0"
   },
   "pre-commit": [
     "pre-commit"

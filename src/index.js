@@ -30,6 +30,15 @@ import { SideMenuProvider } from './hooks/sideMenu/useSideMenu'
 import { MailboxProvider } from './hooks/mailbox/useMailbox'
 import { routes } from './config/routes'
 import HonestInboxScreen from './screens/honestInbox/HonestInboxScreen'
+import { ThemeProvider as SCThemeProvider } from 'styled-components'
+import { theme } from './theme/theme'
+import { createGlobalStyle } from 'styled-components'
+
+const GlobalCSS = createGlobalStyle`
+  * {
+    font-family: ${({ theme }) => theme.font.fontFamily.default}
+  }
+`
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -46,24 +55,27 @@ const Root = () => {
   }, [])
 
   return (
-    <Router basename={`/${basename}`}>
-      <MailboxProvider>
-        <ThemeProvider>
-          <SideMenuProvider>
-            <FileManagerProvider>
-              {!appReady && <SplashScreen />}
-              {appReady && (
-                <Switch>
-                  <Route exact path={routes.mailbox.honest} component={HonestInboxScreen} />
-                  <Route component={App} />
-                </Switch>
-              )}
-              <ToastContainer limit={3} transition={Flip} theme="dark" />
-            </FileManagerProvider>
-          </SideMenuProvider>
-        </ThemeProvider>
-      </MailboxProvider>
-    </Router>
+    <SCThemeProvider theme={theme}>
+      <GlobalCSS />
+      <Router basename={`/${basename}`}>
+        <MailboxProvider>
+          <ThemeProvider>
+            <SideMenuProvider>
+              <FileManagerProvider>
+                {!appReady && <SplashScreen />}
+                {appReady && (
+                  <Switch>
+                    <Route exact path={routes.mailbox.honest} component={HonestInboxScreen} />
+                    <Route component={App} />
+                  </Switch>
+                )}
+                <ToastContainer limit={3} transition={Flip} theme="dark" />
+              </FileManagerProvider>
+            </SideMenuProvider>
+          </ThemeProvider>
+        </MailboxProvider>
+      </Router>
+    </SCThemeProvider>
   )
 }
 

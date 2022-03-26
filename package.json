@@ -26,7 +26,9 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "deploy": "npm run build && docker build -t ghcr.io/mancas/fairdrop . && docker push ghcr.io/mancas/fairdrop"
+    "deploy": "npm run build && docker build -t ghcr.io/mancas/fairdrop . && docker push ghcr.io/mancas/fairdrop",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "browserslist": [
     ">0.2%",
@@ -37,6 +39,14 @@
   "devDependencies": {
     "@sentry/browser": "^5.6.1",
     "@sentry/webpack-plugin": "^1.8.0",
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-interactions": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/node-logger": "^6.4.19",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.4.19",
+    "@storybook/testing-library": "^0.0.9",
     "pre-commit": "^1.2.2",
     "prettier": "^2.4.0",
     "pretty-quick": "^3.1.1",
@@ -48,5 +58,17 @@
   },
   "pre-commit": [
     "pre-commit"
-  ]
+  ],
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
+  }
 }

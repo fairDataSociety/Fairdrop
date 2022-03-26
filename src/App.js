@@ -37,6 +37,14 @@ import DownloadScreen from './screens/download/DownloadScreen'
 import { ThemeProvider } from 'styled-components'
 import { theme } from './theme/theme'
 
+import { createGlobalStyle } from 'styled-components'
+
+const GlobalCSS = createGlobalStyle`
+  * {
+    font-family: ${({ theme }) => theme.font.fontFamily.default}
+  }
+`
+
 const App = () => {
   const [menuOpened, setMenuOpened] = useState(false)
   const location = useLocation()
@@ -54,6 +62,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <GlobalCSS />
       <div className={c(styles.container)}>
         <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
 

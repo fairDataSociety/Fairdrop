@@ -55,6 +55,11 @@ export const theme = {
   name: 'default',
   space: 1,
   colors,
+  font: {
+    fontFamily: {
+      default: 'Space Grotesk, sans-serif',
+    },
+  },
   components: {
     card: {
       padding: '12px',

@@ -242,6 +242,14 @@
     "@babel/helper-annotate-as-pure" "^7.16.7"
     regexpu-core "^5.0.1"
 
+"@babel/helper-define-map@^7.16.7":
+  version "7.16.7"
+  resolved "https://registry.yarnpkg.com/@babel/helper-define-map/-/helper-define-map-7.16.7.tgz#26ba095d18b96c34ce2ec29dc3fb0274aadbba52"
+  integrity sha512-SoIOh18NdeBBQjiLF1H32jpDLkApTbUWwEXmqaxn1KEm7aqry4reaghMdCdkbdloVmMwUxM/uCcTmHWj9zJbxQ==
+  dependencies:
+    "@babel/helper-function-name" "^7.16.7"
+    "@babel/types" "^7.16.7"
+
 "@babel/helper-define-polyfill-provider@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@babel/helper-define-polyfill-provider/-/helper-define-polyfill-provider-0.1.5.tgz#3c2f91b7971b9fc11fe779c945c014065dea340e"
@@ -13276,7 +13284,7 @@ pnp-webpack-plugin@^1.6.4:
   dependencies:
     ts-pnp "^1.1.6"
 
-polished@^4.0.5:
+polished@^4.0.5, polished@^4.1.4:
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/polished/-/polished-4.1.4.tgz#640293ba834109614961a700fdacbb6599fb12d0"
   integrity sha512-Nq5Mbza+Auo7N3sQb1QMFaQiDO+4UexWuSGR7Cjb4Sw11SZIJcrrFtiZ+L0jT9MBsUsxDboHVASbCLbE1rnECg==

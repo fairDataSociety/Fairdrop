@@ -12,6 +12,7 @@
     "polished": "^4.1.4",
     "qrcode": "^1.4.4",
     "react-dropzone": "^11.4.0",
+    "react-icons": "^4.3.1",
     "react-router-dom": "^5.3.0",
     "react-switch": "^6.0.0",
     "react-toastify": "^8.0.2",

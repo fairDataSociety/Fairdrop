@@ -1,5 +1,20 @@
 import { transparentize } from 'polished'
 
+export const VARIANT = {
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  NEGATIVE: 'negative',
+  POSITIVE: 'positive',
+  WARNING: 'warning',
+  INFO: 'info',
+  NTRL_LIGHT: 'ntrl_light',
+  NTRL_DARK: 'ntrl_dark',
+  NTRL_DARKEST: 'ntrl_darkest',
+  WHITE: 'white',
+  BLACK: 'black',
+  TRANSPARENT: 'transparent',
+}
+
 const colors = {
   primary: {
     main: '#5B13F4',

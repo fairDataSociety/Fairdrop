@@ -15,6 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import styles from './Header.module.css'
 import c from 'classnames'
 import Logo from '../../atoms/logo/Logo'
@@ -28,11 +29,13 @@ import Button from '../../atoms/button/Button'
 import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
+import { Nav, NavItem } from '../../'
 
 const Header = ({ className }) => {
   const { variant } = useTheme()
   const [{ mailbox }, { resetMailbox }] = useMailbox()
   const { showSideMenu } = useSideMenu()
+  const location = useLocation()
 
   const handleProfileClick = useCallback(() => {
     showSideMenu({
@@ -50,11 +53,11 @@ const Header = ({ className }) => {
 
       <div className={styles.actions}>
         {!mailbox && (
-          <Link className={styles.login} to={routes.login}>
-            <Text element="span" size="sm" weight="500" variant={variant}>
-              Log in / Register
-            </Text>
-          </Link>
+          <Nav>
+            <NavItem active={location.pathname === routes.login}>
+              <Link to={routes.login}>Log in / Register</Link>
+            </NavItem>
+          </Nav>
         )}
         {mailbox && (
           <>

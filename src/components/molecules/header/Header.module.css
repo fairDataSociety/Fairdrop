@@ -16,15 +16,6 @@
   justify-content: flex-end;
 }
 
-.login {
-  line-height: 24px;
-}
-
-.login:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-
 .actions .profileButton {
   padding: 2px 12px;
   height: auto;

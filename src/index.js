@@ -32,13 +32,7 @@ import { routes } from './config/routes'
 import HonestInboxScreen from './screens/honestInbox/HonestInboxScreen'
 import { ThemeProvider as SCThemeProvider } from 'styled-components'
 import { theme } from './theme/theme'
-import { createGlobalStyle } from 'styled-components'
-
-const GlobalCSS = createGlobalStyle`
-  * {
-    font-family: ${({ theme }) => theme.font.fontFamily.default}
-  }
-`
+import { GlobalCSS } from './theme/GlobalCSS'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 

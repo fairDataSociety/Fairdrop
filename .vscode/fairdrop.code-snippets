@@ -1,0 +1,87 @@
+{
+  // Place your Fairdrop workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  "createcomponent": {
+    "scope": "javascript,typescript",
+    "prefix": "createcomponent",
+    "body": [
+      "// Copyright 2019 The FairDataSociety Authors",
+      "// This file is part of the FairDataSociety library.",
+      "//",
+      "// The FairDataSociety library is free software: you can redistribute it and/or modify",
+      "// it under the terms of the GNU Lesser General Public License as published by",
+      "// the Free Software Foundation, either version 3 of the License, or",
+      "// (at your option) any later version.",
+      "//",
+      "// The FairDataSociety library is distributed in the hope that it will be useful,",
+      "// but WITHOUT ANY WARRANTY; without even the implied warranty of",
+      "// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the",
+      "// GNU Lesser General Public License for more details.",
+      "//",
+      "// You should have received a copy of the GNU Lesser General Public License",
+      "// along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.",
+      "",
+      "import { memo } from 'react'",
+      "import styled, { css } from 'styled-components'",
+      "",
+      "export const ${1:CompName} = memo(styled.${2:div}`",
+      "// write CSS rules here",
+      "// position: relative",
+      "// color: red",
+
+      "${({ theme, variant = 'primary' }) => css`",
+      "color: ${theme.colors[variant].main};",
+      "`};",
+      "`)",
+      ""
+    ],
+    "description": "Scaffolding for a new component"
+  },
+  "createstories": {
+    "scope": "javascript,typescript",
+    "prefix": "createstories",
+    "body": [
+      "import React from 'react'",
+      "import {${1:CompName}} from './${1:CompName}'",
+      "",
+      "// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export",
+      "export default {",
+      "title: 'Example/${1:CompName}',",
+      "component: ${1:CompName},",
+      "}",
+      "",
+
+      "// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args",
+      "const Template = (args) => <${1:CompName} {...args} />",
+      "",
+      "export const Primary = Template.bind({})",
+      "// More on args: https://storybook.js.org/docs/react/writing-stories/args",
+      "Primary.args = {",
+      "variant: 'primary',",
+      "}",
+      ""
+    ],
+    "description": "Create stories"
+  },
+  "createsc": {
+    "scope": "javascript,typescript",
+    "prefix": "createsc",
+    "body": [
+      "const ${1:CompName} = styled.${2:div}`",
+      "// write CSS rules here",
+      "// position: relative",
+      "// color: red",
+
+      "${({ theme, variant = 'primary' }) => css`",
+      "color: ${theme.colors[variant].main};",
+      "`};",
+      "`",
+      ""
+    ],
+    "description": "Create a styled element"
+  }
+}

@@ -15,24 +15,37 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useCallback } from 'react'
+import styled, { css } from 'styled-components/macro'
 import { useLocation } from 'react-router-dom'
-import styles from './Header.module.css'
-import c from 'classnames'
 import Logo from '../../atoms/logo/Logo'
-import { version } from '../../../../package.json'
 import { Link } from 'react-router-dom'
-import Text from '../../atoms/text/Text'
-import { useTheme } from '../../../hooks/theme/useTheme'
 import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 import { Nav, NavItem, Avatar } from '../../'
 
+const HeaderWrapper = styled.header`
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+
+  ${({ theme }) => css`
+    border-bottom: solid 1px ${theme.colors.ntrl_light.main};
+    background: ${theme.colors.white.main};
+  `};
+`
+
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-left: auto;
+`
+
 const Header = ({ className }) => {
-  const { variant } = useTheme()
-  const [{ mailbox }, { resetMailbox }] = useMailbox()
+  const [{ mailbox }] = useMailbox()
   const { showSideMenu } = useSideMenu()
   const location = useLocation()
 
@@ -43,14 +56,12 @@ const Header = ({ className }) => {
   }, [])
 
   return (
-    <header className={c(styles.container, className)}>
-      <Logo variant={variant} />
+    <HeaderWrapper className={className}>
+      <Link to="/">
+        <Logo />
+      </Link>
 
-      <Text className={styles.version} element="span" size="s" variant={variant}>
-        {`${version}`}
-      </Text>
-
-      <div className={styles.actions}>
+      <HeaderRight>
         {!mailbox && (
           <Nav>
             <NavItem active={location.pathname === routes.login}>
@@ -60,15 +71,19 @@ const Header = ({ className }) => {
         )}
         {mailbox && (
           <>
+            <Nav>
+              <NavItem active={Object.values(routes.mailbox).some((path) => location.pathname === path)}>
+                <Link to={routes.mailbox.received}>My files</Link>
+              </NavItem>
+              <NavItem active={location.pathname === routes.about}>
+                <Link to={routes.about}>About</Link>
+              </NavItem>
+            </Nav>
             <Avatar name={mailbox.subdomain} onClick={handleProfileClick} />
-
-            <TouchableOpacity className={styles.logoutButton} onClick={resetMailbox}>
-              <Text variant={variant}>Log out</Text>
-            </TouchableOpacity>
           </>
         )}
-      </div>
-    </header>
+      </HeaderRight>
+    </HeaderWrapper>
   )
 }
 

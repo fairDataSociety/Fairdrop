@@ -21,6 +21,7 @@
 
 .menuToggle {
   position: absolute;
+  top: 70px;
   width: 40px;
   z-index: 102;
   padding: 20px;

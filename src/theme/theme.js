@@ -184,5 +184,12 @@ export const theme = {
         },
       },
     },
+    badge: {
+      font: {
+        size: '12px',
+        weight: '500',
+        color: colors.white.main,
+      },
+    },
   },
 }

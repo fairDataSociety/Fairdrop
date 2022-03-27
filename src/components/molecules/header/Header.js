@@ -25,11 +25,10 @@ import Text from '../../atoms/text/Text'
 import { useTheme } from '../../../hooks/theme/useTheme'
 import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import Button from '../../atoms/button/Button'
 import TouchableOpacity from '../../atoms/touchableOpacity/TouchableOpacity'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
 import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
-import { Nav, NavItem } from '../../'
+import { Nav, NavItem, Avatar } from '../../'
 
 const Header = ({ className }) => {
   const { variant } = useTheme()
@@ -61,9 +60,7 @@ const Header = ({ className }) => {
         )}
         {mailbox && (
           <>
-            <Button className={styles.profileButton} variant={variant} inverted onClick={handleProfileClick}>
-              {mailbox.subdomain}
-            </Button>
+            <Avatar name={mailbox.subdomain} onClick={handleProfileClick} />
 
             <TouchableOpacity className={styles.logoutButton} onClick={resetMailbox}>
               <Text variant={variant}>Log out</Text>

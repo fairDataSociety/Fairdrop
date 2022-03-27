@@ -57,8 +57,8 @@ const colors = {
     contrast: '#ffffff',
   },
   ntrl_darkest: {
-    main: '#232d43',
-    contrast: '#5767ff',
+    main: '#424242',
+    contrast: '#ffffff',
   },
   transparent: {
     main: 'transparent',

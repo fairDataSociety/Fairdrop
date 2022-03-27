@@ -16,11 +16,6 @@
   justify-content: flex-end;
 }
 
-.actions .profileButton {
-  padding: 2px 12px;
-  height: auto;
-}
-
 .actions .logoutButton {
   padding: 2px 12px;
   height: auto;

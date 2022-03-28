@@ -49,7 +49,7 @@ const colors = {
     contrast: '#ffffff',
   },
   ntrl_light: {
-    main: '#aaafb8',
+    main: '#cccccc',
     contrast: '#ffffff',
   },
   ntrl_dark: {
@@ -92,7 +92,7 @@ export const theme = {
         },
         sm: {
           'font-size': '14px',
-          'line-height': '1.29',
+          'line-height': '20px',
         },
         m: {
           'font-size': '16px',
@@ -155,18 +155,19 @@ export const theme = {
       border: {
         style: 'solid',
         width: '1px',
-        color: transparentize(0.8, colors.ntrl_light.main),
+        color: 'transparent',
         radius: '3px',
       },
       head: {
-        backgroundColor: transparentize(0.8, colors.ntrl_light.main),
+        backgroundColor: colors.white.main,
       },
       cell: {
-        padding: '12px',
+        padding: '26px 20px',
         border: {
           style: 'solid',
-          width: '1px',
-          color: transparentize(0.8, colors.ntrl_light.main),
+          rightWidth: 0,
+          bottomWidth: '1px',
+          color: colors.ntrl_light.main,
         },
       },
     },

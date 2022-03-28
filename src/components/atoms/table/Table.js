@@ -72,14 +72,14 @@ const StyledTableCell = styled.td`
   padding: ${({ theme }) => `${theme?.components?.table?.cell?.padding}`};
 
   ${({ theme }) => {
-    const { style, width, color } = theme?.components?.table?.cell?.border ?? {}
+    const { style, rightWidth, bottomWidth, color } = theme?.components?.table?.cell?.border ?? {}
 
     return css`
       border-style: ${style};
       border-left-width: 0;
       border-top-width: 0;
-      border-right-width: ${width};
-      border-bottom-width: ${width};
+      border-right-width: ${rightWidth};
+      border-bottom-width: ${bottomWidth};
       border-color: ${color};
 
       &:last-of-type {
@@ -101,14 +101,14 @@ const StyledTableHeaderCell = styled.th`
   background-color: ${({ theme }) => `${theme?.components?.table?.head?.backgroundColor}`};
 
   ${({ theme }) => {
-    const { style, width, color } = theme?.components?.table?.cell?.border ?? {}
+    const { style, rightWidth, bottomWidth, color } = theme?.components?.table?.cell?.border ?? {}
 
     return css`
       border-style: ${style};
       border-left-width: 0;
       border-top-width: 0;
-      border-right-width: ${width};
-      border-bottom-width: ${width};
+      border-right-width: ${rightWidth};
+      border-bottom-width: ${bottomWidth};
       border-color: ${color};
 
       &:last-of-type {

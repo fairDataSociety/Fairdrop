@@ -4,7 +4,6 @@
   display: flex;
   align-items: flex-start;
   box-sizing: border-box;
-  padding-top: 12px;
 }
 
 .menu {
@@ -44,7 +43,7 @@
 
 .content {
   flex: 1;
-  padding: 24px;
+  padding: 24px 40px 24px 24px;
   height: 100%;
   overflow: auto;
 }

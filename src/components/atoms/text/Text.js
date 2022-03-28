@@ -27,27 +27,27 @@ export const ELEMENTS = ['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 const getWeight = (weight) => {
   let res
   switch (weight) {
-    // case '300':
+    case '300':
     case 'light':
       res = 300
       break
-    // case '400':
+    case '400':
     case 'regular':
       res = 400
       break
-    // case '500':
+    case '500':
     case 'medium':
       res = 500
       break
-    // case '600':
+    case '600':
     case 'semibold':
       res = 600
       break
-    // case '700':
+    case '700':
     case 'bold':
       res = 700
       break
-    // case '800':
+    case '800':
     case 'black':
       res = 800
       break

@@ -24,6 +24,7 @@ import Download from '../components/download/Download'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 import Notification from '../../../../components/molecules/notification/Notification'
+import { Table, TableBody, TableCell, TableHead, TableRow } from '../../../../components'
 
 const honestInboxRegex = /anonymous-\d{13}/gm
 
@@ -63,70 +64,80 @@ const DashboardReceivedScreen = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.rowWrapper}>
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Name
-            </Text>
-          </div>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <Text size="sm" weight="500" variant="black">
+                  Name
+                </Text>
+              </TableCell>
+              <TableCell>
+                <Text size="sm" weight="500" variant="black">
+                  From
+                </Text>
+              </TableCell>
+              <TableCell>
+                <Text size="sm" weight="500" variant="black">
+                  Time
+                </Text>
+              </TableCell>
+              <TableCell>
+                <Text size="sm" weight="500" variant="black" align="right">
+                  Size
+                </Text>
+              </TableCell>
+            </TableRow>
+          </TableHead>
 
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              From
-            </Text>
-          </div>
+          {received.length > 0 && (
+            <TableBody>
+              {sortedMessages.map((message) => {
+                const { hash = {}, from } = message
+                const { file = {} } = hash
+                let sanitizedFrom = from
+                if (new RegExp(honestInboxRegex).test(from)) {
+                  sanitizedFrom = 'Honest Inbox'
+                }
 
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Time
-            </Text>
-          </div>
+                return (
+                  <TableRow key={message?.hash?.address}>
+                    <TableCell>
+                      <div className={styles.row}>
+                        <Download className={styles.icon} message={message} />
+                        <Text size="sm" variant="black">
+                          {file?.name ?? 'Unkown'}
+                        </Text>
+                      </div>
+                    </TableCell>
 
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Size
-            </Text>
-          </div>
-        </div>
+                    <TableCell>
+                      <div className={styles.row}>
+                        <Text size="sm" variant="black">
+                          {sanitizedFrom ?? 'Unkown'}
+                        </Text>
+                      </div>
+                    </TableCell>
 
-        {received.length > 0 &&
-          sortedMessages.map((message) => {
-            const { hash = {}, from } = message
-            const { file = {} } = hash
-            let sanitizedFrom = from
-            if (new RegExp(honestInboxRegex).test(from)) {
-              sanitizedFrom = 'Honest Inbox'
-            }
+                    <TableCell>
+                      <div className={styles.row}>
+                        <Text size="sm" variant="black">
+                          {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
+                        </Text>
+                      </div>
+                    </TableCell>
 
-            return (
-              <div className={styles.rowWrapper} key={message?.hash?.address}>
-                <div className={styles.row}>
-                  <Download className={styles.icon} message={message} />
-                  <Text size="sm" variant="black">
-                    {file?.name ?? 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {sanitizedFrom ?? 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {Utils.humanFileSize(file?.size) ?? 'Unkown'}
-                  </Text>
-                </div>
-              </div>
-            )
-          })}
+                    <TableCell>
+                      <Text size="sm" variant="black" align="right">
+                        {Utils.humanFileSize(file?.size) ?? 'Unkown'}
+                      </Text>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          )}
+        </Table>
         {received.length === 0 && (
           <div className={styles.row}>
             <Text size="sm" variant="black">

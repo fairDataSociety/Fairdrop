@@ -15,13 +15,18 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { memo, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
 const Root = styled.span`
   position: relative;
   display: inline-flex;
   vertical-align: middle;
   flex-shrink: 0;
+  ${({ inline }) =>
+    inline &&
+    css`
+      gap: 8px;
+    `};
 `
 
 const BadgeContainer = styled.span`
@@ -29,12 +34,11 @@ const BadgeContainer = styled.span`
   flex-flow: row wrap;
   place-content: center;
   align-items: center;
-  position: absolute;
   box-sizing: border-box;
   ${({ theme, variant }) => css`
-    font-size: ${theme.components?.badge?.font?.size};
-    font-weight: ${theme.components?.badge?.font?.weight};
-    color: ${theme.components?.badge?.font?.color};
+    font-size: 12px;
+    font-weight: 500;
+    color: ${theme.colors.white.main};
     background-color: ${theme.colors?.[variant]?.main};
   `};
   min-width: 20px;
@@ -43,14 +47,26 @@ const BadgeContainer = styled.span`
   height: 20px;
   border-radius: 10px;
   z-index: 1;
-  transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  top: 0px;
-  right: 0px;
-  transform: scale(1) translate(50%, -50%);
-  transform-origin: 100% 0%;
+
+  ${({ inline }) => {
+    if (inline) {
+      return css`
+        position: 'inline-flex';
+      `
+    }
+
+    return css`
+      position: absolute;
+      transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      top: 0px;
+      right: 0px;
+      transform: scale(1) translate(50%, -50%);
+      transform-origin: 100% 0%;
+    `
+  }}
 `
 
-export const Badge = memo(({ children, count, showZero, variant, ...props }) => {
+export const Badge = memo(({ children, count, showZero, variant, inline, ...props }) => {
   const sanitizedCount = useMemo(() => {
     if (!count) {
       return '0'
@@ -63,8 +79,13 @@ export const Badge = memo(({ children, count, showZero, variant, ...props }) => 
   }, [showZero, count])
 
   return (
-    <Root {...props}>
-      {children} {shouldShowBadge && <BadgeContainer variant={variant}>{sanitizedCount}</BadgeContainer>}
+    <Root inline={inline} {...props}>
+      {children}{' '}
+      {shouldShowBadge && (
+        <BadgeContainer variant={variant} inline={inline}>
+          {sanitizedCount}
+        </BadgeContainer>
+      )}
     </Root>
   )
 })
@@ -72,6 +93,7 @@ export const Badge = memo(({ children, count, showZero, variant, ...props }) => 
 Badge.defaultProps = {
   variant: 'primary',
   showZero: false,
+  inline: false,
 }
 
 Badge.displayName = 'Badge'

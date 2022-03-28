@@ -151,20 +151,6 @@ export const theme = {
       activeOpacity: 0.7,
       disabledOpacity: 0.5,
     },
-    buttonIcon: {
-      width: '36px',
-      height: '36px',
-      border: {
-        style: 'solid',
-        width: '1px',
-        radius: '12px',
-      },
-      hover: {
-        backgroundColor: transparentize(0.8, colors.ntrl_light.main),
-        opacity: 1,
-      },
-      disabledOpacity: 0.5,
-    },
     table: {
       border: {
         style: 'solid',
@@ -182,13 +168,6 @@ export const theme = {
           width: '1px',
           color: transparentize(0.8, colors.ntrl_light.main),
         },
-      },
-    },
-    badge: {
-      font: {
-        size: '12px',
-        weight: '500',
-        color: colors.white.main,
       },
     },
   },

@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { VARIANT } from '../../../theme/theme'
@@ -8,8 +9,8 @@ const StyledButton = styled.button`
     const color = theme.colors[variant ?? VARIANT.TRANSPARENT]
     return bordered ? 'transparent' : color?.main ?? 'transparent'
   }};
-  width: ${({ theme }) => theme.components.buttonIcon.width};
-  height: ${({ theme }) => theme.components.buttonIcon.height};
+  width: 36px;
+  height: 36px;
   padding: 0;
   display: flex;
   align-items: center;
@@ -19,27 +20,25 @@ const StyledButton = styled.button`
   user-select: none;
 
   ${({ theme, variant }) => {
-    const { style, width, radius } = theme?.components?.buttonIcon?.border ?? {}
-
     return css`
-      border-style: ${style};
-      border-width: ${width};
+      border-style: solid;
+      border-width: 1px;
       border-color: ${theme.colors[variant ?? VARIANT.TRANSPARENT]?.main};
-      border-radius: ${radius};
+      border-radius: 12px;
 
       &:not([disabled]):hover,
       &:not([disabled]):focus,
       &:not([disabled]):active {
         box-shadow: ${() => `0 0 0 1px ${theme.colors[variant ?? VARIANT.TRANSPARENT]?.main}`};
-        opacity: ${({ theme }) => `${theme?.components?.buttonIcon?.hover?.opacity}`};
-        background-color: ${({ theme, bordered }) => bordered && theme?.components?.buttonIcon?.hover?.backgroundColor};
+        opacity: 1;
+        background-color: ${transparentize(0.8, theme.colors.ntrl_light.main)};
       }
     `
   }};
 
   &:disabled {
     cursor: auto;
-    opacity: ${({ theme }) => theme.components.buttonIcon.disabledOpacity};
+    opacity: 0.5;
   }
 `
 

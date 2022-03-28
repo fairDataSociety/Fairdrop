@@ -21,6 +21,7 @@ export default {
   },
   args: {
     showZero: false,
+    inline: false,
     variant: {
       options: Object.values(VARIANT),
     },

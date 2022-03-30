@@ -30,7 +30,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "deploy": "npm run build && docker build -t ghcr.io/mancas/fairdrop . && docker push ghcr.io/mancas/fairdrop",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "build:icons": "svg-sprite -s --symbol-dest src/components/atoms/icon/assets --symbol-sprite icons.svg src/assets/icons/*.svg"
   },
   "browserslist": [
     ">0.2%",
@@ -58,7 +59,8 @@
     "react-dropdown": "^1.5.0",
     "react-scripts": "4.0.3",
     "source-map-explorer": "^2.5.2",
-    "storybook-addon-styled-component-theme": "^2.0.0"
+    "storybook-addon-styled-component-theme": "^2.0.0",
+    "svg-sprite": "^1.5.4"
   },
   "pre-commit": [
     "pre-commit"

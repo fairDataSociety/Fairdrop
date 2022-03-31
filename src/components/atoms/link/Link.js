@@ -16,8 +16,9 @@
 
 import { memo } from 'react'
 import styled, { css } from 'styled-components/macro'
+import { Link as RNLink } from 'react-router-dom'
 
-export const Link = memo(styled.a`
+export const Link = memo(styled(RNLink)`
   ${({ theme, isActive }) => css`
     font-size: 16px;
     font-weight: ${isActive ? 700 : 400};

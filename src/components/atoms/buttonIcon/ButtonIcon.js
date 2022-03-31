@@ -19,11 +19,11 @@ const StyledButton = styled.button`
   cursor: pointer;
   user-select: none;
 
-  ${({ theme, variant }) => {
+  ${({ theme, bordered, variant }) => {
     return css`
       border-style: solid;
       border-width: 1px;
-      border-color: ${theme.colors[variant ?? VARIANT.TRANSPARENT]?.main};
+      border-color: ${bordered ? theme.colors[variant ?? VARIANT.TRANSPARENT]?.main : 'transparent'};
       border-radius: 12px;
 
       &:not([disabled]):hover,

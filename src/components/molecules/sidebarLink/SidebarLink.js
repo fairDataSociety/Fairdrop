@@ -24,11 +24,11 @@ const StyledLi = styled.li`
   cursor: pointer;
 `
 
-export const SidebarLink = memo(({ children, count, href, isActive, ...props }) => {
+export const SidebarLink = memo(({ children, count, to, isActive, ...props }) => {
   return (
     <StyledLi {...props}>
       <Badge count={count} inline>
-        <Link href={href} isActive={isActive}>
+        <Link to={to} $isActive={isActive}>
           {children}
         </Link>
       </Badge>

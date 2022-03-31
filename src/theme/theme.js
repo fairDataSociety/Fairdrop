@@ -1,5 +1,3 @@
-import { transparentize } from 'polished'
-
 export const VARIANT = {
   PRIMARY: 'primary',
   SECONDARY: 'secondary',
@@ -8,11 +6,22 @@ export const VARIANT = {
   WARNING: 'warning',
   INFO: 'info',
   NTRL_LIGHT: 'ntrl_light',
+  NTRL_LIGHTER: 'ntrl_lighter',
   NTRL_DARK: 'ntrl_dark',
   NTRL_DARKEST: 'ntrl_darkest',
   WHITE: 'white',
   BLACK: 'black',
   TRANSPARENT: 'transparent',
+}
+
+export const DEVICE_SIZE = {
+  MOBILE_S: '320px',
+  MOBILE_M: '375px',
+  MOBILE_L: '425px',
+  TABLET: '768px',
+  LAPTOP: '1024px',
+  LAPTOP_L: '1440px',
+  DESKTOP: '2560px',
 }
 
 const colors = {
@@ -50,6 +59,10 @@ const colors = {
   },
   ntrl_light: {
     main: '#cccccc',
+    contrast: '#ffffff',
+  },
+  ntrl_lighter: {
+    main: '#f4f4f4',
     contrast: '#ffffff',
   },
   ntrl_dark: {
@@ -113,6 +126,22 @@ export const theme = {
         xxl: {
           'font-size': '30px',
           'line-height': '1.2',
+        },
+      },
+    },
+    icon: {
+      sizes: {
+        m: {
+          width: '24px',
+          height: '24px',
+        },
+        l: {
+          width: '48px',
+          height: '48px',
+        },
+        xl: {
+          width: '66px',
+          height: '66px',
         },
       },
     },

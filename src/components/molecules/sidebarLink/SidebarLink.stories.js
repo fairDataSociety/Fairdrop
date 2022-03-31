@@ -7,7 +7,7 @@ export default {
   component: SidebarLink,
   args: {
     count: 0,
-    href: '/fake-path',
+    to: '/fake-path',
   },
 }
 

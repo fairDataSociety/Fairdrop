@@ -35,6 +35,7 @@ const BadgeContainer = styled.span`
   place-content: center;
   align-items: center;
   box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
   ${({ theme, variant }) => css`
     font-size: 12px;
     font-weight: 500;

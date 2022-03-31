@@ -16,13 +16,22 @@
 
 import React, { memo } from 'react'
 import icons from './assets/icons.svg'
+import styled, { css } from 'styled-components/macro'
+
+const StyledSVG = styled.svg`
+  ${({ theme, size }) => css(theme.components?.icon?.sizes?.[size] ?? '')}
+`
 
 export const Icon = memo(({ name, ...props }) => {
   return (
-    <svg {...props}>
+    <StyledSVG {...props}>
       <use xlinkHref={`${icons}#${name}`}></use>
-    </svg>
+    </StyledSVG>
   )
 })
+
+Icon.defaultProps = {
+  size: 'm',
+}
 
 Icon.displayName = 'Icon'

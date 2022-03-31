@@ -21,4 +21,5 @@ export const IconElement = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 IconElement.args = {
   name: 'file',
+  size: 'm',
 }

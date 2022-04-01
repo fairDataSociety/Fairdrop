@@ -34,7 +34,7 @@ const colors = {
     contrast: '#ffffff',
   },
   negative: {
-    main: '#EA4D60',
+    main: '#CD1900',
     contrast: 'white',
   },
   positive: {

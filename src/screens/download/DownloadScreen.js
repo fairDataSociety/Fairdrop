@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import Button from '../../components/atoms/button/Button'
-import Input from '../../components/atoms/input/Input'
+import { Input } from '../../components/atoms/input/Input'
 import Text from '../../components/atoms/text/Text'
 import CopyToClipboard from '../../components/molecules/copyToClipboard/CopyToClipboard'
 import { colors } from '../../config/colors'

@@ -38,7 +38,7 @@ const colors = {
     contrast: 'white',
   },
   positive: {
-    main: 'green',
+    main: '#61C200',
     contrast: 'white',
   },
   warning: {

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { RiSortDesc } from 'react-icons/ri'
@@ -49,17 +49,41 @@ const StyledTableBody = styled.tbody`
 const TableBody = ({ children, ...props }) => <StyledTableBody {...props}>{children}</StyledTableBody>
 
 const StyledTableRow = styled.tr`
+  position: relative;
   color: inherit;
   display: table-row;
   vertical-align: middle;
   outline: 0px;
+  cursor: ${({ hoverable }) => (hoverable ? 'pointer' : 'auto')};
+`
+const TableRowOverlay = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
+  padding: 16px;
+  top: 1px;
+  right: 0;
+  bottom: 1px;
+  left: 0;
+  background: ${({ theme }) =>
+    `linear-gradient(90deg, rgba(250, 250, 250, 0) 0%, ${theme.colors.ntrl_lightest.main} 56.58%)`};
 `
 
-const TableRow = ({ children, isTableHead, ...props }) => (
-  <StyledTableRow {...props}>
-    {React.Children.map(children, (child) => child && React.cloneElement(child, { isTableHead }))}
-  </StyledTableRow>
-)
+const TableRow = ({ children, isTableHead, hoverActions, ...props }) => {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <StyledTableRow
+      {...props}
+      hoverable={!!hoverActions}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {React.Children.map(children, (child) => child && React.cloneElement(child, { isTableHead }))}
+      {hoverActions && hovered && <TableRowOverlay>{hoverActions}</TableRowOverlay>}
+    </StyledTableRow>
+  )
+}
 
 TableRow.defaultProps = {
   isTableHead: false,

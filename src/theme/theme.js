@@ -65,6 +65,10 @@ const colors = {
     main: '#f4f4f4',
     contrast: '#ffffff',
   },
+  ntrl_lightest: {
+    main: '#fafafa',
+    contrast: '#ffffff',
+  },
   ntrl_dark: {
     main: '#2c364c',
     contrast: '#ffffff',

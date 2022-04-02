@@ -41,9 +41,9 @@ const SampleTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {sampleData?.map(({ id, a, b, c }) => {
+          {sampleData?.map(({ id, a, b, c, hoverActions = <div>Show action at hover</div> }) => {
             return (
-              <TableRow key={id}>
+              <TableRow key={id} hoverActions={hoverActions}>
                 <TableCell>{id}</TableCell>
                 <TableCell>{a}</TableCell>
                 <TableCell>{b}</TableCell>

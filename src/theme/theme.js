@@ -7,7 +7,9 @@ export const VARIANT = {
   INFO: 'info',
   NTRL_LIGHT: 'ntrl_light',
   NTRL_LIGHTER: 'ntrl_lighter',
+  NTRL_LIGHTEST: 'ntrl_lightest',
   NTRL_DARK: 'ntrl_dark',
+  NTRL_DARKER: 'ntrl_darker',
   NTRL_DARKEST: 'ntrl_darkest',
   WHITE: 'white',
   BLACK: 'black',
@@ -71,6 +73,10 @@ const colors = {
   },
   ntrl_dark: {
     main: '#2c364c',
+    contrast: '#ffffff',
+  },
+  ntrl_darker: {
+    main: '#c4c4c4',
     contrast: '#ffffff',
   },
   ntrl_darkest: {

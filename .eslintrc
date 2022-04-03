@@ -20,7 +20,8 @@
     "localStorage": true,
     "navigator": true,
     "File": true,
-    "fetch": true
+    "fetch": true,
+    "ethereum": true
   },
   "rules": {
     "indent": [

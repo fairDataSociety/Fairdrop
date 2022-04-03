@@ -17,8 +17,8 @@
 import { saturate, lighten } from 'polished'
 import React, { memo, useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { VARIANT } from '../../../theme/theme'
-import { Icon } from '../../atoms/icon/Icon'
+import { DEVICE_SIZE, VARIANT } from '../../../theme/theme'
+import { Icon } from '../icon/Icon'
 
 const Container = styled.div`
   width: ${({ isImage }) => (isImage ? '242px' : '200px')};
@@ -29,6 +29,11 @@ const Container = styled.div`
   justify-content: center;
   background: ${({ theme }) => lighten(0.46, saturate(1, theme?.colors?.[VARIANT.PRIMARY]?.main))};
   overflow: hidden;
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    width: ${({ isImage }) => (isImage ? '200px' : '168px')};
+    height: ${({ isImage }) => (isImage ? '200px' : '168px')};
+  }
 `
 
 const Preview = styled.img`

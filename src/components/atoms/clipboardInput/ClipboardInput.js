@@ -27,6 +27,7 @@ const Container = styled.div`
 
 const StyledInput = styled(Input)`
   & input {
+    width: 100%;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }

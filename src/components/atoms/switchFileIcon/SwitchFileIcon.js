@@ -36,8 +36,10 @@ const mapTypeWithIcon = [
   },
 ]
 
+export const getFileIcon = ({ type }) => mapTypeWithIcon.find((item) => item.condition({ type }))
+
 export const SwitchFileIcon = memo(function SwitchFileIcon({ type, ...rest }) {
-  const iconConf = mapTypeWithIcon.find((item) => item.condition({ type }))
+  const iconConf = getFileIcon({ type })
 
   if (!iconConf) {
     return null

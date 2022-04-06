@@ -164,8 +164,9 @@ export const Sidebar = memo(({ headline, items, ...props }) => {
         <List>
           {items.map((item) => {
             const isActive = matchPath(location?.pathname, { path: item.path, exact: true })
+
             return (
-              <SidebarLink key={item.path} to={item.path} count={item.notifications} isActive={isActive}>
+              <SidebarLink key={item.path} to={item.path} count={item.notifications} isActive={!!isActive}>
                 {item.label}
               </SidebarLink>
             )

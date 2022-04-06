@@ -19,10 +19,10 @@ import styled, { css } from 'styled-components/macro'
 import { Link as RNLink } from 'react-router-dom'
 
 export const Link = memo(styled(RNLink)`
-  ${({ theme, isActive }) => css`
+  ${({ theme, $isActive }) => css`
     font-size: 16px;
-    font-weight: ${isActive ? 700 : 400};
-    color: ${isActive ? theme.colors.primary.main : theme.colors.ntrl_dark.main};
+    font-weight: ${$isActive ? 700 : 400};
+    color: ${$isActive ? theme.colors.primary.main : theme.colors.ntrl_dark.main};
     transition: color 0.3s ease;
 
     &:hover {

@@ -17,22 +17,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
-import Utils from '../../../../services/Utils'
-import { DateTime } from 'luxon'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 import Notification from '../../../../components/molecules/notification/Notification'
 import styled from 'styled-components/macro'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  SwitchFileIcon,
-  Box,
-  ButtonFlat,
-} from '../../../../components'
+import { Box } from '../../../../components'
+import { TableReceive } from './TableReceived'
+import { ListReceived } from './ListReceived'
+import { useMediaQuery } from '../../../../hooks/useMediaQuery/useMediaQuery'
+import { DEVICE_SIZE } from '../../../../theme/theme'
 
 const Container = styled.div`
   width: 100%;
@@ -48,6 +41,7 @@ const DashboardReceivedScreen = () => {
   const [shouldOpenNotification, setShouldOpenNotification] = useState(
     !localStorage.getItem('honestInboxDidYouKnowNotification'),
   )
+  const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
 
   const sortedMessages = useMemo(() => {
     return received.sort((a, b) => {
@@ -78,94 +72,20 @@ const DashboardReceivedScreen = () => {
   return (
     <Container>
       <div>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Text size="sm" weight="500" variant="black">
-                  Name
-                </Text>
-              </TableCell>
-              <TableCell>
-                <Text size="sm" weight="500" variant="black">
-                  From
-                </Text>
-              </TableCell>
-              <TableCell>
-                <Text size="sm" weight="500" variant="black">
-                  Time
-                </Text>
-              </TableCell>
-              <TableCell>
-                <Text size="sm" weight="500" variant="black" align="right">
-                  Size
-                </Text>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          {received.length > 0 && (
-            <TableBody>
-              {sortedMessages.map((message) => {
-                const { hash = {}, from } = message
-                const { file = {} } = hash
-                let sanitizedFrom = from
-                if (new RegExp(honestInboxRegex).test(from)) {
-                  sanitizedFrom = 'Honest Inbox'
-                }
-
-                return (
-                  <TableRow
-                    key={message?.hash?.address}
-                    hoverActions={
-                      <Box gap="32px">
-                        <ButtonFlat variant="primary">Copy link</ButtonFlat>
-                        <ButtonFlat variant="negative">Delete</ButtonFlat>
-                      </Box>
-                    }
-                  >
-                    <TableCell>
-                      <Box gap="14px" vAlign="center">
-                        <SwitchFileIcon className type={file.type} onClick={message?.saveAs ?? undefined} />
-                        <Text size="sm" variant="black">
-                          {file?.name ?? 'Unkown'}
-                        </Text>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell>
-                      <Box gap="14px" vAlign="center">
-                        <Text size="sm" variant="black">
-                          {sanitizedFrom ?? 'Unkown'}
-                        </Text>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell>
-                      <Box gap="14px" vAlign="center">
-                        <Text size="sm" variant="black">
-                          {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
-                        </Text>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell>
-                      <Text size="sm" variant="black" align="right">
-                        {Utils.humanFileSize(file?.size) ?? 'Unkown'}
-                      </Text>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          )}
-        </Table>
-        {received.length === 0 && (
+        {received.length === 0 ? (
           <Box gap="14px" vAlign="center">
             <Text size="sm" variant="black">
               There is no received files yet...
             </Text>
           </Box>
+        ) : (
+          <>
+            {minTabletMediaQuery ? (
+              <TableReceive sortedMessages={sortedMessages} honestInboxRegex={honestInboxRegex} />
+            ) : (
+              <ListReceived sortedMessages={sortedMessages} honestInboxRegex={honestInboxRegex} />
+            )}
+          </>
         )}
       </div>
 

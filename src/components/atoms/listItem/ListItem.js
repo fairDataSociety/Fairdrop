@@ -32,8 +32,9 @@ const ListItemWrapper = styled.li`
   gap: 18px;
   padding: 20px;
 
-  ${({ theme }) => css`
+  ${({ theme, onClick }) => css`
     border-bottom: solid 1px ${theme.colors.ntrl_light.main};
+    cursor: ${onClick ? 'pointer' : 'auto'};
   `};
 `
 
@@ -41,9 +42,9 @@ const Title = styled(Text)`
   margin-bottom: 4px;
 `
 
-export const ListItem = memo(function ListItem({ iconName, title, subtitle, options }) {
+export const ListItem = memo(function ListItem({ iconName, title, subtitle, options, onClick }) {
   return (
-    <ListItemWrapper>
+    <ListItemWrapper onClick={onClick}>
       {iconName && <Icon name={iconName} />}
       <ListItemContent>
         {title && (

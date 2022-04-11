@@ -3,7 +3,7 @@ import { List, ListItem, getFileIcon } from '../../../../components'
 import { DateTime } from 'luxon'
 import Utils from '../../../../services/Utils'
 
-export const ListReceived = ({ sortedMessages, honestInboxRegex }) => {
+export const ListReceived = ({ sortedMessages, honestInboxRegex, onClick }) => {
   return (
     <List>
       {sortedMessages.map((message) => {
@@ -27,6 +27,7 @@ export const ListReceived = ({ sortedMessages, honestInboxRegex }) => {
             iconName={getFileIcon({ type: file.type })?.name}
             title={sanitizedFrom ?? 'Unkown'}
             subtitle={subtitleArr.join(' · ')}
+            onClick={() => onClick({ file, from, time: hash.time })}
           />
         )
       })}

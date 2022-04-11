@@ -1,4 +1,5 @@
 import React from 'react'
+import { DateTime } from 'luxon'
 import {
   Table,
   TableBody,
@@ -10,10 +11,9 @@ import {
   ButtonFlat,
   Text,
 } from '../../../../components'
-import { DateTime } from 'luxon'
 import Utils from '../../../../services/Utils'
 
-export const TableReceive = ({ sortedMessages, honestInboxRegex }) => {
+export const TableReceive = ({ sortedMessages, honestInboxRegex, onClick }) => {
   return (
     <Table>
       <TableHead>
@@ -44,6 +44,7 @@ export const TableReceive = ({ sortedMessages, honestInboxRegex }) => {
       <TableBody>
         {sortedMessages.map((message) => {
           const { hash = {}, from } = message
+
           const { file = {} } = hash
           let sanitizedFrom = from
           if (new RegExp(honestInboxRegex).test(from)) {
@@ -59,6 +60,7 @@ export const TableReceive = ({ sortedMessages, honestInboxRegex }) => {
                   <ButtonFlat variant="negative">Delete</ButtonFlat>
                 </Box>
               }
+              onClick={() => onClick({ file, from, time: hash.time })}
             >
               <TableCell>
                 <Box gap="14px" vAlign="center">
@@ -81,14 +83,14 @@ export const TableReceive = ({ sortedMessages, honestInboxRegex }) => {
 
               <TableCell>
                 <Box gap="14px" vAlign="center">
-                  <Text size="sm" variant="black">
+                  <Text size="sm" variant="black" whiteSpace="nowrap">
                     {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
                   </Text>
                 </Box>
               </TableCell>
 
               <TableCell>
-                <Text size="sm" variant="black" align="right">
+                <Text size="sm" variant="black" align="right" whiteSpace="nowrap">
                   {Utils.humanFileSize(file?.size) ?? 'Unkown'}
                 </Text>
               </TableCell>

@@ -66,7 +66,7 @@ export const ClipboardInput = memo(({ className, value, copyText, ...props }) =>
 
   return (
     <Container className={className}>
-      <StyledInput value={value} {...props} />
+      <StyledInput defaultValue={value} {...props} />
       <StyledButton type="button" onClick={handleCopyClick} copied={copied}>
         {copied ? 'Copied!' : copyText}
       </StyledButton>

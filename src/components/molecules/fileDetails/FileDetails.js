@@ -16,7 +16,7 @@
 
 import { DateTime } from 'luxon'
 import React, { memo } from 'react'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import Utils from '../../../services/Utils'
 import { DEVICE_SIZE } from '../../../theme/theme'
 import { Box } from '../../atoms/box/Box'
@@ -34,6 +34,10 @@ const Container = styled.div`
   gap: 30px;
   box-sizing: border-box;
   max-width: 320px;
+
+  ${({ theme }) => css`
+    background: ${theme.colors.white.main};
+  `}
 
   @media (max-width: ${DEVICE_SIZE.TABLET}) {
     max-width: 100%;

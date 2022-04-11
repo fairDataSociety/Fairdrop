@@ -73,6 +73,12 @@ const StyledTextP = styled.p`
 
   text-transform: ${({ transform }) => transform};
 
+  ${({ whiteSpace }) => {
+    return css`
+      white-space: ${whiteSpace};
+    `
+  }}
+
   ${({ truncate }) =>
     truncate &&
     css`
@@ -97,6 +103,7 @@ Text.defaultProps = {
   weight: 'regular',
   align: ALIGN[0],
   transform: TRANSFORM[0],
+  whiteSpace: 'normal',
 }
 
 export default Text

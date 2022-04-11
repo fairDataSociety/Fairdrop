@@ -15,32 +15,15 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import * as yup from 'yup'
-import { FDSInstance } from '../../../../hooks/mailbox/useMailbox'
 
 export const schema = yup.object().shape({
-  mailbox: yup
-    .string()
-    .required('You must enter a mailbox name.')
-    .test('mailboxAvailability', 'Sorry, that name is not available!', (value) => {
-      return new Promise((resolve) => {
-        if (!value || !FDSInstance.Account.isMailboxNameValid(value)) {
-          return resolve(false)
-        }
-        FDSInstance.Account.isMailboxNameAvailable(value)
-          .then((result) => {
-            return resolve(result)
-          })
-          .catch(() => {
-            resolve(false)
-          })
-      })
-    }),
+  mailbox: yup.string().required('You must enter a mailbox name.'),
   password: yup.string().required('You must enter a password.'),
   passwordConfirmation: yup
     .string()
     .required('You must enter a password.')
     .when('password', {
       is: (val) => (val && val.length > 0 ? true : false),
-      then: yup.string().oneOf([yup.ref('password')], 'Passwords must match.'),
+      then: yup.string().oneOf([yup.ref('password')], 'Paswords do not match. Please check them'),
     }),
 })

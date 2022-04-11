@@ -44,6 +44,7 @@ const StyledButton = styled.button`
   font-size: 14px;
   flex-shrink: 0;
   padding: 0 16px;
+  min-width: 96px;
 
   ${({ copied }) =>
     copied &&
@@ -66,7 +67,7 @@ export const ClipboardInput = memo(({ className, value, copyText, ...props }) =>
 
   return (
     <Container className={className}>
-      <StyledInput defaultValue={value} {...props} />
+      <StyledInput defaultValue={value} readOnly {...props} />
       <StyledButton type="button" onClick={handleCopyClick} copied={copied}>
         {copied ? 'Copied!' : copyText}
       </StyledButton>

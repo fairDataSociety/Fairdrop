@@ -14,25 +14,76 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import Text from '../../../components/atoms/text/Text'
-import { colors } from '../../../config/colors'
-import { useTheme } from '../../../hooks/theme/useTheme'
-import styles from './RegisterScreen.module.css'
 import { useFormik } from 'formik'
-import { Input } from '../../../components/atoms/input/Input'
-import Button from '../../../components/atoms/button/Button'
-import TouchableOpacity from '../../../components/atoms/touchableOpacity/TouchableOpacity'
 import { schema } from './schema'
-import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import Loader from '../../../components/atoms/loader/Loader'
+import { FDSInstance, useMailbox } from '../../../hooks/mailbox/useMailbox'
 import { routes } from '../../../config/routes'
 import { toast } from 'react-toastify'
+import { AuthLayout } from '../components/authLayout/AuthLayout'
+import styled from 'styled-components/macro'
+import { Link as RNLink } from 'react-router-dom'
+import { Logo, Box, MetamaskButton, Input, Button, Icon } from '../../../components'
+
+const Container = styled(Box)`
+  height: 100%;
+  box-sizing: border-box;
+`
+
+const Header = styled(Box)`
+  width: 100%;
+`
+
+const StyledLink = styled(RNLink)`
+  &&& {
+    color: ${({ theme }) => theme?.colors?.primary?.main};
+  }
+  font-weight: 600;
+`
+
+const Content = styled(Box)`
+  flex: 1;
+  width: 100%;
+  max-width: 338px;
+  overflow: auto;
+`
+
+const StyledLogo = styled(Logo)`
+  margin-bottom: 12px;
+`
+
+const Headline = styled(Text)`
+  margin-bottom: 32px;
+`
+
+const Separator = styled(Box)`
+  width: 100%;
+
+  &:after,
+  &:before {
+    content: '';
+    display: block;
+    height: 1px;
+    background-color: ${({ theme }) => theme?.colors?.ntrl_light?.main};
+    flex: 1;
+  }
+`
+
+const Form = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+const SubmitButton = styled(Button)`
+  align-self: flex-start;
+  margin-top: 8px;
+`
 
 const RegisterScreen = ({ history, location }) => {
-  const { setVariant, setBackground } = useTheme()
   const [, { createMailbox }] = useMailbox()
-  const [infoMessage, setInfoMessage] = useState()
   const formik = useFormik({
     initialValues: {
       mailbox: '',
@@ -45,10 +96,8 @@ const RegisterScreen = ({ history, location }) => {
         await createMailbox({
           mailbox: values.mailbox,
           password: values.password,
-          callback: (message) => setInfoMessage(message),
+          callback: (message) => console.info(message),
         })
-        // setInfoMessage('Creating warrant')
-        // await createWarrant()
 
         if (location?.state?.from) {
           history.replace(location?.state?.from)
@@ -61,91 +110,112 @@ const RegisterScreen = ({ history, location }) => {
     },
   })
 
-  const handleGoBack = useCallback(() => {
-    history.goBack()
-  }, [history])
-
-  const getError = useCallback(() => {
-    const keys = Object.keys(formik.touched)
-    if (keys.length === 0) {
-      return ''
+  const handleMailboxBlur = useCallback(async () => {
+    const value = formik?.values?.mailbox
+    if (!FDSInstance.Account.isMailboxNameValid(value)) {
+      formik?.setFieldError('mailbox', 'This mailbox name already exists. Try another!')
+      return
     }
-    const errorField = Object.keys(formik.errors).find((errorField) => !!formik.touched[errorField])
-    return formik.errors[errorField]
-  }, [formik.errors, formik.touched])
+    FDSInstance.Account.isMailboxNameAvailable(value)
+      .then((result) => {
+        if (!result) {
+          formik?.setFieldError('mailbox', 'This mailbox name already exists. Try another!')
+        }
+      })
+      .catch(() => {
+        formik?.setFieldError('mailbox', 'This mailbox name already exists. Try another!')
+      })
+  }, [formik?.values, formik?.setFieldError])
 
-  useEffect(() => {
-    setVariant('black')
-    setBackground(colors.white)
-  }, [])
+  const hasMailboxError = useMemo(() => {
+    return formik.touched?.mailbox && formik.errors?.mailbox
+  }, [formik?.touched, formik?.errors])
+
+  const isMailboxValid = useMemo(() => {
+    return formik.touched?.mailbox && !formik.errors?.mailbox
+  }, [formik?.touched, formik?.errors])
+
+  const isPasswordValid = useMemo(() => {
+    return (
+      formik.touched?.password &&
+      !formik.errors?.password &&
+      formik.touched?.passwordConfirmation &&
+      !formik.errors?.passwordConfirmation
+    )
+  }, [formik?.touched, formik?.errors])
 
   return (
-    <div className={styles.container}>
-      <form className={styles.content} onSubmit={formik.handleSubmit} autoComplete="off">
-        <Text className={styles.headline} element="h1" size="l" variant="black" weight="500" align="center">
-          Create a new mailbox
-        </Text>
-
-        <Input
-          name="mailbox"
-          value={formik.values.mailbox}
-          placeholder="Mailbox name"
-          type="text"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-
-        <span className={styles.decorator} />
-
-        <Input
-          name="password"
-          value={formik.values.password}
-          placeholder="Password"
-          type="password"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-
-        <span className={styles.decorator} />
-
-        <Input
-          name="passwordConfirmation"
-          value={formik.values.passwordConfirmation}
-          placeholder="Verify password"
-          type="password"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-
-        {getError() && (
-          <Text className={styles.error} align="right" variant="black">
-            {getError()}
+    <AuthLayout>
+      <Container direction="column" padding="40px" hAlign="center">
+        <Header hAlign="right" margin="0 0 24px 0">
+          <Text variant="black" size="sm">
+            Already have an account? <StyledLink to={routes.login}>Log in</StyledLink>
           </Text>
-        )}
+        </Header>
 
-        {infoMessage && (
-          <Text className={styles.error} align="right" variant="black">
-            {infoMessage}
-          </Text>
-        )}
+        <Content direction="column" vAlign="center">
+          <StyledLogo size="l" />
 
-        <div className={styles.actions}>
-          <Button
-            className={styles.submitButton}
-            variant="black"
-            type="submit"
-            onClick={formik.handleSubmit}
-            disabled={!formik.isValid || formik.isSubmitting}
-          >
-            {formik.isValidating || formik.isSubmitting ? <Loader /> : 'Add mailbox'}
-          </Button>
+          <Headline size="ml" variant="black">
+            Sign up to create your mailbox
+          </Headline>
 
-          <TouchableOpacity onClick={handleGoBack}>
-            <Text variant="black">Go back</Text>
-          </TouchableOpacity>
-        </div>
-      </form>
-    </div>
+          <MetamaskButton disabled />
+
+          <Separator gap="12px" vAlign="center" margin="30px 0">
+            <Text size="sm" variant="black">
+              Or
+            </Text>
+          </Separator>
+
+          <Form onSubmit={formik.handleSubmit}>
+            <Input
+              name="mailbox"
+              value={formik.values.mailbox}
+              label="Mailbox"
+              placeholder="Type your mailbox's name"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={(evt) => {
+                formik.handleBlur(evt)
+                handleMailboxBlur()
+              }}
+              hasError={formik.touched?.mailbox && formik.errors?.mailbox}
+              errorMessage={formik.errors?.mailbox}
+              icon={isMailboxValid ? <Icon name="checkmark" /> : hasMailboxError ? <Icon name="warning" /> : null}
+            />
+
+            <Input
+              name="password"
+              value={formik.values.password}
+              label="Password"
+              placeholder="Type your password"
+              type="password"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              hasError={formik.touched?.password && formik.errors?.password}
+              errorMessage={formik.errors?.password}
+            />
+
+            <Input
+              name="passwordConfirmation"
+              value={formik.values.passwordConfirmation}
+              placeholder="Verify your password"
+              type="password"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              hasError={formik.touched?.passwordConfirmation && formik.errors?.passwordConfirmation}
+              errorMessage={formik.errors?.passwordConfirmation}
+              icon={isPasswordValid ? <Icon name="checkmark" /> : null}
+            />
+
+            <SubmitButton type="submit" onClick={formik.handleSubmit} disabled={!formik.isValid || formik.isSubmitting}>
+              Sign up
+            </SubmitButton>
+          </Form>
+        </Content>
+      </Container>
+    </AuthLayout>
   )
 }
 

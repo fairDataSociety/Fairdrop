@@ -71,15 +71,15 @@ const ErrorMessage = styled(Text)`
   margin-top: 4px;
 `
 
-export const Input = memo(({ className, id, label, name, icon, errorMessage, ...props }) => {
+export const Input = memo(({ className, id, label, name, icon, errorMessage, hasError, ...props }) => {
   return (
     <Container className={className}>
       {label && <Label htmlFor={id ?? name}>{label}</Label>}
       <InputWrapper>
-        <StyledInput id={id ?? name} name={name} hasIcon={React.isValidElement(icon)} {...props} />
+        <StyledInput id={id ?? name} name={name} hasIcon={React.isValidElement(icon)} hasError={hasError} {...props} />
         {React.isValidElement(icon) && <IconWrapper>{icon}</IconWrapper>}
       </InputWrapper>
-      {errorMessage && (
+      {hasError && errorMessage && (
         <ErrorMessage variant="negative" size="sm" weight="300">
           {errorMessage}
         </ErrorMessage>

@@ -17,19 +17,20 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-const Logo = styled.h1.attrs(() => ({
+export const Logo = styled.h1.attrs(() => ({
   children: 'Fairdrop',
 }))`
   display: inline-block;
   margin: 0;
   padding: 0;
   font-weight: 700;
-  font-size: 24px;
   line-height: 32px;
 
   ${({ theme, variant = 'primary' }) => css`
     color: ${theme.colors[variant].main};
   `};
+
+  ${({ theme, size = 'm' }) => css(theme.components?.logo?.sizes?.[size] ?? '')}
 `
 
 export default React.memo(Logo)

@@ -17,6 +17,7 @@
 import * as yup from 'yup'
 
 export const schema = yup.object().shape({
-  mailbox: yup.string().required('You must select a mailbox.'),
-  password: yup.string().required('You must enter a password.'),
+  // eslint-disable-next-line quotes
+  mailbox: yup.string().required("You must select your mailbox's name."),
+  password: yup.string().required('You must enter your password.'),
 })

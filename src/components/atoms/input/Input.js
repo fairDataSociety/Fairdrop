@@ -17,6 +17,7 @@
 import React, { memo } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { VARIANT } from '../../../theme/theme'
+import { Label } from '../label/Label'
 import { Text } from '../text/Text'
 
 const Container = styled.div`
@@ -54,13 +55,6 @@ const StyledInput = styled.input`
     css`
       border-color: ${({ theme }) => theme?.colors?.[VARIANT.NEGATIVE]?.main};
     `}
-`
-
-const Label = styled.label`
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme?.colors?.[VARIANT.BLACK]?.main};
 `
 
 const IconWrapper = styled.div`

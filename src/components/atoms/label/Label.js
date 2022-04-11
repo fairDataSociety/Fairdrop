@@ -16,5 +16,11 @@
 
 import { memo } from 'react'
 import styled from 'styled-components/macro'
+import { VARIANT } from '../../../theme/theme'
 
-export const List = memo(styled.ul``)
+export const Label = memo(styled.label`
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme?.colors?.[VARIANT.BLACK]?.main};
+`)

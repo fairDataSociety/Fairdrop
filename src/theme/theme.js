@@ -103,6 +103,16 @@ export const theme = {
       padding: '12px',
       borderRadius: '12px',
     },
+    logo: {
+      sizes: {
+        m: {
+          'font-size': '24px',
+        },
+        l: {
+          'font-size': '32px',
+        },
+      },
+    },
     text: {
       fontSizes: {
         xs: {
@@ -134,7 +144,7 @@ export const theme = {
           'line-height': '1.18',
         },
         xxl: {
-          'font-size': '30px',
+          'font-size': '40px',
           'line-height': '1.2',
         },
       },

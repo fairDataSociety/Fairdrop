@@ -21,7 +21,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import App from './App'
 import './index.css'
 
-import { ToastContainer, Flip } from 'react-toastify'
+import { Slide } from 'react-toastify'
 import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
 import { ThemeProvider } from './hooks/theme/useTheme'
@@ -33,6 +33,7 @@ import HonestInboxScreen from './screens/honestInbox/HonestInboxScreen'
 import { ThemeProvider as SCThemeProvider } from 'styled-components'
 import { theme } from './theme/theme'
 import { GlobalCSS } from './theme/GlobalCSS'
+import { Toast } from './components'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -63,7 +64,14 @@ const Root = () => {
                     <Route component={App} />
                   </Switch>
                 )}
-                <ToastContainer limit={3} transition={Flip} theme="dark" />
+                <Toast
+                  position="bottom-center"
+                  closeButton={false}
+                  draggableDirection="y"
+                  transition={Slide}
+                  icon={false}
+                  theme="colored"
+                />
               </FileManagerProvider>
             </SideMenuProvider>
           </ThemeProvider>

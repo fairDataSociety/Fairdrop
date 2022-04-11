@@ -151,6 +151,10 @@ export const theme = {
     },
     icon: {
       sizes: {
+        s: {
+          width: '12px',
+          height: '12px',
+        },
         m: {
           width: '24px',
           height: '24px',
@@ -217,6 +221,16 @@ export const theme = {
           rightWidth: 0,
           bottomWidth: '1px',
           color: colors.ntrl_light.main,
+        },
+      },
+    },
+    navItem: {
+      sizes: {
+        m: {
+          padding: '0',
+        },
+        l: {
+          padding: '20px 16px',
         },
       },
     },

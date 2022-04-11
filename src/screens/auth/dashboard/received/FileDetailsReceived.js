@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 import React, { useEffect, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { DEVICE_SIZE } from '../../../../theme/theme'
 import { FileDetails } from '../../../../components'
 

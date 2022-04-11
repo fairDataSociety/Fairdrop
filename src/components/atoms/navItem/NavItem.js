@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import { memo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
 export const NavItem = memo(styled.li`
   list-style: none;
@@ -26,8 +26,9 @@ export const NavItem = memo(styled.li`
   line-height: 24px;
   cursor: pointer;
 
-  ${({ theme, active }) => css`
+  ${({ theme, active, size = 'm' }) => css`
     color: ${theme.colors.black.main};
     text-decoration-line: ${active ? 'underline' : 'none'};
+    ${css(theme.components.navItem.sizes[size])};
   `};
 `)

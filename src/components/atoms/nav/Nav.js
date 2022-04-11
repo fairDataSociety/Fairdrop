@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { memo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
 const NavUl = styled.ul`
   display: flex;

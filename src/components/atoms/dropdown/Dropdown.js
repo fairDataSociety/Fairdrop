@@ -16,6 +16,7 @@
 
 import React, { memo, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
+import { Collapsible } from '../collapsible/Collapsible'
 import { Icon } from '../icon/Icon'
 import { Box } from '../box/Box'
 
@@ -26,18 +27,20 @@ const DropdownButton = styled.button`
   cursor: pointer;
 `
 
-const DropdownOptions = styled.ul`
+const CollapsibleStyled = styled(Collapsible)`
   position: absolute;
-  top: 30px;
+  top: 40px;
+`
+
+const Options = styled.ul`
   width: 200px;
+  padding: 8px 0;
   border-radius: 4px;
   box-sizing: border-box;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 8px 0;
 
-  ${({ theme, expanded }) => css`
+  ${({ theme }) => css`
     border: solid 1px ${theme.colors.ntrl_light.main};
-    display: ${expanded ? 'block' : 'none'};
     background: ${theme.colors.white.main};
   `};
 `
@@ -64,9 +67,9 @@ export const Dropdown = memo(function Dropdown({ id, children, expanded: givenEx
       <DropdownButton onClick={handleClick} aria-haspopup="listbox" aria-labelledby={id}>
         <Icon name="options" />
       </DropdownButton>
-      <DropdownOptions id={id} aria-expanded={expanded} role="listbox" expanded={expanded} onClick={handleClickOption}>
-        {children}
-      </DropdownOptions>
+      <CollapsibleStyled id={id} aria-expanded={expanded} expanded={expanded} onClick={handleClickOption}>
+        <Options role="listbox">{children}</Options>
+      </CollapsibleStyled>
     </Box>
   )
 })

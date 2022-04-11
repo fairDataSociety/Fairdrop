@@ -23,3 +23,11 @@ Inactive.args = {
   children: 'Page 2',
   active: false,
 }
+
+export const SizeL = Template.bind({})
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+SizeL.args = {
+  children: 'Page 2',
+  active: false,
+  size: 'l',
+}

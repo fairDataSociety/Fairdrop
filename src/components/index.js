@@ -21,6 +21,7 @@ export * from './atoms/switchFileIcon/SwitchFileIcon'
 export * from './atoms/tab/Tab'
 export * from './atoms/table/Table'
 export * from './atoms/text/Text'
+export * from './atoms/collapsible/Collapsible'
 
 // molecules
 export * from './molecules/fileDetails/FileDetails'

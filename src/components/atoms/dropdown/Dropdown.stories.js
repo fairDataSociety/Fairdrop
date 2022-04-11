@@ -9,12 +9,17 @@ export default {
 }
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => (
-  <Dropdown {...args}>
-    <DropdownOption onClick={() => console.log('Click 1')}>Action 1</DropdownOption>
-    <DropdownOption onClick={() => console.log('Click 2')}>Action 2</DropdownOption>
-  </Dropdown>
-)
+const Template = (args) => {
+  return (
+    <>
+      <Dropdown {...args}>
+        <DropdownOption onClick={() => console.log('Click 1')}>Action 1</DropdownOption>
+        <DropdownOption onClick={() => console.log('Click 2')}>Action 2</DropdownOption>
+      </Dropdown>
+      <h1>More contente....</h1>
+    </>
+  )
+}
 
 export const Sample = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

@@ -167,6 +167,10 @@ export const theme = {
           width: '66px',
           height: '66px',
         },
+        xxl: {
+          width: '80px',
+          height: '80px',
+        },
       },
     },
     input: {

@@ -41,7 +41,22 @@ import PinWarrant from '../../lib/abi/PinWarrant.json'
 
 const MailboxContext = React.createContext()
 
-export const FDSInstance = new FDS()
+export const FDSInstance = new FDS({
+  swarmTimeout: 1000 * 60 * 4,
+  tokenName: 'gas',
+  beeGateway: process.env.REACT_APP_BEE_GATEWAY,
+  ethGateway: process.env.REACT_APP_ETH_GATEWAY,
+  faucetAddress: process.env.REACT_APP_FAUCET_URL,
+  chainID: process.env.REACT_APP_CHAIN_ID,
+  httpTimeout: 1000,
+  walletVersion: 1,
+  ensConfig: {
+    domain: process.env.REACT_APP_DOMAIN_NAME,
+    registryAddress: process.env.REACT_APP_ENS_ADDRESS,
+    subdomainRegistrarAddress: process.env.REACT_APP_REGISTRAR_ADDRESS,
+    resolverContractAddress: process.env.REACT_APP_RESOLVER_ADDRESS,
+  },
+})
 
 const APP_STATE_KEY = 'fairdrop-appState-0.1'
 

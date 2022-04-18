@@ -18,7 +18,6 @@ import React, { useCallback, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { useLocation } from 'react-router-dom'
 import Logo from '../../atoms/logo/Logo'
-import { Link } from 'react-router-dom'
 import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
@@ -78,7 +77,7 @@ const LogoWrapper = styled.button`
 const IconLogo = styled(Icon)`
   transition: transform 200ms;
   ${({ show = false }) => css`
-    transform: ${show ? 'rotate(180deg)' : 'rotate(0deg)'};
+    transform: ${show ? 'rotate(0deg)' : 'rotate(180deg)'};
   `}
 `
 
@@ -111,20 +110,21 @@ const Header = ({ className }) => {
     <>
       {!mailbox && (
         <Nav vertical={!minTabletMediaQuery}>
-          <NavItemSized active={location.pathname === routes.login}>
-            <Link to={routes.login}>Log in / Register</Link>
+          <NavItemSized active={location.pathname === routes.login} to={routes.login}>
+            Log in / Register
           </NavItemSized>
         </Nav>
       )}
 
       {mailbox && (
         <Nav vertical={!minTabletMediaQuery}>
-          <NavItemSized active={Object.values(routes.mailbox).some((path) => location.pathname === path)}>
-            <Link to={routes.mailbox.received}>My files</Link>
+          <NavItemSized
+            active={Object.values(routes.mailbox).some((path) => location.pathname === path)}
+            to={routes.mailbox.received}
+          >
+            My files
           </NavItemSized>
-          <NavItemSized active={location.pathname === routes.about}>
-            <Link to={routes.about}>About</Link>
-          </NavItemSized>
+          <NavItemSized active={location.pathname === routes.about}>About</NavItemSized>
         </Nav>
       )}
     </>

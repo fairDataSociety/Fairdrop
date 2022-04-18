@@ -26,9 +26,9 @@ const NavUl = styled.ul`
   `};
 `
 
-export const Nav = memo(function Nav({ children, vertical }) {
+export const Nav = memo(function Nav({ className, children, vertical, onClick }) {
   return (
-    <nav>
+    <nav className={className} onClick={onClick}>
       <NavUl vertical={vertical}>{children}</NavUl>
     </nav>
   )

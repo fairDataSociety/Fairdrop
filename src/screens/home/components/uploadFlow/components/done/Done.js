@@ -17,7 +17,7 @@
 import React, { memo } from 'react'
 import styled from 'styled-components/macro'
 import { Box, Button, Text, FileInput, ClipboardInput } from '../../../../../../components'
-import { useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
+import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
 
 const Container = styled(Box)`
   width: 100%;
@@ -29,12 +29,12 @@ const ActionButton = styled(Button)`
 `
 
 export const Done = memo(({ onFinish }) => {
-  const [{ files, link }] = useFileManager()
+  const [{ files, link, type, recipient }] = useFileManager()
 
   return (
     <Container direction="column" vAlign="center" gap="16px">
       <Text size="xl" weight="400" variant="black">
-        {"You're done!"}
+        {type === FILE_UPLOAD_TYPES.QUICK ? "You're done!" : `File sent to ${recipient}!`}
       </Text>
 
       <FileInput file={files?.[0]} disabled />

@@ -18,14 +18,19 @@ import React, { memo, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'react-toastify'
 import styled from 'styled-components/macro'
-import { Box, Button, Tab, Tabs, Text, DropArea, FileInput } from '../../../../../../components'
+import { Box, Button, Tab, Tabs, Text, DropArea, FileInput, Input } from '../../../../../../components'
 import { parameters } from '../../../../../../config/parameters'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
 import { useMailbox } from '../../../../../../hooks/mailbox/useMailbox'
 import { routes } from '../../../../../../config/routes'
 import { useHistory } from 'react-router-dom'
+import { useFormik } from 'formik'
+import { schema } from './schema'
 
-const Container = styled(Box)`
+const Container = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 100%;
 `
@@ -46,7 +51,7 @@ const ActionButton = styled(Button)`
 const noop = () => {}
 
 export const SelectFile = memo(({ onStartUpload }) => {
-  const [{ files }, { setFiles, resetFileManager }] = useFileManager()
+  const [, { setFiles, setRecipient }] = useFileManager()
   const { getRootProps, isDragActive } = useDropzone({ onDrop: noop })
   const [{ mailbox }] = useMailbox()
   const history = useHistory()
@@ -65,26 +70,49 @@ export const SelectFile = memo(({ onStartUpload }) => {
     history.push(routes.login)
   }, [history])
 
-  const handleClean = useCallback(() => {
-    resetFileManager?.()
-  }, [resetFileManager])
+  const formik = useFormik({
+    initialValues: {
+      type: FILE_UPLOAD_TYPES.QUICK,
+      file: null,
+      recipient: '',
+    },
+    validationSchema: schema,
+    onSubmit: async (values) => {
+      setFiles({ type: values?.type, files: [values?.file] })
+      setRecipient?.(values?.recipient)
+      onStartUpload?.()
+    },
+  })
 
-  const handleQuickFileDrop = useCallback((file) => {
-    if (!checkFileSize(file)) {
-      return
-    }
-    setFiles({ type: FILE_UPLOAD_TYPES.QUICK, files: [file] })
-  }, [])
+  const handleClean = useCallback(() => {
+    formik.setFieldValue('file', null)
+  }, [formik])
+
+  const handleQuickFileDrop = useCallback(
+    (file) => {
+      if (!checkFileSize(file)) {
+        return
+      }
+      formik.setFieldValue('file', file)
+      formik.setFieldTouched('file', true)
+      formik.setFieldValue('type', FILE_UPLOAD_TYPES.QUICK)
+      formik.setFieldTouched('type', true)
+    },
+    [formik],
+  )
 
   const handleEncryptedFileDrop = useCallback((file) => {
     if (!checkFileSize(file)) {
       return
     }
-    setFiles({ type: FILE_UPLOAD_TYPES.ENCRYPTED, files: [file] })
+    formik.setFieldValue('file', file)
+    formik.setFieldTouched('file', true)
+    formik.setFieldValue('type', FILE_UPLOAD_TYPES.ENCRYPTED)
+    formik.setFieldTouched('type', true)
   }, [])
 
   return (
-    <Container direction="column" vAlign="center" {...getRootProps()}>
+    <Container {...getRootProps()} onSubmit={formik.handleSubmit}>
       {isDragActive && (
         <DropAreaContainer gap="16px" direction="column" vAlign="center" hAlign="center">
           <DropArea
@@ -106,7 +134,7 @@ export const SelectFile = memo(({ onStartUpload }) => {
       )}
 
       {!isDragActive && (
-        <Tabs>
+        <Tabs initialTab={formik?.values?.type === FILE_UPLOAD_TYPES.QUICK ? 0 : 1}>
           <Tab>Quick transfer</Tab>
           <Tab>Encrypted transfer</Tab>
 
@@ -115,13 +143,13 @@ export const SelectFile = memo(({ onStartUpload }) => {
               Send files to anyone. Quick and easy
             </Text>
 
-            <FileInput file={files?.[0]} onFileChange={handleQuickFileDrop} onClean={handleClean} />
+            <FileInput file={formik.values?.file} onFileChange={handleQuickFileDrop} onClean={handleClean} />
 
             <Text size="m" weight="300" variant="black">
               Or simply drop your file here
             </Text>
 
-            <ActionButton variant="primary" onClick={onStartUpload} disabled={!files?.[0]}>
+            <ActionButton variant="primary" disabled={!formik.values?.file} type="submit">
               Get transfer link
             </ActionButton>
           </TabContent>
@@ -133,8 +161,42 @@ export const SelectFile = memo(({ onStartUpload }) => {
                   Send any file to any Fairdrop user in a more secure way. You must log in first.
                 </Text>
 
-                <ActionButton variant="primary" onClick={handleLogin}>
+                <ActionButton variant="primary" type="button" onClick={handleLogin}>
                   Log in
+                </ActionButton>
+              </>
+            )}
+
+            {mailbox && (
+              <>
+                <Text size="m" weight="300" variant="black">
+                  Send files to any Fairdrop user in a more secure way. Encrypted end to end
+                </Text>
+
+                <FileInput file={formik.values?.file} onFileChange={handleQuickFileDrop} onClean={handleClean} />
+
+                <Text size="m" weight="300" variant="black">
+                  Or simply drop your file here
+                </Text>
+
+                <Input
+                  name="recipient"
+                  value={formik.values.recipient}
+                  label="Type the mailbox you want to send the file to"
+                  placeholder="Mailbox name"
+                  type="text"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  hasError={formik.touched?.recipient && formik.errors?.recipient}
+                  errorMessage={formik.errors?.recipient}
+                />
+
+                <ActionButton
+                  variant="primary"
+                  disabled={!formik.values?.file || !formik.values?.recipient || !formik.isValid}
+                  type="submit"
+                >
+                  Encrypt & send file
                 </ActionButton>
               </>
             )}

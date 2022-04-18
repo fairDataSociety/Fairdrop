@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { memo, useMemo, useState } from 'react'
+import React, { memo, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { Box } from '../../atoms/box/Box'
 import { Tab } from '../../atoms/tab/Tab'
@@ -50,6 +50,10 @@ export const Tabs = memo(({ children, onTabSelected, initialTab, ...props }) => 
     const contents = childrenArray.filter((child) => child.type !== Tab)
     return contents?.[selectedTab] ?? null
   }, [selectedTab, children])
+
+  useEffect(() => {
+    setSelectedTab(initialTab)
+  }, [initialTab])
 
   return (
     <Container direction="column" {...props}>

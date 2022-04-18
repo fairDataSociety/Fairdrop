@@ -111,7 +111,9 @@ export const Upload = memo(({ onSuccess, onError, onCancel }) => {
       <Progress />
 
       <Text size="m" weight="400" variant="black" align="center">
-        Uploading file...
+        {type === FILE_UPLOAD_TYPES.QUICK
+          ? 'Uploading file...'
+          : 'Uploading and encrypting your file using 256 Military encryption technology'}
       </Text>
 
       <ActionButton bordered variant="primary" onClick={onCancel}>

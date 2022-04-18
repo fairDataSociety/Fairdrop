@@ -47,7 +47,7 @@ const TabContainer = styled.button`
 
 export const Tab = memo(({ children, isActive, ...props }) => {
   return (
-    <TabContainer isActive={isActive} {...props}>
+    <TabContainer isActive={isActive} type="button" {...props}>
       <Text size="m" weight="400" align="center" variant={isActive ? 'black' : 'ntrl_dark'}>
         {children}
       </Text>

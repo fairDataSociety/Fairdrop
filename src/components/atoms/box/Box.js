@@ -28,7 +28,18 @@ const mapAlignWithFlexValue = {
 export const Box = memo(styled.div`
   display: flex;
 
-  ${({ gap, direction = 'row', hAlign = 'left', vAlign = 'left', margin = '0', padding = '0' }) => css`
+  ${({
+    gap,
+    direction = 'row',
+    hAlign = 'left',
+    vAlign = 'left',
+    margin = '0',
+    padding = '0',
+    fitWidth = false,
+    fit = false,
+  }) => css`
+    width: ${fitWidth ? '100%' : 'auto'};
+    flex: ${fit ? '1' : '0 1 auto'};
     gap: ${gap};
     margin: ${margin};
     padding: ${padding};

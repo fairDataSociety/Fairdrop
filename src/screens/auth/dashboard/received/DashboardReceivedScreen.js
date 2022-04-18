@@ -21,12 +21,7 @@ import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 import Notification from '../../../../components/molecules/notification/Notification'
 import styled from 'styled-components/macro'
-import { Box } from '../../../../components'
-import { TableReceive } from './TableReceived'
-import { ListReceived } from './ListReceived'
-import { useMediaQuery } from '../../../../hooks/useMediaQuery/useMediaQuery'
-import { DEVICE_SIZE } from '../../../../theme/theme'
-import { FileDetailsReceived } from './FileDetailsReceived'
+import { Box, TableFiles } from '../../../../components'
 
 const Container = styled.div`
   position: relative;
@@ -49,27 +44,24 @@ const DashboardReceivedScreen = () => {
   const [shouldOpenNotification, setShouldOpenNotification] = useState(
     !localStorage.getItem('honestInboxDidYouKnowNotification'),
   )
-  const [fileDetails, setFileDetails] = useState(null)
-  const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
 
-  const sortedMessages = useMemo(() => {
-    return received.sort((a, b) => {
-      return b?.hash?.time - a?.hash?.time
-    })
+  const messagesAdapted = useMemo(() => {
+    return received
+      .sort((a, b) => {
+        return b?.hash?.time - a?.hash?.time
+      })
+      .map(({ from, ...message }) => {
+        return {
+          ...message,
+          from: new RegExp(honestInboxRegex).test(from) ? 'Honest Inbox' : from,
+        }
+      })
   }, [received])
 
   const onCloseNotification = useCallback(() => {
     localStorage.setItem('honestInboxDidYouKnowNotification', Date.now())
     setShouldOpenNotification(false)
   }, [])
-
-  const handleClickFile = (data) => {
-    setFileDetails(data)
-  }
-
-  const handleExitedFile = () => {
-    setFileDetails(null)
-  }
 
   useEffect(() => {
     getReceivedMessages()
@@ -96,25 +88,9 @@ const DashboardReceivedScreen = () => {
             </Text>
           </Box>
         ) : (
-          <>
-            {minTabletMediaQuery ? (
-              <TableReceive
-                sortedMessages={sortedMessages}
-                honestInboxRegex={honestInboxRegex}
-                onClick={handleClickFile}
-              />
-            ) : (
-              <ListReceived
-                sortedMessages={sortedMessages}
-                honestInboxRegex={honestInboxRegex}
-                onClick={handleClickFile}
-              />
-            )}
-          </>
+          <TableFiles messages={messagesAdapted} />
         )}
       </WrapperTable>
-
-      <FileDetailsReceived show={!!fileDetails} fileDetails={fileDetails} onExited={handleExitedFile} />
 
       <Notification opened={shouldOpenNotification} onCloseRequest={onCloseNotification}>
         <div>

@@ -28,6 +28,7 @@ export const routes = {
     sent: '/mailbox/sent',
     stored: '/mailbox/stored',
     consents: '/mailbox/consents',
+    mailboxHones: '/mailbox/honest',
     honest: '/honest/:ens',
   },
   about: {

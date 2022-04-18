@@ -6,6 +6,7 @@ export * from './atoms/button/Button'
 export * from './atoms/buttonFlat/ButtonFlat'
 export * from './atoms/buttonIcon/ButtonIcon'
 export * from './atoms/clipboardInput/ClipboardInput'
+export * from './atoms/collapsible/Collapsible'
 export * from './atoms/filePreview/FilePreview'
 export * from './atoms/icon/Icon'
 export * from './atoms/input/Input'
@@ -21,7 +22,6 @@ export * from './atoms/switchFileIcon/SwitchFileIcon'
 export * from './atoms/tab/Tab'
 export * from './atoms/table/Table'
 export * from './atoms/text/Text'
-export * from './atoms/collapsible/Collapsible'
 
 // molecules
 export * from './molecules/circleLoadingProgress/CircleLoadingProgress'
@@ -35,3 +35,6 @@ export * from './molecules/sidebar/Sidebar'
 export * from './molecules/slideshow/Slideshow'
 export * from './molecules/tabs/Tabs'
 export * from './molecules/toast/Toast'
+
+// organisms
+export * from './organisms/tableFiles/TableFiles'

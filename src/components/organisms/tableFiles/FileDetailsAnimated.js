@@ -16,8 +16,8 @@
 import React, { useEffect, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import styled from 'styled-components/macro'
-import { DEVICE_SIZE } from '../../../../theme/theme'
-import { FileDetails } from '../../../../components'
+import { DEVICE_SIZE } from '../../../theme/theme'
+import { FileDetails } from '../..'
 
 const enterTimeout = 500
 const exitTimeout = 250
@@ -106,7 +106,7 @@ const WrapperDetails = styled.div`
   }
 `
 
-export const FileDetailsReceived = ({ show: givenShow, fileDetails, onExited }) => {
+export const FileDetailsAnimated = ({ show: givenShow, fileDetails, onExited }) => {
   const [{ show }, setState] = useState({ show: false })
 
   const handleExited = () => onExited?.()

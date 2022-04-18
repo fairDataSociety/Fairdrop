@@ -129,7 +129,7 @@ export const theme = {
         },
         m: {
           'font-size': '16px',
-          'line-height': '1.2',
+          'line-height': '28px',
         },
         ml: {
           'font-size': '18px',
@@ -141,11 +141,11 @@ export const theme = {
         },
         xl: {
           'font-size': '24px',
-          'line-height': '1.18',
+          'line-height': '32px',
         },
         xxl: {
           'font-size': '40px',
-          'line-height': '1.2',
+          'line-height': '52px',
         },
       },
     },

@@ -15,39 +15,37 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { memo } from 'react'
-import { Icon } from '../icon/Icon'
+import styled from 'styled-components/macro'
+import { Box, Button, Text, FileInput, ClipboardInput } from '../../../../../../components'
+import { useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
 
-const mapTypeWithIcon = [
-  {
-    name: 'video',
-    condition: ({ type }) => type.includes('video'),
-  },
-  {
-    name: 'picture',
-    condition: ({ type }) => type.includes('image'),
-  },
-  {
-    name: 'music',
-    condition: ({ type }) => type.includes('audio'),
-  },
-  {
-    name: 'file',
-    condition: ({ type }) => type.includes('file') || type.includes('pdf'),
-  },
-]
+const Container = styled(Box)`
+  width: 100%;
+  height: 100%;
+`
 
-export const getFileIcon = ({ type }) => mapTypeWithIcon.find((item) => item.condition({ type }))
+const ActionButton = styled(Button)`
+  margin-top: 8px;
+`
 
-export const SwitchFileIcon = memo(function SwitchFileIcon({ type, ...rest }) {
-  const iconConf = getFileIcon({ type })
-
-  if (!iconConf) {
-    return null
-  }
+export const Done = memo(({ onFinish }) => {
+  const [{ files, link }] = useFileManager()
 
   return (
-    <Icon {...rest} name={iconConf.name}>
-      {type}
-    </Icon>
+    <Container direction="column" vAlign="center" gap="16px">
+      <Text size="xl" weight="400" variant="black">
+        {"You're done!"}
+      </Text>
+
+      <FileInput file={files?.[0]} disabled />
+
+      <ClipboardInput value={link} />
+
+      <ActionButton variant="primary" onClick={onFinish}>
+        Finish
+      </ActionButton>
+    </Container>
   )
 })
+
+Done.displayName = 'Done'

@@ -23,6 +23,7 @@ import { Input } from '../input/Input'
 const Container = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
 `
 
 const StyledInput = styled(Input)`

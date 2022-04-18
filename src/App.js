@@ -14,19 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import styles from './App.module.css'
 import c from 'classnames'
-import Menu from './components/molecules/menu/Menu'
 import Header from './components/molecules/header/Header'
-import { Switch, Route, useLocation } from 'react-router-dom'
-import UploadMainScreen from './screens/upload/main/UploadMainScreen'
+import { Switch, Route } from 'react-router-dom'
 import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 import LoginScreen from './screens/auth/login/LoginScreen'
 import { routes } from './config/routes'
 import RegisterScreen from './screens/auth/register/RegisterScreen'
-import { useSideMenu } from './hooks/sideMenu/useSideMenu'
 import PrivateRoute from './components/molecules/privateRoute/PrivateRoute'
 import SettingsExportScreen from './screens/settings/export/SettingsExportScreen'
 import SettingsImportScreen from './screens/settings/import/SettingsImportScreen'
@@ -34,33 +31,18 @@ import ProductDisclaimer from './disclaimers/product/ProductDisclaimer'
 import ReportingDisclaimer from './disclaimers/reporting/ReportingDisclaimer'
 import Dashboard from './components/layout/dashboard/Dashboard'
 import DownloadScreen from './screens/download/DownloadScreen'
+import { HomeScreen } from './screens/home/HomeScreen'
 
 const App = () => {
-  const [menuOpened, setMenuOpened] = useState(false)
-  const location = useLocation()
-  const { hideSideMenu } = useSideMenu()
-
-  const handleToggleMenu = useCallback(() => {
-    setMenuOpened(!menuOpened)
-    hideSideMenu?.()
-  }, [menuOpened, hideSideMenu])
-
-  useEffect(() => {
-    setMenuOpened(false)
-    hideSideMenu?.()
-  }, [location.pathname, location.search, hideSideMenu])
-
   return (
     <div className={c(styles.container)}>
-      <Menu isShown={menuOpened} onToggleMenu={handleToggleMenu} />
-
       <Header />
 
       <div className={styles.content}>
         <Switch>
           <Route exact path={routes.login} component={LoginScreen} />
           <Route exact path={routes.register} component={RegisterScreen} />
-          <Route exact path={routes.upload.home} component={UploadMainScreen} />
+          <Route exact path={routes.upload.home} component={HomeScreen} />
           <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
 
           <Route exact path={routes.settings.export} component={SettingsExportScreen} />

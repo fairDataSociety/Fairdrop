@@ -20,11 +20,14 @@ import { Text } from '../text/Text'
 
 const TabContainer = styled.button`
   outline: none;
-  padding: 8px 12px;
+  padding: 8px 6px;
   border: 0;
   border-bottom: solid 1px ${({ theme }) => theme?.colors?.ntrl_light?.main};
   background-color: transparent;
   position: relative;
+  flex: 1;
+  align-self: stretch;
+  cursor: pointer;
 
   ${({ isActive, theme }) =>
     isActive &&

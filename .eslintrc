@@ -33,7 +33,7 @@
     ],
     "linebreak-style": ["error", "unix"],
     "no-console": 0,
-    "quotes": ["error", "single"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["error", "never"],
     "react/prop-types": [0],
     "no-unused-vars": [1]

@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import { transparentize } from 'polished'
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styled, { css } from 'styled-components/macro'
 import { Box } from '../../atoms/box/Box'
@@ -35,7 +35,7 @@ const Container = styled(Box)`
   background-color: ${({ theme }) => transparentize(0.98, theme?.colors?.primary?.main)};
   border: 2px dashed ${({ theme }) => transparentize(0.6, theme?.colors?.primary?.main)};
   border-radius: 16px;
-  padding: 24px;
+  padding: 50px 24px;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
 
@@ -55,8 +55,15 @@ const Container = styled(Box)`
 
 const StyledInput = styled.input``
 
-export const DropArea = memo(({ icon, headline, description, onDrop, ...props }) => {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+export const DropArea = memo(({ icon, headline, description, onDrop, multiple, ...props }) => {
+  const handleDrop = useCallback(
+    (files) => {
+      onDrop?.(multiple ? files : files?.[0])
+    },
+    [multiple, onDrop],
+  )
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleDrop })
   return (
     <Container
       vAlign="center"
@@ -83,5 +90,9 @@ export const DropArea = memo(({ icon, headline, description, onDrop, ...props })
     </Container>
   )
 })
+
+DropArea.defaultProps = {
+  multiple: false,
+}
 
 DropArea.displayName = 'DropArea'

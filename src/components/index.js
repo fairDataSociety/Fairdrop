@@ -24,7 +24,10 @@ export * from './atoms/text/Text'
 export * from './atoms/collapsible/Collapsible'
 
 // molecules
+export * from './molecules/circleLoadingProgress/CircleLoadingProgress'
+export * from './molecules/dropArea/DropArea'
 export * from './molecules/fileDetails/FileDetails'
+export * from './molecules/fileInput/FileInput'
 export * from './molecules/header/Header'
 export * from './molecules/importButton/ImportButton'
 export * from './molecules/metamaskButton/MetamaskButton'

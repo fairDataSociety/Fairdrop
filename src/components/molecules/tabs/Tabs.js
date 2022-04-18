@@ -15,8 +15,17 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { memo, useMemo, useState } from 'react'
+import styled from 'styled-components/macro'
 import { Box } from '../../atoms/box/Box'
 import { Tab } from '../../atoms/tab/Tab'
+
+const Container = styled(Box)`
+  width: 100%;
+`
+
+const TabsWrapper = styled(Box)`
+  width: 100%;
+`
 
 export const Tabs = memo(({ children, onTabSelected, initialTab, ...props }) => {
   const [selectedTab, setSelectedTab] = useState(initialTab ?? 0)
@@ -43,10 +52,10 @@ export const Tabs = memo(({ children, onTabSelected, initialTab, ...props }) => 
   }, [selectedTab, children])
 
   return (
-    <Box direction="column" {...props}>
-      <Box vAlign="center">{Tabs}</Box>
+    <Container direction="column" {...props}>
+      <TabsWrapper vAlign="center">{Tabs}</TabsWrapper>
       {Content}
-    </Box>
+    </Container>
   )
 })
 

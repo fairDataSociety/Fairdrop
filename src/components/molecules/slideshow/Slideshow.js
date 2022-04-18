@@ -78,7 +78,10 @@ export const Slideshow = forwardRef(
       setActiveIdx((state) => {
         const newValue = state + 1
         if (newValue > numberOfItems - 1) {
-          if (autoPlay) return 0
+          if (autoPlay) {
+            onItemChange?.(0)
+            return 0
+          }
           return state
         }
         onItemChange?.(newValue)

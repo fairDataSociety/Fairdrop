@@ -14,19 +14,43 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import { memo } from 'react'
+import React, { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Link as RNLink } from 'react-router-dom'
 
-export const Link = memo(styled(RNLink)`
+const StyledLink = styled.a`
   ${({ theme, $isActive }) => css`
     font-size: 16px;
     font-weight: ${$isActive ? 700 : 400};
     color: ${$isActive ? theme.colors.primary.main : theme.colors.ntrl_dark.main};
     transition: color 0.3s ease;
 
+    display: flex;
+    align-items: center;
+
     &:hover {
       color: ${theme.colors.primary.main};
     }
   `};
-`)
+`
+
+export const Link = memo(({ external, to, ...props }) => {
+  const navigationProps = useMemo(() => {
+    const navProps = {}
+    if (external) {
+      navProps.href = to
+      navProps.rel = 'noopener noreferrer'
+      navProps.target = '_blank'
+    } else {
+      navProps.to = to
+    }
+    return navProps
+  }, [external, to])
+  return <StyledLink as={external ? 'a' : RNLink} {...navigationProps} {...props} />
+})
+
+Link.defaultProps = {
+  external: false,
+}
+
+Link.displayName = 'Link'

@@ -20,7 +20,6 @@ import styles from './App.module.css'
 import c from 'classnames'
 import Header from './components/molecules/header/Header'
 import { Switch, Route } from 'react-router-dom'
-import UploadFlowScreen from './screens/upload/flow/UploadFlowScreen'
 import LoginScreen from './screens/auth/login/LoginScreen'
 import { routes } from './config/routes'
 import RegisterScreen from './screens/auth/register/RegisterScreen'
@@ -32,6 +31,7 @@ import ReportingDisclaimer from './disclaimers/reporting/ReportingDisclaimer'
 import Dashboard from './components/layout/dashboard/Dashboard'
 import DownloadScreen from './screens/download/DownloadScreen'
 import { HomeScreen } from './screens/home/HomeScreen'
+import { AboutScreen } from './screens/about/AboutScreen'
 
 const App = () => {
   return (
@@ -43,7 +43,7 @@ const App = () => {
           <Route exact path={routes.login} component={LoginScreen} />
           <Route exact path={routes.register} component={RegisterScreen} />
           <Route exact path={routes.upload.home} component={HomeScreen} />
-          <Route exact path={routes.upload.flow} component={UploadFlowScreen} />
+          <Route path={routes.about} component={AboutScreen} />
 
           <Route exact path={routes.settings.export} component={SettingsExportScreen} />
           <Route exact path={routes.settings.import} component={SettingsImportScreen} />

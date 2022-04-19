@@ -15,18 +15,27 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
-import Text from '../../../components/atoms/text/Text'
-import styles from './AboutTermsOfUsageScreen.module.css'
+import styled from 'styled-components/macro'
+import { Box, Text } from '../../../components'
+
+const Container = styled(Box)`
+  box-sizing: border-box;
+  padding: 48px 126px;
+  height: 100%;
+  overflow: auto;
+`
+
+const Section = styled(Box)``
 
 const AboutTermsOfUsageScreen = () => {
   return (
-    <div className={styles.container}>
-      <Text className={styles.headline} element="h1" size="l" weight="500" align="center">
-        Terms of Usage
+    <Container gap="32px" direction="column">
+      <Text size="xxl" weight="600" variant="black">
+        Terms of usage
       </Text>
 
-      <div className={styles.section}>
-        <Text className={styles.p} align="center">
+      <Box gap="48px" direction="column">
+        <Text size="m" variant="black">
           Present clarification expressly states that the provided not for profit, Fairdrop platform, created by
           independent developers, offers ‘’BETA VERSION’’, experimental services and is known to contain possible bugs
           and stability issues. Testing is the only purpose behind using the platform and independent developers working
@@ -35,54 +44,54 @@ const AboutTermsOfUsageScreen = () => {
           and the tester uses the app at their own risk. Furthermore, all future beta updates are subject to the same
           terms.
         </Text>
-      </div>
 
-      <div className={styles.section}>
-        <Text className={styles.p} align="center">
-          Disclaimer of Liability and Warranties
-        </Text>
+        <Section gap="16px" direction="column">
+          <Text size="ml" variant="black" weight="500">
+            Disclaimer of Liability and Warranties
+          </Text>
 
-        <Text className={styles.p} align="center">
-          IN NO EVENT SHALL THE FAIRDROP PLATFORM OR ITS INDEPENDENT DEVELOPERS AND SUPPLIERS BE LIABLE FOR ANY DAMAGES
-          WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS, BUSINESS INTERRUPTION, LOSS OF
-          INFORMATION) ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE, EVEN IF THE FAIRDROP PLATFORM
-          PROVIDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-        </Text>
-      </div>
+          <Text size="m" variant="black">
+            IN NO EVENT SHALL THE FAIRDROP PLATFORM OR ITS INDEPENDENT DEVELOPERS AND SUPPLIERS BE LIABLE FOR ANY
+            DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS, BUSINESS INTERRUPTION, LOSS
+            OF INFORMATION) ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE, EVEN IF THE FAIRDROP PLATFORM
+            PROVIDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+          </Text>
+        </Section>
 
-      <div className={styles.section}>
-        <Text className={styles.p} align="center">
-          Users Commitments
-        </Text>
+        <Section gap="16px" direction="column">
+          <Text size="ml" variant="black" weight="500">
+            Users Commitments
+          </Text>
 
-        <Text className={styles.p} align="center">
-          By using Fairdrop Beta Release you agree to report any flaws, errors or imperfections discovered on the
-          platform or other materials where the user – Beta Tester has been granted access to the Fairdrop Beta Release.
-          The user understands that prompt and accurate reporting is the purpose of the Fairdrop Beta Release and
-          undertakes to use best efforts to provide frequent reports on all aspects of the product both positive and
-          negative and acknowledges that any improvements, modifications and changes arising from or in connection with
-          the Beta Testers contribution to the Fairdrop Project, remain or become the exclusive property of the
-          Disclosing Party.
-        </Text>
-      </div>
+          <Text size="m" variant="black">
+            By using Fairdrop Beta Release you agree to report any flaws, errors or imperfections discovered on the
+            platform or other materials where the user – Beta Tester has been granted access to the Fairdrop Beta
+            Release. The user understands that prompt and accurate reporting is the purpose of the Fairdrop Beta Release
+            and undertakes to use best efforts to provide frequent reports on all aspects of the product both positive
+            and negative and acknowledges that any improvements, modifications and changes arising from or in connection
+            with the Beta Testers contribution to the Fairdrop Project, remain or become the exclusive property of the
+            Disclosing Party.
+          </Text>
+        </Section>
 
-      <div className={styles.section}>
-        <Text className={styles.p} align="center">
-          Privacy
-        </Text>
+        <Section gap="16px" direction="column">
+          <Text size="ml" variant="black" weight="500">
+            Privacy
+          </Text>
 
-        <Text className={styles.p} align="center">
-          Fairdrop platform collects no data of its users whatsoever. It traces no cookies and makes use of no
-          analytical tools. The privacy policy applied by Fairdata society and thus Fairdrop platform is radical
-          minimization of data.
-        </Text>
+          <Text size="m" variant="black">
+            Fairdrop platform collects no data of its users whatsoever. It traces no cookies and makes use of no
+            analytical tools. The privacy policy applied by Fairdata society and thus Fairdrop platform is radical
+            minimization of data.
+          </Text>
 
-        <Text className={styles.p} align="center">
-          You agree and acknowledge that these Terms and Conditions may change from time to time and you will review
-          them periodically.
-        </Text>
-      </div>
-    </div>
+          <Text size="m" variant="black">
+            You agree and acknowledge that these Terms and Conditions may change from time to time and you will review
+            them periodically.
+          </Text>
+        </Section>
+      </Box>
+    </Container>
   )
 }
 

@@ -108,25 +108,30 @@ const Header = ({ className }) => {
 
   const HeaderNav = () => (
     <>
-      {!mailbox && (
-        <Nav vertical={!minTabletMediaQuery}>
-          <NavItemSized active={location.pathname === routes.login} to={routes.login}>
-            Log in / Register
-          </NavItemSized>
-        </Nav>
-      )}
+      <Nav vertical={!minTabletMediaQuery}>
+        <NavItemSized active={location.pathname === routes.upload.home} to={routes.upload.home}>
+          Upload
+        </NavItemSized>
 
-      {mailbox && (
-        <Nav vertical={!minTabletMediaQuery}>
+        {mailbox && (
           <NavItemSized
             active={Object.values(routes.mailbox).some((path) => location.pathname === path)}
             to={routes.mailbox.received}
           >
             My files
           </NavItemSized>
-          <NavItemSized active={location.pathname === routes.about}>About</NavItemSized>
-        </Nav>
-      )}
+        )}
+
+        <NavItemSized active={location.pathname === routes.about} to={routes.about.fairdrop}>
+          About
+        </NavItemSized>
+
+        {!mailbox && (
+          <NavItemSized active={location.pathname === routes.login} to={routes.login}>
+            Log in / Sign up
+          </NavItemSized>
+        )}
+      </Nav>
     </>
   )
 

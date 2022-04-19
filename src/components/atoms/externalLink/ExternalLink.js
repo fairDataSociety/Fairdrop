@@ -16,24 +16,16 @@
 
 import React, { memo } from 'react'
 import styled from 'styled-components/macro'
-import { Badge } from '../../atoms/badge/Badge'
-import { Link } from '../../atoms/link/Link'
 
-const StyledLi = styled.li`
-  list-style: none;
-  cursor: pointer;
+const Link = styled.a`
+  outline: none;
+  text-decoration: none;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.primary.main};
 `
 
-export const SidebarLink = memo(({ children, count, to, isActive, external, ...props }) => {
-  return (
-    <StyledLi {...props}>
-      <Badge count={count} inline>
-        <Link to={to} $isActive={isActive} external={external}>
-          {children}
-        </Link>
-      </Badge>
-    </StyledLi>
-  )
+export const ExternalLink = memo((props) => {
+  return <Link rel="noopener noreferrer" target="_blank" {...props} />
 })
 
-SidebarLink.displayName = 'SidebarLink'
+ExternalLink.displayName = 'ExternalLink'

@@ -112,6 +112,10 @@ const MenuWrapper = styled.div`
   }
 `
 
+const SidebarLinkIcon = styled(Icon)`
+  margin-left: 3px;
+`
+
 export const Sidebar = memo(({ headline, items, ...props }) => {
   const location = useLocation()
   const [opened, setOpened] = useState(false)
@@ -166,8 +170,15 @@ export const Sidebar = memo(({ headline, items, ...props }) => {
             const isActive = matchPath(location?.pathname, { path: item.path, exact: true })
 
             return (
-              <SidebarLink key={item.path} to={item.path} count={item.notifications} isActive={!!isActive}>
+              <SidebarLink
+                key={item.path}
+                to={item.path}
+                count={item.notifications}
+                isActive={!!isActive}
+                external={item.external}
+              >
                 {item.label}
+                {item.icon && <SidebarLinkIcon name={item.icon} />}
               </SidebarLink>
             )
           })}

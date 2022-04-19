@@ -159,6 +159,10 @@ export const theme = {
           width: '24px',
           height: '24px',
         },
+        ml: {
+          width: '30px',
+          height: '30px',
+        },
         l: {
           width: '48px',
           height: '48px',

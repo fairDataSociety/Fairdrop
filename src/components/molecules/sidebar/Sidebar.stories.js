@@ -22,6 +22,12 @@ export default {
         notifications: 100,
         path: '/honest',
       },
+      {
+        label: 'External link',
+        path: 'https://www.google.es',
+        external: true,
+        icon: 'openLink',
+      },
     ],
   },
 }

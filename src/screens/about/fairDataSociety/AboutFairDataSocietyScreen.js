@@ -16,9 +16,16 @@
 
 import React, { useCallback, useRef } from 'react'
 import { toast } from 'react-toastify'
-import Text from '../../../components/atoms/text/Text'
-import styles from './AboutFairDataSocietyScreen.module.css'
-import { ReactComponent as FDSLogo } from './assets/fair-data-society.svg'
+import { ReactComponent as FDSLogo } from './assets/fds.svg'
+import styled from 'styled-components/macro'
+import { Box, Text, ExternalLink } from '../../../components'
+
+const Container = styled(Box)`
+  box-sizing: border-box;
+  padding: 48px 126px;
+  height: 100%;
+  overflow: auto;
+`
 
 const AboutFairDataSocietyScreen = () => {
   const timesClicked = useRef(0)
@@ -43,38 +50,33 @@ const AboutFairDataSocietyScreen = () => {
   }, [])
 
   return (
-    <div className={styles.container}>
-      <a href="" onClick={handleEnableEasterEgg}>
-        <FDSLogo className={styles.logo} />
-      </a>
+    <Container gap="32px" direction="column">
+      <ExternalLink href="" onClick={handleEnableEasterEgg}>
+        <FDSLogo />
+      </ExternalLink>
 
-      <Text className={styles.p} align="center">
+      <Text size="m" variant="black">
         Imagine a society of a completely private digital life where your privacy is not weaponised against you just to
         sell you more things.
       </Text>
 
-      <Text className={styles.p} align="center">
+      <Text size="m" variant="black">
         Fair Data Society is a non-profit initiative that is reimagining the data economy and creating a fair and
         decentralised data layer.
       </Text>
 
-      <Text className={styles.p} align="center">
+      <Text size="m" variant="black">
         We have Fair Trade, now why not Fair Data?
       </Text>
 
-      <Text className={styles.p} align="center">
+      <Text size="m" variant="black">
         Fair Data Society recognises online privacy as a{' '}
-        <a
-          className={styles.link}
-          rel="noopener noreferrer"
-          target="_blank"
-          href="https://en.wikipedia.org/wiki/Right_to_privacy"
-        >
+        <ExternalLink rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Right_to_privacy">
           basic human right
-        </a>{' '}
+        </ExternalLink>{' '}
         and a basis for progress for all.
       </Text>
-    </div>
+    </Container>
   )
 }
 

@@ -31,6 +31,7 @@ import DownloadScreen from './screens/download/DownloadScreen'
 import { HomeScreen } from './screens/home/HomeScreen'
 import { AboutScreen } from './screens/about/AboutScreen'
 import styled from 'styled-components/macro'
+import { HeaderProvider } from './hooks/header/useHeader'
 
 const Container = styled.div`
   display: flex;
@@ -42,11 +43,11 @@ const Container = styled.div`
 
 const Routes = () => {
   return (
-    <>
+    <HeaderProvider>
       <Header />
       <Switch>
         <Route exact path={routes.upload.home} component={HomeScreen} />
-        <Route path={routes.about} component={AboutScreen} />
+        <Route path={routes.about.root} component={AboutScreen} />
 
         <Route exact path={routes.settings.export} component={SettingsExportScreen} />
         <Route exact path={routes.settings.import} component={SettingsImportScreen} />
@@ -56,7 +57,7 @@ const Routes = () => {
         <Route path={routes.downloads.multiple} component={DownloadScreen} />
         <Route path={routes.downloads.single} component={DownloadScreen} />
       </Switch>
-    </>
+    </HeaderProvider>
   )
 }
 

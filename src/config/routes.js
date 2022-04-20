@@ -32,6 +32,7 @@ export const routes = {
     honest: '/honest/:ens',
   },
   about: {
+    root: '/about',
     fairdrop: '/about/fairdrop',
     fds: '/about/fair-data-society',
     faq: '/about/faq',

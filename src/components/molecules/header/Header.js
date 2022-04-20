@@ -26,6 +26,7 @@ import { Nav, NavItem, Avatar, Icon, Collapsible } from '../../'
 import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 import { DEVICE_SIZE } from '../../../theme/theme'
 import { matchPath } from 'react-router-dom'
+import { useHeader } from '../../../hooks/header/useHeader'
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -34,10 +35,23 @@ const HeaderWrapper = styled.header`
   padding: 8px 16px;
   box-sizing: border-box;
 
-  ${({ theme }) => css`
-    border-bottom: solid 1px ${theme.colors.ntrl_light.main};
-    background: ${theme.colors.white.main};
-  `};
+  ${({ theme, isTransparent }) =>
+    !isTransparent &&
+    css`
+      border-bottom: solid 1px ${theme.colors.ntrl_light.main};
+      background: ${theme.colors.white.main};
+    `};
+
+  ${({ isTransparent }) =>
+    isTransparent &&
+    css`
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: transparent;
+    `};
 
   @media (min-width: ${DEVICE_SIZE.TABLET}) {
     padding: 24px;
@@ -82,11 +96,20 @@ const IconLogo = styled(Icon)`
   `}
 `
 
+const StyledNavItem = styled(NavItem)`
+  ${({ isTransparent }) =>
+    isTransparent &&
+    css`
+      color: ${({ theme }) => theme.colors.white.main};
+    `};
+`
+
 const Header = ({ className }) => {
   const [{ mailbox }] = useMailbox()
   const { showSideMenu } = useSideMenu()
   const [{ showNav }, setState] = useState({ showNav: false })
   const location = useLocation()
+  const { isTransparent } = useHeader()
 
   const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
 
@@ -104,14 +127,14 @@ const Header = ({ className }) => {
   }
 
   const NavItemSized = (props) => {
-    return <NavItem {...props} size={minTabletMediaQuery ? 'm' : 'l'} />
+    return <StyledNavItem {...props} size={minTabletMediaQuery ? 'm' : 'l'} isTransparent={isTransparent} />
   }
 
   const HeaderNav = () => (
     <>
       <Nav vertical={!minTabletMediaQuery}>
         <NavItemSized
-          active={matchPath(location.pathname, { path: routes.upload.home, exact: true })}
+          isActive={matchPath(location.pathname, { path: routes.upload.home, exact: true })}
           to={routes.upload.home}
         >
           Upload
@@ -119,7 +142,7 @@ const Header = ({ className }) => {
 
         {mailbox && (
           <NavItemSized
-            active={Object.values(routes.mailbox).some((path) => matchPath(location.pathname, { path, exact: true }))}
+            isActive={Object.values(routes.mailbox).some((path) => matchPath(location.pathname, { path, exact: true }))}
             to={routes.mailbox.received}
           >
             My files
@@ -127,14 +150,14 @@ const Header = ({ className }) => {
         )}
 
         <NavItemSized
-          active={Object.values(routes.about).some((path) => matchPath(location.pathname, { path, exact: true }))}
+          isActive={Object.values(routes.about).some((path) => matchPath(location.pathname, { path, exact: true }))}
           to={routes.about.fairdrop}
         >
           About
         </NavItemSized>
 
         {!mailbox && (
-          <NavItemSized active={matchPath(location.pathname, { path: routes.login, exact: true })} to={routes.login}>
+          <NavItemSized isActive={matchPath(location.pathname, { path: routes.login, exact: true })} to={routes.login}>
             Log in / Sign up
           </NavItemSized>
         )}
@@ -144,7 +167,7 @@ const Header = ({ className }) => {
 
   return (
     <>
-      <HeaderWrapper className={className}>
+      <HeaderWrapper className={className} isTransparent={isTransparent}>
         <LogoWrapper onClick={handleShowNavigation}>
           <Logo />
           {!minTabletMediaQuery && <IconLogo name="arrowUp" size="s" show={showNav} />}

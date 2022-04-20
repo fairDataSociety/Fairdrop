@@ -15,9 +15,10 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import { transparentize } from 'polished'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Box } from '../../components'
+import { useHeader } from '../../hooks/header/useHeader'
 import { backgrounds } from './assets'
 import Carousel from './components/carousel/Carousel'
 import { UploadFlow } from './components/uploadFlow/UploadFlow'
@@ -49,9 +50,15 @@ const CarouselWrapper = styled(Box)`
 
 export const HomeScreen = memo(() => {
   const [backgroundIdx, setBackgroundIdx] = useState(0)
+  const { setIsTransparent } = useHeader()
 
   const handleSlideChange = useCallback((idx) => {
     setBackgroundIdx(idx)
+  }, [])
+
+  useEffect(() => {
+    setIsTransparent(true)
+    return () => setIsTransparent(false)
   }, [])
 
   return (

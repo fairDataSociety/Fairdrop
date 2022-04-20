@@ -15,23 +15,16 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useContext, useState } from 'react'
-import Background from '../../components/molecules/background/Background'
-import { colors } from '../../config/colors'
 
-const ThemeContext = React.createContext()
+const HeaderContext = React.createContext()
 
-export const ThemeProvider = ({ children }) => {
-  const [background, setBackground] = useState(colors.red)
-  const [variant, setVariant] = useState('white')
+export const HeaderProvider = ({ children }) => {
+  const [isTransparent, setIsTransparent] = useState(false)
 
-  return (
-    <ThemeContext.Provider value={{ variant, setVariant, background, setBackground }}>
-      <Background color={background} /> {children}
-    </ThemeContext.Provider>
-  )
+  return <HeaderContext.Provider value={{ isTransparent, setIsTransparent }}>{children}</HeaderContext.Provider>
 }
 
-export const useTheme = () => {
-  const ctx = useContext(ThemeContext)
+export const useHeader = () => {
+  const ctx = useContext(HeaderContext)
   return ctx
 }

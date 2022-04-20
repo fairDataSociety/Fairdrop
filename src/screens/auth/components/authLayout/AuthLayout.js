@@ -18,6 +18,7 @@ import React, { memo } from 'react'
 import styled from 'styled-components/macro'
 import { Box } from '../../../../components/atoms/box/Box'
 import { Text } from '../../../../components/atoms/text/Text'
+import { DEVICE_SIZE } from '../../../../theme/theme'
 import bg from './assets/background.jpg'
 
 const Container = styled.section`
@@ -30,11 +31,19 @@ const LeftSide = styled(Box)`
   width: 50%;
   box-sizing: border-box;
   background: ${`url(${bg}) no-repeat center center / cover`};
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    display: none;
+  }
 `
 
 const RigthSide = styled.div`
   width: 50%;
   box-sizing: border-box;
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    width: 100%;
+  }
 `
 
 export const AuthLayout = memo(({ children, ...props }) => {

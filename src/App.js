@@ -16,8 +16,6 @@
 
 import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
-import styles from './App.module.css'
-import c from 'classnames'
 import Header from './components/molecules/header/Header'
 import { Switch, Route } from 'react-router-dom'
 import LoginScreen from './screens/auth/login/LoginScreen'
@@ -32,33 +30,50 @@ import Dashboard from './components/layout/dashboard/Dashboard'
 import DownloadScreen from './screens/download/DownloadScreen'
 import { HomeScreen } from './screens/home/HomeScreen'
 import { AboutScreen } from './screens/about/AboutScreen'
+import styled from 'styled-components/macro'
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+`
+
+const Routes = () => {
+  return (
+    <>
+      <Header />
+      <Switch>
+        <Route exact path={routes.upload.home} component={HomeScreen} />
+        <Route path={routes.about} component={AboutScreen} />
+
+        <Route exact path={routes.settings.export} component={SettingsExportScreen} />
+        <Route exact path={routes.settings.import} component={SettingsImportScreen} />
+
+        <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
+
+        <Route path={routes.downloads.multiple} component={DownloadScreen} />
+        <Route path={routes.downloads.single} component={DownloadScreen} />
+      </Switch>
+    </>
+  )
+}
 
 const App = () => {
   return (
-    <div className={c(styles.container)}>
-      <Header />
+    <Container>
+      <Switch>
+        <Route exact path={routes.login} component={LoginScreen} />
+        <Route exact path={routes.register} component={RegisterScreen} />
 
-      <div className={styles.content}>
-        <Switch>
-          <Route exact path={routes.login} component={LoginScreen} />
-          <Route exact path={routes.register} component={RegisterScreen} />
-          <Route exact path={routes.upload.home} component={HomeScreen} />
-          <Route path={routes.about} component={AboutScreen} />
-
-          <Route exact path={routes.settings.export} component={SettingsExportScreen} />
-          <Route exact path={routes.settings.import} component={SettingsImportScreen} />
-
-          <PrivateRoute path={routes.mailbox.dashboard} component={Dashboard} />
-
-          <Route path={routes.downloads.multiple} component={DownloadScreen} />
-          <Route path={routes.downloads.single} component={DownloadScreen} />
-        </Switch>
-      </div>
+        <Route path={routes.root} component={Routes} />
+      </Switch>
 
       <ProductDisclaimer />
 
       <ReportingDisclaimer />
-    </div>
+    </Container>
   )
 }
 

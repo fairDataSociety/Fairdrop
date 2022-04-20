@@ -22,17 +22,26 @@ import { schema } from './schema'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
 import { toast } from 'react-toastify'
 import { AuthLayout } from '../components/authLayout/AuthLayout'
-import { Logo, Box, MetamaskButton, ImportButton, Input, Button, Select } from '../../../components'
+import { Logo, Box, MetamaskButton, ImportButton, Input, Button, Select, Link, Icon } from '../../../components'
 import { Link as RNLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
+import { DEVICE_SIZE } from '../../../theme/theme'
+import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 
 const Container = styled(Box)`
   height: 100%;
   box-sizing: border-box;
+  padding: 40px;
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    padding: 24px;
+  }
 `
 
 const Header = styled(Box)`
   width: 100%;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const StyledLink = styled(RNLink)`
@@ -47,6 +56,10 @@ const Content = styled(Box)`
   width: 100%;
   max-width: 338px;
   overflow: auto;
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    justify-content: flex-start;
+  }
 `
 
 const StyledLogo = styled(Logo)`
@@ -84,10 +97,23 @@ const Form = styled.form`
 const SubmitButton = styled(Button)`
   align-self: flex-start;
   margin-top: 8px;
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    width: 100%;
+  }
+`
+
+const SignUpText = styled(Text)`
+  margin-top: 8px;
+`
+
+const StyledIcon = styled(Icon)`
+  margin-right: 6px;
 `
 
 const LoginScreen = ({ history, location }) => {
   const [{ accounts }, { unlockMailbox }] = useMailbox()
+  const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
   const formik = useFormik({
     initialValues: {
       mailbox: '',
@@ -125,12 +151,18 @@ const LoginScreen = ({ history, location }) => {
 
   return (
     <AuthLayout>
-      <Container direction="column" padding="40px" hAlign="center">
-        <Header hAlign="right" margin="0 0 24px 0">
-          <Text variant="black" size="sm">
-            Not a member? <StyledLink to={routes.register}>Sign up</StyledLink>
-          </Text>
-        </Header>
+      <Container direction="column" hAlign="center">
+        {minTabletMediaQuery && (
+          <Header margin="0 0 24px 0">
+            <Link variant="transparent" to={routes.upload.home}>
+              <StyledIcon name="close" />
+              Close
+            </Link>
+            <Text variant="black" size="sm">
+              Not a member? <StyledLink to={routes.register}>Sign up</StyledLink>
+            </Text>
+          </Header>
+        )}
 
         <Content direction="column" vAlign="center">
           <StyledLogo size="l" />
@@ -179,6 +211,12 @@ const LoginScreen = ({ history, location }) => {
             <SubmitButton type="submit" onClick={formik.handleSubmit} disabled={!formik.isValid || formik.isSubmitting}>
               Log in
             </SubmitButton>
+
+            {!minTabletMediaQuery && (
+              <SignUpText variant="black" size="sm">
+                Not a member? <StyledLink to={routes.register}>Sign up</StyledLink>
+              </SignUpText>
+            )}
           </Form>
         </Content>
       </Container>

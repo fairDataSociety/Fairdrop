@@ -25,6 +25,7 @@ import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 import { Nav, NavItem, Avatar, Icon, Collapsible } from '../../'
 import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 import { DEVICE_SIZE } from '../../../theme/theme'
+import { matchPath } from 'react-router-dom'
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -109,25 +110,31 @@ const Header = ({ className }) => {
   const HeaderNav = () => (
     <>
       <Nav vertical={!minTabletMediaQuery}>
-        <NavItemSized active={location.pathname === routes.upload.home} to={routes.upload.home}>
+        <NavItemSized
+          active={matchPath(location.pathname, { path: routes.upload.home, exact: true })}
+          to={routes.upload.home}
+        >
           Upload
         </NavItemSized>
 
         {mailbox && (
           <NavItemSized
-            active={Object.values(routes.mailbox).some((path) => location.pathname === path)}
+            active={Object.values(routes.mailbox).some((path) => matchPath(location.pathname, { path, exact: true }))}
             to={routes.mailbox.received}
           >
             My files
           </NavItemSized>
         )}
 
-        <NavItemSized active={location.pathname === routes.about} to={routes.about.fairdrop}>
+        <NavItemSized
+          active={Object.values(routes.about).some((path) => matchPath(location.pathname, { path, exact: true }))}
+          to={routes.about.fairdrop}
+        >
           About
         </NavItemSized>
 
         {!mailbox && (
-          <NavItemSized active={location.pathname === routes.login} to={routes.login}>
+          <NavItemSized active={matchPath(location.pathname, { path: routes.login, exact: true })} to={routes.login}>
             Log in / Sign up
           </NavItemSized>
         )}

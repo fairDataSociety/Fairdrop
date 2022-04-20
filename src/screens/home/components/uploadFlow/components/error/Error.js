@@ -17,10 +17,19 @@
 import React, { memo } from 'react'
 import styled from 'styled-components/macro'
 import { Box, Button, Text } from '../../../../../../components'
+import { ReactComponent as Illustration } from './assets/illustration.svg'
 
 const Container = styled(Box)`
   width: 100%;
   height: 100%;
+`
+
+const Content = styled(Box)`
+  width: 100%;
+`
+
+const ErrorIllustration = styled(Illustration)`
+  margin-bottom: 8px;
 `
 
 const ActionButton = styled(Button)`
@@ -29,14 +38,21 @@ const ActionButton = styled(Button)`
 
 export const Error = memo(({ onFinish }) => {
   return (
-    <Container direction="column" vAlign="center" gap="16px">
-      <Text size="xl" weight="400" variant="black">
-        Ooops!
-      </Text>
+    <Container direction="column" vAlign="center">
+      <ErrorIllustration />
+      <Content direction="column" vAlign="center" gap="16px">
+        <Text size="xl" weight="400" variant="black">
+          Ooops!
+        </Text>
 
-      <ActionButton variant="primary" onClick={onFinish}>
-        Try again
-      </ActionButton>
+        <Text size="m" weight="400" variant="black">
+          Something went wrong. Please select your file again.
+        </Text>
+
+        <ActionButton variant="primary" onClick={onFinish}>
+          Understood
+        </ActionButton>
+      </Content>
     </Container>
   )
 })

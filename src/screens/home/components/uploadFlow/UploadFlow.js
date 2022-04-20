@@ -29,7 +29,7 @@ const STEPS = {
 }
 
 export const UploadFlow = memo(() => {
-  const [step, setStep] = useState(STEPS.SELECT_FILE)
+  const [step, setStep] = useState(STEPS.ERROR)
   const [, { resetFileManager }] = useFileManager()
 
   const handleStartUpload = useCallback(() => {

@@ -14,19 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import Button from '../../../components/atoms/button/Button'
 import Text from '../../../components/atoms/text/Text'
-import { colors } from '../../../config/colors'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import { useTheme } from '../../../hooks/theme/useTheme'
 import styles from './SettingsImportScreen.module.css'
 import { useDropzone } from 'react-dropzone'
 import { ReactComponent as IconDrop } from './assets/iconDrop.svg'
 import { toast } from 'react-toastify'
 
 const SettingsImportScreen = () => {
-  const { setVariant, setBackground } = useTheme()
   const [, { importMailbox }] = useMailbox()
 
   const handleFileDrop = useCallback(async (files) => {
@@ -49,11 +46,6 @@ const SettingsImportScreen = () => {
 
   const handleImportClick = useCallback(() => {
     inputRef?.current?.click()
-  }, [])
-
-  useEffect(() => {
-    setVariant('white')
-    setBackground(colors.gray)
   }, [])
 
   return (

@@ -30,10 +30,11 @@ const Container = styled.div`
   height: 100%;
   position: relative;
   overflow: hidden;
-  @media (min-width: ${DEVICE_SIZE.TABLET}) {
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
     display: flex;
     align-items: flex-start;
     box-sizing: border-box;
+    flex-direction: column;
   }
 `
 
@@ -41,6 +42,11 @@ const Content = styled.section`
   position: relative;
   flex: 1;
   height: 100%;
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    height: unset;
+    overflow: auto;
+  }
 `
 
 export const AboutScreen = memo(() => {

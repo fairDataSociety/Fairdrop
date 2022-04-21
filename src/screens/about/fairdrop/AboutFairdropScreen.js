@@ -17,12 +17,17 @@
 import React from 'react'
 import { Box, Icon, ExternalLink, Text } from '../../../components'
 import styled from 'styled-components/macro'
+import { DEVICE_SIZE } from '../../../theme/theme'
 
 const Container = styled(Box)`
   box-sizing: border-box;
   padding: 48px 126px;
   height: 100%;
   overflow: auto;
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    padding: 48px 24px;
+  }
 `
 
 const List = styled.ul`

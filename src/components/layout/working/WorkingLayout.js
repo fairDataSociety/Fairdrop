@@ -19,24 +19,21 @@ import styles from './WorkingLayout.module.css'
 import c from 'classnames'
 import CircleLoader from '../../atoms/circleLoader/CircleLoader'
 import Text from '../../atoms/text/Text'
-import { useTheme } from '../../../hooks/theme/useTheme'
 
 const WorkingLayout = ({ className, headline, description, showLoader = true }) => {
-  const { variant } = useTheme()
-
   return (
     <div className={c(styles.container, className)}>
       {headline && (
-        <Text className={styles.headline} element="h2" size="l" variant={variant} align="center">
+        <Text className={styles.headline} element="h2" size="l" align="center">
           {headline}
         </Text>
       )}
       {description && (
-        <Text className={styles.description} variant={variant} align="center">
+        <Text className={styles.description} align="center">
           {description}
         </Text>
       )}
-      {showLoader && <CircleLoader className={styles.loader} variant={variant} />}
+      {showLoader && <CircleLoader className={styles.loader} />}
     </div>
   )
 }

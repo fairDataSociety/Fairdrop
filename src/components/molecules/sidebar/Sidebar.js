@@ -86,6 +86,7 @@ const Breadcrumb = styled.div`
   align-items: center;
   gap: 8px;
   padding: 16px 20px;
+  flex-shrink: 0;
 
   @media (min-width: ${DEVICE_SIZE.TABLET}) {
     display: none;

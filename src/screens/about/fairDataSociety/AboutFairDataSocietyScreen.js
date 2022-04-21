@@ -19,12 +19,17 @@ import { toast } from 'react-toastify'
 import { ReactComponent as FDSLogo } from './assets/fds.svg'
 import styled from 'styled-components/macro'
 import { Box, Text, ExternalLink } from '../../../components'
+import { DEVICE_SIZE } from '../../../theme/theme'
 
 const Container = styled(Box)`
   box-sizing: border-box;
   padding: 48px 126px;
   height: 100%;
   overflow: auto;
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    padding: 48px 24px;
+  }
 `
 
 const AboutFairDataSocietyScreen = () => {

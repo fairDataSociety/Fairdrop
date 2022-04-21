@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Route } from 'react-router-dom'
-import { colors } from '../../../config/colors'
 import { routes } from '../../../config/routes'
-import { useTheme } from '../../../hooks/theme/useTheme'
 import DashboardConsentsScreen from '../../../screens/auth/dashboard/consents/DashboardConsentsScreen'
 import DashboardReceivedScreen from '../../../screens/auth/dashboard/received/DashboardReceivedScreen'
 import DashboardSentScreen from '../../../screens/auth/dashboard/sent/DashboardSentScreen'
@@ -32,13 +30,7 @@ import { generatePath } from 'react-router-dom'
 import { Container, Content, Tooltip } from './Components'
 
 const Dashboard = () => {
-  const { setVariant, setBackground } = useTheme()
   const [{ mailbox }] = useMailbox()
-
-  useEffect(() => {
-    setVariant('black')
-    setBackground(colors.white)
-  }, [])
 
   return (
     <Container>

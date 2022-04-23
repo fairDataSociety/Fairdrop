@@ -2,10 +2,16 @@ import React from 'react'
 import { DateTime } from 'luxon'
 import { Table, TableBody, TableCell, TableHead, TableRow, SwitchFileIcon, Box, ButtonFlat, Text } from '../..'
 import Utils from '../../../services/Utils'
+import styled from 'styled-components/macro'
+
+const StyledTable = styled(Table)`
+  padding: 0 24px 24px;
+  word-break: break-word;
+`
 
 export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
   return (
-    <Table className={className}>
+    <StyledTable className={className}>
       <TableHead>
         <TableRow>
           <TableCell>
@@ -42,7 +48,7 @@ export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
             <TableRow
               key={message?.hash?.address}
               hoverActions={
-                <Box gap="32px">
+                <Box as="span" gap="32px">
                   <ButtonFlat variant="primary">Copy link</ButtonFlat>
                   <ButtonFlat variant="negative">Delete</ButtonFlat>
                 </Box>
@@ -87,6 +93,6 @@ export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
           )
         })}
       </TableBody>
-    </Table>
+    </StyledTable>
   )
 }

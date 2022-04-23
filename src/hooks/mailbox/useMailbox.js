@@ -94,6 +94,7 @@ export const MailboxProvider = ({ children }) => {
     try {
       let appState = (await FDSInstance.currentAccount.retrieveDecryptedValue(APP_STATE_KEY)) ?? {}
       appState = JSON.parse(appState)
+      console.info(appState)
       return appState
     } catch (error) {
       console.error(error)
@@ -243,6 +244,7 @@ export const MailboxProvider = ({ children }) => {
       FDSInstance.currentAccount
         ?.messages('received', '/shared/fairdrop/encrypted')
         .then(async (messages) => {
+          console.info(messages)
           if (messages?.length > 0) {
             const appState = await getAppState()
             const lastMessage = Math.max(
@@ -440,6 +442,15 @@ export const MailboxProvider = ({ children }) => {
     dispatch({ type: REMOVE_AVAILABLE_MAILBOX, payload: { mailbox } })
   }, [])
 
+  const markAsRead = useCallback(async ({ message }) => {
+    const appState = await getAppState()
+    const newState = {
+      ...appState,
+      markedAsRead: [...(appState?.markedAsRead ?? []), message?.id],
+    }
+    await updateAppState(newState)
+  }, [])
+
   // Listen to mailbox updates
   useEffect(() => {
     if (!state.mailbox) {
@@ -448,6 +459,7 @@ export const MailboxProvider = ({ children }) => {
       return
     }
 
+    console.info('here')
     updatesInterval.current = setInterval(getReceivedMessages, 30000)
     balanceInterval.current = setInterval(getBalance, 30000)
 
@@ -498,6 +510,7 @@ export const MailboxProvider = ({ children }) => {
           getMyBalance,
           txToFaucet,
           removeMailbox,
+          markAsRead,
         },
       ]}
     >

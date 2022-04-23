@@ -34,6 +34,7 @@ const WrapperDetails = styled.div`
   bottom: 0;
   left: 0;
   transform: translateX(100%);
+  height: 100%;
 
   &.wrapper-details-enter {
     transform: translateX(100%);
@@ -67,6 +68,7 @@ const WrapperDetails = styled.div`
     right: unset;
     bottom: unset;
     left: unset;
+    flex-shrink: 0;
 
     ${FileDetailsStyled} {
       width: ${enterWidth};

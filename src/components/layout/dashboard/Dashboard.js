@@ -35,6 +35,7 @@ const Dashboard = () => {
   return (
     <Container>
       <Sidebar
+        headline="My files"
         items={[
           {
             label: 'Sent',

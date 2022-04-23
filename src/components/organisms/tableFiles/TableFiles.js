@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 
-import { Box } from '../../atoms/box/Box'
 import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 import { DEVICE_SIZE } from '../../../theme/theme'
 import { TableDesktop } from './TableDesktop'
 import { TableMobile } from './TableMobile'
 import { FileDetailsAnimated } from './FileDetailsAnimated'
 
-export const TableFiles = ({ className, messages, hideFrom, onClick }) => {
+export const TableFiles = ({ messages, hideFrom, onClick }) => {
   const [fileDetails, setFileDetails] = useState(null)
   const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
 
@@ -21,7 +20,7 @@ export const TableFiles = ({ className, messages, hideFrom, onClick }) => {
   }
 
   return (
-    <Box className={className} fitWidth>
+    <>
       {minTabletMediaQuery ? (
         <TableDesktop messages={messages} hideFrom={hideFrom} onClick={handleClickFile} />
       ) : (
@@ -29,6 +28,6 @@ export const TableFiles = ({ className, messages, hideFrom, onClick }) => {
       )}
 
       <FileDetailsAnimated show={!!fileDetails} fileDetails={fileDetails} onExited={handleExitedFile} />
-    </Box>
+    </>
   )
 }

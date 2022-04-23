@@ -65,6 +65,7 @@ const Content = styled(Box)`
 
 const Filename = styled(Text)`
   margin-top: 32px;
+  width: 100%;
 `
 
 const FileInfo = styled(Text)`
@@ -87,7 +88,7 @@ export const FileDetails = memo(({ from, file, when, link, onClose, ...props }) 
       <Content direction="column" hAlign="center">
         <FilePreview file={file} />
 
-        <Filename align="center" size="m" weight="500" variant="black">
+        <Filename align="center" size="m" weight="500" variant="black" truncate>
           {file.name}
         </Filename>
 

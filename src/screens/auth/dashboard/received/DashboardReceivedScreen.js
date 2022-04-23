@@ -14,12 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
-import Notification from '../../../../components/molecules/notification/Notification'
 import styled from 'styled-components/macro'
 import { Box, TableFiles } from '../../../../components'
 
@@ -28,12 +27,12 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  display: flex;
 `
 
-const WrapperTable = styled.div`
-  flex: 1;
-  padding: 24px 40px 24px 24px;
+const WrapperTable = styled(Box)`
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 `
 
 const honestInboxRegex = /anonymous-\d{13}/gm
@@ -41,9 +40,6 @@ const honestInboxRegex = /anonymous-\d{13}/gm
 const DashboardReceivedScreen = () => {
   const [{ received }, { getReceivedMessages }] = useMailbox()
   const [isFetchingMessages, setIsFetchingMessages] = useState(true)
-  const [shouldOpenNotification, setShouldOpenNotification] = useState(
-    !localStorage.getItem('honestInboxDidYouKnowNotification'),
-  )
 
   const messagesAdapted = useMemo(() => {
     return received
@@ -57,11 +53,6 @@ const DashboardReceivedScreen = () => {
         }
       })
   }, [received])
-
-  const onCloseNotification = useCallback(() => {
-    localStorage.setItem('honestInboxDidYouKnowNotification', Date.now())
-    setShouldOpenNotification(false)
-  }, [])
 
   useEffect(() => {
     getReceivedMessages()
@@ -91,19 +82,6 @@ const DashboardReceivedScreen = () => {
           <TableFiles messages={messagesAdapted} />
         )}
       </WrapperTable>
-
-      <Notification opened={shouldOpenNotification} onCloseRequest={onCloseNotification}>
-        <div>
-          <Text weight="500">Hey! Did you know...</Text>
-          <Text>
-            ...you can use your{' '}
-            <Text weight="500" element="span">
-              Honest Inbox
-            </Text>{' '}
-            so people can send you files anonymously?
-          </Text>
-        </div>
-      </Notification>
     </Container>
   )
 }

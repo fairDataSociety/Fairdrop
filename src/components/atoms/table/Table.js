@@ -56,7 +56,7 @@ const StyledTableRow = styled.tr`
   outline: 0px;
   cursor: ${({ hoverable }) => (hoverable ? 'pointer' : 'auto')};
 `
-const TableRowOverlay = styled.div`
+const TableRowOverlay = styled.td`
   display: flex;
   justify-content: flex-end;
   align-items: center;

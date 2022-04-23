@@ -24,10 +24,10 @@ For technical issues, use this project's [issue tracking](https://github.com/fai
 
 ### Dependencies
 
-Before we get started, you'll need to install `npm` package manager.
+Before we get started, you'll need to install `yarn` package manager.
 
 ```
-npm install
+yarn install
 ```
 
 ### First time setup
@@ -53,13 +53,13 @@ cd Fairdrop
 Now run the devserver
 
 ```
-npm run start
+yarn start
 ```
 
 To build static assets for deployment in ./build
 
 ```
-npm build
+yarn build
 ```
 
 You can see your app running on http://localhost:3000/

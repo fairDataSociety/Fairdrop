@@ -244,7 +244,6 @@ export const MailboxProvider = ({ children }) => {
       FDSInstance.currentAccount
         ?.messages('received', '/shared/fairdrop/encrypted')
         .then(async (messages) => {
-          console.info(messages)
           if (messages?.length > 0) {
             const appState = await getAppState()
             const lastMessage = Math.max(
@@ -459,7 +458,6 @@ export const MailboxProvider = ({ children }) => {
       return
     }
 
-    console.info('here')
     updatesInterval.current = setInterval(getReceivedMessages, 30000)
     balanceInterval.current = setInterval(getBalance, 30000)
 

@@ -41,7 +41,7 @@ const Preview = styled.img`
   object-fit: cover;
 `
 
-export const FilePreview = memo(({ file, ...props }) => {
+export const FilePreview = memo(({ file, link, ...props }) => {
   const iconName = useMemo(() => {
     const fileType = file?.type
     if (!fileType) {
@@ -63,7 +63,7 @@ export const FilePreview = memo(({ file, ...props }) => {
 
   return (
     <Container isImage={isImage} {...props}>
-      {isImage ? <Preview src={file?.source} /> : <Icon size="xl" name={iconName} />}
+      {isImage ? <Preview src={link} /> : <Icon size="xl" name={iconName} />}
     </Container>
   )
 })

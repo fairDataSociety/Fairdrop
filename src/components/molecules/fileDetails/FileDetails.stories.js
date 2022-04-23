@@ -12,7 +12,7 @@ export default {
       type: 'audio/mp3',
       size: 420006,
     },
-    from: 'mancas',
+    account: 'mancas',
     when: DateTime.now().toMillis(),
     link: 'https://gateway.fairdrop.eth#blablabla',
   },

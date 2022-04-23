@@ -18,6 +18,7 @@ import { CSSTransition } from 'react-transition-group'
 import styled from 'styled-components/macro'
 import { DEVICE_SIZE } from '../../../theme/theme'
 import { FileDetails } from '../..'
+import { TABLE_MODE } from './TableDesktop'
 
 const enterTimeout = 500
 const exitTimeout = 250
@@ -143,10 +144,10 @@ export const FileDetailsAnimated = ({ show: givenShow, fileDetails, onExited }) 
       <WrapperDetails>
         {fileDetails && (
           <FileDetailsStyled
-            from={fileDetails.from}
+            account={fileDetails.mode === TABLE_MODE.RECEIVED ? fileDetails.from : fileDetails.to}
             file={fileDetails.file}
             when={fileDetails.time}
-            link="wwww.fakelink.org"
+            link={fileDetails.link}
             onClose={handleCloseFile}
           />
         )}

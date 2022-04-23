@@ -36,6 +36,7 @@ const Container = styled.div`
   max-width: 320px;
 
   ${({ theme }) => css`
+    border-left: solid 1px ${theme?.colors.ntrl_light.main};
     background: ${theme.colors.white.main};
   `}
 
@@ -66,6 +67,7 @@ const Content = styled(Box)`
 const Filename = styled(Text)`
   margin-top: 32px;
   width: 100%;
+  display: block;
 `
 
 const FileInfo = styled(Text)`
@@ -77,7 +79,7 @@ const Link = styled(ClipboardInput)`
   margin-top: 24px;
 `
 
-export const FileDetails = memo(({ from, file, when, link, onClose, ...props }) => {
+export const FileDetails = memo(({ account, file, when, link, onClose, ...props }) => {
   const formattedDate = when ? DateTime.fromMillis(when).toFormat('dd/LL/yyyy') : 'Unkown'
   return (
     <Container {...props}>
@@ -86,14 +88,14 @@ export const FileDetails = memo(({ from, file, when, link, onClose, ...props }) 
       </Header>
 
       <Content direction="column" hAlign="center">
-        <FilePreview file={file} />
+        <FilePreview file={file} link={link} />
 
         <Filename align="center" size="m" weight="500" variant="black" truncate>
           {file.name}
         </Filename>
 
         <FileInfo align="center" size="sm" weight="400" variant="ntrl_dark">
-          {`${Utils.humanFileSize(file?.size)} · ${from ?? 'Unkown'} · ${formattedDate}`}
+          {`${Utils.humanFileSize(file?.size)} · ${account ?? 'Unkown'} · ${formattedDate}`}
         </FileInfo>
 
         <Link value={link} />

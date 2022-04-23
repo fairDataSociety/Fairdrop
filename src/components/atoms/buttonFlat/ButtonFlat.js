@@ -30,8 +30,13 @@ export const ButtonFlat = memo(styled.button`
   background: transparent;
   border: 0;
   cursor: pointer;
+  transition: opacity 0.3s ease;
 
   ${({ theme, variant = 'primary' }) => css`
     color: ${theme.colors[variant].main};
   `};
+
+  &:hover {
+    opacity: 0.6;
+  }
 `)

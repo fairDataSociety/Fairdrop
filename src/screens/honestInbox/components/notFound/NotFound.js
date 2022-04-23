@@ -19,7 +19,6 @@ const NotFound = ({ ens }) => {
   const history = useHistory()
 
   useEffect(() => {
-    console.info(dimensions)
     setNumberOfRows(Math.ceil(dimensions.height / (HEXAGON_HEIGHT / 2)))
     setNumberOfHexagons(Math.ceil(dimensions.width / HEXAGON_WIDTH) + 1)
   }, [dimensions])

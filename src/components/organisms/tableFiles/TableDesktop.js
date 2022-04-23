@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { Table, TableBody, TableCell, TableHead, TableRow, SwitchFileIcon, Box, ButtonFlat, Text } from '../..'
 import Utils from '../../../services/Utils'
 import styled from 'styled-components/macro'
+import { toast } from 'react-toastify'
 
 const StyledTable = styled(Table)`
   padding: 0 24px 24px;
@@ -27,7 +28,7 @@ export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.
           {!hideFrom && (
             <TableCell>
               <Text size="sm" weight="500" variant="black">
-                {mode === TABLE_MODE.RECEIVED ? 'From' : 'To'}
+                {mode === TABLE_MODE.RECEIVED ? 'From' : 'Sent to'}
               </Text>
             </TableCell>
           )}
@@ -54,11 +55,22 @@ export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.
               key={message?.hash?.address}
               hoverActions={
                 <Box as="span" gap="32px">
-                  <ButtonFlat variant="primary">Copy link</ButtonFlat>
+                  <ButtonFlat
+                    variant="primary"
+                    onClick={(evt) => {
+                      evt.preventDefault()
+                      evt.stopPropagation()
+                      Utils.copyToClipboard(message?.getFileUrl?.()).then(() => {
+                        toast.success('Link copied to your clipboard!')
+                      })
+                    }}
+                  >
+                    Copy link
+                  </ButtonFlat>
                   <ButtonFlat variant="negative">Delete</ButtonFlat>
                 </Box>
               }
-              onClick={() => onClick?.({ file, from, time: hash.time })}
+              onClick={() => onClick?.({ file, from, to, mode, time: hash.time, link: message?.getFileUrl?.() })}
             >
               <TableCell>
                 <Box gap="14px" vAlign="center">

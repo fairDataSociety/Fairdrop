@@ -46,11 +46,9 @@ const DashboardReceivedScreen = () => {
       .sort((a, b) => {
         return b?.hash?.time - a?.hash?.time
       })
-      .map(({ from, ...message }) => {
-        return {
-          ...message,
-          from: new RegExp(honestInboxRegex).test(from) ? 'Honest Inbox' : from,
-        }
+      .map((message) => {
+        message.from = new RegExp(honestInboxRegex).test(message.from) ? 'Honest Inbox' : message.from
+        return message
       })
   }, [received])
 

@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
-import CircleLoader from '../../components/atoms/circleLoader/CircleLoader'
+import { CircleLoader } from '../../components'
 import Logo from '../../components/atoms/logo/Logo'
 import styles from './SplashScreen.module.css'
 

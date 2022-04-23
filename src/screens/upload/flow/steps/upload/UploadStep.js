@@ -18,13 +18,13 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../hooks/fileManager/useFileManager'
 import styles from './UploadStep.module.css'
 import Text from '../../../../../components/atoms/text/Text'
-import CircleLoader from '../../../../../components/atoms/circleLoader/CircleLoader'
 import { useMailbox } from '../../../../../hooks/mailbox/useMailbox'
 import { toast } from 'react-toastify'
 import Button from '../../../../../components/atoms/button/Button'
 import { useHistory } from 'react-router-dom'
 import { routes } from '../../../../../config/routes'
 import InfiniteProgressBar from '../../../../../components/molecules/infiniteProgressBar/InfiniteProgressBar'
+import { CircleLoader } from '../../../../../components'
 
 const UploadStep = ({ nextStep }) => {
   const [{ files, type, recipient }, { setDownloadLink }] = useFileManager()

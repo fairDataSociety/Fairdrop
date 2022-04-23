@@ -24,7 +24,7 @@ export const TableFiles = ({ messages, mode, hideFrom, onClick }) => {
       {minTabletMediaQuery ? (
         <TableDesktop messages={messages} hideFrom={hideFrom} mode={mode} onClick={handleClickFile} />
       ) : (
-        <TableMobile messages={messages} hideFrom={hideFrom} onClick={handleClickFile} />
+        <TableMobile messages={messages} hideFrom={hideFrom} mode={mode} onClick={handleClickFile} />
       )}
 
       <FileDetailsAnimated show={!!fileDetails} fileDetails={fileDetails} onExited={handleExitedFile} />

@@ -15,26 +15,38 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
-import styles from './WorkingLayout.module.css'
-import c from 'classnames'
-import CircleLoader from '../../atoms/circleLoader/CircleLoader'
 import Text from '../../atoms/text/Text'
+import styled from 'styled-components/macro'
+import { CircleLoader } from '../../atoms/circleLoader/CircleLoader'
 
-const WorkingLayout = ({ className, headline, description, showLoader = true }) => {
+const Container = styled.section`
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+`
+
+const WorkingLayout = ({ headline, description, showLoader = true, ...rest }) => {
   return (
-    <div className={c(styles.container, className)}>
+    <Container {...rest}>
+      {showLoader && <CircleLoader variant="primary" />}
+
       {headline && (
-        <Text className={styles.headline} element="h2" size="l" align="center">
+        <Text as="h2" size="l" align="center" variant="black">
           {headline}
         </Text>
       )}
       {description && (
-        <Text className={styles.description} align="center">
+        <Text align="center" variant="black">
           {description}
         </Text>
       )}
-      {showLoader && <CircleLoader className={styles.loader} />}
-    </div>
+    </Container>
   )
 }
 

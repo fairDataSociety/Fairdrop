@@ -221,6 +221,7 @@ export const theme = {
       },
       head: {
         backgroundColor: colors.white.main,
+        padding: '18px 20px',
       },
       cell: {
         padding: '26px 20px',

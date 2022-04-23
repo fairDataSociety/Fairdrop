@@ -9,7 +9,12 @@ const StyledTable = styled(Table)`
   word-break: break-word;
 `
 
-export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
+export const TABLE_MODE = {
+  SENT: 0,
+  RECEIVED: 1,
+}
+
+export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.RECEIVED, onClick }) => {
   return (
     <StyledTable className={className}>
       <TableHead>
@@ -22,7 +27,7 @@ export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
           {!hideFrom && (
             <TableCell>
               <Text size="sm" weight="500" variant="black">
-                From
+                {mode === TABLE_MODE.RECEIVED ? 'From' : 'To'}
               </Text>
             </TableCell>
           )}
@@ -41,7 +46,7 @@ export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
 
       <TableBody>
         {messages.map((message) => {
-          const { hash = {}, from } = message
+          const { hash = {}, from, to } = message
           const { file = {} } = hash
 
           return (
@@ -70,7 +75,7 @@ export const TableDesktop = ({ className, messages, hideFrom, onClick }) => {
                 <TableCell>
                   <Box gap="14px" vAlign="center">
                     <Text size="sm" variant="black" truncate>
-                      {from ?? 'Unkown'}
+                      {mode === TABLE_MODE.RECEIVED ? from ?? 'Unkown' : to ?? 'Unkown'}
                     </Text>
                   </Box>
                 </TableCell>

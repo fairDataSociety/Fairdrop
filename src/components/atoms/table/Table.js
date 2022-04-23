@@ -121,7 +121,7 @@ const StyledTableHeaderCell = styled.th`
   display: table-cell;
   vertical-align: inherit;
   text-align: ${({ align }) => `${align}`};
-  padding: ${({ theme }) => `${theme?.components?.table?.cell?.padding}`};
+  padding: ${({ theme }) => `${theme?.components?.table?.head?.padding}`};
   background-color: ${({ theme }) => `${theme?.components?.table?.head?.backgroundColor}`};
 
   ${({ theme }) => {

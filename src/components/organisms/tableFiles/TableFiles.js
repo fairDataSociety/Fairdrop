@@ -6,7 +6,7 @@ import { TableDesktop } from './TableDesktop'
 import { TableMobile } from './TableMobile'
 import { FileDetailsAnimated } from './FileDetailsAnimated'
 
-export const TableFiles = ({ messages, hideFrom, onClick }) => {
+export const TableFiles = ({ messages, mode, hideFrom, onClick }) => {
   const [fileDetails, setFileDetails] = useState(null)
   const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
 
@@ -22,7 +22,7 @@ export const TableFiles = ({ messages, hideFrom, onClick }) => {
   return (
     <>
       {minTabletMediaQuery ? (
-        <TableDesktop messages={messages} hideFrom={hideFrom} onClick={handleClickFile} />
+        <TableDesktop messages={messages} hideFrom={hideFrom} mode={mode} onClick={handleClickFile} />
       ) : (
         <TableMobile messages={messages} hideFrom={hideFrom} onClick={handleClickFile} />
       )}

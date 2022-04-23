@@ -17,12 +17,24 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
-import Utils from '../../../../services/Utils'
-import styles from './DashboardSentScreen.module.css'
-import { DateTime } from 'luxon'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
-import Download from '../components/download/Download'
+import styled from 'styled-components/macro'
+import { Box, TableFiles } from '../../../../components'
+import { TABLE_MODE } from '../../../../components/organisms/tableFiles/TableDesktop'
+
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`
+
+const WrapperTable = styled(Box)`
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+`
 
 const DashboardSentScreen = () => {
   const [{ sent }, { getSentMessages }] = useMailbox()
@@ -50,77 +62,19 @@ const DashboardSentScreen = () => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.rowWrapper}>
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Name
-            </Text>
-          </div>
-
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              To
-            </Text>
-          </div>
-
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Time
-            </Text>
-          </div>
-
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Size
-            </Text>
-          </div>
-        </div>
-
-        {sent.length > 0 &&
-          sortedMessages.map((message) => {
-            const { hash = {}, to } = message
-            const { file = {} } = hash
-
-            return (
-              <div className={styles.rowWrapper} key={message?.hash?.address}>
-                <div className={styles.row}>
-                  <Download className={styles.icon} message={message} />
-                  <Text size="sm" variant="black">
-                    {file?.name ?? 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {to ?? 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {Utils.humanFileSize(file?.size) ?? 'Unkown'}
-                  </Text>
-                </div>
-              </div>
-            )
-          })}
-        {sent.length === 0 && (
-          <div className={styles.row}>
+    <Container>
+      <WrapperTable>
+        {sortedMessages.length === 0 ? (
+          <Box gap="14px" vAlign="center">
             <Text size="sm" variant="black">
               There is no sent files yet...
             </Text>
-          </div>
+          </Box>
+        ) : (
+          <TableFiles messages={sortedMessages} mode={TABLE_MODE.SENT} />
         )}
-      </div>
-    </div>
+      </WrapperTable>
+    </Container>
   )
 }
 

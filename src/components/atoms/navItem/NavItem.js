@@ -29,7 +29,6 @@ export const NavItemContent = styled.span`
   width: 100%;
   font-family: 'Space Grotesk';
   font-style: normal;
-  font-weight: 700;
   font-size: 16px;
   line-height: 24px;
   box-sizing: border-box;
@@ -38,6 +37,7 @@ export const NavItemContent = styled.span`
   ${({ theme, $isActive, size = 'm' }) => css`
     color: ${theme.colors.black.main};
     text-decoration-line: ${$isActive ? 'underline' : 'none'};
+    font-weight: ${$isActive ? 700 : 400};
 
     &:hover {
       text-decoration-line: ${$isActive ? 'underline' : 'none'};

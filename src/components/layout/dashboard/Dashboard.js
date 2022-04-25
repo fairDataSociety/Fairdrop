@@ -17,21 +17,14 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import { routes } from '../../../config/routes'
-import DashboardConsentsScreen from '../../../screens/auth/dashboard/consents/DashboardConsentsScreen'
 import DashboardReceivedScreen from '../../../screens/auth/dashboard/received/DashboardReceivedScreen'
 import DashboardSentScreen from '../../../screens/auth/dashboard/sent/DashboardSentScreen'
-import DashboardStoredScreen from '../../../screens/auth/dashboard/stored/DashboardStoredScreen'
 import DashboardHonestScreen from '../../../screens/auth/dashboard/honest/DashboardHonestScreen'
 import ReactTooltip from 'react-tooltip'
 import { Sidebar } from '../../'
-import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import { generatePath } from 'react-router-dom'
-
 import { Container, Content, Tooltip } from './Components'
 
 const Dashboard = () => {
-  const [{ mailbox }] = useMailbox()
-
   return (
     <Container>
       <Sidebar
@@ -47,10 +40,6 @@ const Dashboard = () => {
           },
           {
             label: 'My honest inbox',
-            path: generatePath(routes.mailbox.honest, { ens: mailbox.subdomain }),
-          },
-          {
-            label: 'My honest inbox V2',
             path: routes.mailbox.mailboxHones,
           },
         ]}
@@ -59,8 +48,6 @@ const Dashboard = () => {
       <Content>
         <Route exact path={routes.mailbox.received} component={DashboardReceivedScreen} />
         <Route exact path={routes.mailbox.sent} component={DashboardSentScreen} />
-        <Route exact path={routes.mailbox.stored} component={DashboardStoredScreen} />
-        <Route exact path={routes.mailbox.consents} component={DashboardConsentsScreen} />
         <Route exact path={routes.mailbox.mailboxHones} component={DashboardHonestScreen} />
       </Content>
 

@@ -21,6 +21,7 @@ import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
 import styled from 'styled-components/macro'
 import { Box, TableFiles } from '../../../../components'
+import Utils from '../../../../services/Utils'
 
 const Container = styled.div`
   position: relative;
@@ -35,20 +36,15 @@ const WrapperTable = styled(Box)`
   box-sizing: border-box;
 `
 
-const honestInboxRegex = /anonymous-\d{13}/gm
-
 const DashboardReceivedScreen = () => {
   const [{ received }, { getReceivedMessages }] = useMailbox()
   const [isFetchingMessages, setIsFetchingMessages] = useState(true)
 
   const messagesAdapted = useMemo(() => {
     return received
+      .filter((message) => !Utils.isAnonymousMessage(message))
       .sort((a, b) => {
         return b?.hash?.time - a?.hash?.time
-      })
-      .map((message) => {
-        message.from = new RegExp(honestInboxRegex).test(message.from) ? 'Honest Inbox' : message.from
-        return message
       })
   }, [received])
 

@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { DEVICE_SIZE } from '../../../../theme/theme'
-import { Box, Text, ClipboardInput, TableFiles } from '../../../../components'
-import myHonesInbox from './myHonestInbox.svg'
+import { Box, Text, TableFiles } from '../../../../components'
+import myHonesInbox from './assets/myHonestInbox.svg'
+import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
+import { toast } from 'react-toastify'
+import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
+import { MyHonestInbox } from './components/MyHonestInbox'
+import Utils from '../../../../services/Utils'
+
+const Container = styled(Box)`
+  height: 100%;
+  box-sizing: border-box;
+`
 
 const Content = styled(Box)`
   position: relative;
@@ -17,60 +27,61 @@ const Image = styled.img`
   height: 200px;
 `
 
-const mockData = [
-  {
-    to: 'porlocual',
-    from: 'mancas',
-    hash: {
-      address: '6f7545405f2d6bb27eb538487080d48c106077611b633993090b43d88ba6b6ef',
-      file: { name: 'MicrosoftTeams-image.png', type: 'image/png', size: 5513 },
-      time: 1645613738695,
-      iv: '0x01c52bfa9bac75d124a40856e8992625',
-      meta: { name: 'MicrosoftTeams-image.png', type: 'image/png', size: 5513 },
-    },
-  },
-  {
-    to: 'porlocual',
-    from: 'porlocual',
-    hash: {
-      address: 'e196ff19a29b3f159d3beb37df60c8519683c0dc0e98bf4bbdd4bee1b45c6a4a',
-      file: { name: '--nadal.png', type: 'image/png', size: 102321 },
-      time: 1645613505080,
-      iv: '0x95b36da29abfea0bff2157d6401ed485',
-      meta: { name: '--nadal.png', type: 'image/png', size: 102321 },
-    },
-  },
-]
+const StyledMyHonestInbox = styled(MyHonestInbox)`
+  margin-top: 40px;
+  margin-bottom: 30px;
+`
 
 const DashboardHonestScreen = () => {
-  return (
-    <Box padding="40px 24px" direction="column" gap="12px">
-      <Text className="title" size="ml" weight="600" variant="black">
-        Your Personal URL
-      </Text>
-      <ClipboardInput value="blablabla.com" />
+  const [{ received }, { getReceivedMessages }] = useMailbox()
+  const [isFetchingMessages, setIsFetchingMessages] = useState(true)
 
-      {mockData.length > 0 ? (
-        <Box margin="58px 0 0" fitWidth>
-          <TableFiles messages={mockData} hideFrom onClick={() => console.log('Click')} />
-        </Box>
+  const messagesAdapted = useMemo(() => {
+    return received.filter(Utils.isAnonymousMessage).sort((a, b) => {
+      return b?.hash?.time - a?.hash?.time
+    })
+  }, [received])
+
+  useEffect(() => {
+    getReceivedMessages()
+      .then(() => {
+        setIsFetchingMessages(false)
+      })
+      .catch(() => {
+        toast.error('🔥 Something went wrong while trying to retrieve your sent files :(')
+        setIsFetchingMessages(false)
+      })
+  }, [])
+
+  if (isFetchingMessages && messagesAdapted.length === 0) {
+    return <WorkingLayout headline="We are getting your data..." />
+  }
+
+  return (
+    <Container direction="column" gap="12px">
+      {messagesAdapted.length > 0 ? (
+        <TableFiles messages={messagesAdapted} hideFrom onClick={() => console.log('Click')}>
+          <StyledMyHonestInbox />
+        </TableFiles>
       ) : (
-        <Content gap="48px" margin="100px 0 0" padding="0 48px" vAlign="center">
-          <Image src={myHonesInbox} />
-          <Box className="content-text" direction="column" gap="16px">
-            <Text className="content-title" size="xl" weight="600" variant="black">
-              What is My honest inbox about?
-            </Text>
-            <Text size="ml" weight="300" variant="black">
-              {
-                // eslint-disable-next-line quotes
-                "It's your personal inbox to receive files anonimously from anyone. Simply copy your personal url and share it with your community."
-              }
-            </Text>
-          </Box>
-        </Content>
+        <>
+          <StyledMyHonestInbox />
+          <Content gap="48px" margin="100px 0 0" padding="0 48px" vAlign="center">
+            <Image src={myHonesInbox} />
+            <Box className="content-text" direction="column" gap="16px">
+              <Text className="content-title" size="xl" weight="600" variant="black">
+                What is My honest inbox about?
+              </Text>
+              <Text size="ml" weight="300" variant="black">
+                {
+                  "It's your personal inbox to receive files anonimously from anyone. Simply copy your personal url and share it with your community."
+                }
+              </Text>
+            </Box>
+          </Content>
+        </>
       )}
-    </Box>
+    </Container>
   )
 }
 

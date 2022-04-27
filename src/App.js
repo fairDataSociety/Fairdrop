@@ -32,6 +32,7 @@ import { HomeScreen } from './screens/home/HomeScreen'
 import { AboutScreen } from './screens/about/AboutScreen'
 import styled from 'styled-components/macro'
 import { HeaderProvider } from './hooks/header/useHeader'
+import AvatarScreen from './screens/auth/avatar/AvatarScreen'
 
 const Container = styled.div`
   display: flex;
@@ -67,6 +68,8 @@ const App = () => {
       <Switch>
         <Route exact path={routes.login} component={LoginScreen} />
         <Route exact path={routes.register} component={RegisterScreen} />
+
+        <PrivateRoute exact path={routes.mailbox.avatar} component={AvatarScreen} />
 
         <Route path={routes.root} component={Routes} />
       </Switch>

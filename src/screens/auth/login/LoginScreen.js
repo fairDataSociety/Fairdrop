@@ -112,7 +112,7 @@ const StyledIcon = styled(Icon)`
 `
 
 const LoginScreen = ({ history, location }) => {
-  const [{ accounts }, { unlockMailbox }] = useMailbox()
+  const [{ accounts }, { unlockMailbox, getAppState }] = useMailbox()
   const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
   const formik = useFormik({
     initialValues: {
@@ -123,6 +123,11 @@ const LoginScreen = ({ history, location }) => {
     onSubmit: async (values) => {
       try {
         await unlockMailbox(values)
+
+        const appState = await getAppState()
+        if (!appState?.avatar?.address) {
+          return history.replace(routes.mailbox.avatar, location?.state)
+        }
 
         if (location?.state?.from) {
           history.replace(location?.state?.from)
@@ -192,7 +197,7 @@ const LoginScreen = ({ history, location }) => {
               options={options}
               onChange={handleMailboxChange}
               onBlur={formik.handleBlur}
-              hasError={formik.touched?.mailbox && formik.errors?.mailbox}
+              hasError={!!formik.values?.mailbox && formik.touched?.mailbox && formik.errors?.mailbox}
               errorMessage={formik.errors?.mailbox}
             />
 
@@ -204,7 +209,7 @@ const LoginScreen = ({ history, location }) => {
               type="password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              hasError={formik.touched?.password && formik.errors?.password}
+              hasError={!!formik.values?.password && formik.touched?.password && formik.errors?.password}
               errorMessage={formik.errors?.password}
             />
 

@@ -34,8 +34,8 @@ export const NavItemContent = styled.span`
   box-sizing: border-box;
   cursor: pointer;
 
-  ${({ theme, $isActive, size = 'm' }) => css`
-    color: ${theme.colors.black.main};
+  ${({ theme, variant, $isActive, size = 'm' }) => css`
+    color: ${theme.colors[variant]?.main ?? theme.colors.black.main};
     text-decoration-line: ${$isActive ? 'underline' : 'none'};
     font-weight: ${$isActive ? 700 : 400};
 
@@ -47,7 +47,15 @@ export const NavItemContent = styled.span`
   `};
 `
 
-export const NavItem = memo(function NavItem({ children, to, onClick, size, isActive, ...rest }) {
+export const NavItem = memo(function NavItem({
+  variant = 'ntrl_darkest',
+  children,
+  to,
+  onClick,
+  size,
+  isActive,
+  ...rest
+}) {
   const setHandleClick = () => {
     if (onClick) {
       return (e) => {
@@ -71,7 +79,14 @@ export const NavItem = memo(function NavItem({ children, to, onClick, size, isAc
 
   return (
     <NavItemLi {...rest}>
-      <NavItemContent as={shitchElement()} to={to} size={size} $isActive={isActive} onClick={setHandleClick()}>
+      <NavItemContent
+        as={shitchElement()}
+        to={to}
+        size={size}
+        $isActive={isActive}
+        variant={variant}
+        onClick={setHandleClick()}
+      >
         {children}
       </NavItemContent>
     </NavItemLi>

@@ -32,8 +32,8 @@ const AvatarName = styled.span`
   font-size: 16px;
   line-height: 24px;
 
-  ${({ theme }) => css`
-    color: ${theme.colors.ntrl_darkest.main};
+  ${({ theme, variant }) => css`
+    color: ${theme.colors[variant]?.main ?? theme.colors.ntrl_darkest.main};
   `}
 `
 
@@ -58,10 +58,10 @@ const AvatarImg = styled.img`
   height: 100%;
 `
 
-export const Avatar = memo(function Avatar({ name, src, ...rest }) {
+export const Avatar = memo(function Avatar({ variant = 'ntrl_darkest', name, src, ...rest }) {
   return (
     <AvatarWrapper role="avatar" {...rest}>
-      {name && <AvatarName>{name}</AvatarName>}
+      {name && <AvatarName variant={variant}>{name}</AvatarName>}
       <AvatarWrapperImg>{src && <AvatarImg src={src} alt="avatar image" />}</AvatarWrapperImg>
     </AvatarWrapper>
   )

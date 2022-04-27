@@ -17,7 +17,7 @@
 import * as yup from 'yup'
 
 export const schema = yup.object().shape({
-  mailbox: yup.string().required('You must enter a mailbox name.'),
-  password: yup.string().required('You must enter a password.'),
-  passwordConfirmation: yup.string().required('You must enter a password.'),
+  // eslint-disable-next-line quotes
+  type: yup.string().oneOf(['random', 'nft']),
+  address: yup.string(),
 })

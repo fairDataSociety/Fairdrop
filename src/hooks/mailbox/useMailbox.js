@@ -119,6 +119,7 @@ export const MailboxProvider = ({ children }) => {
         ...state,
       }
       await FDSInstance.currentAccount.storeEncryptedValue(APP_STATE_KEY, JSON.stringify(newAppState))
+      console.info(newAppState, JSON.stringify(newAppState))
       dispatch({
         type: SET_APP_STATE,
         payload: {
@@ -520,4 +521,9 @@ export const MailboxProvider = ({ children }) => {
 export const useMailbox = () => {
   const ctx = useContext(MailboxContext)
   return ctx
+}
+
+export const useMailboxAvatar = () => {
+  const ctx = useContext(MailboxContext)
+  return ctx?.appState?.avatar ?? null
 }

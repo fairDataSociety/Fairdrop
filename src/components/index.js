@@ -24,6 +24,7 @@ export * from './atoms/switchFileIcon/SwitchFileIcon'
 export * from './atoms/tab/Tab'
 export * from './atoms/table/Table'
 export * from './atoms/text/Text'
+export * from './atoms/radio/Radio'
 
 // molecules
 export * from './molecules/circleLoadingProgress/CircleLoadingProgress'

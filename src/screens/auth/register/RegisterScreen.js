@@ -118,6 +118,10 @@ const RegisterScreen = ({ history, location }) => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
+      if (values.password !== values.passwordConfirmation) {
+        formik.setFieldError('passwordConfirmation', 'Paswords do not match. Please check them')
+        return
+      }
       try {
         await createMailbox({
           mailbox: values.mailbox,
@@ -154,11 +158,11 @@ const RegisterScreen = ({ history, location }) => {
   }, [formik?.values, formik?.setFieldError])
 
   const hasMailboxError = useMemo(() => {
-    return formik.touched?.mailbox && formik.errors?.mailbox
+    return !!formik.values?.mailbox && formik.touched?.mailbox && formik.errors?.mailbox
   }, [formik?.touched, formik?.errors])
 
   const isMailboxValid = useMemo(() => {
-    return formik.touched?.mailbox && !formik.errors?.mailbox
+    return !!formik.values?.mailbox && formik.touched?.mailbox && !formik.errors?.mailbox
   }, [formik?.touched, formik?.errors])
 
   const isPasswordValid = useMemo(() => {
@@ -166,7 +170,8 @@ const RegisterScreen = ({ history, location }) => {
       formik.touched?.password &&
       !formik.errors?.password &&
       formik.touched?.passwordConfirmation &&
-      !formik.errors?.passwordConfirmation
+      !formik.errors?.passwordConfirmation &&
+      formik.values?.password === formik.values?.passwordConfirmation
     )
   }, [formik?.touched, formik?.errors])
 
@@ -213,7 +218,7 @@ const RegisterScreen = ({ history, location }) => {
                 formik.handleBlur(evt)
                 handleMailboxBlur()
               }}
-              hasError={formik.touched?.mailbox && formik.errors?.mailbox}
+              hasError={!!formik.values?.mailbox && formik.touched?.mailbox && formik.errors?.mailbox}
               errorMessage={formik.errors?.mailbox}
               icon={isMailboxValid ? <Icon name="checkmark" /> : hasMailboxError ? <Icon name="warning" /> : null}
             />
@@ -226,7 +231,7 @@ const RegisterScreen = ({ history, location }) => {
               type="password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              hasError={formik.touched?.password && formik.errors?.password}
+              hasError={!!formik.values.password && formik.touched?.password && formik.errors?.password}
               errorMessage={formik.errors?.password}
             />
 
@@ -237,7 +242,11 @@ const RegisterScreen = ({ history, location }) => {
               type="password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              hasError={formik.touched?.passwordConfirmation && formik.errors?.passwordConfirmation}
+              hasError={
+                !!formik.values.passwordConfirmation &&
+                formik.touched?.passwordConfirmation &&
+                formik.errors?.passwordConfirmation
+              }
               errorMessage={formik.errors?.passwordConfirmation}
               icon={isPasswordValid ? <Icon name="checkmark" /> : null}
             />

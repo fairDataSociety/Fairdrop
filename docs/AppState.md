@@ -21,3 +21,16 @@ So from now on, the new app state will look like:
   "markedAsRead": ["message_id_0", ... "message_id_n"]
 }
 ```
+
+Also to give the user more control over the app, the avatar displayed on the app can be customized by now using random apps, but in a near future users could use their own NFTs
+
+```json
+{
+  "lastLogin": "2022-04-22T07:42:42.675Z",
+  "markedAsRead": ["message_id_0", ... "message_id_n"],
+  "avatar": {
+    "type": "random",
+    "address": "https://..."
+  }
+}
+```

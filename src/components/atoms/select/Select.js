@@ -131,7 +131,7 @@ export const Select = memo(
     const [{ expanded }, setState] = useState({ expanded: false })
 
     const handleDropDownClick = () => {
-      inputRef?.current?.focus()
+      setState((old) => ({ ...old, expanded: !old?.expanded }))
     }
 
     const handleFocus = (evt) => {
@@ -160,6 +160,10 @@ export const Select = memo(
       }
     }, [])
 
+    useEffect(() => {
+      expanded ? inputRef?.current?.focus() : inputRef?.current?.blur()
+    }, [expanded])
+
     return (
       <Container direction="column" className={className}>
         {label && <Label htmlFor={id ?? name}>{label}</Label>}
@@ -175,7 +179,7 @@ export const Select = memo(
             hasError={hasError}
             {...props}
           />
-          <IconWrapper onClick={handleDropDownClick}>
+          <IconWrapper onClick={handleDropDownClick} type="button">
             <Icon name="dropdown" />
           </IconWrapper>
 
@@ -190,7 +194,7 @@ export const Select = memo(
           </Options>
         </InputWrapper>
 
-        {errorMessage && (
+        {hasError && errorMessage && (
           <ErrorMessage variant="negative" size="sm" weight="300">
             {errorMessage}
           </ErrorMessage>

@@ -96,16 +96,8 @@ const IconLogo = styled(Icon)`
   `}
 `
 
-const StyledNavItem = styled(NavItem)`
-  ${({ isTransparent }) =>
-    isTransparent &&
-    css`
-      color: ${({ theme }) => theme.colors.white.main};
-    `};
-`
-
 const Header = ({ className }) => {
-  const [{ mailbox }] = useMailbox()
+  const [{ mailbox, appState }] = useMailbox()
   const { showSideMenu } = useSideMenu()
   const [{ showNav }, setState] = useState({ showNav: false })
   const location = useLocation()
@@ -127,7 +119,9 @@ const Header = ({ className }) => {
   }
 
   const NavItemSized = (props) => {
-    return <StyledNavItem {...props} size={minTabletMediaQuery ? 'm' : 'l'} isTransparent={isTransparent} />
+    return (
+      <NavItem {...props} size={minTabletMediaQuery ? 'm' : 'l'} variant={isTransparent ? 'white' : 'ntrl_darkest'} />
+    )
   }
 
   const HeaderNav = () => (
@@ -175,7 +169,14 @@ const Header = ({ className }) => {
 
         <HeaderNavWrapper>
           {minTabletMediaQuery && <HeaderNav />}
-          {mailbox && <Avatar name={mailbox.subdomain} onClick={handleProfileClick} />}
+          {mailbox && appState?.avatar?.address && (
+            <Avatar
+              variant={isTransparent ? 'white' : 'ntrl_darkest'}
+              name={mailbox.subdomain}
+              src={appState?.avatar?.address}
+              onClick={handleProfileClick}
+            />
+          )}
         </HeaderNavWrapper>
       </HeaderWrapper>
 

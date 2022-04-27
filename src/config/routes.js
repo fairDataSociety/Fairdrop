@@ -23,6 +23,7 @@ export const routes = {
   login: '/login',
   register: '/register',
   mailbox: {
+    avatar: '/avatar',
     dashboard: '/mailbox',
     received: '/mailbox/received',
     sent: '/mailbox/sent',

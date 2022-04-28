@@ -14,18 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'react-toastify'
 import styled from 'styled-components/macro'
 import { Box, Button, Tab, Tabs, Text, DropArea, FileInput, Input } from '../../../../../../components'
 import { parameters } from '../../../../../../config/parameters'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
-import { useMailbox } from '../../../../../../hooks/mailbox/useMailbox'
+import { FDSInstance, useMailbox } from '../../../../../../hooks/mailbox/useMailbox'
 import { routes } from '../../../../../../config/routes'
 import { useHistory } from 'react-router-dom'
 import { useFormik } from 'formik'
-import { schema } from './schema'
 
 const Container = styled.form`
   display: flex;
@@ -48,13 +47,23 @@ const ActionButton = styled(Button)`
   margin-top: 8px;
 `
 
+const ActionButtonsContainer = styled(Box)`
+  margin-top: 8px;
+`
+
 const noop = () => {}
+
+const ENCRYPTED_STEPS = {
+  FILE: 0,
+  RECIPIENT: 1,
+}
 
 export const SelectFile = memo(({ onStartUpload }) => {
   const [, { setFiles, setRecipient }] = useFileManager()
   const { getRootProps, isDragActive } = useDropzone({ onDrop: noop })
   const [{ mailbox }] = useMailbox()
   const history = useHistory()
+  const [encryptedStep, setEncryptedStep] = useState(ENCRYPTED_STEPS.FILE)
 
   const checkFileSize = useCallback((file) => {
     const hasEasterEggEnabled = parseInt(localStorage.getItem('hasEnabledMaxFileSizeEasterEgg')) === 1
@@ -76,16 +85,28 @@ export const SelectFile = memo(({ onStartUpload }) => {
       file: null,
       recipient: '',
     },
-    validationSchema: schema,
     onSubmit: async (values) => {
-      setFiles({ type: values?.type, files: [values?.file] })
-      setRecipient?.(values?.recipient)
-      onStartUpload?.()
+      try {
+        if (values?.recipient) {
+          const result = await FDSInstance.Account.isMailboxNameAvailable(values?.recipient)
+          if (result) {
+            formik.setFieldError('recipient', "This mailbox doesn't exist. Type another!")
+            return
+          }
+          setRecipient?.(values?.recipient)
+        }
+
+        setFiles({ type: values?.type, files: [values?.file] })
+        onStartUpload?.()
+      } catch (error) {
+        toast.error("Oops! We can't check the recipient mailbox right now")
+      }
     },
   })
 
   const handleClean = useCallback(() => {
     formik.setFieldValue('file', null)
+    setEncryptedStep(ENCRYPTED_STEPS.FILE)
   }, [formik])
 
   const handleQuickFileDrop = useCallback(
@@ -110,6 +131,15 @@ export const SelectFile = memo(({ onStartUpload }) => {
     formik.setFieldValue('type', FILE_UPLOAD_TYPES.ENCRYPTED)
     formik.setFieldTouched('type', true)
   }, [])
+
+  const handleNextEncryptedStep = useCallback(() => {
+    setEncryptedStep(ENCRYPTED_STEPS.RECIPIENT)
+  }, [])
+
+  const handleCancelEncrypted = useCallback(() => {
+    formik.resetForm()
+    setEncryptedStep(ENCRYPTED_STEPS.FILE)
+  }, [formik])
 
   return (
     <Container {...getRootProps()} onSubmit={formik.handleSubmit}>
@@ -179,25 +209,42 @@ export const SelectFile = memo(({ onStartUpload }) => {
                   Or simply drop your file here
                 </Text>
 
-                <Input
-                  name="recipient"
-                  value={formik.values.recipient}
-                  label="Type the mailbox you want to send the file to"
-                  placeholder="Mailbox name"
-                  type="text"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  hasError={formik.touched?.recipient && formik.errors?.recipient}
-                  errorMessage={formik.errors?.recipient}
-                />
+                {encryptedStep === ENCRYPTED_STEPS.FILE && (
+                  <ActionButton
+                    variant="primary"
+                    disabled={!formik.values?.file}
+                    type="button"
+                    onClick={handleNextEncryptedStep}
+                  >
+                    Next
+                  </ActionButton>
+                )}
 
-                <ActionButton
-                  variant="primary"
-                  disabled={!formik.values?.file || !formik.values?.recipient || !formik.isValid}
-                  type="submit"
-                >
-                  Encrypt & send file
-                </ActionButton>
+                {encryptedStep === ENCRYPTED_STEPS.RECIPIENT && (
+                  <>
+                    <Input
+                      name="recipient"
+                      value={formik.values.recipient}
+                      label="Type the mailbox you want to send the file to"
+                      placeholder="Mailbox name"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      hasError={formik.touched?.recipient && formik.errors?.recipient}
+                      errorMessage={formik.errors?.recipient}
+                    />
+
+                    <ActionButtonsContainer vAling="center" gap="16px">
+                      <Button variant="primary" disabled={!formik.values?.recipient} type="submit">
+                        Next
+                      </Button>
+
+                      <Button variant="primary" bordered type="button" onClick={handleCancelEncrypted}>
+                        Cancel
+                      </Button>
+                    </ActionButtonsContainer>
+                  </>
+                )}
               </>
             )}
           </TabContent>

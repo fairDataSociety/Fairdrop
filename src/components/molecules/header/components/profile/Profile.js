@@ -112,7 +112,7 @@ const ProfileBox = styled(Box)`
 `
 
 export const Profile = memo(({ onClick, ...rest }) => {
-  const [{ mailbox }, { exportMailboxes }] = useMailbox()
+  const [{ mailbox }, { exportMailboxes, logout }] = useMailbox()
   const history = useHistory()
 
   const handleExportClick = (evt) => {
@@ -123,6 +123,7 @@ export const Profile = memo(({ onClick, ...rest }) => {
 
   const handleLogoutClick = (evt) => {
     evt.preventDefault()
+    logout?.()
     onClick?.()
   }
 

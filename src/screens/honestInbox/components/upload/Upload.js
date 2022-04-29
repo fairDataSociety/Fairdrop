@@ -14,7 +14,7 @@ const Upload = ({ className, ens }) => {
   const [uploading, setUploading] = useState()
   const [infoMessage, setInfoMessage] = useState('Processing request...')
   const [uploadFailed, setUploadFailed] = useState(false)
-  const [, { createAnonymousMailbox, uploadEncryptedFile, resetMailbox, txToFaucet, removeMailbox }] = useMailbox()
+  const [, { createAnonymousMailbox, uploadEncryptedFile, logout, txToFaucet, removeMailbox }] = useMailbox()
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0])
@@ -36,7 +36,7 @@ const Upload = ({ className, ens }) => {
       } catch (error) {
         console.info(error)
         txToFaucet()
-        resetMailbox?.()
+        logout?.()
         if (account) {
           removeMailbox(account.subdomain)
         }
@@ -59,13 +59,13 @@ const Upload = ({ className, ens }) => {
         onStatusChange: (message) => setInfoMessage(message),
       })
       toast('🎉 Yay! Your file has been sent!')
-      resetMailbox?.()
+      logout?.()
       removeMailbox(account?.subdomain)
       setFile(null)
       setUploading(false)
     } catch (error) {
       console.info(error)
-      resetMailbox?.()
+      logout?.()
       removeMailbox(account?.subdomain)
       toast.error(`💩 ${error.message}`)
       setUploadFailed(true)

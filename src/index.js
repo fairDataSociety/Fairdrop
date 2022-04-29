@@ -25,7 +25,6 @@ import { Slide } from 'react-toastify'
 import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
 import SplashScreen from './screens/splash/SplashScreen'
-import { SideMenuProvider } from './hooks/sideMenu/useSideMenu'
 import { MailboxProvider } from './hooks/mailbox/useMailbox'
 import { routes } from './config/routes'
 import HonestInboxScreen from './screens/honestInbox/HonestInboxScreen'
@@ -53,25 +52,23 @@ const Root = () => {
       <GlobalCSS />
       <Router basename={`/${basename}`}>
         <MailboxProvider>
-          <SideMenuProvider>
-            <FileManagerProvider>
-              {!appReady && <SplashScreen />}
-              {appReady && (
-                <Switch>
-                  <Route exact path={routes.mailbox.honest} component={HonestInboxScreen} />
-                  <Route component={App} />
-                </Switch>
-              )}
-              <Toast
-                position="bottom-center"
-                closeButton={false}
-                draggableDirection="y"
-                transition={Slide}
-                icon={false}
-                theme="colored"
-              />
-            </FileManagerProvider>
-          </SideMenuProvider>
+          <FileManagerProvider>
+            {!appReady && <SplashScreen />}
+            {appReady && (
+              <Switch>
+                <Route exact path={routes.mailbox.honest} component={HonestInboxScreen} />
+                <Route component={App} />
+              </Switch>
+            )}
+            <Toast
+              position="bottom-center"
+              closeButton={false}
+              draggableDirection="y"
+              transition={Slide}
+              icon={false}
+              theme="colored"
+            />
+          </FileManagerProvider>
         </MailboxProvider>
       </Router>
     </SCThemeProvider>

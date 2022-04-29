@@ -20,13 +20,12 @@ import { useLocation } from 'react-router-dom'
 import Logo from '../../atoms/logo/Logo'
 import { routes } from '../../../config/routes'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import ProfileScreen from '../../../screens/auth/profile/ProfileScreen'
-import { useSideMenu } from '../../../hooks/sideMenu/useSideMenu'
 import { Nav, NavItem, Avatar, Icon, Collapsible } from '../../'
 import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 import { DEVICE_SIZE } from '../../../theme/theme'
 import { matchPath } from 'react-router-dom'
 import { useHeader } from '../../../hooks/header/useHeader'
+import { Profile } from './components/profile/Profile'
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -34,6 +33,7 @@ const HeaderWrapper = styled.header`
   align-items: center;
   padding: 8px 16px;
   box-sizing: border-box;
+  position: relative;
 
   ${({ theme, isTransparent }) =>
     !isTransparent &&
@@ -98,24 +98,21 @@ const IconLogo = styled(Icon)`
 
 const Header = ({ className }) => {
   const [{ mailbox, appState }] = useMailbox()
-  const { showSideMenu } = useSideMenu()
-  const [{ showNav }, setState] = useState({ showNav: false })
+  const [{ showNav, showProfile }, setState] = useState({ showNav: false, showProfile: false })
   const location = useLocation()
   const { isTransparent } = useHeader()
 
   const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
 
   const handleProfileClick = useCallback(() => {
-    showSideMenu({
-      Component: <ProfileScreen />,
-    })
+    setState((old) => ({ ...old, showProfile: !old.showProfile }))
   }, [])
 
   const handleShowNavigation = () => {
     if (minTabletMediaQuery) {
       return
     }
-    setState((old) => ({ ...old, showNav: !showNav }))
+    setState((old) => ({ ...old, showNav: !old.showNav }))
   }
 
   const NavItemSized = (props) => {
@@ -178,6 +175,7 @@ const Header = ({ className }) => {
             />
           )}
         </HeaderNavWrapper>
+        {mailbox && <Profile expanded={showProfile} onClick={handleProfileClick} />}
       </HeaderWrapper>
 
       {!minTabletMediaQuery && (

@@ -13,6 +13,7 @@ export const VARIANT = {
   NTRL_DARKEST: 'ntrl_darkest',
   WHITE: 'white',
   BLACK: 'black',
+  GRAY: 'gray',
   TRANSPARENT: 'transparent',
 }
 
@@ -57,6 +58,10 @@ const colors = {
   },
   black: {
     main: '#002426',
+    contrast: '#ffffff',
+  },
+  gray: {
+    main: '#838383',
     contrast: '#ffffff',
   },
   ntrl_light: {

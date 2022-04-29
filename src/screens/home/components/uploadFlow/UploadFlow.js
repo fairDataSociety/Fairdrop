@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useFileManager } from '../../../../hooks/fileManager/useFileManager'
 import { Done } from './components/done/Done'
 import { Error } from './components/error/Error'
 import { SelectFile } from './components/selectFile/SelectFile'
 import { Upload } from './components/upload/Upload'
 
-const STEPS = {
+export const STEPS = {
   SELECT_FILE: 0,
   UPLOAD: 1,
   DONE: 2,
   ERROR: 3,
 }
 
-export const UploadFlow = memo(() => {
+export const UploadFlow = memo(({ onStepChange }) => {
   const [step, setStep] = useState(STEPS.SELECT_FILE)
   const [, { resetFileManager }] = useFileManager()
 
@@ -38,7 +38,7 @@ export const UploadFlow = memo(() => {
 
   const handleCancel = useCallback(() => {
     resetFileManager?.()
-    setStep(STEPS.UPLOAD)
+    setStep(STEPS.SELECT_FILE)
   }, [resetFileManager])
 
   const handleError = useCallback(() => {
@@ -52,12 +52,17 @@ export const UploadFlow = memo(() => {
   const handleFinishFlow = useCallback(() => {
     resetFileManager?.()
     setStep(STEPS.SELECT_FILE)
-  }, [resetFileManager])
+    onStepChange?.(STEPS.SELECT_FILE)
+  }, [onStepChange, resetFileManager])
+
+  useEffect(() => {
+    onStepChange?.(step)
+  }, [step, onStepChange])
 
   const getContent = () => {
     switch (step) {
       case STEPS.SELECT_FILE:
-        return <SelectFile onStartUpload={handleStartUpload} />
+        return <SelectFile onStepChange={onStepChange} onStartUpload={handleStartUpload} onCancel={handleFinishFlow} />
 
       case STEPS.UPLOAD:
         return <Upload onCancel={handleCancel} onError={handleError} onSuccess={handleSuccess} />

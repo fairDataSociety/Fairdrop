@@ -19,9 +19,11 @@ import React, { memo, useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Box } from '../../components'
 import { useHeader } from '../../hooks/header/useHeader'
+import { useMediaQuery } from '../../hooks/useMediaQuery/useMediaQuery'
+import { DEVICE_SIZE } from '../../theme/theme'
 import { backgrounds } from './assets'
 import Carousel from './components/carousel/Carousel'
-import { UploadFlow } from './components/uploadFlow/UploadFlow'
+import { STEPS, UploadFlow } from './components/uploadFlow/UploadFlow'
 
 const Layout = styled.section`
   display: flex;
@@ -33,7 +35,17 @@ const Layout = styled.section`
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
       ${`url(${backgrounds[backgroundIdx]}) no-repeat center center / cover`};
   `}
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    flex-direction: column;
+  }
 `
+
+const shouldGrow = ({ carouselHidden }) =>
+  carouselHidden &&
+  css`
+    flex: 1;
+  `
 
 const Content = styled.div`
   width: 418px;
@@ -41,32 +53,63 @@ const Content = styled.div`
   box-sizing: border-box;
   background: ${({ theme }) => transparentize(0.06, theme?.colors?.white?.main)};
   backdrop-filter: blur(20px);
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    order: 1;
+    width: 100%;
+    flex: 0;
+    padding: 24px;
+
+    ${shouldGrow}
+  }
 `
 
 const CarouselWrapper = styled(Box)`
   flex: 1;
   padding: 130px;
+
+  ${({ visible }) =>
+    !visible &&
+    css`
+      display: none;
+    `}
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    padding: 40px;
+  }
 `
 
 export const HomeScreen = memo(() => {
   const [backgroundIdx, setBackgroundIdx] = useState(0)
+  const [shouldHideCarousel, setShouldHideCarousel] = useState(false)
   const { setIsTransparent } = useHeader()
+  const maxTabletMediaQuery = useMediaQuery(`(max-width: ${DEVICE_SIZE.TABLET})`)
 
   const handleSlideChange = useCallback((idx) => {
     setBackgroundIdx(idx)
   }, [])
 
+  const handleOnStepChange = useCallback(
+    (step) => {
+      if (!maxTabletMediaQuery) {
+        return
+      }
+      setShouldHideCarousel(step !== STEPS.SELECT_FILE)
+    },
+    [maxTabletMediaQuery],
+  )
+
   useEffect(() => {
-    setIsTransparent(true)
+    setIsTransparent(maxTabletMediaQuery ? false : true)
     return () => setIsTransparent(false)
   }, [])
 
   return (
     <Layout backgroundIdx={backgroundIdx}>
-      <Content>
-        <UploadFlow />
+      <Content carouselHidden={shouldHideCarousel}>
+        <UploadFlow onStepChange={handleOnStepChange} />
       </Content>
-      <CarouselWrapper vAlign="center" direction="column">
+      <CarouselWrapper vAlign="center" direction="column" visible={!shouldHideCarousel}>
         <Carousel onItemChange={handleSlideChange} />
       </CarouselWrapper>
     </Layout>

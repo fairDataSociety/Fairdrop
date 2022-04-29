@@ -32,6 +32,7 @@ import { Box } from '../../atoms/box/Box'
 
 const Item = styled.section`
   transition: all 0.3s ease;
+  width: 100%;
 
   &.slideshow-transition-enter {
     opacity: 0;

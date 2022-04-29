@@ -20,10 +20,19 @@ import styled from 'styled-components/macro'
 import { Box, Button, CircleLoadingProgress, Text } from '../../../../../../components'
 import { FILE_UPLOAD_TYPES, useFileManager } from '../../../../../../hooks/fileManager/useFileManager'
 import { useMailbox } from '../../../../../../hooks/mailbox/useMailbox'
+import { DEVICE_SIZE } from '../../../../../../theme/theme'
 
 const Container = styled(Box)`
   width: 100%;
   height: 100%;
+`
+
+const Content = styled(Box)`
+  width: 100%;
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    flex: 1;
+  }
 `
 
 const Progress = styled(CircleLoadingProgress)`
@@ -32,7 +41,9 @@ const Progress = styled(CircleLoadingProgress)`
 `
 
 const ActionButton = styled(Button)`
-  margin-top: 8px;
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    width: 100%;
+  }
 `
 
 export const Upload = memo(({ onSuccess, onError, onCancel }) => {
@@ -55,7 +66,8 @@ export const Upload = memo(({ onSuccess, onError, onCancel }) => {
           },
           onStatusChange: (message) => setInfoMessage(message),
         })
-          .then(() => {
+          .then((d) => {
+            console.info(d)
             onSuccess?.()
           })
           .catch((error) => {
@@ -108,13 +120,15 @@ export const Upload = memo(({ onSuccess, onError, onCancel }) => {
 
   return (
     <Container direction="column" vAlign="center" hAlign="center" gap="24px">
-      <Progress />
+      <Content direction="column" vAlign="center" hAlign="center" gap="24px">
+        <Progress />
 
-      <Text size="m" weight="400" variant="black" align="center">
-        {type === FILE_UPLOAD_TYPES.QUICK
-          ? 'Uploading file...'
-          : 'Uploading and encrypting your file using 256 Military encryption technology'}
-      </Text>
+        <Text size="m" weight="400" variant="black" align="center">
+          {type === FILE_UPLOAD_TYPES.QUICK
+            ? 'Uploading file...'
+            : 'Uploading and encrypting your file using 256 Military encryption technology'}
+        </Text>
+      </Content>
 
       <ActionButton bordered variant="primary" onClick={onCancel}>
         Cancel

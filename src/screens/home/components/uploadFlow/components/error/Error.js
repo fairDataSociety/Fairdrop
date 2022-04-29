@@ -17,6 +17,7 @@
 import React, { memo } from 'react'
 import styled from 'styled-components/macro'
 import { Box, Button, Text } from '../../../../../../components'
+import { DEVICE_SIZE } from '../../../../../../theme/theme'
 import { ReactComponent as Illustration } from './assets/illustration.svg'
 
 const Container = styled(Box)`
@@ -26,6 +27,10 @@ const Container = styled(Box)`
 
 const Content = styled(Box)`
   width: 100%;
+
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    flex: 1;
+  }
 `
 
 const ErrorIllustration = styled(Illustration)`
@@ -33,14 +38,16 @@ const ErrorIllustration = styled(Illustration)`
 `
 
 const ActionButton = styled(Button)`
-  margin-top: 8px;
+  @media (max-width: ${DEVICE_SIZE.MOBILE_L}) {
+    width: 100%;
+  }
 `
 
 export const Error = memo(({ onFinish }) => {
   return (
-    <Container direction="column" vAlign="center">
-      <ErrorIllustration />
+    <Container direction="column" vAlign="center" gap="16px">
       <Content direction="column" vAlign="center" gap="16px">
+        <ErrorIllustration />
         <Text size="xl" weight="400" variant="black">
           Ooops!
         </Text>
@@ -48,11 +55,11 @@ export const Error = memo(({ onFinish }) => {
         <Text size="m" weight="400" variant="black">
           Something went wrong. Please select your file again.
         </Text>
-
-        <ActionButton variant="primary" onClick={onFinish}>
-          Understood
-        </ActionButton>
       </Content>
+
+      <ActionButton variant="primary" onClick={onFinish}>
+        Understood
+      </ActionButton>
     </Container>
   )
 })

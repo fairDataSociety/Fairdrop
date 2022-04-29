@@ -108,7 +108,7 @@ const FileDetailsContainer = styled(Box)`
   border-radius: 4px;
   width: 100%;
   min-height: 64px;
-  padding: 0 0 0 18px;
+  padding: 18px 0 18px 18px;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
 

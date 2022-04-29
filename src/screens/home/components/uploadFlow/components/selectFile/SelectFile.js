@@ -25,6 +25,9 @@ import { FDSInstance, useMailbox } from '../../../../../../hooks/mailbox/useMail
 import { routes } from '../../../../../../config/routes'
 import { useHistory } from 'react-router-dom'
 import { useFormik } from 'formik'
+import { useMediaQuery } from '../../../../../../hooks/useMediaQuery/useMediaQuery'
+import { DEVICE_SIZE } from '../../../../../../theme/theme'
+import { Mobile } from './components/mobile/Mobile'
 
 const Container = styled.form`
   display: flex;
@@ -58,12 +61,13 @@ const ENCRYPTED_STEPS = {
   RECIPIENT: 1,
 }
 
-export const SelectFile = memo(({ onStartUpload }) => {
+export const SelectFile = memo(({ onCancel, onStepChange, onStartUpload }) => {
   const [, { setFiles, setRecipient }] = useFileManager()
   const { getRootProps, isDragActive } = useDropzone({ onDrop: noop })
   const [{ mailbox }] = useMailbox()
   const history = useHistory()
   const [encryptedStep, setEncryptedStep] = useState(ENCRYPTED_STEPS.FILE)
+  const maxTabletMediaQuery = useMediaQuery(`(max-width: ${DEVICE_SIZE.TABLET})`)
 
   const checkFileSize = useCallback((file) => {
     const hasEasterEggEnabled = parseInt(localStorage.getItem('hasEnabledMaxFileSizeEasterEgg')) === 1
@@ -93,7 +97,7 @@ export const SelectFile = memo(({ onStartUpload }) => {
             formik.setFieldError('recipient', "This mailbox doesn't exist. Type another!")
             return
           }
-          setRecipient?.(values?.recipient)
+          setRecipient?.({ recipient: values?.recipient })
         }
 
         setFiles({ type: values?.type, files: [values?.file] })
@@ -134,12 +138,18 @@ export const SelectFile = memo(({ onStartUpload }) => {
 
   const handleNextEncryptedStep = useCallback(() => {
     setEncryptedStep(ENCRYPTED_STEPS.RECIPIENT)
-  }, [])
+
+    if (maxTabletMediaQuery) {
+      onStepChange?.(ENCRYPTED_STEPS.RECIPIENT)
+    }
+  }, [maxTabletMediaQuery])
 
   const handleCancelEncrypted = useCallback(() => {
     formik.resetForm()
     setEncryptedStep(ENCRYPTED_STEPS.FILE)
-  }, [formik])
+    console.info(onCancel)
+    onCancel?.()
+  }, [formik, onCancel])
 
   return (
     <Container {...getRootProps()} onSubmit={formik.handleSubmit}>
@@ -163,7 +173,7 @@ export const SelectFile = memo(({ onStartUpload }) => {
         </DropAreaContainer>
       )}
 
-      {!isDragActive && (
+      {!isDragActive && !maxTabletMediaQuery && (
         <Tabs initialTab={formik?.values?.type === FILE_UPLOAD_TYPES.QUICK ? 0 : 1}>
           <Tab>Quick transfer</Tab>
           <Tab>Encrypted transfer</Tab>
@@ -203,7 +213,7 @@ export const SelectFile = memo(({ onStartUpload }) => {
                   Send files to any Fairdrop user in a more secure way. Encrypted end to end
                 </Text>
 
-                <FileInput file={formik.values?.file} onFileChange={handleQuickFileDrop} onClean={handleClean} />
+                <FileInput file={formik.values?.file} onFileChange={handleEncryptedFileDrop} onClean={handleClean} />
 
                 <Text size="m" weight="300" variant="black">
                   Or simply drop your file here
@@ -236,7 +246,7 @@ export const SelectFile = memo(({ onStartUpload }) => {
 
                     <ActionButtonsContainer vAling="center" gap="16px">
                       <Button variant="primary" disabled={!formik.values?.recipient} type="submit">
-                        Next
+                        Encrypt & Send file
                       </Button>
 
                       <Button variant="primary" bordered type="button" onClick={handleCancelEncrypted}>
@@ -249,6 +259,17 @@ export const SelectFile = memo(({ onStartUpload }) => {
             )}
           </TabContent>
         </Tabs>
+      )}
+
+      {maxTabletMediaQuery && (
+        <Mobile
+          formik={formik}
+          showRecipientForm={encryptedStep === ENCRYPTED_STEPS.RECIPIENT}
+          onQuickFileChange={handleQuickFileDrop}
+          onEncryptedFileChange={handleEncryptedFileDrop}
+          onCancel={handleCancelEncrypted}
+          onNextEncryptedStep={handleNextEncryptedStep}
+        />
       )}
     </Container>
   )

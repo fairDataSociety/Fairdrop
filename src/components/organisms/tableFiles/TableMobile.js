@@ -8,7 +8,7 @@ import { TABLE_MODE } from './TableDesktop'
 const WrapperList = styled(List)`
   width: 100%;
 `
-export const TableMobile = ({ className, messages, hideFrom, mode = TABLE_MODE.RECEIVED, onClick }) => {
+export const TableMobile = ({ className, readMessages, messages, hideFrom, mode = TABLE_MODE.RECEIVED, onClick }) => {
   return (
     <WrapperList className={className}>
       {messages.map((message) => {
@@ -23,13 +23,27 @@ export const TableMobile = ({ className, messages, hideFrom, mode = TABLE_MODE.R
           Utils.humanFileSize(file?.size) ?? 'Unkown',
         ].filter((item) => !!item)
 
+        const isMessageRead =
+          mode === TABLE_MODE.RECEIVED ? readMessages.some((address) => address === hash?.address) : true
+
         return (
           <ListItem
             key={message?.hash?.address}
             iconName={getFileIcon({ type: file.type })?.name}
             title={file?.name ?? 'Unkown'}
             subtitle={subtitleArr.join(' · ')}
-            onClick={() => onClick?.({ file, from, time: hash.time })}
+            hasNotification={!isMessageRead}
+            onClick={() =>
+              onClick?.({
+                file,
+                from,
+                to,
+                mode,
+                time: hash.time,
+                link: message?.getFileUrl?.(),
+                address: message?.hash?.address,
+              })
+            }
           />
         )
       })}

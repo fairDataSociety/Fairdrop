@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 import { DEVICE_SIZE } from '../../../theme/theme'
-import { TableDesktop } from './TableDesktop'
+import { TableDesktop, TABLE_MODE } from './TableDesktop'
 import { TableMobile } from './TableMobile'
 import { FileDetailsAnimated } from './FileDetailsAnimated'
 import styled from 'styled-components/macro'
 import { Box } from '../../atoms/box/Box'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
+import { toast } from 'react-toastify'
 
 const WrapperTable = styled(Box)`
   width: 100%;
@@ -15,6 +17,7 @@ const WrapperTable = styled(Box)`
 
 const Content = styled.section`
   height: 100%;
+  width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -22,10 +25,20 @@ const Content = styled.section`
 
 export const TableFiles = ({ className, messages, mode, hideFrom, onClick, children }) => {
   const [fileDetails, setFileDetails] = useState(null)
+  const [{ appState }, { markAsRead, getAppState }] = useMailbox()
   const minTabletMediaQuery = useMediaQuery(`(min-width: ${DEVICE_SIZE.TABLET})`)
+
+  const readMessages = useMemo(() => {
+    if (mode === TABLE_MODE.SENT) {
+      return []
+    }
+
+    return appState?.markedAsRead ?? []
+  }, [appState, mode])
 
   const handleClickFile = (details) => {
     setFileDetails(details)
+    markAsRead?.({ message: details }).catch(() => toast.error('Opps! Something went wrong'))
     onClick?.(details)
   }
 
@@ -33,14 +46,30 @@ export const TableFiles = ({ className, messages, mode, hideFrom, onClick, child
     setFileDetails(null)
   }
 
+  useEffect(() => {
+    getAppState()
+  }, [])
+
   return (
     <WrapperTable className={className}>
       <Content>
         {children}
         {minTabletMediaQuery ? (
-          <TableDesktop messages={messages} hideFrom={hideFrom} mode={mode} onClick={handleClickFile} />
+          <TableDesktop
+            readMessages={readMessages}
+            messages={messages}
+            hideFrom={hideFrom}
+            mode={mode}
+            onClick={handleClickFile}
+          />
         ) : (
-          <TableMobile messages={messages} hideFrom={hideFrom} mode={mode} onClick={handleClickFile} />
+          <TableMobile
+            readMessages={readMessages}
+            messages={messages}
+            hideFrom={hideFrom}
+            mode={mode}
+            onClick={handleClickFile}
+          />
         )}
       </Content>
 

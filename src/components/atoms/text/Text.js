@@ -82,7 +82,6 @@ const StyledTextP = styled.p`
   ${({ truncate }) =>
     truncate &&
     css`
-      display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: ${truncate === true ? 1 : truncate};
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { DateTime } from 'luxon'
 import { Table, TableBody, TableCell, TableHead, TableRow, SwitchFileIcon, Box, ButtonFlat, Text } from '../..'
 import Utils from '../../../services/Utils'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { toast } from 'react-toastify'
 
 const StyledTable = styled(Table)`
@@ -10,12 +10,30 @@ const StyledTable = styled(Table)`
   word-break: break-word;
 `
 
+const StyledTableCell = styled(TableCell)`
+  ${({ theme, hasNotification }) =>
+    hasNotification &&
+    css`
+      &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+        background-color: ${theme?.colors?.primary?.main};
+      }
+    `}
+`
+
 export const TABLE_MODE = {
   SENT: 0,
   RECEIVED: 1,
 }
 
-export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.RECEIVED, onClick }) => {
+export const TableDesktop = ({ className, readMessages, messages, hideFrom, mode = TABLE_MODE.RECEIVED, onClick }) => {
   return (
     <StyledTable className={className}>
       <TableHead>
@@ -50,6 +68,10 @@ export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.
           const { hash = {}, from, to } = message
           const { file = {} } = hash
 
+          const isMessageRead =
+            mode === TABLE_MODE.RECEIVED ? readMessages.some((address) => address === hash?.address) : true
+          const weight = isMessageRead ? '400' : '500'
+
           return (
             <TableRow
               key={message?.hash?.address}
@@ -70,23 +92,33 @@ export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.
                   <ButtonFlat variant="negative">Delete</ButtonFlat>
                 </Box>
               }
-              onClick={() => onClick?.({ file, from, to, mode, time: hash.time, link: message?.getFileUrl?.() })}
+              onClick={() =>
+                onClick?.({
+                  file,
+                  from,
+                  to,
+                  mode,
+                  time: hash.time,
+                  link: message?.getFileUrl?.(),
+                  address: message?.hash?.address,
+                })
+              }
             >
-              <TableCell>
+              <StyledTableCell hasNotification={!isMessageRead}>
                 <Box gap="14px" vAlign="center">
                   <div>
                     <SwitchFileIcon className type={file.type} onClick={message?.saveAs ?? undefined} />
                   </div>
-                  <Text size="sm" variant="black" truncate>
+                  <Text size="sm" variant="black" weight={weight} truncate>
                     {file?.name ?? 'Unkown'}
                   </Text>
                 </Box>
-              </TableCell>
+              </StyledTableCell>
 
               {!hideFrom && (
                 <TableCell>
                   <Box gap="14px" vAlign="center">
-                    <Text size="sm" variant="black" truncate>
+                    <Text size="sm" variant="black" weight={weight} truncate>
                       {mode === TABLE_MODE.RECEIVED ? from ?? 'Unkown' : to ?? 'Unkown'}
                     </Text>
                   </Box>
@@ -95,14 +127,14 @@ export const TableDesktop = ({ className, messages, hideFrom, mode = TABLE_MODE.
 
               <TableCell>
                 <Box gap="14px" vAlign="center">
-                  <Text size="sm" variant="black" whiteSpace="nowrap">
+                  <Text size="sm" variant="black" weight={weight} whiteSpace="nowrap">
                     {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
                   </Text>
                 </Box>
               </TableCell>
 
               <TableCell>
-                <Text size="sm" variant="black" align="right" whiteSpace="nowrap">
+                <Text size="sm" variant="black" weight={weight} align="right" whiteSpace="nowrap">
                   {Utils.humanFileSize(file?.size) ?? 'Unkown'}
                 </Text>
               </TableCell>

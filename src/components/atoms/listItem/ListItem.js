@@ -23,6 +23,9 @@ const ListItemContent = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const ListItemWrapper = styled.li`
@@ -42,18 +45,43 @@ const Title = styled(Text)`
   margin-bottom: 4px;
 `
 
-export const ListItem = memo(function ListItem({ iconName, title, subtitle, options, onClick }) {
+const IconWrapper = styled.div`
+  display: flex;
+  position: relative;
+  ${({ theme, hasNotification }) =>
+    hasNotification &&
+    css`
+      &:before {
+        content: '';
+        position: absolute;
+        right: -2px;
+        top: -2px;
+        width: 8px;
+        height: 8px;
+        border-radius: 6px;
+        border: solid 2px ${theme.colors.white.main};
+        background-color: ${theme?.colors?.primary?.main};
+      }
+    `}
+`
+
+export const ListItem = memo(function ListItem({ iconName, hasNotification, title, subtitle, options, onClick }) {
+  const weight = hasNotification ? '500' : '400'
   return (
     <ListItemWrapper onClick={onClick}>
-      {iconName && <Icon name={iconName} />}
+      {iconName && (
+        <IconWrapper hasNotification={hasNotification}>
+          <Icon name={iconName} />
+        </IconWrapper>
+      )}
       <ListItemContent>
         {title && (
-          <Title variant="black" weight="400" size="sm" truncate>
+          <Title variant="black" weight={weight} size="sm" truncate>
             {title}
           </Title>
         )}
         {subtitle && (
-          <Text weight="400" size="s" variant="ntrl_darker" truncate>
+          <Text weight="400" size="s" variant="gray" truncate>
             {subtitle}
           </Text>
         )}

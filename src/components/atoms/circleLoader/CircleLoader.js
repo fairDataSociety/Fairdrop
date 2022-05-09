@@ -14,107 +14,56 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
+import { transparentize } from 'polished'
 import React from 'react'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
 
-const loader = keyframes`
+const rotation = keyframes`
   0% {
     transform: rotate(0deg);
-  }
-  40% {
-    transform: rotate(180deg);
-  }
-  60% {
-    transform: rotate(180deg);
   }
   100% {
     transform: rotate(360deg);
   }
 `
 
-const secondLoader = keyframes`
-  0% {
-    transform: translate3d(0, -32px, 0) scale(0, 2);
-    opacity: 0;
-  }
-  50% {
-    transform: translate3d(0, 0, 0) scale(1.25, 1.25);
-    opacity: 1;
-  }
-  100% {
-    transform: translate3d(0, 8px, 0) scale(0, 0);
-    opacity: 0;
-  }
-`
-
-const Bullet = styled.span`
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
-  height: 32px;
-  width: 32px;
-  box-sizing: border-box;
-
-  &:before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    height: 32px;
-    width: 32px;
-    border: 3px solid #fff;
-    border-bottom: 3px solid transparent;
-    border-radius: 50%;
-    -webkit-animation: ${loader} 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    animation: ${loader} 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    box-sizing: border-box;
-
-    ${({ theme, variant }) => css`
-      border-color: ${theme?.colors?.[variant]?.main};
-      border-bottom-color: transparent;
-    `}
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    width: 6px;
-    height: 6px;
-    background: #fff;
-    border-radius: 50%;
-    -webkit-animation: ${secondLoader} 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    animation: ${secondLoader} 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    box-sizing: border-box;
-    background: ${({ theme, variant }) => theme?.colors?.[variant]?.main};
-  }
+const prixClipFix = keyframes`
+  0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+  25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+  50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+  75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+  100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
 `
 
 const Container = styled.div`
-  display: block;
-  height: 32px;
-  width: 32px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   position: relative;
+  animation: ${rotation} 1s linear infinite;
+
+  &:after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0px;
+    border-radius: 50%;
+    border: ${({ theme, variant }) => `2px solid ${theme.colors[variant]?.main}`};
+    animation: ${prixClipFix} 2s linear infinite;
+  }
+
+  &:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0px;
+    border-radius: 50%;
+    border: ${({ theme, variant }) => `2px solid ${transparentize(0.6, theme.colors[variant]?.main)}`};
+  }
 `
 
 export const CircleLoader = React.memo(({ className, variant = 'white' }) => {
-  return (
-    <Container className={className} variant={variant}>
-      <Bullet variant={variant} />
-    </Container>
-  )
+  return <Container className={className} variant={variant}></Container>
 })
 
 CircleLoader.displayName = 'CircleLoader'

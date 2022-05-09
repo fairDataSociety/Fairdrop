@@ -66,9 +66,13 @@ const ContentHeader = styled.div`
     margin-left: -46px;
   }
 
-  @media (min-width: ${DEVICE_SIZE.TABLET}) {
+  ${CloseButton} {
+    display: none;
+  }
+
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
     ${CloseButton} {
-      display: none;
+      display: block;
     }
   }
 `
@@ -81,15 +85,15 @@ const List = styled.ul`
 `
 
 const Breadcrumb = styled.div`
-  display: flex;
+  display: none;
   flex-direction: row;
   align-items: center;
   gap: 8px;
   padding: 16px 20px;
   flex-shrink: 0;
 
-  @media (min-width: ${DEVICE_SIZE.TABLET}) {
-    display: none;
+  @media (max-width: ${DEVICE_SIZE.TABLET}) {
+    display: flex;
   }
 `
 
@@ -177,6 +181,7 @@ export const Sidebar = memo(({ headline, items, ...props }) => {
                 count={item.notifications}
                 isActive={!!isActive}
                 external={item.external}
+                onClick={handleCloseSidebar}
               >
                 {item.label}
                 {item.icon && <SidebarLinkIcon name={item.icon} />}

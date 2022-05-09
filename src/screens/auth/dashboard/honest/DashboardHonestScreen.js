@@ -66,7 +66,7 @@ const DashboardHonestScreen = () => {
       ) : (
         <>
           <StyledMyHonestInbox />
-          <Content gap="48px" margin="100px 0 0" padding="0 48px" vAlign="center">
+          <Content gap="48px" margin="100px 0" padding="0 48px" vAlign="center">
             <Image src={myHonesInbox} />
             <Box className="content-text" direction="column" gap="16px">
               <Text className="content-title" size="xl" weight="600" variant="black">

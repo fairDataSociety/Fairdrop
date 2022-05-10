@@ -24,6 +24,7 @@ export default {
       options: Object.values(VARIANT),
     },
     children: 'Action',
+    isLoading: false,
   },
 }
 

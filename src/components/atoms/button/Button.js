@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import { memo } from 'react'
+import React, { memo } from 'react'
 import styled, { css } from 'styled-components/macro'
+import { CircleLoader } from '../circleLoader/CircleLoader'
 
-export const Button = memo(styled.button`
+const StyledButton = styled.button`
   padding: 6px 24px;
   height: 48px;
   box-sizing: border-box;
@@ -29,6 +30,8 @@ export const Button = memo(styled.button`
   cursor: pointer;
   transition: opacity 0.3s ease;
   user-select: none;
+  min-width: 95px;
+  position: relative;
 
   &:hover {
     opacity: 0.8;
@@ -58,7 +61,43 @@ export const Button = memo(styled.button`
       color: ${theme?.colors?.ntrl_darker?.contrast};
       pointer-events: none;
     `}
-`)
+
+    ${({ bordered, isLoading }) =>
+    bordered &&
+    isLoading &&
+    css`
+      color: transparent;
+    `}
+`
+
+const LoaderWrapper = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  z-index: 2;
+
+  ${({ theme, bordered, variant }) =>
+    !bordered &&
+    css`
+      background-color: ${theme?.colors?.[variant]?.main};
+    `}
+`
+
+export const Button = memo(({ isLoading, bordered, variant, children, ...rest }) => {
+  return (
+    <StyledButton isLoading={isLoading} bordered={bordered} variant={variant} {...rest}>
+      {isLoading && (
+        <LoaderWrapper bordered={bordered} variant={variant}>
+          <CircleLoader variant={bordered ? variant : 'white'} />
+        </LoaderWrapper>
+      )}
+      {children}
+    </StyledButton>
+  )
+})
 
 Button.defaultProps = {
   bordered: false,

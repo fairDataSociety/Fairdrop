@@ -251,7 +251,12 @@ const RegisterScreen = ({ history, location }) => {
               icon={isPasswordValid ? <Icon name="checkmark" /> : null}
             />
 
-            <SubmitButton type="submit" onClick={formik.handleSubmit} disabled={!formik.isValid || formik.isSubmitting}>
+            <SubmitButton
+              type="submit"
+              onClick={formik.handleSubmit}
+              isLoading={formik.isSubmitting}
+              disabled={!formik.isValid}
+            >
               Sign up
             </SubmitButton>
 

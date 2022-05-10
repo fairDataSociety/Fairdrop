@@ -24,7 +24,7 @@ import { toast } from 'react-toastify'
 import { AuthLayout } from '../components/authLayout/AuthLayout'
 import { Logo, Box, MetamaskButton, ImportButton, Input, Button, Select, Link, Icon } from '../../../components'
 import { Link as RNLink } from 'react-router-dom'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { DEVICE_SIZE } from '../../../theme/theme'
 import { useMediaQuery } from '../../../hooks/useMediaQuery/useMediaQuery'
 
@@ -72,6 +72,12 @@ const Headline = styled(Text)`
 
 const Actions = styled(Box)`
   width: 100%;
+
+  ${({ isSubmitting }) =>
+    isSubmitting &&
+    css`
+      opacity: 0.3;
+    `}
 `
 
 const Separator = styled(Box)`
@@ -109,6 +115,18 @@ const SignUpText = styled(Text)`
 
 const StyledIcon = styled(Icon)`
   margin-right: 6px;
+`
+
+const FormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  ${({ isSubmitting }) =>
+    isSubmitting &&
+    css`
+      opacity: 0.3;
+    `}
 `
 
 const LoginScreen = ({ history, location }) => {
@@ -176,8 +194,8 @@ const LoginScreen = ({ history, location }) => {
             Log in to your account
           </Headline>
 
-          <Actions gap="8px" direction="column">
-            <MetamaskButton disabled />
+          <Actions gap="8px" direction="column" isSubmitting={formik.isSubmitting}>
+            <MetamaskButton disabled={!formik.isSubmitting} />
 
             <ImportButton />
           </Actions>
@@ -189,31 +207,38 @@ const LoginScreen = ({ history, location }) => {
           </Separator>
 
           <Form onSubmit={formik.handleSubmit}>
-            <Select
-              name="mailbox"
-              value={formik.values.mailbox}
-              label="Mailbox"
-              placeholder="Select your mailbox's name"
-              options={options}
-              onChange={handleMailboxChange}
-              onBlur={formik.handleBlur}
-              hasError={!!formik.values?.mailbox && formik.touched?.mailbox && formik.errors?.mailbox}
-              errorMessage={formik.errors?.mailbox}
-            />
+            <FormWrapper isSubmitting={formik.isSubmitting}>
+              <Select
+                name="mailbox"
+                value={formik.values.mailbox}
+                label="Mailbox"
+                placeholder="Select your mailbox's name"
+                options={options}
+                onChange={handleMailboxChange}
+                onBlur={formik.handleBlur}
+                hasError={!!formik.values?.mailbox && formik.touched?.mailbox && formik.errors?.mailbox}
+                errorMessage={formik.errors?.mailbox}
+              />
 
-            <Input
-              name="password"
-              value={formik.values.password}
-              label="Password"
-              placeholder="Type your password"
-              type="password"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              hasError={!!formik.values?.password && formik.touched?.password && formik.errors?.password}
-              errorMessage={formik.errors?.password}
-            />
+              <Input
+                name="password"
+                value={formik.values.password}
+                label="Password"
+                placeholder="Type your password"
+                type="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                hasError={!!formik.values?.password && formik.touched?.password && formik.errors?.password}
+                errorMessage={formik.errors?.password}
+              />
+            </FormWrapper>
 
-            <SubmitButton type="submit" onClick={formik.handleSubmit} disabled={!formik.isValid || formik.isSubmitting}>
+            <SubmitButton
+              type="submit"
+              onClick={formik.handleSubmit}
+              isLoading={formik.isSubmitting}
+              disabled={!formik.isValid}
+            >
               Log in
             </SubmitButton>
 

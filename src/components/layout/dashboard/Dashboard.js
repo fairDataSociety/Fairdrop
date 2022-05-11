@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Route, NavLink } from 'react-router-dom'
 import { colors } from '../../../config/colors'
 import { routes } from '../../../config/routes'
@@ -26,9 +26,19 @@ import DashboardStoredScreen from '../../../screens/auth/dashboard/stored/Dashbo
 import Text from '../../atoms/text/Text'
 import styles from './Dashboard.module.css'
 import ReactTooltip from 'react-tooltip'
+import Button from '../../atoms/button/Button'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useMailbox } from '../../../hooks/mailbox/useMailbox'
+import { generatePath } from 'react-router-dom'
 
 const Dashboard = () => {
   const { setVariant, setBackground } = useTheme()
+  const [{ mailbox }] = useMailbox()
+  const history = useHistory()
+
+  const navigateToHonestInbox = useCallback(() => {
+    history.push(generatePath(routes.mailbox.honest, { ens: mailbox.subdomain }))
+  }, [mailbox, history])
 
   useEffect(() => {
     setVariant('black')
@@ -61,6 +71,12 @@ const Dashboard = () => {
             {'> Consents'}
           </Text>
         </NavLink>
+
+        <div className={styles.bottomMenu}>
+          <Button className={styles.profileButton} variant="black" onClick={navigateToHonestInbox}>
+            My Honest Inbox
+          </Button>
+        </div>
       </nav>
       <div className={styles.content}>
         <Route exact path={routes.mailbox.received} component={DashboardReceivedScreen} />

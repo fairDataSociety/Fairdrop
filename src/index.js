@@ -16,17 +16,20 @@
 
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import App from './App'
 import './index.css'
 
+import { ToastContainer, Flip } from 'react-toastify'
 import { version } from '../package.json'
 import FileManagerProvider from './hooks/fileManager/useFileManager'
 import { ThemeProvider } from './hooks/theme/useTheme'
 import SplashScreen from './screens/splash/SplashScreen'
 import { SideMenuProvider } from './hooks/sideMenu/useSideMenu'
 import { MailboxProvider } from './hooks/mailbox/useMailbox'
+import { routes } from './config/routes'
+import HonestInboxScreen from './screens/honestInbox/HonestInboxScreen'
 
 console.log(`Fairdrop Version ${version} - Created by FDS`)
 
@@ -49,7 +52,13 @@ const Root = () => {
           <SideMenuProvider>
             <FileManagerProvider>
               {!appReady && <SplashScreen />}
-              {appReady && <App />}
+              {appReady && (
+                <Switch>
+                  <Route exact path={routes.mailbox.honest} component={HonestInboxScreen} />
+                  <Route component={App} />
+                </Switch>
+              )}
+              <ToastContainer limit={3} transition={Flip} theme="dark" />
             </FileManagerProvider>
           </SideMenuProvider>
         </ThemeProvider>

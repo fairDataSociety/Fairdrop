@@ -15,7 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { useState, useCallback, useEffect } from 'react'
-import { ToastContainer, Flip } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import styles from './App.module.css'
 import c from 'classnames'
@@ -77,8 +76,6 @@ const App = () => {
       <ProductDisclaimer />
 
       <ReportingDisclaimer />
-
-      <ToastContainer limit={3} transition={Flip} theme="dark" />
     </div>
   )
 }

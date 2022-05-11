@@ -8,16 +8,26 @@
 
 .line {
   position: absolute;
-  background: rgba(255, 255, 255, 0.4);
   width: 100%;
   height: 6px;
 }
 
+.slider.light .line {
+  background: rgba(255, 255, 255, 0.4);
+}
+
 .subline {
   position: absolute;
-  background: #fff;
   height: 4px;
   border-radius: 2px;
+}
+
+.slider.light .subline {
+  background: #fff;
+}
+
+.slider.dark .subline {
+  background: #333333;
 }
 
 .inc {

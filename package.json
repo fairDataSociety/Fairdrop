@@ -2,7 +2,6 @@
   "name": "fairdrop",
   "version": "1.0.0",
   "private": true,
-  "homepage": "./",
   "dependencies": {
     "@fairdatasociety/fds": "^0.2.0",
     "classnames": "^2.3.1",

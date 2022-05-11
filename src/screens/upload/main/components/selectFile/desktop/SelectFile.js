@@ -95,7 +95,7 @@ const SelectFile = () => {
       setType({ type })
       inputRef?.current?.click()
     }, 500)
-  }, [location?.search])
+  }, [location?.search, location?.key])
 
   return (
     <div className={styles.container} {...getRootProps()}>

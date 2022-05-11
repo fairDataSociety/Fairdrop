@@ -102,20 +102,20 @@ const DashboardReceivedScreen = () => {
               <div className={styles.rowWrapper} key={message?.hash?.address}>
                 <div className={styles.row}>
                   <Download className={styles.icon} message={message} />
-                  <Text size="sm" variant="black">
+                  <Text size="sm" variant="black" truncate>
                     {file?.name ?? 'Unkown'}
                   </Text>
                 </div>
 
                 <div className={styles.row}>
-                  <Text size="sm" variant="black">
+                  <Text size="sm" variant="black" truncate>
                     {sanitizedFrom ?? 'Unkown'}
                   </Text>
                 </div>
 
                 <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
+                  <Text size="sm" variant="black" truncate>
+                    {hash.time ? DateTime.fromMillis(hash.time).setLocale('en').toRelativeCalendar() : 'Unkown'}
                   </Text>
                 </div>
 

@@ -84,7 +84,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
             path: `${routes.upload.home}?a=${FILE_UPLOAD_TYPES.ENCRYPTED}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(`${routes.upload.home}?a=${FILE_UPLOAD_TYPES.ENCRYPTED}`)
+              history.push(`${routes.upload.home}?t=${FILE_UPLOAD_TYPES.ENCRYPTED}`)
             },
           },
           {
@@ -92,7 +92,7 @@ const Menu = ({ className, isShown, onToggleMenu }) => {
             path: `${routes.upload.home}?a=${FILE_UPLOAD_TYPES.QUICK}`,
             onClick: () => {
               resetFileManager?.()
-              history.push(`${routes.upload.home}?a=${FILE_UPLOAD_TYPES.QUICK}`)
+              history.push(`${routes.upload.home}?t=${FILE_UPLOAD_TYPES.QUICK}`)
             },
           },
         ],

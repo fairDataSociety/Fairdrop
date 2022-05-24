@@ -1,8 +1,6 @@
 import React, { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 import Logo from '../../components/atoms/logo/Logo'
-import { colors } from '../../config/colors'
-import { useTheme } from '../../hooks/theme/useTheme'
 import styles from './HonestInboxScreen.module.css'
 import Claim from './components/claim/Claim'
 import { routes } from '../../config/routes'
@@ -15,7 +13,6 @@ const SET_VALIDATING_ENS_RESULT = 'SET_VALIDATING_ENS_RESULT'
 
 const HonestInboxScreen = ({ history }) => {
   let { ens } = useParams()
-  const { setVariant, setBackground } = useTheme()
   const [{ isValidENS, isValidating }, dispatch] = useReducer(
     (prevState, { type, payload }) => {
       switch (type) {
@@ -35,11 +32,6 @@ const HonestInboxScreen = ({ history }) => {
       isValidating: true,
     },
   )
-
-  useEffect(() => {
-    setVariant('white')
-    setBackground(colors.gray)
-  }, [])
 
   useEffect(() => {
     if (!ens) {

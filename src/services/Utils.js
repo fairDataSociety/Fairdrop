@@ -81,4 +81,17 @@ function humanTime(seconds) {
   return Duration.fromObject({ seconds })
 }
 
-export default { generatePassword, humanFileSize, truncate, formatBalance, copyToClipboard, humanTime }
+const honestInboxRegex = /anonymous-\d{13}/gm
+function isAnonymousMessage(message) {
+  return new RegExp(honestInboxRegex).test(message.from)
+}
+
+export default {
+  generatePassword,
+  humanFileSize,
+  truncate,
+  formatBalance,
+  copyToClipboard,
+  humanTime,
+  isAnonymousMessage,
+}

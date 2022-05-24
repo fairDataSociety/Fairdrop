@@ -23,14 +23,17 @@ export const routes = {
   login: '/login',
   register: '/register',
   mailbox: {
+    avatar: '/avatar',
     dashboard: '/mailbox',
     received: '/mailbox/received',
     sent: '/mailbox/sent',
     stored: '/mailbox/stored',
     consents: '/mailbox/consents',
+    mailboxHones: '/mailbox/honest',
     honest: '/honest/:ens',
   },
   about: {
+    root: '/about',
     fairdrop: '/about/fairdrop',
     fds: '/about/fair-data-society',
     faq: '/about/faq',

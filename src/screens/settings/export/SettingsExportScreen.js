@@ -14,22 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Button from '../../../components/atoms/button/Button'
 import Text from '../../../components/atoms/text/Text'
-import { colors } from '../../../config/colors'
 import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import { useTheme } from '../../../hooks/theme/useTheme'
 import styles from './SettingsExportScreen.module.css'
 
 const SettingsExportScreen = () => {
-  const { setVariant, setBackground } = useTheme()
   const [, { exportMailboxes }] = useMailbox()
-
-  useEffect(() => {
-    setVariant('white')
-    setBackground(colors.gray)
-  }, [])
 
   return (
     <div className={styles.container}>

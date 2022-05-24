@@ -14,79 +14,47 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect } from 'react'
-import { Route, NavLink } from 'react-router-dom'
-import { colors } from '../../../config/colors'
+import React from 'react'
+import { Route } from 'react-router-dom'
 import { routes } from '../../../config/routes'
-import { useTheme } from '../../../hooks/theme/useTheme'
-import DashboardConsentsScreen from '../../../screens/auth/dashboard/consents/DashboardConsentsScreen'
 import DashboardReceivedScreen from '../../../screens/auth/dashboard/received/DashboardReceivedScreen'
 import DashboardSentScreen from '../../../screens/auth/dashboard/sent/DashboardSentScreen'
-import DashboardStoredScreen from '../../../screens/auth/dashboard/stored/DashboardStoredScreen'
-import Text from '../../atoms/text/Text'
-import styles from './Dashboard.module.css'
+import DashboardHonestScreen from '../../../screens/auth/dashboard/honest/DashboardHonestScreen'
 import ReactTooltip from 'react-tooltip'
-import Button from '../../atoms/button/Button'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
-import { useMailbox } from '../../../hooks/mailbox/useMailbox'
-import { generatePath } from 'react-router-dom'
+import { Sidebar } from '../../'
+import { Container, Content, Tooltip } from './Components'
 
 const Dashboard = () => {
-  const { setVariant, setBackground } = useTheme()
-  const [{ mailbox }] = useMailbox()
-  const history = useHistory()
-
-  const navigateToHonestInbox = useCallback(() => {
-    history.push(generatePath(routes.mailbox.honest, { ens: mailbox.subdomain }))
-  }, [mailbox, history])
-
-  useEffect(() => {
-    setVariant('black')
-    setBackground(colors.white)
-  }, [])
-
   return (
-    <div className={styles.container}>
-      <nav className={styles.menu}>
-        <NavLink className={styles.link} to={routes.mailbox.received} activeClassName={styles.active} exact>
-          <Text element="span" variant="black">
-            {'> Received'}
-          </Text>
-        </NavLink>
+    <Container>
+      <Sidebar
+        headline="My files"
+        items={[
+          {
+            label: 'Sent',
+            path: routes.mailbox.sent,
+          },
+          {
+            label: 'Received',
+            path: routes.mailbox.received,
+          },
+          {
+            label: 'My honest inbox',
+            path: routes.mailbox.mailboxHones,
+          },
+        ]}
+      />
 
-        <NavLink className={styles.link} to={routes.mailbox.sent} activeClassName={styles.active} exact>
-          <Text element="span" variant="black">
-            {'> Sent'}
-          </Text>
-        </NavLink>
-
-        <NavLink className={styles.link} to={routes.mailbox.stored} activeClassName={styles.active} exact>
-          <Text element="span" variant="black">
-            {'> Stored'}
-          </Text>
-        </NavLink>
-
-        <NavLink className={styles.link} to={routes.mailbox.consents} activeClassName={styles.active} exact>
-          <Text element="span" variant="black">
-            {'> Consents'}
-          </Text>
-        </NavLink>
-
-        <div className={styles.bottomMenu}>
-          <Button className={styles.profileButton} variant="black" onClick={navigateToHonestInbox}>
-            My Honest Inbox
-          </Button>
-        </div>
-      </nav>
-      <div className={styles.content}>
+      <Content>
         <Route exact path={routes.mailbox.received} component={DashboardReceivedScreen} />
         <Route exact path={routes.mailbox.sent} component={DashboardSentScreen} />
-        <Route exact path={routes.mailbox.stored} component={DashboardStoredScreen} />
-        <Route exact path={routes.mailbox.consents} component={DashboardConsentsScreen} />
-      </div>
+        <Route exact path={routes.mailbox.mailboxHones} component={DashboardHonestScreen} />
+      </Content>
 
-      <ReactTooltip className={styles.tooltip} />
-    </div>
+      <Tooltip>
+        <ReactTooltip />
+      </Tooltip>
+    </Container>
   )
 }
 

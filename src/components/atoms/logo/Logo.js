@@ -15,12 +15,22 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
-import styles from './Logo.module.css'
-import { ReactComponent as SVGLogo } from './assets/fairdrop-logo.svg'
-import c from 'classnames'
+import styled, { css } from 'styled-components'
 
-const Logo = ({ className, variant = 'white' }) => {
-  return <SVGLogo className={c(styles.logo, styles[variant], className)} />
-}
+export const Logo = styled.h1.attrs(() => ({
+  children: 'Fairdrop',
+}))`
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  font-weight: 700;
+  line-height: 32px;
+
+  ${({ theme, variant = 'primary' }) => css`
+    color: ${theme.colors[variant].main};
+  `};
+
+  ${({ theme, size = 'm' }) => css(theme.components?.logo?.sizes?.[size] ?? '')}
+`
 
 export default React.memo(Logo)

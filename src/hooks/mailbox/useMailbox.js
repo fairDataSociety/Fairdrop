@@ -94,6 +94,7 @@ export const MailboxProvider = ({ children }) => {
     try {
       let appState = (await FDSInstance.currentAccount.retrieveDecryptedValue(APP_STATE_KEY)) ?? {}
       appState = JSON.parse(appState)
+      console.info(appState)
       return appState
     } catch (error) {
       console.error(error)
@@ -118,6 +119,7 @@ export const MailboxProvider = ({ children }) => {
         ...state,
       }
       await FDSInstance.currentAccount.storeEncryptedValue(APP_STATE_KEY, JSON.stringify(newAppState))
+      console.info(newAppState, JSON.stringify(newAppState))
       dispatch({
         type: SET_APP_STATE,
         payload: {
@@ -232,10 +234,6 @@ export const MailboxProvider = ({ children }) => {
         reject(error)
       }
     })
-  }, [])
-
-  const resetMailbox = useCallback(() => {
-    dispatch({ type: RESET })
   }, [])
 
   const getReceivedMessages = useCallback(() => {
@@ -440,6 +438,19 @@ export const MailboxProvider = ({ children }) => {
     dispatch({ type: REMOVE_AVAILABLE_MAILBOX, payload: { mailbox } })
   }, [])
 
+  const markAsRead = useCallback(async ({ message }) => {
+    const appState = await getAppState()
+    const newState = {
+      ...appState,
+      markedAsRead: [...(appState?.markedAsRead ?? []), message?.address],
+    }
+    await updateAppState(newState)
+  }, [])
+
+  const logout = useCallback(() => {
+    dispatch({ type: RESET })
+  }, [])
+
   // Listen to mailbox updates
   useEffect(() => {
     if (!state.mailbox) {
@@ -481,7 +492,7 @@ export const MailboxProvider = ({ children }) => {
           initSentry,
           exportMailboxes,
           importMailbox,
-          resetMailbox,
+          logout,
           getReceivedMessages,
           getSentMessages,
           getConsentsMessages,
@@ -498,6 +509,7 @@ export const MailboxProvider = ({ children }) => {
           getMyBalance,
           txToFaucet,
           removeMailbox,
+          markAsRead,
         },
       ]}
     >
@@ -509,4 +521,9 @@ export const MailboxProvider = ({ children }) => {
 export const useMailbox = () => {
   const ctx = useContext(MailboxContext)
   return ctx
+}
+
+export const useMailboxAvatar = () => {
+  const ctx = useContext(MailboxContext)
+  return ctx?.appState?.avatar ?? null
 }

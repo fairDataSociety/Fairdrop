@@ -14,36 +14,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Text from '../../../../components/atoms/text/Text'
 import { useMailbox } from '../../../../hooks/mailbox/useMailbox'
-import Utils from '../../../../services/Utils'
-import styles from './DashboardReceivedScreen.module.css'
-import { DateTime } from 'luxon'
-import Download from '../components/download/Download'
 import { toast } from 'react-toastify'
 import WorkingLayout from '../../../../components/layout/working/WorkingLayout'
-import Notification from '../../../../components/molecules/notification/Notification'
+import styled from 'styled-components/macro'
+import { Box, TableFiles } from '../../../../components'
+import Utils from '../../../../services/Utils'
 
-const honestInboxRegex = /anonymous-\d{13}/gm
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`
+
+const WrapperTable = styled(Box)`
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+`
 
 const DashboardReceivedScreen = () => {
   const [{ received }, { getReceivedMessages }] = useMailbox()
   const [isFetchingMessages, setIsFetchingMessages] = useState(true)
-  const [shouldOpenNotification, setShouldOpenNotification] = useState(
-    !localStorage.getItem('honestInboxDidYouKnowNotification'),
-  )
 
-  const sortedMessages = useMemo(() => {
-    return received.sort((a, b) => {
-      return b?.hash?.time - a?.hash?.time
-    })
+  const messagesAdapted = useMemo(() => {
+    return received
+      .filter((message) => !Utils.isAnonymousMessage(message))
+      .sort((a, b) => {
+        return b?.hash?.time - a?.hash?.time
+      })
   }, [received])
-
-  const onCloseNotification = useCallback(() => {
-    localStorage.setItem('honestInboxDidYouKnowNotification', Date.now())
-    setShouldOpenNotification(false)
-  }, [])
 
   useEffect(() => {
     getReceivedMessages()
@@ -61,94 +64,19 @@ const DashboardReceivedScreen = () => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.rowWrapper}>
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Name
-            </Text>
-          </div>
-
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              From
-            </Text>
-          </div>
-
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Time
-            </Text>
-          </div>
-
-          <div className={styles.header}>
-            <Text size="sm" weight="500" variant="black">
-              Size
-            </Text>
-          </div>
-        </div>
-
-        {received.length > 0 &&
-          sortedMessages.map((message) => {
-            const { hash = {}, from } = message
-            const { file = {} } = hash
-            let sanitizedFrom = from
-            if (new RegExp(honestInboxRegex).test(from)) {
-              sanitizedFrom = 'Honest Inbox'
-            }
-
-            return (
-              <div className={styles.rowWrapper} key={message?.hash?.address}>
-                <div className={styles.row}>
-                  <Download className={styles.icon} message={message} />
-                  <Text size="sm" variant="black">
-                    {file?.name ?? 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {sanitizedFrom ?? 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {hash.time ? DateTime.fromMillis(hash.time).toFormat('dd/LL/yyyy HH:mm') : 'Unkown'}
-                  </Text>
-                </div>
-
-                <div className={styles.row}>
-                  <Text size="sm" variant="black">
-                    {Utils.humanFileSize(file?.size) ?? 'Unkown'}
-                  </Text>
-                </div>
-              </div>
-            )
-          })}
-        {received.length === 0 && (
-          <div className={styles.row}>
+    <Container>
+      <WrapperTable>
+        {received.length === 0 ? (
+          <Box gap="14px" vAlign="center">
             <Text size="sm" variant="black">
               There is no received files yet...
             </Text>
-          </div>
+          </Box>
+        ) : (
+          <TableFiles messages={messagesAdapted} />
         )}
-      </div>
-
-      <Notification opened={shouldOpenNotification} onCloseRequest={onCloseNotification}>
-        <div>
-          <Text weight="500">Hey! Did you know...</Text>
-          <Text>
-            ...you can use your{' '}
-            <Text weight="500" element="span">
-              Honest Inbox
-            </Text>{' '}
-            so people can send you files anonymously?
-          </Text>
-        </div>
-      </Notification>
-    </div>
+      </WrapperTable>
+    </Container>
   )
 }
 

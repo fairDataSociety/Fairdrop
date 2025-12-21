@@ -12,7 +12,7 @@
     "jszip": "^3.8.0",
     "luxon": "^2.5.2",
     "polished": "^4.1.4",
-    "react-dropzone": "^11.4.0",
+    "react-dropzone": "^11.7.1",
     "react-icons": "^4.3.1",
     "react-router-dom": "^5.3.0",
     "react-toastify": "^8.0.2",

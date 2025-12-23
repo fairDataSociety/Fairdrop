@@ -18,7 +18,7 @@ import React, { Component } from 'react';
 import { withRouter, Link, Route, Switch} from 'react-router-dom'
 import FDS from 'fds.js';
 import JSZip from 'jszip';
-import FileSaver from 'filesaver.js';
+import { saveAs as FileSaverSaveAs } from 'file-saver';
 import Upload from "./components/Upload";
 import Dropbox from "./components/Dropbox";
 import Mailbox from "./components/Mailbox";
@@ -33,7 +33,8 @@ import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
 import ProgressBar from "./components/Shared/svg/ProgressBar.js"
 
-import * as Sentry from '@sentry/browser';
+// Sentry removed for mockup
+// import * as Sentry from '@sentry/browser';
 
 import FDSPin from './lib/FDSPin.js';
 import {notify} from './lib/FDSNotify.js'
@@ -43,7 +44,7 @@ import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
 
-import {version} from '../package.json';
+const version = '0.7.0-mockup';
 window.files = [];
 
 let pinningOracleURL = 'https://pinning-staging.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
@@ -200,14 +201,8 @@ class App extends Component {
   }
 
   initSentry(){
-      if(process.env.NODE_ENV !== 'development'){
-        console.log('initialised Sentry')        
-        Sentry.init({ 
-          dsn: 'https://ed8eb658c579493ea444b73c9997eb2b@sentry.io/1531557',
-          release: "datafund@"+version
-        });
-        window.Sentry = Sentry;  
-      }
+    // Sentry disabled for mockup
+    console.log('Sentry disabled in mockup mode');
   }
 
   componentDidMount(){
@@ -481,7 +476,7 @@ class App extends Component {
     }
     zip.generateAsync({type:"blob"})
     .then(function(content) {
-        FileSaver.saveAs(content, "fairdrop-mailboxes.zip");
+        FileSaverSaveAs(content, "fairdrop-mailboxes.zip");
     });
   }
 
@@ -498,7 +493,7 @@ class App extends Component {
     }
     zip.generateAsync({type:"blob"})
     .then(function(content) {
-        FileSaver.saveAs(content, "fairdrop-mailboxes.zip");
+        FileSaverSaveAs(content, "fairdrop-mailboxes.zip");
     });
   }  
 

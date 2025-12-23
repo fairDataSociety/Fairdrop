@@ -132,7 +132,7 @@ class App extends Component {
                     className="menu-item-header "
                     onClick={()=>{this.props.handleNavigateTo('/mailbox')}}
                   >
-                    Login >
+                    Login &gt;
                   </div>
                 </div>
               }

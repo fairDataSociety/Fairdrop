@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Utils from '../services/Utils';
-import {saveAs} from 'filesaver.js';
+import {saveAs} from 'file-saver';
 
 
 //deal with xbrowser copy paste issues

@@ -175,3 +175,68 @@ test.describe('Upload Flow Integration', () => {
   });
 
 });
+
+test.describe('Download Page', () => {
+
+  const testRef = 'a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd';
+  const testFile = 'test-document.pdf';
+  const testSize = 1048576; // 1 MB
+
+  test('download page renders with file info', async ({ page }) => {
+    await page.goto(`/download/${testRef}/${testFile}?size=${testSize}`);
+
+    // Should show download UI
+    await expect(page.locator('#completed')).toBeVisible();
+
+    // Should display filename
+    const pageText = await page.textContent('body');
+    expect(pageText).toContain('test-document');
+
+    // Should show file size (1 MB)
+    expect(pageText).toContain('MB');
+  });
+
+  test('download page shows download button', async ({ page }) => {
+    await page.goto(`/download/${testRef}/${testFile}?size=${testSize}`);
+
+    // Should have download link
+    const downloadLink = page.locator('a.download-file').first();
+    await expect(downloadLink).toBeVisible();
+    await expect(downloadLink).toHaveText(/Download File/i);
+  });
+
+  test('download page has copy link functionality', async ({ page }) => {
+    await page.goto(`/download/${testRef}/${testFile}?size=${testSize}`);
+
+    // Should have copy link input
+    const linkInput = page.locator('.feedback-gateway-link-input');
+    await expect(linkInput).toBeVisible();
+
+    // Input should contain the current URL
+    const inputValue = await linkInput.inputValue();
+    expect(inputValue).toContain('/download/');
+
+    // Should have copy button
+    const copyBtn = page.locator('.copy-gateway-link');
+    await expect(copyBtn).toBeVisible();
+  });
+
+  test('download page has send another file link', async ({ page }) => {
+    await page.goto(`/download/${testRef}/${testFile}?size=${testSize}`);
+
+    // Should have "Send Another File" link
+    const sendAnotherLink = page.locator('a.send-another');
+    await expect(sendAnotherLink).toBeVisible();
+    await expect(sendAnotherLink).toHaveAttribute('href', '/');
+  });
+
+  test('download link points to swarm gateway', async ({ page }) => {
+    await page.goto(`/download/${testRef}/${testFile}?size=${testSize}`);
+
+    // Download link should contain the swarm reference
+    const downloadLink = page.locator('a.download-file').first();
+    const href = await downloadLink.getAttribute('href');
+    expect(href).toContain(testRef);
+  });
+
+});

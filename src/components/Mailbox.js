@@ -754,23 +754,38 @@ class Mailbox extends Component{
                           }
                         }else{
                           switch(this.state.shownMessageType){
-                            case 'consents': 
-                              return <tr className={
-                                        "message-list last"
-                                      }>
-                                      <td>No consents yet...</td>
+                            case 'consents':
+                              return <tr className="message-list last empty-state">
+                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
+                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>🤝</div>
+                                        <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No consents yet</div>
+                                        <div style={{fontSize: '14px', color: '#999'}}>Consent requests will appear here</div>
+                                      </td>
                                     </tr>
-                            case 'stored': 
-                              return <tr className={
-                                        "message-list last"
-                                      }>
-                                      <td>No files yet...</td>
+                            case 'stored':
+                              return <tr className="message-list last empty-state">
+                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
+                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>📁</div>
+                                        <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No stored files yet</div>
+                                        <div style={{fontSize: '14px', color: '#999'}}>Files you store will appear here</div>
+                                      </td>
                                     </tr>
+                            case 'sent':
+                              return <tr className="message-list last empty-state">
+                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
+                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>📤</div>
+                                        <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No sent files yet</div>
+                                        <div style={{fontSize: '14px', color: '#999'}}>Files you send will appear here</div>
+                                      </td>
+                                    </tr>
+                            case 'received':
                             default:
-                              return <tr className={
-                                        "message-list last"
-                                      }>
-                                      <td>No messages yet...</td>
+                              return <tr className="message-list last empty-state">
+                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
+                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>📬</div>
+                                        <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No received files yet</div>
+                                        <div style={{fontSize: '14px', color: '#999'}}>Files sent to you will appear here</div>
+                                      </td>
                                     </tr>
                           }
                         }

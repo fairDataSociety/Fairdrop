@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Dropzone from 'dropzone';
 
-import FDS from 'fds.js';
+import FDS from '../lib/fds-adapter';
 
 class App extends Component {
 

@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ethersphere/bee-js": "^10.1.1",
+    "@noble/secp256k1": "^3.0.0",
     "axios": "^1.6.0",
     "bootstrap": "^4.6.2",
     "dropzone": "^5.9.3",
+    "ethers": "^6.16.0",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.0",
     "moment": "^2.30.0",

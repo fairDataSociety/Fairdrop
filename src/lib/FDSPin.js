@@ -1,50 +1,32 @@
-import axios from 'axios';
-import querystring from 'querystring';
-import PinningManager from './abi/PinningManager.json';
-import PinWarrant from './abi/PinWarrant.json';
+// Mock FDSPin for frontend mockup
+// Original used contract interactions and axios calls
 
-class FDSPin{
-	constructor(FDSAccount, OracleURL, PinningManagerAddress){
-		this.acc = FDSAccount;
-		this.orac = OracleURL;
-		this.pma = PinningManagerAddress;
-	}
+class FDSPin {
+  constructor(FDSAccount, OracleURL, PinningManagerAddress) {
+    this.acc = FDSAccount;
+    this.orac = OracleURL;
+    this.pma = PinningManagerAddress;
+  }
 
-	async createWarrant(value){
-		let PM = await this.acc.getContract(PinningManager.abi, this.pma);
-		await PM.send('createWarrant', [], true, 15000000, value);
-		return PM.getMyWarrant();
-	}
+  async createWarrant(value) {
+    console.log('FDSPin.createWarrant (mocked):', value);
+    return '0xmock-warrant-address';
+  }
 
-	async getMyBalance(){
-		let PM = await this.acc.getContract(PinningManager.abi, this.pma);
-		let warrantAddress = await PM.getMyWarrant();
-		let PW = await this.acc.getContract(PinWarrant.abi, warrantAddress);
-		return PW.getBalance();
-	}
+  async getMyBalance() {
+    // Return mock balance
+    return 100000;
+  }
 
-	async pin(hash){
-		// curl -XPOST http://localhost:8080/pin -d "account=0x123&address=$ADDRESS&warrant=0x234&endBlock=1234"
-		//send pin request to oracle
-		let qs = querystring.stringify({
-			account: this.acc.address,
-			address: hash,
-			warrant: "",
-			endBlock: "9999"
-		});
-		return await axios.post(`${this.orac}/pin`, qs);
-	}
+  async pin(hash) {
+    console.log('FDSPin.pin (mocked):', hash);
+    return { status: 'ok' };
+  }
 
-	async unpin(hash){
-		// curl -XPOST http://localhost:8080/unpin -d "address=$ADDRESS"
-		//send unpin request to oracle
-		let qs = querystring.stringify({
-			account: this.acc.address,
-			address: hash
-		});
-		return await axios.post(`${this.orac}/unpin`, qs).catch();
-	}
+  async unpin(hash) {
+    console.log('FDSPin.unpin (mocked):', hash);
+    return { status: 'ok' };
+  }
 }
-
 
 export default FDSPin;

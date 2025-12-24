@@ -136,36 +136,15 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    if(
-      localStorage.getItem('sentryEnabled') === "true"
-      ){
-      this.initSentry();    
+    if(localStorage.getItem('sentryEnabled') === "true") {
+      this.initSentry();
     }
 
-    // let config = {
-    //   tokenName: 'gas',
-    //   swarmGateway: 'http://localhost:8500',
-    //   ethGateway: 'http://localhost:8545',
-    //   faucetAddress: 'http://localhost:3001/gimmie',
-    //   chainID: '235813',
-    //   httpTimeout: 1000,
-    //   gasPrice: 0.1,
-    //   walletVersion: 1,
-    //   ensConfig: {
-    //     domain: 'datafund.eth',
-    //     registryAddress: '0xfFD6A92307e89DccE6718498Cca401cB9d0E2418',
-    //     subdomainRegistrarAddress: '0xDa0F381BFdc4B0e17A49323eBFb1f32feF1a3660',
-    //     resolverContractAddress: '0xB65d26810f4a78Ae3880E1147C9C3BB5a9729C69'
-    //   }
-    // };
-
-    // this.FDS = new FDS(config);
     this.FDS = new FDS();
     window.FDS = this.FDS;
 
     this.uploadComponent = React.createRef();
     this.mailboxComponent = React.createRef();
-
     this.importMailboxInput = React.createRef();
     this.contentComponent = React.createRef();
 
@@ -209,7 +188,7 @@ class App extends Component {
     let uInterval = setInterval(this.pollForUpdates.bind(this),15000);
     let bInterval = setInterval(this.updateBalance.bind(this),1500);
     this.setState({checkreceivedInterval: uInterval});
-    this.setState({checkbalanceInterval: bInterval});    
+    this.setState({checkbalanceInterval: bInterval});
     document.getElementById('splash').classList.add('splash-fadeout');
     setTimeout(()=>{
       this.getAppState(true);
@@ -218,7 +197,7 @@ class App extends Component {
       this.setState({menuIsRendered: true});
       document.getElementById('splash').classList.add('splash-hidden');
       document.getElementById('root').classList.add('root-fadein');
-    },100);  
+    },100);
   }
 
   async getAppState(refresh=true){
@@ -510,7 +489,7 @@ class App extends Component {
       <div>
         <div
           className={
-          "parent-wrapper "+ 
+          "parent-wrapper "+
           + (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
           + (this.state.menuState ? "menu-shown " : "")
           + ((this.props.location.pathname.substring(0,8) === '/mailbox') ? "nav-black white " : " nav-white red ")
@@ -586,7 +565,7 @@ class App extends Component {
                 </Link>
               </div>
               <div className="nav-header-item-left hide-mobile">
-                <div className="version-number">{version} {process.env.REACT_APP_ENV_NAME !== 'production' ? `- ${process.env.REACT_APP_ENV_NAME}` : ""}</div>
+                <div className="version-number">{version}</div>
               </div>
               <div className="nav-header-item-left">
                 <div className={(this.state.isLoading ? "is-loading " : " ") + "loading-icon"}>

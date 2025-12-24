@@ -24,7 +24,36 @@ import App from './App';
 
 const version = '0.7.0-mockup';
 
-console.log(`Fairdrop Version ${version} - Frontend Mockup (Original 2020 UI)`);
+// Error Boundary component for catching React errors
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('React Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{color:'white',padding:'50px',background:'#FB4A36',minHeight:'100vh'}}>
+          <h2>Something went wrong</h2>
+          <p>{this.state.error?.toString()}</p>
+          <button onClick={() => window.location.reload()}>Reload</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+console.log(`Fairdrop Version ${version} - Frontend Mockup`);
 
 // Enables us to use subdirectory base urls with react router
 let appRoot = window.location.href.match('bzz:') !== null
@@ -37,7 +66,9 @@ let basename = window.location.href.match('bzz:') !== null
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
-  <Router basename={basename}>
-    <App appRoot={appRoot}/>
-  </Router>
+  <ErrorBoundary>
+    <Router basename={basename}>
+      <App appRoot={appRoot}/>
+    </Router>
+  </ErrorBoundary>
 );

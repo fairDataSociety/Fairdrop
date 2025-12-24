@@ -22,7 +22,7 @@ import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
 
 import Moment from 'moment';
-import ReactTooltip from 'react-tooltip'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 class Mailbox extends Component{
 

@@ -36,6 +36,11 @@ class ASelectFile extends Component{
     this.handleClickStoreFile = this.handleClickStoreFile.bind(this);
     this.handleClickQuickFile = this.handleClickQuickFile.bind(this);
 
+    // React 18 compatible refs
+    this.dtSelectSaveFile = React.createRef();
+    this.dtSelectStoreFile = React.createRef();
+    this.dtSelectQuickFile = React.createRef();
+
     this.state = this.getInitialState();
   }
 
@@ -197,9 +202,9 @@ class ASelectFile extends Component{
   }
 
   dropZone(){
-    this.initDropzone(this.refs.dtSelectSaveFile, false, false, 0);
-    this.initDropzone(this.refs.dtSelectStoreFile, true, false, 1);
-    this.initDropzone(this.refs.dtSelectQuickFile, false, true, 2);
+    this.initDropzone(this.dtSelectSaveFile.current, false, false, 0);
+    this.initDropzone(this.dtSelectStoreFile.current, true, false, 1);
+    this.initDropzone(this.dtSelectQuickFile.current, false, true, 2);
   }
 
   handleClickQuickFile(e){
@@ -212,7 +217,7 @@ class ASelectFile extends Component{
       isStoringFile: false,
     });
     this.setState({'isHandlingClick': true});
-    this.refs.dtSelectQuickFile.click();
+    this.dtSelectQuickFile.current.click();
   }
 
   handleClickSelectFile(e){
@@ -225,7 +230,7 @@ class ASelectFile extends Component{
       isQuickFile: false,
     });
     this.setState({'isHandlingClick': true});
-    this.refs.dtSelectSaveFile.click();
+    this.dtSelectSaveFile.current.click();
   }
 
   handleClickStoreFile(e){
@@ -235,29 +240,29 @@ class ASelectFile extends Component{
     this.props.setParentState({
       isStoringFile: true,
       isSendingFile: false,
-      isQuickFile: false,      
+      isQuickFile: false,
     });
     this.setState({'isHandlingClick': true});
-    this.refs.dtSelectStoreFile.click();
+    this.dtSelectStoreFile.current.click();
   }
 
   render(){
     return (
       <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} >
         <div className={"select-file-main hide-mobile drop " + ((this.props.fileIsSelecting0 || this.props.fileIsSelecting1) ? "is-selecting " : " ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
-          <div ref="dtSelectStoreFile" className="select-file-store no-events-mobile " style={{display: 'none'}}>
+          <div ref={this.dtSelectStoreFile} className="select-file-store no-events-mobile " style={{display: 'none'}}>
             <div className="select-file-drop-inner">
               <h2>Store encrypted</h2>
               <div>Requires logging in to your mailbox</div>
             </div>
           </div>
-          <div ref="dtSelectSaveFile" className="select-file-send">
+          <div ref={this.dtSelectSaveFile} className="select-file-send">
             <div className="select-file-drop-inner">
               <h2>Send encrypted</h2>
               <div>Requires logging in to your mailbox</div>
             </div>
           </div>
-          <div ref="dtSelectQuickFile" className="select-file-quick">
+          <div ref={this.dtSelectQuickFile} className="select-file-quick">
             <div className="select-file-drop-inner">
               <h2>Send in a quick way</h2>
               <div>Send a file or folder unencrypted - no mailboxes required</div>

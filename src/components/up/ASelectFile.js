@@ -161,18 +161,19 @@ class ASelectFile extends Component{
 
         let newUIState;
 
-        if(this.props.parentState.isStoringFile === true){
+        // Use closure variables (isStoring, isQuick) instead of async state
+        if(isStoring === true){
           //skip sign in if signed in
           if(this.props.selectedMailbox === false){
             newUIState = 1;
           }else{
             newUIState = 3;
           }
-        }if(this.props.parentState.isQuickFile === true){
+        }else if(isQuick === true){
           //skip confirmation - go straight to upload (uiState 4)
           newUIState = 4;
-        }if(this.props.parentState.isSendingFile === true){
-          //select recipient
+        }else{
+          //select recipient (sending encrypted)
           newUIState = 1;
         }
 

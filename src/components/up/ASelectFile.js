@@ -169,8 +169,8 @@ class ASelectFile extends Component{
             newUIState = 3;
           }
         }if(this.props.parentState.isQuickFile === true){
-          //skip sign in regardless
-          newUIState = 3;
+          //skip confirmation - go straight to upload (uiState 4)
+          newUIState = 4;
         }if(this.props.parentState.isSendingFile === true){
           //select recipient
           newUIState = 1;

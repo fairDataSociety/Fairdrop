@@ -96,6 +96,54 @@ test.describe('File Upload - Quick Send', () => {
 
 });
 
+test.describe('Quick Upload Flow', () => {
+
+  test('quick upload zone is clickable', async ({ page }) => {
+    await page.goto('/');
+
+    // Quick upload dropzone should be visible and clickable
+    const quickZone = page.locator('.select-file-quick');
+    await expect(quickZone).toBeVisible();
+
+    // Check it has the upload instruction text
+    const text = await quickZone.textContent();
+    expect(text).toContain('quick');
+  });
+
+  test('in-progress screen has correct structure', async ({ page }) => {
+    // Navigate directly to check component renders
+    await page.goto('/');
+
+    // In-progress screen exists (hidden initially)
+    const inProgress = page.locator('#in-progress');
+    expect(await inProgress.count()).toBe(1);
+
+    // It should have the uploading UI elements
+    const html = await inProgress.innerHTML();
+    expect(html).toContain('in-progress-ui');
+  });
+
+  test('completed screen has correct structure', async ({ page }) => {
+    await page.goto('/');
+
+    // Completed screen exists (hidden initially)
+    const completed = page.locator('#completed');
+    expect(await completed.count()).toBe(1);
+
+    // It should have the confirmation elements
+    const html = await completed.innerHTML();
+    expect(html).toContain('info-content');
+    expect(html).toContain('info-filename');
+    expect(html).toContain('info-actions');
+  });
+
+  // Note: Full upload E2E tests require:
+  // 1. Running Swarm gateway or mock server
+  // 2. Programmatic Dropzone file injection
+  // These are marked as integration tests and run separately
+
+});
+
 test.describe('Navigation', () => {
 
   test('can navigate to mailbox view', async ({ page }) => {

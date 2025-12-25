@@ -51,6 +51,7 @@ class Upload extends Component{
       encryptionComplete: false,
       fileWasUploaded: false,
       uploadProgress: '000%',
+      uploadedHashLink: null,
 
       isErrored: false,
 
@@ -87,6 +88,33 @@ class Upload extends Component{
 
   componentWillUnmount(){
     this.props.resetFileState();
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    // Auto-upload for quick files when entering uiState 4
+    if(this.state.isQuickFile === true &&
+       this.state.uiState === 4 &&
+       prevState.uiState !== 4 &&
+       !this._uploadStarted){
+      this._uploadStarted = true;
+      this.handleUpload().then((link)=>{
+        window.files = [];
+        this.setState({
+          fileWasUploaded: true,
+          uploadedHashLink: link,
+          uiState: 5
+        });
+      }).catch((error)=>{
+        console.error('Quick upload error:', error);
+        this.setState({
+          isErrored: true,
+        });
+      });
+    }
+    // Reset flag when going back to initial state
+    if(this.state.uiState === 0 && prevState.uiState !== 0){
+      this._uploadStarted = false;
+    }
   }
 
   setUploadProgress(progress){
@@ -154,8 +182,8 @@ class Upload extends Component{
           (response)=>{
             this.setUploadProgress(response);
             if(response === 100){
-              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
-              this.setState({fileWasUploaded: true}); 
+              this.setState({feedbackMessage: "file uploaded, processing into Swarm."});
+              this.setState({fileWasUploaded: true});
               this.props.enableNav();
             }
           },
@@ -166,20 +194,24 @@ class Upload extends Component{
           //find the index.html
           let index_index = null;
           for (var i = files.length - 1; i >= 0; i--) {
-            var fullPath = files[i].fullPath || files[i].webkitRelativePath;   
+            var fullPath = files[i].fullPath || files[i].webkitRelativePath;
             if(fullPath.split('/')[1] === 'index.html'){
               index_index = i;
             }
           }
+          let uploadedHashLink;
           if(index_index !== null){
-            return this.props.FDS.swarmGateway + '/bzz:/' + hash.address + '/index.html';
+            uploadedHashLink = this.props.FDS.swarmGateway + '/bzz:/' + hash.address + '/index.html';
           }else{
             if(files.length > 1){
-              return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download-list/'+ hash.address + '/';
+              uploadedHashLink = window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download-list/'+ hash.address + '/';
             }else{
-              return window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size; 
+              uploadedHashLink = window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/'+ hash.address + '/' + hash.file.name + '?size=' + hash.file.size;
             }
-          }          
+          }
+          // Save the link to state so FCompleted can display it
+          this.setState({ uploadedHashLink });
+          return uploadedHashLink;
         });
       }else{
         return this.FDS.currentAccount.store(

@@ -364,23 +364,34 @@ class AccountManager {
     /**
      * Upload files without encryption (quick upload)
      */
-    async storeFilesUnencrypted(files, callback) {
+    async storeFilesUnencrypted(files, progressCallback, statusCallback) {
+      console.log('[FDS Adapter] storeFilesUnencrypted called with', files.length, 'files');
       try {
         const file = files[0]; // Handle first file
-        callback?.('Uploading to Swarm...');
+        console.log('[FDS Adapter] Uploading file:', file.name, file.size);
+        statusCallback?.('Uploading to Swarm...');
 
         const reference = await uploadFile(file, {
-          onProgress: (p) => callback?.(`Uploading... ${p}%`),
-          onStatusChange: (s) => callback?.(s)
+          onProgress: (p) => progressCallback?.(p),
+          onStatusChange: (s) => statusCallback?.(s)
         });
 
-        callback?.('Upload complete!');
+        console.log('[FDS Adapter] Upload complete, reference:', reference);
+        statusCallback?.('Upload complete!');
+        progressCallback?.(100);
 
-        return {
-          address: reference
+        const result = {
+          address: reference,
+          file: {
+            name: file.name,
+            size: file.size,
+            type: file.type
+          }
         };
+        console.log('[FDS Adapter] Returning:', result);
+        return result;
       } catch (error) {
-        console.error('Unencrypted upload error:', error);
+        console.error('[FDS Adapter] Unencrypted upload error:', error);
         throw error;
       }
     }

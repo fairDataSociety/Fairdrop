@@ -97,27 +97,39 @@ const uploadToLocalBee = async (file, stampId, options = {}) => {
 const uploadToGateway = async (file, options = {}) => {
   const { onProgress, onStatusChange } = options
 
+  console.log('[Upload] Starting upload to gateway:', FDS_GATEWAY)
+  console.log('[Upload] File:', file.name, file.size, file.type)
+
   onStatusChange?.('uploading')
 
   const formData = new FormData()
   formData.append('file', file, file.name)
 
-  const response = await fetch(`${FDS_GATEWAY}/bzz`, {
-    method: 'POST',
-    body: formData
-  })
+  try {
+    const response = await fetch(`${FDS_GATEWAY}/bzz`, {
+      method: 'POST',
+      body: formData
+    })
 
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Upload failed: ${error}`)
+    console.log('[Upload] Response status:', response.status)
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('[Upload] Error response:', error)
+      throw new Error(`Upload failed: ${error}`)
+    }
+
+    const result = await response.json()
+    console.log('[Upload] Success! Reference:', result.reference)
+
+    onProgress?.(100)
+    onStatusChange?.('complete')
+
+    return result.reference
+  } catch (err) {
+    console.error('[Upload] Fetch error:', err)
+    throw err
   }
-
-  const result = await response.json()
-
-  onProgress?.(100)
-  onStatusChange?.('complete')
-
-  return result.reference
 }
 
 /**

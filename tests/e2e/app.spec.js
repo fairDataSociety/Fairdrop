@@ -224,6 +224,137 @@ test.describe('Upload Flow Integration', () => {
 
 });
 
+test.describe('Mobile UI', () => {
+
+  test('mobile buttons are present', async ({ page }) => {
+    await page.goto('/');
+
+    // Mobile buttons should exist in DOM
+    const quickBtn = page.locator('.send-file-unencrypted');
+    const encryptedBtn = page.locator('.send-file-encrypted');
+    const storeBtn = page.locator('.store-file-encrypted');
+
+    expect(await quickBtn.count()).toBe(1);
+    expect(await encryptedBtn.count()).toBe(1);
+    expect(await storeBtn.count()).toBe(1);
+  });
+
+  test('mobile buttons have correct text', async ({ page }) => {
+    await page.goto('/');
+
+    const quickBtn = page.locator('.send-file-unencrypted');
+    const encryptedBtn = page.locator('.send-file-encrypted');
+    const storeBtn = page.locator('.store-file-encrypted');
+
+    await expect(quickBtn).toHaveText(/Unencrypted/i);
+    await expect(encryptedBtn).toHaveText(/Encrypted/i);
+    await expect(storeBtn).toHaveText(/Store/i);
+  });
+
+});
+
+test.describe('Progress Screen Structure', () => {
+
+  test('progress screen has uploading UI elements', async ({ page }) => {
+    await page.goto('/');
+
+    const inProgress = page.locator('#in-progress');
+    expect(await inProgress.count()).toBe(1);
+
+    // Check for progress icon image
+    const html = await inProgress.innerHTML();
+    expect(html).toContain('progress.svg');
+  });
+
+  test('progress screen has mist effect container', async ({ page }) => {
+    await page.goto('/');
+
+    const mist = page.locator('#in-progress .mist');
+    expect(await mist.count()).toBe(1);
+  });
+
+  test('progress screen is hidden initially', async ({ page }) => {
+    await page.goto('/');
+
+    const inProgress = page.locator('#in-progress');
+    await expect(inProgress).toHaveClass(/hidden/);
+  });
+
+});
+
+test.describe('Completed Screen Structure', () => {
+
+  test('completed screen has all required elements', async ({ page }) => {
+    await page.goto('/');
+
+    const completed = page.locator('#completed');
+    const html = await completed.innerHTML();
+
+    // Core elements
+    expect(html).toContain('circle-tick.svg');
+    expect(html).toContain('info-filename');
+    expect(html).toContain('info-filesize');
+    expect(html).toContain('info-actions');
+  });
+
+  test('completed screen is hidden initially', async ({ page }) => {
+    await page.goto('/');
+
+    const completed = page.locator('#completed');
+    await expect(completed).toHaveClass(/hidden/);
+  });
+
+  test('completed screen has action buttons', async ({ page }) => {
+    await page.goto('/');
+
+    const actionBtn = page.locator('#completed .info-action');
+    expect(await actionBtn.count()).toBeGreaterThan(0);
+  });
+
+});
+
+test.describe('Dropzone Areas', () => {
+
+  test('send encrypted dropzone has correct content', async ({ page }) => {
+    await page.goto('/');
+
+    const sendZone = page.locator('.select-file-send');
+    await expect(sendZone).toBeVisible();
+
+    const text = await sendZone.textContent();
+    expect(text).toContain('Send encrypted');
+    expect(text).toContain('mailbox');
+  });
+
+  test('quick send dropzone has correct content', async ({ page }) => {
+    await page.goto('/');
+
+    const quickZone = page.locator('.select-file-quick');
+    await expect(quickZone).toBeVisible();
+
+    const text = await quickZone.textContent();
+    expect(text).toContain('quick');
+    expect(text).toContain('unencrypted');
+  });
+
+  test('store encrypted dropzone exists', async ({ page }) => {
+    await page.goto('/');
+
+    // Store zone is hidden by default but should exist
+    const storeZone = page.locator('.select-file-store');
+    expect(await storeZone.count()).toBe(1);
+  });
+
+  test('main instruction area has select action', async ({ page }) => {
+    await page.goto('/');
+
+    const selectAction = page.locator('.select-file-action');
+    await expect(selectAction).toBeVisible();
+    await expect(selectAction).toHaveText(/select/i);
+  });
+
+});
+
 test.describe('Download Page', () => {
 
   const testRef = 'a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd';

@@ -9,9 +9,10 @@ import { getBee, getDefaultStampId } from './client'
 const LOCAL_BEE = 'http://localhost:1633'
 
 // FDS Gateway as fallback (via proxy in dev)
+// Use bee-1 gateway consistently for both upload and download
 const FDS_GATEWAY = import.meta.env.DEV
   ? '/api/swarm'
-  : 'https://gateway.fairdatasociety.org'
+  : 'https://bee-1.fairdatasociety.org'
 
 /**
  * Check if local Bee node is available with a usable stamp

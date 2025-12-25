@@ -16,9 +16,9 @@ class App extends Component {
 
     let loc;
     if(this.props.isList === true){
-      loc = this.props.routerArgs.location.pathname.replace('download-list/','bzz-list:/')      
+      loc = this.props.routerArgs.location.pathname.replace('download-list/','/bzz/')
     }else{
-      loc = this.props.routerArgs.location.pathname.replace('download/','bzz:/');
+      loc = this.props.routerArgs.location.pathname.replace('download/','/bzz/');
     }
 
     let secs = this.props.routerArgs.location.pathname.split('/');

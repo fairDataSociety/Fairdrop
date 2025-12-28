@@ -10,6 +10,7 @@ import { downloadFile, downloadData, triggerDownload } from './swarm/download';
 import { generateKeyPair, encryptFile, decryptFile, encryptData, decryptData, hexToBytes, bytesToHex } from './swarm/encryption';
 import { getAllStamps, getStamp, requestSponsoredStamp, isStampUsable } from './swarm/stamps';
 import { getBeeUrl } from './swarm/client';
+import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -521,6 +522,61 @@ class FDS {
       console.error('RestoreAccount error:', error);
       throw error;
     }
+  }
+
+  /**
+   * Connect with MetaMask wallet
+   */
+  async ConnectWallet(feedbackCb) {
+    try {
+      feedbackCb?.('Connecting to MetaMask...');
+
+      const { address, signer } = await connectMetaMask();
+
+      feedbackCb?.('Please sign the message to derive your encryption keys...');
+
+      // Derive encryption keys from wallet signature
+      const { privateKey, publicKey } = await deriveEncryptionKeys(signer);
+
+      // Create account data
+      const subdomain = formatAddress(address); // Use short address as subdomain
+      const accountData = {
+        subdomain,
+        address,
+        publicKey: bytesToHex(publicKey),
+        privateKey: bytesToHex(privateKey),
+        passwordHash: '', // No password for wallet accounts
+        isWalletAccount: true,
+        created: Date.now()
+      };
+
+      this._saveAccount(accountData);
+
+      feedbackCb?.('Wallet connected!');
+
+      // Create and set as current account
+      this.currentAccount = new Account(accountData);
+
+      return this.currentAccount;
+    } catch (error) {
+      console.error('ConnectWallet error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check if MetaMask is available
+   */
+  isMetaMaskAvailable() {
+    return typeof window !== 'undefined' && typeof window.ethereum !== 'undefined';
+  }
+
+  /**
+   * Disconnect wallet
+   */
+  disconnectWallet() {
+    disconnectWallet();
+    this.currentAccount = null;
   }
 
   // Private methods

@@ -10,7 +10,7 @@ import * as secp256k1 from '@noble/secp256k1'
  * @returns {Object} Object with privateKey (Uint8Array) and publicKey (Uint8Array)
  */
 export const generateKeyPair = () => {
-  const privateKey = secp256k1.utils.randomPrivateKey()
+  const privateKey = secp256k1.utils.randomSecretKey()
   const publicKey = secp256k1.getPublicKey(privateKey)
   return { privateKey, publicKey }
 }

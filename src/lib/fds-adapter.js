@@ -11,6 +11,7 @@ import { generateKeyPair, encryptFile, decryptFile, encryptData, decryptData, he
 import { getAllStamps, getStamp, requestSponsoredStamp, isStampUsable } from './swarm/stamps';
 import { getBeeUrl } from './swarm/client';
 import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet';
+import { resolveRecipient, isENSName, checkFairdropSubdomain } from './ens';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -288,20 +289,33 @@ class Account {
 
   // Private helper methods
 
-  _lookupPublicKey(recipient) {
+  async _lookupPublicKey(recipient) {
     // First check local mailboxes
     const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
     if (mailboxes[recipient]) {
       return mailboxes[recipient].publicKey;
     }
 
-    // TODO: ENS lookup
-    // For now, if recipient looks like a hex public key, use it directly
+    // If recipient looks like a hex public key, use it directly
     if (recipient.length === 66 && recipient.startsWith('0x')) {
       return recipient.slice(2);
     }
     if (recipient.length === 64 && /^[a-fA-F0-9]+$/.test(recipient)) {
       return recipient;
+    }
+
+    // Try ENS resolution (supports ENS names and fairdrop.eth subdomains)
+    try {
+      const result = await resolveRecipient(recipient);
+      if (result.publicKey) {
+        console.log(`[ENS] Resolved ${recipient} via ${result.method}${result.ensName ? ` (${result.ensName})` : ''}`);
+        return result.publicKey;
+      }
+      if (result.method === 'ens-no-key' || result.method === 'fairdrop-no-key') {
+        console.log(`[ENS] Found ${result.ensName} but no Fairdrop public key set`);
+      }
+    } catch (error) {
+      console.error('[ENS] Resolution error:', error);
     }
 
     return null;
@@ -356,8 +370,18 @@ class AccountManager {
       return false;
     }
 
-    // TODO: Check ENS registry
-    // For now, names are available if not in local storage
+    // Check if fairdrop.eth subdomain is taken
+    try {
+      const result = await checkFairdropSubdomain(name);
+      if (result.exists) {
+        console.log(`[ENS] Subdomain ${result.ensName} already registered`);
+        return false;
+      }
+    } catch (error) {
+      // ENS check failed, allow registration locally
+      console.error('[ENS] Availability check error:', error);
+    }
+
     return true;
   }
 

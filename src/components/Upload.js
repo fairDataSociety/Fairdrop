@@ -156,9 +156,17 @@ class Upload extends Component{
         ).catch((error) => {
           this.setState({feedbackMessage: error.message});
           this.setState({fileWasUploaded: true});
-        }).then(()=>{
-            this.setState({feedbackMessage: "file uploaded, processing into Swarm."});              
-            this.setState({fileWasUploaded: true}); 
+          throw error;
+        }).then((result) => {
+            const reference = result.hash;
+            const file = window.files[0];
+            const uploadedHashLink = window.location.protocol + '//' + window.location.host + this.props.appRoot + '/download/' + reference + '/' + encodeURIComponent(file.name) + '?size=' + file.size;
+            this.setState({
+              feedbackMessage: "File sent successfully!",
+              fileWasUploaded: true,
+              uploadedHashLink: uploadedHashLink
+            });
+            return uploadedHashLink;
         });
       }else if(
         this.state.isStoringFile === false &&

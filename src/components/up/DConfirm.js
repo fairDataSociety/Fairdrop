@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 import Utils from '../../services/Utils';
+import { ENS_DOMAIN } from '../../lib/ens';
 
 class DConfirm extends Component{
 
@@ -81,11 +82,11 @@ class DConfirm extends Component{
                   </div>
                   <div className="confirm-ui-item">
                     <div className="confirm-ui-type">Sender</div>
-                    <div className="confirm-ui-value">{this.props.selectedMailbox.subdomain}.datafund.eth</div>
+                    <div className="confirm-ui-value">{this.props.selectedMailbox.subdomain}.{ENS_DOMAIN}</div>
                   </div>
                   <div className="confirm-ui-item confirm-ui-item-last">
                     <div className="confirm-ui-type">Recipient</div>
-                    <div className="confirm-ui-value">{this.props.parentState.addressee}.datafund.eth</div>
+                    <div className="confirm-ui-value">{this.props.parentState.addressee}.{ENS_DOMAIN}</div>
                   </div>
                 </div>
                 <div className="btn-grp">

@@ -74,7 +74,7 @@ class FCompleted extends Component{
                 </div>
               }
 
-              {(this.props.parentState.isQuickFile === true && this.props.parentState.uploadedHashLink) &&
+              {this.props.parentState.uploadedHashLink &&
                 <div>
                   <div className="feedback-swarmhash-message">File Download Link</div>
                   {this.props.parentState.uploadedHashLink && 

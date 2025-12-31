@@ -10,7 +10,7 @@ const FAIRDROP_KEY = 'io.fairdrop.publickey';
 
 // Configurable ENS domain for Fairdrop subdomains
 // Use VITE_ENS_DOMAIN to override (e.g., "fairdropdev.eth" for testing)
-const ENS_DOMAIN = import.meta.env.VITE_ENS_DOMAIN || 'fairdrop.eth';
+export const ENS_DOMAIN = import.meta.env.VITE_ENS_DOMAIN || 'fairdrop.eth';
 
 // Fallback public RPC endpoints
 const RPC_ENDPOINTS = [

@@ -47,9 +47,23 @@ export const createInbox = async (name, options = {}) => {
 
   // Try to set up GSOC inbox for network-level privacy
   let gsocParams = null
-  if (options.targetOverlay) {
+  let targetOverlay = options.targetOverlay
+
+  // If no overlay provided, try to get from local Bee node
+  if (!targetOverlay) {
     try {
-      const { params } = await mineInboxKey(options.targetOverlay, options.proximity || 16)
+      const bee = getBee()
+      const addresses = await bee.getNodeAddresses()
+      targetOverlay = addresses.overlay
+      console.log('[Multibox] Got overlay from local Bee:', targetOverlay?.slice(0, 10))
+    } catch (error) {
+      console.warn('[Multibox] Could not get Bee overlay:', error.message)
+    }
+  }
+
+  if (targetOverlay) {
+    try {
+      const { params } = await mineInboxKey(targetOverlay, options.proximity || 8)
       gsocParams = {
         ...params,
         recipientPublicKey: bytesToHex(publicKey)

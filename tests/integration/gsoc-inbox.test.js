@@ -389,8 +389,8 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
     });
 
     it('encrypted send includes GSOC flow when inbox params available', async () => {
-      const alice = await fds.CreateAccount('gsoc-alice', 'password');
-      const bob = await fds.CreateAccount('gsoc-bob', 'password');
+      const alice = await fds.CreateAccount('gsoc-alice', 'password', () => {});
+      const bob = await fds.CreateAccount('gsoc-bob', 'password', () => {});
 
       // Simulate bob having inbox params (normally from ENS)
       const bobInboxParams = {
@@ -417,10 +417,10 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
 
       // Restore console.log
       console.log = originalLog;
-    });
+    }, 60000);
 
     it('sendAnonymous creates message without sender info', async () => {
-      const alice = await fds.CreateAccount('gsoc-anon-alice', 'password');
+      const alice = await fds.CreateAccount('gsoc-anon-alice', 'password', () => {});
       const recipientKeys = encryption.generateKeyPair();
 
       // Create mock inbox params for recipient
@@ -436,10 +436,10 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
 
       // The method signature is (recipientPublicKey, inboxParams, file, feedbackCb, progressCb)
       // Note: Full test would require mocking bee.gsocMine which is complex
-    });
+    }, 60000);
 
     it('messages method attempts GSOC poll for received type', async () => {
-      const bob = await fds.CreateAccount('gsoc-poll-bob', 'password');
+      const bob = await fds.CreateAccount('gsoc-poll-bob', 'password', () => {});
 
       // Spy on console to verify GSOC poll is attempted
       const consoleLogs = [];

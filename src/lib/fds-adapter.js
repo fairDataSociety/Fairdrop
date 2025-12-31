@@ -360,12 +360,18 @@ class Account {
   async _getMyInboxParams() {
     // Check localStorage for locally stored inbox params
     const paramsKey = `${this.subdomain}_inbox_params`;
+    console.log('[GSOC] Getting my inbox params, key:', paramsKey);
     try {
       const stored = localStorage.getItem(paramsKey);
+      console.log('[GSOC] Stored params found:', !!stored);
       if (stored) {
-        return JSON.parse(stored);
+        const params = JSON.parse(stored);
+        console.log('[GSOC] Parsed params:', { overlay: params.targetOverlay?.slice(0, 10), hasBaseId: !!params.baseIdentifier });
+        return params;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('[GSOC] Failed to parse stored params:', e);
+    }
 
     // Try to look up from ENS (if user has set up their ENS record)
     try {
@@ -621,24 +627,33 @@ class Account {
    * @returns {Promise<{publicKey: string|null, inboxParams: Object|null}>}
    */
   async _lookupRecipient(recipient) {
+    console.log('[GSOC] Looking up recipient:', recipient);
+
     // First check local mailboxes
     const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
+    console.log('[GSOC] Available mailboxes:', Object.keys(mailboxes));
+
     if (mailboxes[recipient]) {
       // Local mailbox - check for inbox params in mailbox OR separate storage
       let inboxParams = mailboxes[recipient].inboxParams || null;
+      console.log('[GSOC] Found mailbox, inboxParams in mailbox:', !!inboxParams);
 
       // Also check the separate inbox params storage (from setupGSOCInbox)
       if (!inboxParams) {
-        const storedParams = localStorage.getItem(`${recipient}_inbox_params`);
+        const paramsKey = `${recipient}_inbox_params`;
+        const storedParams = localStorage.getItem(paramsKey);
+        console.log('[GSOC] Checking separate storage key:', paramsKey, '- found:', !!storedParams);
         if (storedParams) {
           try {
             inboxParams = JSON.parse(storedParams);
+            console.log('[GSOC] Parsed inbox params from separate storage');
           } catch (e) {
             console.warn('[GSOC] Failed to parse stored inbox params:', e);
           }
         }
       }
 
+      console.log('[GSOC] Final lookup result - publicKey:', !!mailboxes[recipient].publicKey, 'inboxParams:', !!inboxParams);
       return { publicKey: mailboxes[recipient].publicKey, inboxParams };
     }
 
@@ -884,10 +899,20 @@ class FDS {
 
       this._saveAccount(accountData);
 
-      feedbackCb?.('Account created!');
-
       // Create and set as current account
       this.currentAccount = new Account(accountData);
+
+      // Try to set up GSOC inbox automatically (if Bee node available)
+      feedbackCb?.('Setting up inbox...');
+      try {
+        await this.currentAccount.setupGSOCInbox();
+        console.log('[GSOC] Inbox set up automatically for', subdomain);
+      } catch (error) {
+        console.warn('[GSOC] Could not set up inbox automatically:', error.message);
+        // Don't fail account creation - inbox can be set up later
+      }
+
+      feedbackCb?.('Account created!');
 
       return this.currentAccount;
     } catch (error) {

@@ -63,8 +63,20 @@ export function createMockSwarmServer(port = 0) {
       return;
     }
 
-    // Health check
-    if (req.method === 'GET' && url.pathname === '/') {
+    // GET /bytes/{reference} - Download raw data (bee-js downloadData)
+    if (req.method === 'GET' && url.pathname.startsWith('/bytes/')) {
+      handleBytesDownload(req, res, url.pathname);
+      return;
+    }
+
+    // GET /chunks/{reference} - Download chunk data (bee-js alternative)
+    if (req.method === 'GET' && url.pathname.startsWith('/chunks/')) {
+      handleBytesDownload(req, res, url.pathname);
+      return;
+    }
+
+    // Health check - both /health and / for compatibility
+    if (req.method === 'GET' && (url.pathname === '/health' || url.pathname === '/')) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ status: 'ok', version: 'mock-1.0.0' }));
       return;
@@ -105,7 +117,13 @@ export function createMockSwarmServer(port = 0) {
 function handleUpload(req, res) {
   const chunks = [];
 
-  req.on('data', chunk => chunks.push(chunk));
+  console.log(`[Mock] Upload request - Method: ${req.method}, URL: ${req.url}`);
+  console.log(`[Mock] Upload headers:`, JSON.stringify(req.headers, null, 2));
+
+  req.on('data', chunk => {
+    console.log(`[Mock] Received chunk: ${chunk.length} bytes`);
+    chunks.push(chunk);
+  });
 
   req.on('end', () => {
     const buffer = Buffer.concat(chunks);
@@ -125,6 +143,7 @@ function handleUpload(req, res) {
     });
 
     console.log(`[Mock] Uploaded: ${filename} (${buffer.length} bytes) -> ${reference}`);
+    console.log(`[Mock] Data preview:`, buffer.slice(0, 200).toString('utf8'));
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ reference }));
@@ -138,7 +157,7 @@ function handleUpload(req, res) {
 }
 
 /**
- * Handle file download
+ * Handle file download (bzz endpoint - with metadata)
  */
 function handleDownload(req, res, pathname) {
   // Extract reference from path: /bzz/{reference} or /bzz/{reference}/{filename}
@@ -163,6 +182,35 @@ function handleDownload(req, res, pathname) {
   res.writeHead(200, {
     'Content-Type': file.contentType,
     'Content-Disposition': `attachment; filename="${file.filename}"`
+  });
+  res.end(file.data);
+}
+
+/**
+ * Handle bytes/chunks download (raw data without metadata)
+ */
+function handleBytesDownload(req, res, pathname) {
+  // Extract reference from path: /bytes/{reference} or /chunks/{reference}
+  const parts = pathname.split('/').filter(Boolean);
+  const reference = parts[1];
+
+  const file = uploadedFiles.get(reference);
+
+  if (!file) {
+    console.log(`[Mock] Bytes download for unknown reference: ${reference}`);
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Reference not found' }));
+    return;
+  }
+
+  console.log(`[Mock] Bytes downloaded: ${reference} (${file.data.length} bytes)`);
+  console.log(`[Mock] Data type: ${file.data.constructor.name}`);
+  console.log(`[Mock] First 100 bytes:`, file.data.slice(0, 100).toString('utf8'));
+
+  // Ensure we send proper binary data with correct headers
+  res.writeHead(200, {
+    'Content-Type': 'application/octet-stream',
+    'Content-Length': file.data.length
   });
   res.end(file.data);
 }

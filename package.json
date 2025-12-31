@@ -8,8 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "playwright test",
-    "test:unit": "vitest run",
-    "test:unit:watch": "vitest",
+    "test:unit": "vitest run --exclude tests/smoke/**",
+    "test:unit:watch": "vitest --exclude tests/smoke/**",
+    "test:smoke": "vitest run tests/smoke/",
     "test:all": "vitest run && playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed"
@@ -33,6 +34,7 @@
     "react-tooltip": "^5.25.0"
   },
   "devDependencies": {
+    "@peculiar/webcrypto": "^1.5.0",
     "@playwright/test": "^1.57.0",
     "@testing-library/react": "^16.3.1",
     "@vitejs/plugin-react": "^4.2.0",

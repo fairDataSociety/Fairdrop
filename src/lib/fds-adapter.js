@@ -287,6 +287,76 @@ class Account {
     };
   }
 
+  /**
+   * Receive and decrypt a message by Swarm reference
+   * @param {string} reference - Swarm reference of the encrypted message
+   * @returns {Promise<{file: Blob, metadata: Object, from: string, timestamp: number}>}
+   */
+  async receiveMessage(reference) {
+    try {
+      // 1. Download encrypted payload from Swarm
+      const { data } = await downloadFile(reference);
+
+      // Handle different data formats (Uint8Array, Buffer, string, ArrayBuffer)
+      let payloadText;
+      if (typeof data === 'string') {
+        payloadText = data;
+      } else if (data instanceof ArrayBuffer) {
+        payloadText = new TextDecoder().decode(new Uint8Array(data));
+      } else if (data && data.buffer instanceof ArrayBuffer) {
+        // Uint8Array or similar TypedArray
+        payloadText = new TextDecoder().decode(data);
+      } else if (Buffer.isBuffer(data)) {
+        payloadText = data.toString('utf-8');
+      } else {
+        // Try to extract bytes from bee-js Bytes class or similar
+        const bytes = data?.bytes || data;
+        if (bytes instanceof Uint8Array) {
+          payloadText = new TextDecoder().decode(bytes);
+        } else {
+          throw new Error(`Unsupported data type: ${typeof data}`);
+        }
+      }
+
+      const payload = JSON.parse(payloadText);
+
+      // 2. Verify message format
+      if (payload.type !== 'encrypted-file') {
+        throw new Error('Invalid message format');
+      }
+
+      // 3. Decrypt with our private key
+      const decrypted = await decryptFile({
+        ephemeralPublicKey: hexToBytes(payload.ephemeralPublicKey),
+        ciphertext: hexToBytes(payload.ciphertext),
+        iv: hexToBytes(payload.iv)
+      }, hexToBytes(this.privateKey));
+
+      // 4. Store in received messages
+      const message = {
+        reference,
+        from: payload.from,
+        fromPublicKey: payload.fromPublicKey,
+        filename: decrypted.metadata.name,
+        size: decrypted.metadata.size,
+        timestamp: payload.timestamp,
+        receivedAt: Date.now()
+      };
+      this._addMessage('received', message);
+
+      return {
+        file: decrypted.file,
+        metadata: decrypted.metadata,
+        from: payload.from,
+        fromPublicKey: payload.fromPublicKey,
+        timestamp: payload.timestamp
+      };
+    } catch (error) {
+      console.error('Receive error:', error);
+      throw error;
+    }
+  }
+
   // Private helper methods
 
   async _lookupPublicKey(recipient) {
@@ -394,8 +464,16 @@ class AccountManager {
   static async lookupRecipient(recipient) {
     // First check local mailboxes
     const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
-    if (mailboxes[recipient]) {
-      return { exists: true, publicKey: mailboxes[recipient].publicKey };
+    console.log('[lookupRecipient] Searching for:', recipient);
+    console.log('[lookupRecipient] Local mailboxes:', Object.keys(mailboxes));
+
+    // Check with case-insensitive matching
+    const recipientLower = recipient.toLowerCase();
+    const matchedKey = Object.keys(mailboxes).find(k => k.toLowerCase() === recipientLower);
+
+    if (matchedKey && mailboxes[matchedKey]) {
+      console.log('[lookupRecipient] Found local mailbox:', matchedKey);
+      return { exists: true, publicKey: mailboxes[matchedKey].publicKey };
     }
 
     // If recipient looks like a hex public key, use it directly

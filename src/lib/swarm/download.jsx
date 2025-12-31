@@ -1,10 +1,15 @@
 /**
  * File Download Module
  * Handles downloading files from Swarm
- * Tries local Bee node first, then public gateways
+ * Tries configured Bee node first, then local, then public gateways
  */
 
 import { Bee } from '@ethersphere/bee-js'
+
+// Get configured Bee URL from environment (for testing and custom setups)
+const CONFIGURED_BEE = typeof process !== 'undefined'
+  ? process.env.VITE_BEE_URL
+  : import.meta.env?.VITE_BEE_URL
 
 // Bee endpoints to try in order
 const LOCAL_BEE = 'http://localhost:1633'
@@ -67,7 +72,13 @@ export const downloadFile = async (reference, options = {}) => {
   // Build list of endpoints to try
   const endpoints = []
 
-  // Check if local Bee is available first
+  // If configured Bee URL is set (e.g., for testing), try it first
+  if (CONFIGURED_BEE && CONFIGURED_BEE !== LOCAL_BEE) {
+    console.log(`Using configured Bee URL: ${CONFIGURED_BEE}`)
+    endpoints.push(CONFIGURED_BEE)
+  }
+
+  // Check if local Bee is available
   if (await isLocalBeeAvailable()) {
     console.log('Local Bee node available, trying it first')
     endpoints.push(LOCAL_BEE)
@@ -103,6 +114,11 @@ export const downloadFile = async (reference, options = {}) => {
 export const downloadData = async (reference) => {
   const endpoints = []
 
+  // If configured Bee URL is set, try it first
+  if (CONFIGURED_BEE && CONFIGURED_BEE !== LOCAL_BEE) {
+    endpoints.push(CONFIGURED_BEE)
+  }
+
   if (await isLocalBeeAvailable()) {
     endpoints.push(LOCAL_BEE)
   }
@@ -128,6 +144,11 @@ export const downloadData = async (reference) => {
  */
 export const checkReference = async (reference) => {
   const endpoints = []
+
+  // If configured Bee URL is set, try it first
+  if (CONFIGURED_BEE && CONFIGURED_BEE !== LOCAL_BEE) {
+    endpoints.push(CONFIGURED_BEE)
+  }
 
   if (await isLocalBeeAvailable()) {
     endpoints.push(LOCAL_BEE)

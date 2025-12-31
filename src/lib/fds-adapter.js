@@ -624,8 +624,21 @@ class Account {
     // First check local mailboxes
     const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
     if (mailboxes[recipient]) {
-      // Local mailbox - try to get inbox params if they have ENS set up
-      const inboxParams = mailboxes[recipient].inboxParams || null;
+      // Local mailbox - check for inbox params in mailbox OR separate storage
+      let inboxParams = mailboxes[recipient].inboxParams || null;
+
+      // Also check the separate inbox params storage (from setupGSOCInbox)
+      if (!inboxParams) {
+        const storedParams = localStorage.getItem(`${recipient}_inbox_params`);
+        if (storedParams) {
+          try {
+            inboxParams = JSON.parse(storedParams);
+          } catch (e) {
+            console.warn('[GSOC] Failed to parse stored inbox params:', e);
+          }
+        }
+      }
+
       return { publicKey: mailboxes[recipient].publicKey, inboxParams };
     }
 

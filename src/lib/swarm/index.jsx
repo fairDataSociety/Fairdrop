@@ -9,6 +9,7 @@ export * from './upload'
 export * from './download'
 export * from './stamps'
 export * from './multibox'
+export * from './gsoc'
 
 // Default exports combined
 import client from './client'
@@ -17,6 +18,7 @@ import upload from './upload'
 import download from './download'
 import stamps from './stamps'
 import multibox from './multibox'
+import gsoc from './gsoc'
 
 export default {
   client,
@@ -24,5 +26,6 @@ export default {
   upload,
   download,
   stamps,
-  multibox
+  multibox,
+  gsoc
 }

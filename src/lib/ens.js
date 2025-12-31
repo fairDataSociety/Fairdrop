@@ -8,6 +8,11 @@ import { ethers } from 'ethers';
 // ENS text record key for Fairdrop public keys
 const FAIRDROP_KEY = 'io.fairdrop.publickey';
 
+// ENS text record keys for GSOC inbox params
+const INBOX_OVERLAY_KEY = 'io.fairdrop.inbox.overlay';
+const INBOX_ID_KEY = 'io.fairdrop.inbox.id';
+const INBOX_PROX_KEY = 'io.fairdrop.inbox.prox';
+
 // Configurable ENS domain for Fairdrop subdomains
 // Use VITE_ENS_DOMAIN to override (e.g., "fairdropdev.eth" for testing)
 export const ENS_DOMAIN = import.meta.env.VITE_ENS_DOMAIN || 'fairdrop.eth';
@@ -114,6 +119,40 @@ export const getFairdropPublicKey = async (ensName) => {
 };
 
 /**
+ * Get GSOC inbox params from ENS text records
+ * These params allow anyone to derive the inbox's GSOC key and send messages
+ *
+ * @param {string} ensName - ENS name
+ * @returns {Promise<{targetOverlay: string, baseIdentifier: string, proximity: number, recipientPublicKey: string}|null>}
+ */
+export const getInboxParams = async (ensName) => {
+  try {
+    // Fetch all inbox params in parallel
+    const [overlay, baseId, prox, publicKey] = await Promise.all([
+      getENSTextRecord(ensName, INBOX_OVERLAY_KEY),
+      getENSTextRecord(ensName, INBOX_ID_KEY),
+      getENSTextRecord(ensName, INBOX_PROX_KEY),
+      getFairdropPublicKey(ensName)
+    ]);
+
+    // Require at least overlay and baseIdentifier
+    if (!overlay || !baseId) {
+      return null;
+    }
+
+    return {
+      targetOverlay: overlay,
+      baseIdentifier: baseId,
+      proximity: parseInt(prox) || 16,
+      recipientPublicKey: publicKey
+    };
+  } catch (error) {
+    console.error('ENS inbox params error:', error);
+    return null;
+  }
+};
+
+/**
  * Reverse lookup: get ENS name for address
  * @param {string} address - Ethereum address
  * @returns {Promise<string|null>} ENS name or null
@@ -212,36 +251,44 @@ export const resolveRecipient = async (recipient) => {
 
   // Check if it's an ENS name
   if (isENSName(cleaned)) {
-    const publicKey = await getFairdropPublicKey(cleaned);
+    const [publicKey, inboxParams] = await Promise.all([
+      getFairdropPublicKey(cleaned),
+      getInboxParams(cleaned)
+    ]);
     if (publicKey) {
-      return { publicKey, method: 'ens', ensName: cleaned };
+      return { publicKey, method: 'ens', ensName: cleaned, inboxParams };
     }
     // ENS name exists but no Fairdrop key
-    return { publicKey: null, method: 'ens-no-key', ensName: cleaned };
+    return { publicKey: null, method: 'ens-no-key', ensName: cleaned, inboxParams: null };
   }
 
   // Try as fairdrop.eth subdomain
   if (/^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$/.test(cleaned.toLowerCase())) {
     const result = await checkFairdropSubdomain(cleaned.toLowerCase());
     if (result.publicKey) {
-      return { publicKey: result.publicKey, method: 'fairdrop-subdomain', ensName: result.ensName };
+      const inboxParams = await getInboxParams(result.ensName);
+      return { publicKey: result.publicKey, method: 'fairdrop-subdomain', ensName: result.ensName, inboxParams };
     }
     if (result.exists) {
-      return { publicKey: null, method: 'fairdrop-no-key', ensName: result.ensName };
+      return { publicKey: null, method: 'fairdrop-no-key', ensName: result.ensName, inboxParams: null };
     }
   }
 
-  return { publicKey: null, method: 'not-found', ensName: null };
+  return { publicKey: null, method: 'not-found', ensName: null, inboxParams: null };
 };
 
 export default {
   resolveENSName,
   getENSTextRecord,
   getFairdropPublicKey,
+  getInboxParams,
   lookupAddress,
   isENSName,
   checkFairdropSubdomain,
   resolveRecipient,
   FAIRDROP_KEY,
-  ENS_DOMAIN
+  ENS_DOMAIN,
+  INBOX_OVERLAY_KEY,
+  INBOX_ID_KEY,
+  INBOX_PROX_KEY
 };

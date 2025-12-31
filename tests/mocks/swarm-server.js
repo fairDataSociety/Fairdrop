@@ -11,6 +11,9 @@ import crypto from 'crypto';
 // Store uploaded files in memory for verification
 const uploadedFiles = new Map();
 
+// Store SOCs (Single Owner Chunks) for GSOC testing
+const socs = new Map(); // key = `${owner}:${identifier}` -> data
+
 /**
  * Generate a valid-looking Swarm reference (64 hex chars)
  */
@@ -82,6 +85,18 @@ export function createMockSwarmServer(port = 0) {
       return;
     }
 
+    // POST /soc/{owner}/{identifier} - Write SOC (GSOC send)
+    if (req.method === 'POST' && url.pathname.match(/^\/soc\/0x[a-fA-F0-9]+\/0x[a-fA-F0-9]+$/)) {
+      handleSOCWrite(req, res, url.pathname);
+      return;
+    }
+
+    // GET /soc/{owner}/{identifier} - Read SOC
+    if (req.method === 'GET' && url.pathname.match(/^\/soc\/0x[a-fA-F0-9]+\/0x[a-fA-F0-9]+$/)) {
+      handleSOCRead(req, res, url.pathname);
+      return;
+    }
+
     // Unknown endpoint
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Not found', path: url.pathname }));
@@ -107,7 +122,13 @@ export function createMockSwarmServer(port = 0) {
     getPort: () => actualPort,
     getUrl: () => `http://localhost:${actualPort}`,
     getUploadedFiles: () => uploadedFiles,
-    clearFiles: () => uploadedFiles.clear()
+    clearFiles: () => uploadedFiles.clear(),
+    getSOCs: () => socs,
+    clearSOCs: () => socs.clear(),
+    clearAll: () => {
+      uploadedFiles.clear();
+      socs.clear();
+    }
   };
 }
 
@@ -213,6 +234,73 @@ function handleBytesDownload(req, res, pathname) {
     'Content-Length': file.data.length
   });
   res.end(file.data);
+}
+
+/**
+ * Handle SOC write (GSOC send)
+ * Path format: /soc/{owner}/{identifier}
+ */
+function handleSOCWrite(req, res, pathname) {
+  const parts = pathname.split('/').filter(Boolean);
+  const owner = parts[1].toLowerCase();
+  const identifier = parts[2].toLowerCase();
+  const key = `${owner}:${identifier}`;
+
+  const chunks = [];
+
+  req.on('data', chunk => chunks.push(chunk));
+
+  req.on('end', () => {
+    const data = Buffer.concat(chunks);
+    const reference = generateReference();
+
+    // Store the SOC
+    socs.set(key, {
+      data,
+      reference,
+      owner,
+      identifier,
+      uploadedAt: new Date().toISOString()
+    });
+
+    console.log(`[Mock] SOC written: ${key} (${data.length} bytes)`);
+    console.log(`[Mock] SOC data preview:`, data.slice(0, 200).toString('utf8'));
+
+    res.writeHead(201, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ reference }));
+  });
+
+  req.on('error', (err) => {
+    console.error('[Mock] SOC write error:', err);
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: err.message }));
+  });
+}
+
+/**
+ * Handle SOC read
+ * Path format: /soc/{owner}/{identifier}
+ */
+function handleSOCRead(req, res, pathname) {
+  const parts = pathname.split('/').filter(Boolean);
+  const owner = parts[1].toLowerCase();
+  const identifier = parts[2].toLowerCase();
+  const key = `${owner}:${identifier}`;
+
+  const soc = socs.get(key);
+
+  if (!soc) {
+    console.log(`[Mock] SOC not found: ${key}`);
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'SOC not found', code: 'not found' }));
+    return;
+  }
+
+  console.log(`[Mock] SOC read: ${key} (${soc.data.length} bytes)`);
+
+  // Return SOC data in the format bee-js expects
+  res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+  res.end(soc.data);
 }
 
 // CLI: Run standalone

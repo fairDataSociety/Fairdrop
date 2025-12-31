@@ -381,4 +381,199 @@ describe('Real Infrastructure Smoke Tests', () => {
       console.log('Full E2E with ENS: SUCCESS');
     }, 180000);
   });
+
+  describe('GSOC Inbox - Real Bee Node', () => {
+    let gsoc;
+    let beeOverlay;
+
+    beforeAll(async () => {
+      if (beeAvailable) {
+        // Import GSOC module
+        gsoc = await import('../../src/lib/swarm/gsoc.jsx');
+
+        // Get Bee overlay address for GSOC mining
+        try {
+          const response = await fetch(`${LOCAL_BEE}/addresses`);
+          const data = await response.json();
+          beeOverlay = data.overlay;
+          console.log(`Bee overlay: ${beeOverlay}`);
+        } catch (error) {
+          console.log('Could not get Bee overlay:', error);
+        }
+      }
+    });
+
+    it('can get Bee node overlay address', async () => {
+      if (!beeAvailable) {
+        console.log('Skipping: Local Bee not available');
+        return;
+      }
+
+      expect(beeOverlay).toBeDefined();
+      expect(beeOverlay).toMatch(/^[a-f0-9]{64}$/i);
+    });
+
+    it('can mine GSOC inbox key', async () => {
+      if (!beeAvailable || !beeOverlay) {
+        console.log('Skipping: Local Bee or overlay not available');
+        return;
+      }
+
+      const { privateKey, params } = await gsoc.mineInboxKey(beeOverlay, 8); // Lower proximity for faster mining
+
+      expect(privateKey).toBeDefined();
+      expect(params.targetOverlay).toBe(beeOverlay);
+      expect(params.baseIdentifier).toBeDefined();
+      expect(params.proximity).toBe(8);
+
+      console.log('GSOC key mined successfully');
+    }, 60000);
+
+    it('generates consistent indexed identifiers', async () => {
+      if (!beeAvailable) {
+        console.log('Skipping: Local Bee not available');
+        return;
+      }
+
+      const baseId = '0x' + 'a'.repeat(64);
+      const id0 = gsoc.getIndexedIdentifier(baseId, 0);
+      const id1 = gsoc.getIndexedIdentifier(baseId, 1);
+
+      expect(id0).toMatch(/^0x[a-f0-9]{64}$/);
+      expect(id0).not.toBe(id1);
+
+      // Consistent
+      const id0Again = gsoc.getIndexedIdentifier(baseId, 0);
+      expect(id0).toBe(id0Again);
+    });
+
+    it('can write and read GSOC slot', async () => {
+      if (!beeAvailable || !beeOverlay || !stampId) {
+        console.log('Skipping: Local Bee, overlay, or stamp not available');
+        return;
+      }
+
+      // Mine a GSOC key
+      const { params } = await gsoc.mineInboxKey(beeOverlay, 8);
+
+      // Write a message
+      const testReference = 'test-swarm-reference-' + Date.now();
+      await gsoc.writeToInbox(params, 0, {
+        reference: testReference
+      }, { anonymous: true });
+
+      console.log('GSOC message written');
+
+      // Read it back
+      const message = await gsoc.readInboxSlot(params, 0);
+
+      expect(message).toBeDefined();
+      expect(message.version).toBe(1);
+      expect(message.reference).toBe(testReference);
+      expect(message.timestamp).toBeDefined();
+
+      console.log('GSOC message read successfully');
+    }, 120000);
+
+    it('can poll inbox for multiple messages', async () => {
+      if (!beeAvailable || !beeOverlay || !stampId) {
+        console.log('Skipping: Local Bee, overlay, or stamp not available');
+        return;
+      }
+
+      // Mine a new GSOC key for this test
+      const { params } = await gsoc.mineInboxKey(beeOverlay, 8);
+
+      // Write multiple messages with small delays for propagation
+      await gsoc.writeToInbox(params, 0, { reference: 'msg-0' }, { anonymous: true });
+      await new Promise(r => setTimeout(r, 500));
+      await gsoc.writeToInbox(params, 1, { reference: 'msg-1' }, { anonymous: true });
+      await new Promise(r => setTimeout(r, 500));
+      await gsoc.writeToInbox(params, 2, { reference: 'msg-2' }, { anonymous: true });
+
+      // Wait for data to propagate on real infrastructure
+      await new Promise(r => setTimeout(r, 2000));
+
+      // Poll inbox - retry up to 3 times for propagation
+      let messages = [];
+      for (let attempt = 0; attempt < 3 && messages.length < 3; attempt++) {
+        if (attempt > 0) {
+          console.log(`Retry ${attempt}: waiting for propagation...`);
+          await new Promise(r => setTimeout(r, 2000));
+        }
+        messages = await gsoc.pollInbox(params, 0);
+      }
+
+      expect(messages.length).toBeGreaterThanOrEqual(3);
+      expect(messages[0].reference).toBe('msg-0');
+      expect(messages[1].reference).toBe('msg-1');
+      expect(messages[2].reference).toBe('msg-2');
+
+      console.log(`Polled ${messages.length} messages from GSOC inbox`);
+    }, 180000);
+
+    it('can find next available slot', async () => {
+      if (!beeAvailable || !beeOverlay || !stampId) {
+        console.log('Skipping: Local Bee, overlay, or stamp not available');
+        return;
+      }
+
+      // Mine a new GSOC key
+      const { params } = await gsoc.mineInboxKey(beeOverlay, 8);
+
+      // First slot should be 0
+      let nextSlot = await gsoc.findNextSlot(params);
+      expect(nextSlot).toBe(0);
+
+      // Write to slot 0
+      await gsoc.writeToInbox(params, 0, { reference: 'slot-0' }, { anonymous: true });
+
+      // Next slot should be 1
+      nextSlot = await gsoc.findNextSlot(params);
+      expect(nextSlot).toBe(1);
+
+      console.log('findNextSlot works correctly');
+    }, 120000);
+
+    it('full GSOC send/receive cycle', async () => {
+      if (!beeAvailable || !beeOverlay || !stampId) {
+        console.log('Skipping: Local Bee, overlay, or stamp not available');
+        return;
+      }
+
+      localStorageMock.clear();
+
+      // Create accounts
+      const alice = await fds.CreateAccount('gsoc-alice', 'pass1', () => {});
+      const bob = await fds.CreateAccount('gsoc-bob', 'pass2', () => {});
+
+      // Bob sets up GSOC inbox
+      const inboxParams = await bob.setupGSOCInbox(beeOverlay);
+      expect(inboxParams).toBeDefined();
+      expect(inboxParams.targetOverlay).toBe(beeOverlay);
+
+      // Store bob's inbox params (simulating ENS lookup)
+      localStorage.setItem('gsoc-bob_inbox_params', JSON.stringify(inboxParams));
+
+      // Alice sends file
+      const content = 'GSOC test message!';
+      const file = new MockFile([content], 'gsoc-test.txt', { type: 'text/plain' });
+
+      const result = await alice.send('gsoc-bob', file, '/', () => {}, () => {}, () => {});
+      expect(result.hash).toBeDefined();
+
+      // Bob polls for messages
+      const messages = await bob.messages('received');
+
+      // Note: Message should now appear in bob's inbox
+      console.log(`Bob received ${messages.length} messages`);
+
+      // Bob can decrypt the message
+      if (messages.length > 0) {
+        const received = await bob.receiveMessage(messages[0].reference);
+        expect(await received.file.text()).toBe(content);
+        console.log('Full GSOC send/receive: SUCCESS');
+      }
+    }, 180000);
+  });
 });

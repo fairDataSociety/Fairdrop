@@ -14,14 +14,23 @@ import {
   bytesToHex,
   hexToBytes
 } from './encryption'
+import {
+  mineInboxKey,
+  writeToInbox,
+  findNextSlot,
+  pollInbox as gsocPollInbox,
+  decryptMetadata
+} from './gsoc'
 
 /**
  * Create a new inbox identity for receiving anonymous uploads
  * Generates a keypair and stores the private key locally
  * @param {string} name - Name/identifier for this inbox
- * @returns {Object} Inbox info with publicKey (to share) and id
+ * @param {Object} options - Options for inbox creation
+ * @param {string} options.targetOverlay - Bee node overlay for GSOC mining (optional)
+ * @returns {Object} Inbox info with publicKey (to share), id, and optionally gsocParams
  */
-export const createInbox = (name) => {
+export const createInbox = async (name, options = {}) => {
   const { privateKey, publicKey } = generateKeyPair()
 
   // Create inbox ID from name
@@ -36,6 +45,22 @@ export const createInbox = (name) => {
     created: Date.now()
   }
 
+  // Try to set up GSOC inbox for network-level privacy
+  let gsocParams = null
+  if (options.targetOverlay) {
+    try {
+      const { params } = await mineInboxKey(options.targetOverlay, options.proximity || 16)
+      gsocParams = {
+        ...params,
+        recipientPublicKey: bytesToHex(publicKey)
+      }
+      inboxData.gsocParams = gsocParams
+      console.log('[Multibox] GSOC inbox created for', name)
+    } catch (error) {
+      console.warn('[Multibox] Failed to set up GSOC inbox:', error)
+    }
+  }
+
   // Get existing inboxes
   const inboxes = JSON.parse(localStorage.getItem('fairdrop_inboxes') || '{}')
   inboxes[inboxId] = inboxData
@@ -44,7 +69,8 @@ export const createInbox = (name) => {
   return {
     id: inboxId,
     name,
-    publicKey: bytesToHex(publicKey)
+    publicKey: bytesToHex(publicKey),
+    gsocParams
   }
 }
 
@@ -116,16 +142,18 @@ export const lookupInboxPublicKey = async (identifier) => {
 
 /**
  * Send an anonymous file to an inbox
- * Encrypts the file and uploads it to Swarm
+ * Encrypts the file, uploads to Swarm, and writes to GSOC (if params provided)
  * @param {File} file - File to send
  * @param {string} recipientPublicKey - Recipient's public key (hex)
  * @param {Object} options - Upload options
+ * @param {Object} options.gsocParams - GSOC inbox params for notification (optional)
  * @returns {Promise<Object>} Upload result with reference and metadata
  */
 export const sendAnonymousFile = async (file, recipientPublicKey, options = {}) => {
   const {
     stampId = getDefaultStampId(),
     message = '',
+    gsocParams = null,
     onProgress,
     onStatusChange
   } = options
@@ -143,7 +171,7 @@ export const sendAnonymousFile = async (file, recipientPublicKey, options = {}) 
   onProgress?.(30)
   onStatusChange?.('uploading')
 
-  // Create upload payload
+  // Create upload payload - NO sender info for full anonymity
   const payload = {
     version: 1,
     type: 'anonymous-upload',
@@ -152,6 +180,7 @@ export const sendAnonymousFile = async (file, recipientPublicKey, options = {}) 
     ciphertext: bytesToHex(encrypted.ciphertext),
     message,
     timestamp: Date.now()
+    // NO from, filename, or sender info - this is anonymous!
   }
 
   // Upload to Swarm
@@ -162,6 +191,24 @@ export const sendAnonymousFile = async (file, recipientPublicKey, options = {}) 
     'message.json',
     { contentType: 'application/json' }
   )
+
+  onProgress?.(80)
+
+  // Write to GSOC inbox if params provided (enables auto-discovery)
+  if (gsocParams) {
+    onStatusChange?.('notifying')
+    try {
+      const slot = await findNextSlot(gsocParams)
+      await writeToInbox(gsocParams, slot, {
+        reference: result.reference
+        // NO senderInfo - this is honest inbox (Mode 2)
+      }, { anonymous: true })
+      console.log('[Multibox] GSOC notification written to slot', slot)
+    } catch (error) {
+      console.warn('[Multibox] Failed to write GSOC notification:', error)
+      // Don't fail the upload - message is still on Swarm
+    }
+  }
 
   onProgress?.(100)
   onStatusChange?.('complete')
@@ -240,6 +287,63 @@ export const receiveAnonymousFile = async (reference, identifier) => {
 }
 
 /**
+ * Poll an inbox for new messages via GSOC
+ * @param {string} inboxId - Inbox identifier
+ * @param {number} lastIndex - Start polling from this index (default 0)
+ * @returns {Promise<Array>} Array of messages with references
+ */
+export const pollInbox = async (inboxId, lastIndex = 0) => {
+  const inbox = getInbox(inboxId)
+  if (!inbox) {
+    throw new Error('Inbox not found')
+  }
+
+  if (!inbox.gsocParams) {
+    console.log('[Multibox] Inbox has no GSOC params, cannot poll')
+    return []
+  }
+
+  try {
+    const messages = await gsocPollInbox(inbox.gsocParams, lastIndex)
+    console.log(`[Multibox] Polled ${messages.length} messages from GSOC`)
+    return messages
+  } catch (error) {
+    console.error('[Multibox] Poll error:', error)
+    return []
+  }
+}
+
+/**
+ * Get messages from inbox and decrypt them
+ * @param {string} inboxId - Inbox identifier
+ * @param {number} lastIndex - Start polling from this index
+ * @returns {Promise<Array>} Array of decrypted messages
+ */
+export const receiveInboxMessages = async (inboxId, lastIndex = 0) => {
+  const messages = await pollInbox(inboxId, lastIndex)
+
+  if (messages.length === 0) {
+    return []
+  }
+
+  const decrypted = []
+  for (const msg of messages) {
+    try {
+      const received = await receiveAnonymousFile(msg.reference, inboxId)
+      decrypted.push({
+        ...received,
+        index: msg.index,
+        timestamp: msg.timestamp
+      })
+    } catch (error) {
+      console.error(`[Multibox] Failed to decrypt message at index ${msg.index}:`, error)
+    }
+  }
+
+  return decrypted
+}
+
+/**
  * Create a shareable inbox link
  * @param {string} publicKey - Inbox public key
  * @param {string} name - Optional display name
@@ -279,6 +383,8 @@ export default {
   lookupInboxPublicKey,
   sendAnonymousFile,
   receiveAnonymousFile,
+  pollInbox,
+  receiveInboxMessages,
   getInboxLink,
   parseInboxLink
 }

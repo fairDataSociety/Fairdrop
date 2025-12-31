@@ -11,7 +11,8 @@ import { generateKeyPair, encryptFile, decryptFile, encryptData, decryptData, he
 import { getAllStamps, getStamp, requestSponsoredStamp, isStampUsable } from './swarm/stamps';
 import { getBeeUrl } from './swarm/client';
 import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet';
-import { resolveRecipient, isENSName, checkFairdropSubdomain } from './ens';
+import { resolveRecipient, isENSName, checkFairdropSubdomain, getInboxParams } from './ens';
+import { writeToInbox, findNextSlot, pollInbox, decryptMetadata } from './swarm/gsoc';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -60,14 +61,15 @@ class Account {
 
   /**
    * Send encrypted file to recipient
+   * Uses GSOC for inbox notification (zero-leak privacy)
    */
   async send(recipient, file, path, feedbackCb, progressCb, completeCb) {
     try {
       feedbackCb?.('Looking up recipient...');
 
-      // Look up recipient's public key
-      const recipientPubKey = await this._lookupPublicKey(recipient);
-      if (!recipientPubKey) {
+      // Look up recipient's public key and inbox params
+      const recipientInfo = await this._lookupRecipient(recipient);
+      if (!recipientInfo.publicKey) {
         throw new Error(`Recipient "${recipient}" not found`);
       }
 
@@ -75,7 +77,7 @@ class Account {
       progressCb?.(10);
 
       // Encrypt file with recipient's public key
-      const encrypted = await encryptFile(file, hexToBytes(recipientPubKey));
+      const encrypted = await encryptFile(file, hexToBytes(recipientInfo.publicKey));
       progressCb?.(30);
 
       feedbackCb?.('Uploading to Swarm...');
@@ -98,9 +100,32 @@ class Account {
       // Upload payload to Swarm
       const payloadBlob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
       const reference = await uploadFile(new File([payloadBlob], 'message.json'), {
-        onProgress: (p) => progressCb?.(30 + p * 0.6),
+        onProgress: (p) => progressCb?.(30 + p * 0.5),
         onStatusChange: (s) => feedbackCb?.(s === 'uploading' ? 'Uploading...' : s)
       });
+
+      progressCb?.(80);
+
+      // Write to recipient's GSOC inbox (if they have one set up)
+      if (recipientInfo.inboxParams) {
+        feedbackCb?.('Notifying recipient...');
+        try {
+          const slot = await findNextSlot(recipientInfo.inboxParams);
+          await writeToInbox(recipientInfo.inboxParams, slot, {
+            reference,
+            senderInfo: {
+              from: this.subdomain,
+              filename: file.name
+            }
+          }, { anonymous: false });
+          console.log(`[GSOC] Wrote to inbox slot ${slot} for ${recipient}`);
+        } catch (gsocError) {
+          // Log but don't fail - message is still stored on Swarm
+          console.warn('[GSOC] Failed to write to inbox:', gsocError);
+        }
+      } else {
+        console.log('[GSOC] Recipient has no inbox params - message stored on Swarm only');
+      }
 
       progressCb?.(100);
       feedbackCb?.('File sent!');
@@ -113,6 +138,72 @@ class Account {
       return { hash: reference };
     } catch (error) {
       console.error('Send error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Send file anonymously (Mode 2: Honest Inbox)
+   * Sender identity is completely hidden from recipient
+   *
+   * @param {string} recipientPublicKey - Recipient's public key (hex)
+   * @param {Object} inboxParams - Recipient's GSOC inbox params
+   * @param {File} file - File to send
+   * @param {Function} feedbackCb - Progress feedback callback
+   * @param {Function} progressCb - Progress percentage callback
+   * @returns {Promise<{hash: string}>}
+   */
+  async sendAnonymous(recipientPublicKey, inboxParams, file, feedbackCb, progressCb) {
+    try {
+      feedbackCb?.('Encrypting file...');
+      progressCb?.(10);
+
+      // Encrypt file with recipient's public key
+      const encrypted = await encryptFile(file, hexToBytes(recipientPublicKey));
+      progressCb?.(30);
+
+      feedbackCb?.('Uploading to Swarm...');
+
+      // Create minimal payload (no sender info!)
+      const payload = {
+        version: 1,
+        type: 'encrypted-file',
+        // NO from or fromPublicKey fields!
+        ephemeralPublicKey: bytesToHex(encrypted.ephemeralPublicKey),
+        iv: bytesToHex(encrypted.iv),
+        ciphertext: bytesToHex(encrypted.ciphertext),
+        filename: 'anonymous', // Don't reveal original filename
+        size: file.size,
+        timestamp: Date.now()
+      };
+
+      // Upload payload to Swarm
+      const payloadBlob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      const reference = await uploadFile(new File([payloadBlob], 'message.json'), {
+        onProgress: (p) => progressCb?.(30 + p * 0.5),
+        onStatusChange: (s) => feedbackCb?.(s === 'uploading' ? 'Uploading...' : s)
+      });
+
+      progressCb?.(80);
+
+      // Write to GSOC inbox - NO sender info (anonymous mode)
+      feedbackCb?.('Delivering anonymously...');
+      const slot = await findNextSlot(inboxParams);
+      await writeToInbox(inboxParams, slot, {
+        reference
+        // NO senderInfo - this is anonymous mode!
+      }, { anonymous: true });
+
+      console.log(`[GSOC] Anonymous message written to slot ${slot}`);
+
+      progressCb?.(100);
+      feedbackCb?.('File sent anonymously!');
+
+      // Do NOT store in sent messages - preserve sender anonymity
+
+      return { hash: reference };
+    } catch (error) {
+      console.error('Anonymous send error:', error);
       throw error;
     }
   }
@@ -180,6 +271,7 @@ class Account {
 
   /**
    * Get messages of specified type
+   * For 'received', polls GSOC inbox for new messages
    */
   async messages(type, path) {
     // Map type to storage key
@@ -189,10 +281,174 @@ class Account {
                 this._receivedKey;
 
     try {
+      // For received messages, poll GSOC inbox first
+      if (type === 'received') {
+        await this._pollGSOCInbox();
+      }
+
       const stored = localStorage.getItem(key);
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
+    }
+  }
+
+  /**
+   * Poll GSOC inbox for new messages
+   * Downloads and decrypts each message, stores in localStorage
+   */
+  async _pollGSOCInbox() {
+    const inboxParams = await this._getMyInboxParams();
+    if (!inboxParams) {
+      console.log('[GSOC] No inbox configured for this account');
+      return;
+    }
+
+    try {
+      const lastIndex = this._getLastPolledIndex();
+      const newMessages = await pollInbox(inboxParams, lastIndex);
+
+      if (newMessages.length === 0) {
+        console.log('[GSOC] No new messages');
+        return;
+      }
+
+      console.log(`[GSOC] Found ${newMessages.length} new messages`);
+
+      // Process each message
+      for (const msg of newMessages) {
+        try {
+          // Download and decrypt the file
+          const received = await this.receiveMessage(msg.reference);
+
+          // Decrypt sender info if present (Mode 1: Encrypted Send)
+          let senderInfo = { from: 'anonymous', filename: 'unknown' };
+          if (msg.encryptedMeta && this.privateKey) {
+            try {
+              senderInfo = await decryptMetadata(msg.encryptedMeta, hexToBytes(this.privateKey));
+            } catch (e) {
+              console.warn('[GSOC] Failed to decrypt sender metadata:', e);
+            }
+          }
+
+          // Store message with GSOC metadata
+          const message = {
+            reference: msg.reference,
+            from: senderInfo.from || received.from || 'anonymous',
+            filename: senderInfo.filename || received.metadata?.name || 'unknown',
+            size: received.metadata?.size || 0,
+            timestamp: msg.timestamp,
+            receivedAt: Date.now(),
+            gsocIndex: msg.index
+          };
+          this._addMessage('received', message);
+
+          // Update last polled index
+          this._setLastPolledIndex(msg.index + 1);
+        } catch (error) {
+          console.error(`[GSOC] Failed to process message at index ${msg.index}:`, error);
+        }
+      }
+    } catch (error) {
+      console.error('[GSOC] Inbox poll error:', error);
+    }
+  }
+
+  /**
+   * Get this account's inbox params (from ENS or local storage)
+   */
+  async _getMyInboxParams() {
+    // Check localStorage for locally stored inbox params
+    const paramsKey = `${this.subdomain}_inbox_params`;
+    try {
+      const stored = localStorage.getItem(paramsKey);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch {}
+
+    // Try to look up from ENS (if user has set up their ENS record)
+    try {
+      const params = await getInboxParams(`${this.subdomain}.fairdrop.eth`);
+      if (params) {
+        // Cache locally
+        localStorage.setItem(paramsKey, JSON.stringify(params));
+        return params;
+      }
+    } catch (error) {
+      console.log('[GSOC] No ENS inbox params found:', error);
+    }
+
+    return null;
+  }
+
+  /**
+   * Get the last polled GSOC inbox index
+   */
+  _getLastPolledIndex() {
+    const key = `${this.subdomain}_gsoc_last_index`;
+    try {
+      return parseInt(localStorage.getItem(key) || '0', 10);
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * Set the last polled GSOC inbox index
+   */
+  _setLastPolledIndex(index) {
+    const key = `${this.subdomain}_gsoc_last_index`;
+    localStorage.setItem(key, index.toString());
+  }
+
+  /**
+   * Set up GSOC inbox for receiving messages
+   * This mines a GSOC key and stores the params
+   * @param {string} targetOverlay - Bee node overlay address (optional, uses default)
+   * @returns {Promise<Object>} Inbox params to publish to ENS
+   */
+  async setupGSOCInbox(targetOverlay, proximity = 8) {
+    const { mineInboxKey } = await import('./swarm/gsoc');
+
+    // Use provided overlay or try to get from local Bee
+    const overlay = targetOverlay || await this._getBeeOverlay();
+    if (!overlay) {
+      throw new Error('No Bee overlay available. Please provide targetOverlay or run local Bee node.');
+    }
+
+    console.log('[GSOC] Mining inbox key for overlay:', overlay);
+    // Use proximity 8 by default (16 often times out on real nodes)
+    const { privateKey, params } = await mineInboxKey(overlay, proximity);
+
+    // Add recipient public key to params
+    params.recipientPublicKey = this.publicKey;
+
+    // Store params locally
+    const paramsKey = `${this.subdomain}_inbox_params`;
+    localStorage.setItem(paramsKey, JSON.stringify(params));
+
+    console.log('[GSOC] Inbox set up. Publish these to ENS:', {
+      'io.fairdrop.inbox.overlay': params.targetOverlay,
+      'io.fairdrop.inbox.id': params.baseIdentifier,
+      'io.fairdrop.inbox.prox': params.proximity.toString()
+    });
+
+    return params;
+  }
+
+  /**
+   * Get Bee node overlay address
+   */
+  async _getBeeOverlay() {
+    try {
+      const { getBee } = await import('./swarm/client');
+      const bee = getBee();
+      const addresses = await bee.getNodeAddresses();
+      return addresses.overlay;
+    } catch (error) {
+      console.log('[GSOC] Could not get Bee overlay:', error);
+      return null;
     }
   }
 
@@ -359,19 +615,26 @@ class Account {
 
   // Private helper methods
 
-  async _lookupPublicKey(recipient) {
+  /**
+   * Look up recipient's public key and inbox params
+   * @param {string} recipient - Recipient identifier
+   * @returns {Promise<{publicKey: string|null, inboxParams: Object|null}>}
+   */
+  async _lookupRecipient(recipient) {
     // First check local mailboxes
     const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
     if (mailboxes[recipient]) {
-      return mailboxes[recipient].publicKey;
+      // Local mailbox - try to get inbox params if they have ENS set up
+      const inboxParams = mailboxes[recipient].inboxParams || null;
+      return { publicKey: mailboxes[recipient].publicKey, inboxParams };
     }
 
-    // If recipient looks like a hex public key, use it directly
+    // If recipient looks like a hex public key, use it directly (no inbox)
     if (recipient.length === 66 && recipient.startsWith('0x')) {
-      return recipient.slice(2);
+      return { publicKey: recipient.slice(2), inboxParams: null };
     }
     if (recipient.length === 64 && /^[a-fA-F0-9]+$/.test(recipient)) {
-      return recipient;
+      return { publicKey: recipient, inboxParams: null };
     }
 
     // Try ENS resolution (supports ENS names and fairdrop.eth subdomains)
@@ -379,7 +642,7 @@ class Account {
       const result = await resolveRecipient(recipient);
       if (result.publicKey) {
         console.log(`[ENS] Resolved ${recipient} via ${result.method}${result.ensName ? ` (${result.ensName})` : ''}`);
-        return result.publicKey;
+        return { publicKey: result.publicKey, inboxParams: result.inboxParams };
       }
       if (result.method === 'ens-no-key' || result.method === 'fairdrop-no-key') {
         console.log(`[ENS] Found ${result.ensName} but no Fairdrop public key set`);
@@ -388,7 +651,7 @@ class Account {
       console.error('[ENS] Resolution error:', error);
     }
 
-    return null;
+    return { publicKey: null, inboxParams: null };
   }
 
   _createMessage(reference, file, type, recipient) {

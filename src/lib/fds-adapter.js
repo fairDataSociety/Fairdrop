@@ -385,6 +385,45 @@ class AccountManager {
     return true;
   }
 
+  /**
+   * Look up a recipient's public key
+   * Used for validating recipients before sending
+   * @param {string} recipient - Mailbox name, ENS name, or public key
+   * @returns {Promise<{exists: boolean, publicKey: string|null}>}
+   */
+  static async lookupRecipient(recipient) {
+    // First check local mailboxes
+    const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
+    if (mailboxes[recipient]) {
+      return { exists: true, publicKey: mailboxes[recipient].publicKey };
+    }
+
+    // If recipient looks like a hex public key, use it directly
+    if (recipient.length === 66 && recipient.startsWith('0x')) {
+      return { exists: true, publicKey: recipient.slice(2) };
+    }
+    if (recipient.length === 64 && /^[a-fA-F0-9]+$/.test(recipient)) {
+      return { exists: true, publicKey: recipient };
+    }
+
+    // Try ENS resolution
+    try {
+      const result = await resolveRecipient(recipient);
+      if (result.publicKey) {
+        console.log(`[ENS] Resolved ${recipient} via ${result.method}${result.ensName ? ` (${result.ensName})` : ''}`);
+        return { exists: true, publicKey: result.publicKey };
+      }
+      if (result.method === 'ens-no-key' || result.method === 'fairdrop-no-key') {
+        console.log(`[ENS] Found ${result.ensName} but no Fairdrop public key set`);
+        return { exists: false, publicKey: null, reason: 'no-public-key' };
+      }
+    } catch (error) {
+      console.error('[ENS] Resolution error:', error);
+    }
+
+    return { exists: false, publicKey: null };
+  }
+
   static Store = {
     /**
      * Upload files without encryption (quick upload)

@@ -277,11 +277,21 @@ class BSelectMailbox extends Component{
     this.processSelectRecipient(e.target.value);
   }
 
-  processSelectRecipient(mailboxName){
-    return this.FDS.Account.isMailboxNameAvailable(mailboxName).then((result) => {
-      if(result === true){
-        throw new Error("Couldn't find mailbox, try again...")
+  async processSelectRecipient(mailboxName){
+    try {
+      const result = await this.FDS.Account.lookupRecipient(mailboxName);
+
+      if (!result.exists) {
+        const message = result.reason === 'no-public-key'
+          ? "Found ENS name but no Fairdrop public key is set"
+          : "Couldn't find mailbox, try again...";
+        this.setState({
+          feedbackMessage: message,
+          recipientWasSelected: false
+        });
+        return false;
       }
+
       this.setState({
         feedbackMessage: "Mailbox found!",
         recipientWasSelected: true
@@ -290,7 +300,7 @@ class BSelectMailbox extends Component{
         addressee: mailboxName
       });
       return true;
-    }).catch((error) => {
+    } catch (error) {
       if(error.toString() === 'Error: Invalid JSON RPC response: ""'){
         this.setState({
           feedbackMessage: "Network error - please try again...",
@@ -298,12 +308,12 @@ class BSelectMailbox extends Component{
         });
       }else{
         this.setState({
-          feedbackMessage: error.message,
+          feedbackMessage: error.message || "Couldn't find mailbox, try again...",
           recipientWasSelected: false
         });
       }
       return false;
-    })
+    }
   }
 
   mailboxUnlocked(){

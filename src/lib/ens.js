@@ -8,6 +8,10 @@ import { ethers } from 'ethers';
 // ENS text record key for Fairdrop public keys
 const FAIRDROP_KEY = 'io.fairdrop.publickey';
 
+// Configurable ENS domain for Fairdrop subdomains
+// Use VITE_ENS_DOMAIN to override (e.g., "fairdropdev.eth" for testing)
+const ENS_DOMAIN = import.meta.env.VITE_ENS_DOMAIN || 'fairdrop.eth';
+
 // Fallback public RPC endpoints
 const RPC_ENDPOINTS = [
   'https://eth.llamarpc.com',
@@ -153,12 +157,12 @@ export const isENSName = (name) => {
 };
 
 /**
- * Check if a fairdrop.eth subdomain exists and has a public key
+ * Check if a Fairdrop subdomain exists and has a public key
  * @param {string} username - Username to check (e.g., "alice" for alice.fairdrop.eth)
  * @returns {Promise<{exists: boolean, publicKey: string|null}>}
  */
 export const checkFairdropSubdomain = async (username) => {
-  const ensName = `${username}.fairdrop.eth`;
+  const ensName = `${username}.${ENS_DOMAIN}`;
 
   try {
     const publicKey = await getFairdropPublicKey(ensName);
@@ -238,5 +242,6 @@ export default {
   isENSName,
   checkFairdropSubdomain,
   resolveRecipient,
-  FAIRDROP_KEY
+  FAIRDROP_KEY,
+  ENS_DOMAIN
 };

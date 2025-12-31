@@ -8,12 +8,6 @@ import { getBee, getDefaultStampId } from './client'
 // Local Bee node URL (Swarm Desktop)
 const LOCAL_BEE = 'http://localhost:1633'
 
-// FDS Gateway as fallback (via proxy in dev)
-// Use bee-1 gateway consistently for both upload and download
-const FDS_GATEWAY = import.meta.env.DEV
-  ? '/api/swarm'
-  : 'https://bee-1.fairdatasociety.org'
-
 /**
  * Check if local Bee node is available with a usable stamp
  */
@@ -93,23 +87,37 @@ const uploadToLocalBee = async (file, stampId, options = {}) => {
 }
 
 /**
- * Upload to FDS gateway (handles stamps internally)
+ * Upload via proxy (avoids CORS issues)
+ * Uses /api/swarm proxy in dev, requires server proxy in prod
  */
 const uploadToGateway = async (file, options = {}) => {
   const { onProgress, onStatusChange } = options
 
-  console.log('[Upload] Starting upload to gateway:', FDS_GATEWAY)
+  const stampId = getDefaultStampId()
+
+  // Use proxy to avoid CORS - direct browser requests to bee-1 are blocked
+  // In dev: Vite proxy handles /api/swarm → gateway.fairdatasociety.org
+  // In prod: nginx proxy must be configured
+  const proxyUrl = '/api/swarm'
+
+  console.log('[Upload] Starting upload via proxy:', proxyUrl)
   console.log('[Upload] File:', file.name, file.size, file.type)
+  console.log('[Upload] Stamp:', stampId ? stampId.substring(0, 16) + '...' : 'none')
+
+  if (!stampId) {
+    throw new Error('No postage stamp configured. Please set VITE_DEFAULT_STAMP_ID or buy a local stamp in Swarm Desktop.')
+  }
 
   onStatusChange?.('uploading')
 
-  const formData = new FormData()
-  formData.append('file', file, file.name)
-
   try {
-    const response = await fetch(`${FDS_GATEWAY}/bzz`, {
+    const response = await fetch(`${proxyUrl}/bzz?name=${encodeURIComponent(file.name)}`, {
       method: 'POST',
-      body: formData
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+        'Swarm-Postage-Batch-Id': stampId
+      },
+      body: file
     })
 
     console.log('[Upload] Response status:', response.status)

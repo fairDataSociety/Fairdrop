@@ -465,10 +465,13 @@ class Account {
    * @returns {Promise<Object>} Inbox params to publish to ENS
    */
   async setupGSOCInbox(targetOverlay, proximity = 8) {
+    console.log('[GSOC] setupGSOCInbox called, targetOverlay:', targetOverlay);
     const { mineInboxKey } = await import('./swarm/gsoc');
+    console.log('[GSOC] mineInboxKey imported');
 
     // Use provided overlay or try to get from local Bee
     const overlay = targetOverlay || await this._getBeeOverlay();
+    console.log('[GSOC] Got overlay:', overlay ? overlay.slice(0, 16) + '...' : 'null');
     if (!overlay) {
       throw new Error('No Bee overlay available. Please provide targetOverlay or run local Bee node.');
     }
@@ -596,19 +599,43 @@ class Account {
 
   /**
    * Get Bee node overlay address
+   * In production, uses /api/bee-info endpoint (server-side Bee access)
+   * Falls back to direct Bee API for local development
    */
   async _getBeeOverlay() {
+    // In production (when using proxy), prefer /api/bee-info endpoint
+    // This is more reliable than trying to access Bee directly from browser
+    try {
+      console.log('[GSOC] Fetching overlay from /api/bee-info...');
+      const response = await fetch('/api/bee-info');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.overlay) {
+          console.log('[GSOC] Got overlay via /api/bee-info:', data.overlay.slice(0, 16) + '...');
+          return data.overlay;
+        }
+      } else {
+        console.log('[GSOC] /api/bee-info returned:', response.status);
+      }
+    } catch (error) {
+      console.log('[GSOC] /api/bee-info failed:', error.message);
+    }
+
+    // Fallback: try direct Bee API (for local development)
     try {
       const { getBee } = await import('./swarm/client');
       const bee = getBee();
       const addresses = await bee.getNodeAddresses();
-      // Convert PeerAddress object to hex string
       const overlay = addresses.overlay;
-      return typeof overlay === 'string' ? overlay : overlay.toHex();
+      const result = typeof overlay === 'string' ? overlay : overlay.toHex();
+      console.log('[GSOC] Got overlay via direct Bee API:', result.slice(0, 16) + '...');
+      return result;
     } catch (error) {
-      console.log('[GSOC] Could not get Bee overlay:', error);
-      return null;
+      console.log('[GSOC] Direct Bee API failed:', error.message);
     }
+
+    console.error('[GSOC] Could not get Bee overlay from any source');
+    return null;
   }
 
   /**
@@ -1141,11 +1168,14 @@ class FDS {
 
       // Try to set up GSOC inbox automatically (if Bee node available)
       feedbackCb?.('Setting up inbox...');
+      console.log('[GSOC] Starting inbox setup for', subdomain);
       try {
-        await this.currentAccount.setupGSOCInbox();
+        const inboxParams = await this.currentAccount.setupGSOCInbox();
         console.log('[GSOC] Inbox set up automatically for', subdomain);
+        console.log('[GSOC] Inbox params:', JSON.stringify(inboxParams).slice(0, 100));
       } catch (error) {
-        console.warn('[GSOC] Could not set up inbox automatically:', error.message);
+        console.error('[GSOC] Could not set up inbox automatically:', error);
+        console.error('[GSOC] Error stack:', error.stack);
         // Don't fail account creation - inbox can be set up later
       }
 

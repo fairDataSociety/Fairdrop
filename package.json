@@ -1,6 +1,6 @@
 {
   "name": "fairdrop-frontend",
-  "version": "0.7.0-mockup",
+  "version": "0.8.1",
   "private": true,
   "type": "module",
   "scripts": {

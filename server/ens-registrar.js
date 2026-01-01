@@ -216,6 +216,11 @@ const server = http.createServer(async (req, res) => {
     req.on('end', async () => {
       try {
         const { username, publicKey, inboxParams } = JSON.parse(body);
+        console.log(`[ENS] Registration request for ${username}:`, {
+          hasPublicKey: !!publicKey,
+          hasInboxParams: !!inboxParams,
+          inboxParams: inboxParams ? JSON.stringify(inboxParams).slice(0, 100) : null
+        });
 
         if (!username || !publicKey) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -278,6 +283,39 @@ const server = http.createServer(async (req, res) => {
       wallet: wallet.address,
       balance: ethers.formatEther(balance) + ' ETH'
     }));
+    return;
+  }
+
+  // POST /api/free-stamp - Return sponsored stamp for GSOC inbox creation
+  if (req.method === 'POST' && url.pathname === '/api/free-stamp') {
+    const STAMP_ID = process.env.STAMP_ID || 'bf9b9eaa988090e6310c8ad9ffd9b04e5de785b80c216c0e45acfa15b19fd6c8';
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      batchId: STAMP_ID,
+      expiresAt: Date.now() + (4 * 24 * 60 * 60 * 1000), // 4 days from now
+      remainingCapacity: 1000000
+    }));
+    return;
+  }
+
+  // GET /api/bee-info - Return Bee node overlay for GSOC inbox mining
+  if (req.method === 'GET' && url.pathname === '/api/bee-info') {
+    try {
+      const beeResponse = await fetch('http://localhost:1633/addresses');
+      if (!beeResponse.ok) {
+        throw new Error(`Bee API error: ${beeResponse.status}`);
+      }
+      const addresses = await beeResponse.json();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        overlay: addresses.overlay,
+        underlay: addresses.underlay
+      }));
+    } catch (error) {
+      console.error('[Bee] Info error:', error.message);
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Bee node not available' }));
+    }
     return;
   }
 

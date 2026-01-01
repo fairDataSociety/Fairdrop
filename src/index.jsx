@@ -22,7 +22,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import App from './App';
 
-const version = '0.7.0-mockup';
+const version = '0.8.1';
 
 // Error Boundary component for catching React errors
 class ErrorBoundary extends React.Component {
@@ -53,7 +53,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-console.log(`Fairdrop Version ${version} - Frontend Mockup`);
+console.log(`Fairdrop Version ${version}`);
 
 // Enables us to use subdirectory base urls with react router
 let appRoot = window.location.href.match('bzz:') !== null

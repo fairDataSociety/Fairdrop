@@ -33,7 +33,7 @@ import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
 import ProgressBar from "./components/Shared/svg/ProgressBar.js"
 
-// Sentry removed for mockup
+// Sentry removed
 // import * as Sentry from '@sentry/browser';
 
 import FDSPin from './lib/FDSPin.js';
@@ -44,7 +44,7 @@ import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
 
-const version = '0.7.0-mockup';
+const version = '0.8.1';
 window.files = [];
 
 let pinningOracleURL = 'https://pinning-staging.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle
@@ -180,8 +180,7 @@ class App extends Component {
   }
 
   initSentry(){
-    // Sentry disabled for mockup
-    console.log('Sentry disabled in mockup mode');
+    // Sentry not used - kept for compatibility
   }
 
   componentDidMount(){
@@ -489,26 +488,12 @@ class App extends Component {
       <div>
         <div
           className={
-          "parent-wrapper "+
-          + (this.state.disclaimersAreShown ? "disclaimers-shown" : "")
+          "parent-wrapper "
           + (this.state.menuState ? "menu-shown " : "")
           + ((this.props.location.pathname.substring(0,8) === '/mailbox') ? "nav-black white " : " nav-white red ")
           + ((this.state.fileIsSelecting0 || this.state.fileIsSelecting1)  ? "is-selecting" : "")
           }
         >
-          <DisclaimerSplash
-            disclaimersAreShown={this.state.disclaimersAreShown}
-            hideDisclaimer={this.hideDisclaimer}
-          />
-          <DisclaimerSplash2
-            disclaimersAreShown={this.state.disclaimersAreShown2}
-            hideDisclaimer2n={this.hideDisclaimer2n}
-            hideDisclaimer2y={this.hideDisclaimer2y}            
-          />  
-          <DisclaimerSplash3
-            disclaimersAreShown={this.state.disclaimersAreShown3}
-            hideDisclaimer3={this.hideDisclaimer3}
-          />                    
           <Menu
             isShown={false}
             isRendered={this.state.menuIsRendered}

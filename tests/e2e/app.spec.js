@@ -204,6 +204,7 @@ test.describe('Upload Flow Integration', () => {
     const criticalErrors = errors.filter(e =>
       !e.includes('favicon') &&
       !e.includes('404') &&
+      !e.includes('401') &&              // Auth errors OK in test env (no backend)
       !e.includes('net::ERR') &&
       !e.includes('localhost:1633') &&  // Bee node not running is OK for tests
       !e.includes('Failed to fetch') &&  // Network errors OK in test env

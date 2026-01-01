@@ -70,8 +70,8 @@ test.describe('Complete Upload Flow', () => {
     if (fileInjected.error) {
       console.log('Note:', fileInjected.error, '- testing UI structure instead');
 
-      // Verify UI elements exist for the flow
-      await expect(page.locator('.select-file-quick')).toBeVisible();
+      // Verify UI elements exist for the flow (unified dropzone)
+      await expect(page.locator('.unified-dropzone')).toBeVisible();
       await expect(page.locator('#in-progress')).toHaveCount(1);
       await expect(page.locator('#completed')).toHaveCount(1);
     }

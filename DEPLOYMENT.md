@@ -2,8 +2,6 @@
 
 ## Production Server
 
-Dedicated Fairdrop droplet with local Bee node.
-
 | Setting | Value |
 |---------|-------|
 | Server | 164.90.215.90 |
@@ -24,60 +22,44 @@ Dedicated Fairdrop droplet with local Bee node.
 
 ## Credentials & Secrets
 
-**NEVER commit private keys to git.** Keys are stored only on the server.
+**NEVER commit private keys, wallet addresses, or domain names to git.**
 
-### On Server (`/var/www/apps/fairdrop-ens/.env`)
+All secrets are stored on the server only:
 
+| Secret | Location |
+|--------|----------|
+| ENS registrar config | `/var/www/apps/fairdrop-ens/.env` |
+| Bee node config | `/etc/bee/bee.yaml` |
+
+To view current configuration:
 ```bash
-PORT=3002
-ENS_DOMAIN=fairdropdev.eth
-RPC_URL=https://ethereum.publicnode.com
-ENS_PRIVATE_KEY=<NEVER_COMMIT_THIS>
+ssh fairdrop
+curl -s http://localhost:3002/health | jq  # Shows ENS domain, wallet, balance
 ```
 
-Note: `eth.llamarpc.com` blocks server IPs - use `ethereum.publicnode.com`
+## Local Development
 
-### Local Development
-
-Use the mock ENS server for local development:
+Use the mock ENS server (no real keys needed):
 ```bash
 npm run dev:full  # Starts Vite + mock ENS server
 ```
 
-### Wallets
-
-| Purpose | Address | Chain | Funded With |
-|---------|---------|-------|-------------|
-| **ENS registrar** | `0x800e391958A6EdE6EbC82D6aEE89fB7D7427033b` | Ethereum Mainnet | ETH (for gas) |
-| **Bee node** | `0xa40Ad4ED8Ff369e945e8Bd56CC7c25F1A924CB8E` | Gnosis Chain | xDAI + BZZ |
-
-### Current Stamp
-
-```
-Batch ID: bf9b9eaa988090e6310c8ad9ffd9b04e5de785b80c216c0e45acfa15b19fd6c8
-TTL: ~4 days (check with: curl http://localhost:1633/stamps)
-```
-
 ## Deploy Commands
 
-### Quick Deploy (recommended)
+### CI/CD (recommended)
+
+Push to `main` triggers GitHub Actions:
+1. Runs tests (unit + E2E)
+2. Builds production bundle
+3. Creates GitHub Release
+4. Deploys to server via SSH
+
+### Manual Deploy
 
 ```bash
-# Build and deploy
 npm run build
 rsync -avz --delete dist/ gregor@fairdrop:/var/www/sites/fairdrop.xyz/
 ```
-
-### Git Deploy (auto-build on server)
-
-```bash
-git push production main
-```
-
-This triggers the post-receive hook which:
-1. Checks out code to `/var/www/build/fairdrop`
-2. Runs `npm install && npm run build`
-3. Syncs to `/var/www/sites/fairdrop.xyz/`
 
 ## Server Management
 
@@ -96,40 +78,30 @@ journalctl -u fairdrop-ens -f
 curl -s http://localhost:1633/status | jq
 curl -s http://localhost:1633/stamps | jq
 
-# Check ENS registrar
+# Check ENS registrar (shows domain, wallet, balance)
 curl -s http://localhost:3002/health | jq
-
-# Buy new stamp (when current expires)
-curl -s -X POST 'http://localhost:1633/stamps/10000000000/20' | jq
 ```
 
 ## Stamp Management
 
-When stamp expires (~4 days), buy a new one:
+When stamp expires, buy a new one:
 
 ```bash
 # On server
 curl -s -X POST 'http://localhost:1633/stamps/10000000000/20' | jq
 
-# Get new batch ID from response, then update .env.production locally:
+# Get new batch ID from response, update .env.production:
 # VITE_DEFAULT_STAMP_ID=<new-batch-id>
 
 # Rebuild and deploy
-npm run build
-rsync -avz --delete dist/ gregor@fairdrop:/var/www/sites/fairdrop.xyz/
+npm run build && rsync -avz --delete dist/ gregor@fairdrop:/var/www/sites/fairdrop.xyz/
 ```
 
-## FDS Handoff (Before Launch)
+## FDS Handoff
 
 When FDS takes over for production:
 
-| Item | Current (Dev) | Production (FDS) |
-|------|---------------|------------------|
-| ENS domain | `fairdropdev.eth` | `fairdrop.eth` |
-| ENS wallet | `0x24A1...40B` | FDS wallet |
-| Server | 164.90.215.90 | FDS infra |
-
-Changes needed:
-1. Update `ENS_DOMAIN` on server
-2. Fund new ENS wallet with ETH
+1. Update ENS domain in `/var/www/apps/fairdrop-ens/.env`
+2. Generate new private key, fund wallet with ETH
 3. Update `.env.production` if API endpoint changes
+4. Transfer `fairdrop.eth` ENS domain to new wallet

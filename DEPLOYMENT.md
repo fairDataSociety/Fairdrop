@@ -24,32 +24,31 @@ Dedicated Fairdrop droplet with local Bee node.
 
 ## Credentials & Secrets
 
+**NEVER commit private keys to git.** Keys are stored only on the server.
+
 ### On Server (`/var/www/apps/fairdrop-ens/.env`)
 
 ```bash
 PORT=3002
 ENS_DOMAIN=fairdropdev.eth
 RPC_URL=https://ethereum.publicnode.com
-ENS_PRIVATE_KEY=0x98f9f4...  # Wallet owning fairdropdev.eth
+ENS_PRIVATE_KEY=<NEVER_COMMIT_THIS>
 ```
 
 Note: `eth.llamarpc.com` blocks server IPs - use `ethereum.publicnode.com`
 
 ### Local Development
 
-When running ENS server locally, export:
+Use the mock ENS server for local development:
 ```bash
-export ENS_PRIVATE_KEY=0x98f9f4ecaf1e78ac861db31dae0264c360e6ec4fba984f429d444af03f0f3996
-export ENS_DOMAIN=fairdropdev.eth
-export RPC_URL=https://eth.llamarpc.com  # Works from local, blocked from servers
-node server/ens-registrar.js
+npm run dev:full  # Starts Vite + mock ENS server
 ```
 
 ### Wallets
 
 | Purpose | Address | Chain | Funded With |
 |---------|---------|-------|-------------|
-| **ENS registrar** | `0x24A13899c037d60eE13b9Da339286127EfE4640B` | Ethereum Mainnet | ETH (for gas) |
+| **ENS registrar** | `0x800e391958A6EdE6EbC82D6aEE89fB7D7427033b` | Ethereum Mainnet | ETH (for gas) |
 | **Bee node** | `0xa40Ad4ED8Ff369e945e8Bd56CC7c25F1A924CB8E` | Gnosis Chain | xDAI + BZZ |
 
 ### Current Stamp

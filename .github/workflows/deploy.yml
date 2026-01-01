@@ -94,7 +94,7 @@ jobs:
           path: dist/
 
       - name: Deploy to production server
-        uses: easingthemes/ssh-deploy@v5
+        uses: easingthemes/ssh-deploy@v4
         with:
           SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
           REMOTE_HOST: 164.90.215.90

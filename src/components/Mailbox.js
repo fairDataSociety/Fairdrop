@@ -569,15 +569,15 @@ class Mailbox extends Component{
               <div className="inbox clearfix">
                 <div className="inbox-nav hide-mobile">
                   <div className="inbox-nav-list">
-                    <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}>
+                    <button className={this.state.shownMessageType === 'received' ? "active" : "inactive"} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}>
                       <img alt="inbox" className="inbox-nav-icon" src={this.props.appRoot + "/assets/images/tick.svg"}/>
                       Received
                     </button>
-                    <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/sent')}}>
+                    <button className={this.state.shownMessageType === "sent" ? "active" : "inactive"} onClick={()=>{this.props.handleNavigateTo('/mailbox/sent')}}>
                       <img alt="sent" className="inbox-nav-icon" src={this.props.appRoot + "/assets/images/arrow.svg"}/>
                       Sent
                     </button>
-                    <button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/stored')}}>
+                    <button className={this.state.shownMessageType === "stored" ? "active" : "inactive"} onClick={()=>{this.props.handleNavigateTo('/mailbox/stored')}}>
                       <img alt="stored" className="inbox-nav-icon" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>
                       Stored
                     </button>

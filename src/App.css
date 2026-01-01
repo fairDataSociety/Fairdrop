@@ -2694,11 +2694,6 @@ a.show-received-alert:hover{
   background: rgba(255,255,255,0.1);
 }
 
-.mode-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
 .mode-title {
   font-size: 16px;
   font-weight: 600;

@@ -279,7 +279,6 @@ class ASelectFile extends Component{
               className="mode-option mode-option-send"
               onClick={() => this.handleModeSelect('send')}
             >
-              <span className="mode-icon">🔐</span>
               <span className="mode-title">Send Encrypted</span>
               <span className="mode-desc">Send securely to a recipient</span>
             </button>
@@ -287,7 +286,6 @@ class ASelectFile extends Component{
               className="mode-option mode-option-store"
               onClick={() => this.handleModeSelect('store')}
             >
-              <span className="mode-icon">📦</span>
               <span className="mode-title">Store File</span>
               <span className="mode-desc">Save encrypted for yourself</span>
             </button>
@@ -295,7 +293,6 @@ class ASelectFile extends Component{
               className="mode-option mode-option-quick"
               onClick={() => this.handleModeSelect('quick')}
             >
-              <span className="mode-icon">⚡</span>
               <span className="mode-title">Quick Share</span>
               <span className="mode-desc">Unencrypted, no login needed</span>
             </button>

@@ -1630,11 +1630,52 @@ a.show-received-alert:hover{
   transition: 1s background-color;
 }
 
-.has-dropped .select-file-store .select-file-drop-inner, 
+.has-dropped .select-file-store .select-file-drop-inner,
 .has-dropped .select-file-send .select-file-drop-inner,
 .has-dropped .select-file-quick .select-file-drop-inner{
   opacity: 0;
   transition: opacity 0.5s;
+}
+
+/* Unified Dropzone Highlight */
+.unified-dropzone {
+  background: transparent;
+}
+
+.unified-dropzone.is-selecting {
+  background: rgba(74, 124, 217, 0.95);
+}
+
+.dropzone-highlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.is-selecting .dropzone-highlight {
+  opacity: 1;
+}
+
+.dropzone-highlight-inner {
+  border: 3px dashed rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 60px 80px;
+  text-align: center;
+}
+
+.dropzone-highlight-inner h2 {
+  color: #fff;
+  font-size: 24px;
+  margin: 0;
+  font-weight: 500;
 }
 
 /* select mailbox */
@@ -1907,6 +1948,40 @@ a.show-received-alert:hover{
 .feedback-swarmhash input{
   width: 28%;
   font-size: 11px;
+}
+
+/* Swarm Hash Display on Download Page */
+.swarm-hash-display {
+  margin: 24px 0;
+}
+
+.swarm-hash-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.swarm-hash-value {
+  font-family: monospace;
+  color: #fff;
+  font-size: 16px;
+  background: transparent;
+}
+
+.copy-hash-btn {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.copy-hash-btn:hover {
+  color: #fff;
 }
 
 .fairdrop-lock{
@@ -2573,7 +2648,7 @@ a.show-received-alert:hover{
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2581,7 +2656,7 @@ a.show-received-alert:hover{
 }
 
 .mode-modal {
-  background: #fff;
+  background: #2e2e2e;
   border-radius: 12px;
   padding: 32px;
   max-width: 500px;
@@ -2592,7 +2667,7 @@ a.show-received-alert:hover{
 .mode-modal h2 {
   margin: 0 0 24px 0;
   font-size: 20px;
-  color: #333;
+  color: #fff;
 }
 
 .mode-options {
@@ -2607,16 +2682,16 @@ a.show-received-alert:hover{
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  border: 2px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 8px;
-  background: #fff;
+  background: rgba(255,255,255,0.05);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .mode-option:hover {
-  border-color: #5B8DEF;
-  background: rgba(91, 141, 239, 0.05);
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
 }
 
 .mode-icon {
@@ -2627,28 +2702,28 @@ a.show-received-alert:hover{
 .mode-title {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #fff;
   margin-bottom: 4px;
 }
 
 .mode-desc {
   font-size: 13px;
-  color: #666;
+  color: #aaa;
 }
 
 .mode-cancel {
   background: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid rgba(255,255,255,0.3);
   border-radius: 6px;
   padding: 10px 24px;
   cursor: pointer;
-  color: #666;
+  color: #aaa;
   transition: all 0.2s;
 }
 
 .mode-cancel:hover {
-  border-color: #999;
-  color: #333;
+  border-color: rgba(255,255,255,0.5);
+  color: #fff;
 }
 
 /* Settings Page Sections */

@@ -2073,6 +2073,7 @@ a.show-received-alert:hover{
   width: 100%;
   padding: 24px 20px 26px 20px;
   height: 90vh;
+  display: flex;
 }
 
 .inbox table{
@@ -2083,7 +2084,33 @@ a.show-received-alert:hover{
 .inbox th, .inbox td{
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 15px;
+}
+
+/* Files table columns */
+.files-table .col-name { width: 38%; }
+.files-table .col-pin { width: 4%; }
+.files-table .col-recipient { width: 14%; }
+.files-table .col-time { width: 14%; }
+.files-table .col-size { width: 10%; text-align: right; padding-right: 20px; }
+.files-table .col-actions { width: 20%; text-align: right; padding-right: 10px; }
+
+/* Action buttons */
+.action-btn {
+  background: transparent;
+  border: none;
+  color: #666;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  opacity: 0.6;
+}
+
+.action-btn:hover {
+  background: rgba(91, 141, 239, 0.1);
+  color: #5B8DEF;
+  opacity: 1;
 }
 
 .inbox .no-overflow {
@@ -2171,8 +2198,26 @@ a.show-received-alert:hover{
 
 .inbox-nav {
     min-width: 137px;
-    float: left;
     width: 14%;
+    flex-shrink: 0;
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
+    margin-right: 20px;
+    align-self: stretch;
+}
+
+.inbox-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.inbox-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .inbox-nav td{
@@ -2200,13 +2245,12 @@ a.show-received-alert:hover{
 }
 
 .inbox-header, .inbox-main {
-  width: 85%;
-  float: right;
+  width: 100%;
 }
 
 .inbox-main {
-    height: 100%;
-    overflow: scroll;
+    flex: 1;
+    overflow: auto;
 }
 
 .mobile-inbox-nav {

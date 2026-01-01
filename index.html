@@ -30,13 +30,27 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <title>Fairdrop</title>
+    <!-- PostHog Analytics (EU hosted, privacy-respecting) -->
+    <script>
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      // Initialize with EU host - replace YOUR_PROJECT_KEY with actual key
+      posthog.init('phc_PLACEHOLDER_KEY', {
+        api_host: 'https://eu.i.posthog.com',
+        capture_pageview: true,
+        capture_pageleave: true,
+        persistence: 'localStorage',
+        autocapture: false,
+        disable_session_recording: true,
+        opt_out_capturing_by_default: true
+      });
+    </script>
     <style type="text/css">
       * {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }      
       body{
-          background: #FB4A36 !important;
+          background: #5B8DEF !important;
       }
       #root{
         z-index: 0;
@@ -48,7 +62,7 @@
       }
       #splash{
         z-index: 1;
-        background: #FB4A36;
+        background: #5B8DEF;
         height: 100vh;
         width: 100vw;
         position: absolute;

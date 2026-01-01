@@ -111,7 +111,6 @@ class Mailbox extends Component{
     this.showReceived = this.showReceived.bind(this);
     this.showSent = this.showSent.bind(this);
     this.showStored = this.showStored.bind(this);
-    this.showConsents = this.showConsents.bind(this);
 
     this.state = this.getInitialState();
 
@@ -139,9 +138,6 @@ class Mailbox extends Component{
           break;
           case 'stored':
             this.showStored();
-          break;
-          case 'consents':
-            this.showConsents();
           break;
           default:
             this.showReceived();
@@ -263,19 +259,6 @@ class Mailbox extends Component{
       }
       this.setState({
         shownMessageType: 'stored',
-        shownMessages: messages.reverse()
-      });
-      this.props.setIsLoading(false);
-      this.setState({isLoadingMessages: false});
-    });
-  }
-
-  showConsents(){
-    this.props.setIsLoading(true);
-    this.setState({isLoadingMessages: true});
-    this.FDS.currentAccount.messages('received', '/shared/consents').then((messages)=>{
-      this.setState({
-        shownMessageType: 'consents',
         shownMessages: messages.reverse()
       });
       this.props.setIsLoading(false);
@@ -585,79 +568,58 @@ class Mailbox extends Component{
             <div className="show-files-ui">
               <div className="inbox clearfix">
                 <div className="inbox-nav hide-mobile">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <div className="inbox-action"  data-tip="Send a file."><button onClick={this.props.handleSendFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/paper-plane-solid.svg"}/></button></div>
-                        <div className="inbox-action"  data-tip="Store a file."><button onClick={this.props.handleStoreFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/file-download-solid-black.svg"}/></button></div>
-                        <div className="inbox-action"  data-tip="Publish a file."><button onClick={this.props.handleQuickFile}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/globe-africa-solid.svg"}/></button></div>
-                      </tr>  
-                      <tr>
-                        <td><button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Received</button></td>
-                      </tr>
-                      <tr>
-                        <td><button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/sent')}}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/>Sent</button></td>
-                      </tr>
-                      <tr>
-                        <td><button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/stored')}}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>Stored</button></td>
-                      </tr>
-                      <tr id="consents-row" className="consents-hidden">
-                        <td><button className={this.state.shownMessageType !== "consents" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/consents')}}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/>Consents</button></td>
-                      </tr>               
-                    </tbody>
-                  </table>
+                  <div className="inbox-nav-list">
+                    <button className={this.state.shownMessageType !== 'received' ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/received')}}>
+                      <img alt="inbox" className="inbox-nav-icon" src={this.props.appRoot + "/assets/images/tick.svg"}/>
+                      Received
+                    </button>
+                    <button className={this.state.shownMessageType !== "sent" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/sent')}}>
+                      <img alt="sent" className="inbox-nav-icon" src={this.props.appRoot + "/assets/images/arrow.svg"}/>
+                      Sent
+                    </button>
+                    <button className={this.state.shownMessageType !== "stored" ? "inactive" : ""} onClick={()=>{this.props.handleNavigateTo('/mailbox/stored')}}>
+                      <img alt="stored" className="inbox-nav-icon" src={this.props.appRoot + "/assets/images/paperclip.svg"}/>
+                      Stored
+                    </button>
+                  </div>
                 </div>
                 <div className="mobile-inbox-nav show-mobile">
                     <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== 'received' ? "inactive" : "")} onClick={this.showReceived}><img alt="tick" className="inbox-tick" src={this.props.appRoot + "/assets/images/tick.svg"}/></button></div>
                     <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "sent" ? "inactive" : "")} onClick={this.showSent}><img alt="arrow" className="inbox-arrow" src={this.props.appRoot + "/assets/images/arrow.svg"}/></button></div>
                     <div className="mobile-inbox-nav-cell"><button className={(this.state.shownMessageType !== "stored" ? "inactive" : "")} onClick={this.showStored}><img alt="paperclip" className="inbox-paperclip" src={this.props.appRoot + "/assets/images/paperclip.svg"}/></button></div>
                 </div>
+                <div className="inbox-content">
                 <div className="inbox-header">
-                  <table>
+                  <table className="files-table">
                     <thead>
                       <tr>
-                        <th className="inbox-col inbox-col-name">Name</th>
-                        <th className="inbox-col inbox-col-time hide-mobile" data-tip="Pinned files will be retained by your data provider.">
-                          {(() => {
-                            switch(this.state.shownMessageType) {                              
-                              case 'stored':
-                                return <img src={this.props.appRoot + "/assets/images/thumbtack-solid.svg"} alt="Pin" className="inbox-pin"/>;
-                              default:
-                                return;
-                            }
-                          })()}
+                        <th className="inbox-col col-name">Name</th>
+                        <th className="inbox-col col-pin hide-mobile" data-tip="Pinned files will be retained by your data provider.">
+                          {this.state.shownMessageType === 'stored' &&
+                            <img src={this.props.appRoot + "/assets/images/thumbtack-solid.svg"} alt="Pin" className="inbox-pin"/>
+                          }
                         </th>
-                        <th className="inbox-col inbox-col-name">
-                          {(() => {
-                            switch(this.state.shownMessageType) {
-                              case 'sent':
-                                return "To";
-                              case 'received':
-                                return "From";
-                              case 'consents':
-                                return "From";                                
-                              case 'stored':
-                                return "";
-                              default:
-                                return;
-                            }
-                          })()}
+                        <th className="inbox-col col-recipient">
+                          {this.state.shownMessageType === 'sent' && "To"}
+                          {this.state.shownMessageType === 'received' && "From"}
+                          {this.state.shownMessageType === 'stored' && "Expires"}
                         </th>
-                        <th className="inbox-col inbox-col-time hide-mobile">Time</th>
-                        <th className="inbox-col inbox-col-time">Size</th>
+                        <th className="inbox-col col-time hide-mobile">
+                          {this.state.shownMessageType === 'stored' ? 'Stored' : 'Time'}
+                        </th>
+                        <th className="inbox-col col-size">Size</th>
+                        <th className="inbox-col col-actions hide-mobile">Actions</th>
                       </tr>
                     </thead>
                   </table>
                 </div>
                 <div className="inbox-main">
-                  <table>
+                  <table className="files-table">
                     <tbody>
                       {(() => {
                         if(this.state.isLoadingMessages === true){
-                          return <tr className={
-                                        "message-list last"
-                                      }>
-                                      <td>Loading...</td>
+                          return <tr className="message-list last">
+                                      <td colSpan="6">Loading...</td>
                                     </tr>
                         }
                         if(this.state.shownMessages.length > 0){
@@ -670,13 +632,17 @@ class Mailbox extends Component{
                                     + (i === (this.state.shownMessages.length - 1) ? "last" : "")
                                   }
                                   key={`${message.to}-${message.hash.address}`}
-                                  onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
-                                    <td className="hide-mobile"></td>                                    
-                                    <td><div className="no-overflow">{ message.to }</div></td>
-                                    <td className="hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
-                                    <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                    <td className="col-name" onClick={ ()=>{ return message.saveAs(); } }><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="col-pin hide-mobile"></td>
+                                    <td className="col-recipient"><div className="no-overflow">{ message.to }</div></td>
+                                    <td className="col-time hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY HH:mm') }</div></td>
+                                    <td className="col-size">{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                    <td className="col-actions hide-mobile">
+                                      <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); message.saveAs(); }} title="Download">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                      </button>
+                                    </td>
                                   </tr>
                               })
                             }
@@ -688,36 +654,27 @@ class Mailbox extends Component{
                                     + (i === (this.state.shownMessages.length - 1) ? "last" : "")
                                   }
                                   key={`${message.hash.address}`}
-                                  onClick={ ()=>{ return message.saveAs(); } }
                                   >
-                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
-                                    <td className="hide-mobile"></td>                                    
-                                    <td><div className="no-overflow">{ message.from }</div></td>
-                                    <td className="hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
-                                    <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                    <td className="col-name" onClick={ ()=>{ return message.saveAs(); } }><div className="no-overflow">{ message.hash.file.name }</div></td>
+                                    <td className="col-pin hide-mobile"></td>
+                                    <td className="col-recipient"><div className="no-overflow">{ message.from }</div></td>
+                                    <td className="col-time hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY HH:mm') }</div></td>
+                                    <td className="col-size">{ Utils.humanFileSize(message.hash.file.size) }</td>
+                                    <td className="col-actions hide-mobile">
+                                      <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); message.saveAs(); }} title="Download">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                      </button>
+                                      <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); this.props.handleForwardFile && this.props.handleForwardFile(message); }} title="Forward">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 17 20 12 15 7"/><path d="M4 18v-2a4 4 0 0 1 4-4h12"/></svg>
+                                      </button>
+                                    </td>
                                   </tr>
                               })
                             }
-                            case 'consents': {
-                              return this.state.shownMessages.map((message, i)=>{
-                                return <tr
-                                  className={
-                                    "message-list "
-                                    + (i === (this.state.shownMessages.length - 1) ? "last" : "")
-                                  }
-                                  key={`${message.hash.address}`}
-                                  onClick={ ()=>{ return message.saveAs(); } }
-                                  >
-                                    <td><div className="no-overflow">{ message.hash.file.name }</div></td>
-                                    <td className="hide-mobile"></td>                                    
-                                    <td><div className="no-overflow">{ message.from }</div></td>
-                                    <td><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY hh:mm ') }</div></td>
-                                    <td>{ Utils.humanFileSize(message.hash.file.size) }</td>
-                                  </tr>
-                              })
-                            }                            
                             case 'stored':
                               return this.state.shownMessages.map((hash, i)=>{
+                                const expiryDate = Moment(hash.time).add(14, 'days');
+                                const isExpiringSoon = expiryDate.diff(Moment(), 'days') <= 3;
                                 return <tr
                                   className={
                                     "message-list "
@@ -725,17 +682,15 @@ class Mailbox extends Component{
                                   }
                                   key={`${hash.address}`}
                                   >
-                                    <td onClick=
-                                      { ()=>{ return hash.saveAs(); } }
-                                    >
-                                      { hash.file.name }
+                                    <td className="col-name" onClick={ ()=>{ return hash.saveAs(); } }>
+                                      <div className="no-overflow">{ hash.file.name }</div>
                                     </td>
-                                    <td 
-                                      onClick={ ()=>{ 
-                                          return this.pin(hash.address, (hash.meta && hash.meta.pinned === true) ? false : true); 
-                                        } 
+                                    <td
+                                      className="col-pin hide-mobile"
+                                      onClick={ ()=>{
+                                          return this.pin(hash.address, (hash.meta && hash.meta.pinned === true) ? false : true);
+                                        }
                                       }
-                                      className="hide-mobile"
                                     >
                                       {(hash.meta && hash.meta.pinned === true) &&
                                         <img src={this.props.appRoot + "/assets/images/thumbtack-solid.svg"} alt="Pinned" className="inbox-pin"/>
@@ -744,9 +699,20 @@ class Mailbox extends Component{
                                         <img src={this.props.appRoot + "/assets/images/thumbtack-hollow.svg"} alt="Not Pinned" className="inbox-pin"/>
                                       }
                                     </td>
-                                    <td></td>
-                                    <td className="hide-mobile">{ Moment(hash.time).format('D/MM/YYYY hh:mm ') }</td>
-                                    <td>{ Utils.humanFileSize(hash.file.size) }</td>
+                                    <td className={"col-recipient" + (isExpiringSoon ? " expiry-warning" : "")}>
+                                      <span className="expiry-date">{ expiryDate.format('D/MM/YYYY') }</span>
+                                      {isExpiringSoon && <button className="btn-topup" onClick={(e)=>{ e.stopPropagation(); }} disabled>Extend</button>}
+                                    </td>
+                                    <td className="col-time hide-mobile">{ Moment(hash.time).format('D/MM/YYYY HH:mm') }</td>
+                                    <td className="col-size">{ Utils.humanFileSize(hash.file.size) }</td>
+                                    <td className="col-actions hide-mobile">
+                                      <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); hash.saveAs(); }} title="Download">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                      </button>
+                                      <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); this.props.handleSendStoredFile && this.props.handleSendStoredFile(hash); }} title="Send">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+                                      </button>
+                                    </td>
                                   </tr>
                               })
                             default:
@@ -754,26 +720,16 @@ class Mailbox extends Component{
                           }
                         }else{
                           switch(this.state.shownMessageType){
-                            case 'consents':
-                              return <tr className="message-list last empty-state">
-                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
-                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>🤝</div>
-                                        <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No consents yet</div>
-                                        <div style={{fontSize: '14px', color: '#999'}}>Consent requests will appear here</div>
-                                      </td>
-                                    </tr>
                             case 'stored':
                               return <tr className="message-list last empty-state">
-                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
-                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>📁</div>
+                                      <td colSpan="6" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
                                         <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No stored files yet</div>
                                         <div style={{fontSize: '14px', color: '#999'}}>Files you store will appear here</div>
                                       </td>
                                     </tr>
                             case 'sent':
                               return <tr className="message-list last empty-state">
-                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
-                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>📤</div>
+                                      <td colSpan="6" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
                                         <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No sent files yet</div>
                                         <div style={{fontSize: '14px', color: '#999'}}>Files you send will appear here</div>
                                       </td>
@@ -781,8 +737,7 @@ class Mailbox extends Component{
                             case 'received':
                             default:
                               return <tr className="message-list last empty-state">
-                                      <td colSpan="4" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
-                                        <div style={{fontSize: '48px', marginBottom: '16px', opacity: 0.5}}>📬</div>
+                                      <td colSpan="6" style={{textAlign: 'center', padding: '60px 20px', color: '#666'}}>
                                         <div style={{fontSize: '18px', fontWeight: 500, marginBottom: '8px'}}>No received files yet</div>
                                         <div style={{fontSize: '14px', color: '#999'}}>Files sent to you will appear here</div>
                                       </td>
@@ -792,6 +747,7 @@ class Mailbox extends Component{
                       })()}
                     </tbody>
                   </table>
+                </div>
                 </div>
               </div>
             </div>

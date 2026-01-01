@@ -22,7 +22,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import App from './App';
 
-const version = '0.8.1';
+const version = '0.9.0';
 
 // Error Boundary component for catching React errors
 class ErrorBoundary extends React.Component {
@@ -42,7 +42,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{color:'white',padding:'50px',background:'#FB4A36',minHeight:'100vh'}}>
+        <div style={{color:'white',padding:'50px',background:'#5B8DEF',minHeight:'100vh'}}>
           <h2>Something went wrong</h2>
           <p>{this.state.error?.toString()}</p>
           <button onClick={() => window.location.reload()}>Reload</button>

@@ -136,21 +136,23 @@ class App extends Component {
     return (
       <div ref="dz" className="dropbox">
         <div className="dropbox-center">
-          <h3 className="hide-mobile">
-            <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img alt="drop file glyph" src="assets/images/fairdrop-drop.svg"/> drop a file
-          </h3>
-          <h3 className="show-mobile">
-          	<img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>tap</span> 
-          </h3>   
-          <h2 className="instruction">
-            to send a file <br/> anonymously to:
+          <h2>
+            Send a file anonymously to:
           </h2>
-           <h2 className="last">
+          <h2 className="last">
             {this.state.recipient}
           </h2>
-          <div className="dropbox-feedback">
-          	{this.state.feedback}
-          </div>         
+          <h3 className="hide-mobile">
+            <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action">select</span> or <img alt="drop file glyph" src="assets/images/fairdrop-drop.svg"/> drop a file
+          </h3>
+          <h3 className="show-mobile">
+            <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action">tap</span> to select a file
+          </h3>
+          {this.state.feedback &&
+            <div className="dropbox-feedback">
+              {this.state.feedback}
+            </div>
+          }
         </div>
       </div>
     );

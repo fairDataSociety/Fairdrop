@@ -18,6 +18,21 @@ import React, { Component } from 'react';
 import MenuItem from './MenuItem';
 import Utils from '../services/Utils';
 
+// Simple user icon SVG
+const UserIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px', position: 'relative', top: '2px', opacity: 0.7}}>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+    <circle cx="12" cy="7" r="4"></circle>
+  </svg>
+);
+
+// X (formerly Twitter) icon
+const XIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
+
 class App extends Component {
 
   constructor(props){
@@ -79,9 +94,6 @@ class App extends Component {
 
   closeAll(){
     let promises = [
-      this.refs.send.closeItem(true),
-      this.refs.myFiles.closeItem(true),
-      this.refs.settings.closeItem(true),
       this.refs.about.closeItem(true)
     ]
     return Promise.all(promises);
@@ -93,10 +105,12 @@ class App extends Component {
   }
 
   render(props){
+    const isLoggedIn = this.props.selectedMailbox && this.props.selectedMailbox.subdomain;
+
     return <div className={'menu-wrapper ' + (this.state.isShown ? 'menuShown ' : '') + (this.state.screenIsShown ? 'showScreen ' : '') + (this.state.screenIsFadedIn ? 'fadeInScreen ' : '')}>
       {this.props.isRendered === true &&
         <div>
-          <div 
+          <div
             className="menu-toggle"
             onDragOver={this.props.disableNav}
             onDragEnter={this.props.disableNav}
@@ -116,61 +130,94 @@ class App extends Component {
               <img alt="fairdrop logo" src={this.props.appRoot+"/assets/images/fairdrop-logo.svg"}/>
             </div>
             <div className="menu-main">
-              {this.props.selectedMailbox && 
+              {/* Login (not logged in) */}
+              {!isLoggedIn &&
                 <div className={"menu-section"}>
                   <div
-                    className="menu-item-header logged-in"
-                    onClick={()=>{this.props.showContent('Settings')}}
-                  >
-                    {this.props.selectedMailbox.subdomain} ({this.balance()})
-                  </div>
-                </div>
-              }
-              {!this.props.selectedMailbox && 
-                <div className={"menu-section"}>
-                  <div
-                    className="menu-item-header "
+                    className="menu-item-header"
                     onClick={()=>{this.props.handleNavigateTo('/mailbox')}}
                   >
                     Login &gt;
                   </div>
                 </div>
               }
-              <MenuItem
-                header="Upload >"
-                items={[
-                        ['Store', this.props.handleStoreFile],
-                        ['Send', this.props.handleSendFile],
-                        ['Quick (Unencrypted)', this.props.handleQuickFile]
-                      ]}
-                closeAll={this.closeAll.bind(this)}
-                toggleMenu={this.toggleMenu.bind(this)}
-                ref={'send'}
-              />
-              <MenuItem
-                header="My Files >"
-                items={[
-                        ['Received Files', ()=>{this.props.handleNavigateTo('/mailbox/received')}],
-                        ['Sent Files', ()=>{this.props.handleNavigateTo('/mailbox/sent')}],
-                        ['Stored Files', ()=>{this.props.handleNavigateTo('/mailbox/stored')}]
-                      ]}
-                closeAll={this.closeAll.bind(this)}
-                toggleMenu={this.toggleMenu.bind(this)}
-                ref={'myFiles'}
-              />
-              <MenuItem
-                header="Settings >"
-                items={[
-                        ['Import Mailbox', this.props.importMailbox],
-                        ['Export Mailboxes', this.props.exportMailboxes],
-                        // ['Export Legacy Mailboxes', this.props.exportLegacyMailboxes]
-                        // ,
-                        // ['Pro Mode', (c)=>{console.log(c)}]
-                      ]}
-                closeAll={this.closeAll.bind(this)}
-                toggleMenu={this.toggleMenu.bind(this)}
-                ref={'settings'}
-              />
+              {!isLoggedIn && <div className="menu-separator"></div>}
+
+              {/* Actions */}
+              <div className={"menu-section"}>
+                <div
+                  className="menu-item-header"
+                  onClick={() => { this.toggleMenu(); this.props.handleSendFile(); }}
+                >
+                  Send Encrypted
+                </div>
+              </div>
+              <div className={"menu-section"}>
+                <div
+                  className="menu-item-header"
+                  onClick={() => { this.toggleMenu(); this.props.handleStoreFile(); }}
+                >
+                  Store File
+                </div>
+              </div>
+              <div className={"menu-section"}>
+                <div
+                  className="menu-item-header"
+                  onClick={() => { this.toggleMenu(); this.props.handleQuickFile(); }}
+                >
+                  Quick Share
+                </div>
+              </div>
+
+              {/* Mailbox Views (logged in only) */}
+              {isLoggedIn && <div className="menu-separator"></div>}
+              {isLoggedIn &&
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header"
+                    onClick={() => { this.toggleMenu(); this.props.handleNavigateTo('/mailbox/received'); }}
+                  >
+                    Inbox
+                  </div>
+                </div>
+              }
+              {isLoggedIn &&
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header"
+                    onClick={() => { this.toggleMenu(); this.props.handleNavigateTo('/mailbox/sent'); }}
+                  >
+                    Sent
+                  </div>
+                </div>
+              }
+              {isLoggedIn &&
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header"
+                    onClick={() => { this.toggleMenu(); this.props.handleNavigateTo('/mailbox/stored'); }}
+                  >
+                    Stored
+                  </div>
+                </div>
+              }
+
+              {/* Settings (logged in only) */}
+              {isLoggedIn && <div className="menu-separator"></div>}
+              {isLoggedIn &&
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header"
+                    onClick={() => { this.toggleMenu(); this.props.showContent('Settings'); }}
+                  >
+                    Settings
+                  </div>
+                </div>
+              }
+
+              <div className="menu-separator"></div>
+
+              {/* About */}
               <MenuItem
                 header="About >"
                 items={[
@@ -183,8 +230,21 @@ class App extends Component {
                 closeAll={this.closeAll.bind(this)}
                 toggleMenu={()=>{}}
                 ref={'about'}
-              /> 
-              {this.props.selectedMailbox.subdomain &&
+              />
+
+              {/* User & Log Out (logged in only) */}
+              {isLoggedIn && <div className="menu-separator"></div>}
+              {isLoggedIn &&
+                <div className={"menu-section"}>
+                  <div
+                    className="menu-item-header logged-in"
+                    onClick={()=>{this.props.showContent('Settings')}}
+                  >
+                    <UserIcon />{this.props.selectedMailbox.subdomain} ({this.balance()})
+                  </div>
+                </div>
+              }
+              {isLoggedIn &&
                 <div className={"menu-section"}>
                   <div
                     className="menu-item-header"
@@ -198,10 +258,8 @@ class App extends Component {
 
             <div className="menu-footer">
               <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://github.com/fairDataSociety"><img alt="github logo" src={this.props.appRoot + "/assets/images/github-logo.svg"}/></a></div>
-              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://twitter.com/DataFundProject"><img alt="twitter logo" src={this.props.appRoot + "/assets/images/twitter-logo.svg"}/></a></div>
+              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://x.com/DataFundProject"><XIcon /></a></div>
               <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://datafund.io"><img alt="datafund logo" src={this.props.appRoot + "/assets/images/datafund-footer-logo.svg"}/></a></div>
-              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://gitter.im/fairdatasociety/community"><img alt="gitter logo" src={this.props.appRoot + "/assets/images/gitter-logo.svg"}/></a></div>
-              <div className="menu-footer-item"><a rel="noopener noreferrer" target="_blank" href="https://riot.im/app/#/room/#fairdatasociety:matrix.org"><img alt="riot logo" src={this.props.appRoot + "/assets/images/riot-logo.svg"}/></a></div>          
             </div>
           </div>
         </div>

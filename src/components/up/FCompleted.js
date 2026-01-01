@@ -25,6 +25,44 @@ var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 
 class FCompleted extends Component{
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      hashCopied: false
+    };
+    this.handleCopyGatewayLink = this.handleCopyGatewayLink.bind(this);
+    this.handleCopySwarmHash = this.handleCopySwarmHash.bind(this);
+  }
+
+  getSwarmHash() {
+    const link = this.props.parentState.uploadedHashLink;
+    if (!link) return '';
+
+    // Extract hash from URL (format: /download/{hash}/{filename} or /download-list/{hash}/)
+    const match = link.match(/\/download(?:-list)?\/([a-f0-9]{64})\//i);
+    return match ? match[1] : '';
+  }
+
+  handleCopySwarmHash(){
+    const hash = this.getSwarmHash();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(hash).then(() => {
+        this.setState({ hashCopied: true });
+        setTimeout(() => this.setState({ hashCopied: false }), 2000);
+      });
+    } else {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = hash;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      this.setState({ hashCopied: true });
+      setTimeout(() => this.setState({ hashCopied: false }), 2000);
+    }
+  }
+
   handleCopyGatewayLink(){
 
     if(iOSSafari){
@@ -77,12 +115,30 @@ class FCompleted extends Component{
               {this.props.parentState.uploadedHashLink &&
                 <div>
                   <div className="feedback-swarmhash-message">File Download Link</div>
-                  {this.props.parentState.uploadedHashLink && 
+                  {this.props.parentState.uploadedHashLink &&
                     <div className="feedback-gateway-link">
                       <input onChange={()=>{/*do nothing*/}} contentEditable={true} type="text" value={this.props.parentState.uploadedHashLink || ""}/>
-                    </div>                    
+                    </div>
                   }
                   <button className="copy-gateway-link" onClick={this.handleCopyGatewayLink}>Copy link.</button>
+
+                  {this.props.parentState.isQuickFile && this.getSwarmHash() && (
+                    <div className="swarm-hash-display">
+                      <div className="feedback-swarmhash-message">Swarm Hash</div>
+                      <div className="swarm-hash-row">
+                        <code className="swarm-hash-value">
+                          {this.getSwarmHash().slice(0, 8)}...{this.getSwarmHash().slice(-8)}
+                        </code>
+                        <button
+                          className="copy-hash-btn"
+                          onClick={this.handleCopySwarmHash}
+                          title="Copy full Swarm hash"
+                        >
+                          {this.state.hashCopied ? 'Copied!' : 'Copy'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               }
 

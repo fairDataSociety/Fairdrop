@@ -24,6 +24,7 @@ import FCompleted from '../components/up/FCompleted';
 import ProgressBar from '../components/up/ProgressBar';
 
 import App from '../App';
+import { track, Events } from '../lib/analytics';
 
 class Upload extends Component{
 
@@ -129,6 +130,15 @@ class Upload extends Component{
       window.files.length > 0
       )
     {
+      // Track upload start
+      const mode = this.state.isQuickFile ? 'quick' : (this.state.isStoringFile ? 'store' : 'send');
+      const fileSize = window.files[0]?.size || 0;
+      track(Events.UPLOAD_START, {
+        mode,
+        encrypted: mode !== 'quick',
+        file_count: window.files.length,
+        size_category: fileSize < 1024*1024 ? 'small' : (fileSize < 10*1024*1024 ? 'medium' : 'large')
+      });
       if(
         this.state.isStoringFile === false &&
         this.state.isQuickFile === false

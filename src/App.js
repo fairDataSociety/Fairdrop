@@ -44,7 +44,7 @@ import './App.css';
 import './lib/DMist.css';
 import './lib/DDrop.css';
 
-const version = '0.8.1';
+const version = '0.9.0';
 window.files = [];
 
 let pinningOracleURL = 'https://pinning-staging.fairdrop.pro'; //nb this refers to swarm2.fairdatasociety.org's oracle

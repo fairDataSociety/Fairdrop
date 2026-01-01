@@ -15,10 +15,9 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import QRCode from 'qrcode.react';
 import Utils from '../../services/Utils';
-import Dropdown from 'react-dropdown';
 import Switch from "react-switch";
+import { isEnabled as analyticsIsEnabled, setEnabled as setAnalyticsEnabled } from '../../lib/analytics';
 
 
 //deal with xbrowser copy paste issues
@@ -31,80 +30,60 @@ class Settings extends Component{
 
   constructor(props){
     super(props);
-    
+
     this.state = {
-      storedFilesArePinned: false,
       analyticsState: this.analyticsState(),
+      addressCopied: false
     }
-    
+
     this.handleChangeAnalytics = this.handleChangeAnalytics.bind(this);
-    this.handleChangePinFiles = this.handleChangePinFiles.bind(this);
-    this.handleChangeHonestInbox = this.handleChangeHonestInbox.bind(this);
-    this.hideWarning = this.hideWarning.bind(this);
-
+    this.handleCopyAddress = this.handleCopyAddress.bind(this);
   }
 
-  async componentDidMount(){
-    let hasDismissedSettingsWarning = await localStorage.getItem('hasDismissedSettingsWarning');
-    this.setState({hasDismissedSettingsWarning: hasDismissedSettingsWarning});
-  }
+  handleCopyAddress(){
+    const address = this.props.selectedMailbox.address;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(address).then(() => {
+        this.setState({ addressCopied: true });
+        setTimeout(() => this.setState({ addressCopied: false }), 2000);
+      });
+    } else {
+      // Fallback
+      if(iOSSafari){
+        var el = document.querySelector(".mailbox-address-input");
+        var oldContentEditable = el.contentEditable,
+            oldReadOnly = el.readOnly,
+            range = document.createRange();
 
-  async hideWarning(){
-    let hasDismissedSettingsWarning = await localStorage.setItem('hasDismissedSettingsWarning', true);
-    this.setState({hasDismissedSettingsWarning: "true"});
-  }
+        el.contentEditable = true;
+        el.readOnly = false;
+        range.selectNodeContents(el);
 
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(range);
 
-  handleCopyGatewayLink(){
+        el.setSelectionRange(0, 999999);
 
-    if(iOSSafari){
-      var el = document.querySelector(".mailbox-address-input");
-      var oldContentEditable = el.contentEditable,
-          oldReadOnly = el.readOnly,
-          range = document.createRange();
+        el.contentEditable = oldContentEditable;
+        el.readOnly = oldReadOnly;
 
-      el.contentEditable = true;
-      el.readOnly = false;
-      range.selectNodeContents(el);
-
-      var s = window.getSelection();
-      s.removeAllRanges();
-      s.addRange(range);
-
-      el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
-
-      el.contentEditable = oldContentEditable;
-      el.readOnly = oldReadOnly;
-
-      document.execCommand('copy');
-    }else{
-      var copyText = document.querySelector(".mailbox-address-input");
-      copyText.select();
-      document.execCommand("copy");
+        document.execCommand('copy');
+      }else{
+        var copyText = document.querySelector(".mailbox-address-input");
+        copyText.select();
+        document.execCommand("copy");
+      }
+      this.setState({ addressCopied: true });
+      setTimeout(() => this.setState({ addressCopied: false }), 2000);
     }
-  }  
+  }
 
   fileSize(){
     if(this.props.savedAppState && this.props.savedAppState.totalStoredSize){
       return Utils.humanFileSize(this.props.savedAppState.totalStoredSize);
     }else{
-      return " - "
-    }
-  }
-
-  pinnedFileSize(){
-    if(this.props.savedAppState && this.props.savedAppState.totalPinnedSize){
-      return Utils.humanFileSize(this.props.savedAppState.totalPinnedSize);
-    }else{
-      return " - "
-    }
-  }
-
-  pinnedTimeRemaining(){
-    if(this.props.savedAppState && this.props.savedAppState.pinnedTimeRemainingInSecs){
-      return Utils.humanTime(this.props.savedAppState.pinnedTimeRemainingInSecs);
-    }else{
-      return " - "
+      return "0 B"
     }
   }
 
@@ -112,42 +91,22 @@ class Settings extends Component{
     return this.props.selectedMailbox.address;
   }
 
-  balance(){
-    if(this.props.selectedMailboxWarrantBalance){
-      return Utils.formatBalance(this.props.selectedMailboxWarrantBalance);
-    }else{
-      return " - "
+  truncatedAddress(){
+    const addr = this.props.selectedMailbox.address;
+    if (addr && addr.length > 16) {
+      return `${addr.slice(0, 8)}...${addr.slice(-6)}`;
     }
+    return addr;
   }
 
   handleChangeAnalytics(input){
-    if(input === true){
-      this.props.initSentry();
-    }else{
-      window.Sentry = undefined;
-    }
-    localStorage.setItem('sentryEnabled', input);
+    setAnalyticsEnabled(input);
     this.setState({analyticsState: input});
   }
 
   analyticsState(){
-    let state = localStorage.getItem('sentryEnabled') === "true";
-
-    return state;
+    return analyticsIsEnabled();
   }
-
-  handleChangePinFiles(input){
-    this.props.saveAppState({
-      pinFiles: input
-    });
-  }
-
-  handleChangeHonestInbox(input){
-    this.props.saveAppState({
-      honestInbox: input
-    });
-  }
-
 
   render(){
     return (
@@ -161,67 +120,146 @@ class Settings extends Component{
         </div>
         <div className="content-inner">
           <div className="content-text">
-            {this.props.selectedMailbox && 
+            {this.props.selectedMailbox &&
               <div className="settings-inner">
                 <h1>Settings</h1>
-                <div className="settings-form-group">
-                  <label>Mailbox Name</label>
-                  <div>
-                   <h2>{this.props.selectedMailbox.subdomain}</h2>
+
+                {/* Account Section */}
+                <div className="settings-section">
+                  <h2 className="settings-section-title">Account</h2>
+
+                  <div className="settings-row">
+                    <span className="settings-label">Username</span>
+                    <span className="settings-value">
+                      <strong>{this.props.selectedMailbox.subdomain}</strong>
+                      <span className="settings-domain">.fairdrop.eth</span>
+                    </span>
+                  </div>
+
+                  <div className="settings-row">
+                    <span className="settings-label">Address</span>
+                    <span className="settings-value settings-address">
+                      <code>{this.truncatedAddress()}</code>
+                      <button className="settings-copy-btn" onClick={this.handleCopyAddress}>
+                        {this.state.addressCopied ? 'Copied!' : 'Copy'}
+                      </button>
+                      <input
+                        type="text"
+                        className="mailbox-address-input"
+                        value={this.mailboxAddress()}
+                        readOnly
+                        style={{position: 'absolute', left: '-9999px'}}
+                      />
+                    </span>
                   </div>
                 </div>
-                <div className="settings-form-group address-input">
-                  <label>Address</label>
-                  <div className="settings-form-address-input">
-                    <input className="mailbox-address-input" type="text" value={this.mailboxAddress()}/>
-                    <div onClick={this.handleCopyGatewayLink} className="settings-copy-address">Copy</div>
+
+                {/* ENS Section - Roadmap Placeholder */}
+                <div className="settings-section">
+                  <h2 className="settings-section-title">
+                    ENS Identity
+                    <span className="settings-coming-soon">Coming Soon</span>
+                  </h2>
+
+                  <div className="settings-row settings-disabled">
+                    <span className="settings-label">Custom Domain</span>
+                    <span className="settings-value">
+                      <span className="settings-placeholder">yourname.eth</span>
+                    </span>
+                  </div>
+
+                  <div className="settings-row settings-disabled">
+                    <span className="settings-label">Migrate Domain</span>
+                    <span className="settings-value">
+                      <button className="settings-btn-outline" disabled>Setup ENS</button>
+                    </span>
                   </div>
                 </div>
-                <div className="settings-form-group hide-mobile">
-                  <label>Fairdrop Address</label>
-                  <QRCode value={'fds://'+this.mailboxAddress()} />
-                  { this.state.hasDismissedSettingsWarning !== "true" && 
-                    <div className="settings-warning">Warning. While we are in Beta, we do not recommend you send Ethereum or any other tokens to your Fairdrop address.<span className="click-to-dismiss bold-click" onClick={this.hideWarning}>Dismiss</span></div>
-                  }
-                </div>
-                <div className="settings-form-group settings-balance">
-                  <label>Balance</label>
-                  <input className="mailbox-balance-input" type="text" value={this.balance()}/>
-                  <div className="settings-get-more">Get More</div>
-                </div>
-                <div className="settings-form-group storage-provider">
-                  <label>Storage Provider</label>
-                  <div className="settings-dropdown-wrapper">
-                    <Dropdown
-                      options={["DATAFUND (1)", "more coming soon..."]}
-                      value={"DATAFUND (1)"}
-                      placeholder="Select a mailbox"
-                      readOnly
-                    />
+
+                {/* Storage Section */}
+                <div className="settings-section">
+                  <h2 className="settings-section-title">Storage</h2>
+
+                  <div className="settings-row">
+                    <span className="settings-label">Provider</span>
+                    <span className="settings-value">Swarm Network</span>
+                  </div>
+
+                  <div className="settings-row">
+                    <span className="settings-label">Used Space</span>
+                    <span className="settings-value">{this.fileSize()}</span>
+                  </div>
+
+                  <div className="settings-row">
+                    <span className="settings-label">Postage Stamp</span>
+                    <span className="settings-value">
+                      <span className="settings-stamp-badge">Free Tier</span>
+                    </span>
+                  </div>
+
+                  <div className="settings-row settings-disabled">
+                    <span className="settings-label">Buy Stamp</span>
+                    <span className="settings-value">
+                      <button className="settings-btn-outline" disabled>
+                        Purchase via Beeport
+                        <span className="settings-coming-soon-inline">Soon</span>
+                      </button>
+                    </span>
                   </div>
                 </div>
-                <div className="settings-form-group">
-                  <label>Stored Currently</label>
-                  <div className="settings-inner-content">{this.fileSize()}({this.pinnedFileSize()})</div>
+
+                {/* Wallet Section - Roadmap Placeholder */}
+                <div className="settings-section">
+                  <h2 className="settings-section-title">
+                    Wallet
+                    <span className="settings-coming-soon">Coming Soon</span>
+                  </h2>
+
+                  <div className="settings-row settings-disabled">
+                    <span className="settings-label">External Wallet</span>
+                    <span className="settings-value">
+                      <button className="settings-btn-outline" disabled>Connect MetaMask</button>
+                    </span>
+                  </div>
+
+                  <div className="settings-row settings-disabled">
+                    <span className="settings-label">Embedded Wallet</span>
+                    <span className="settings-value">
+                      <button className="settings-btn-outline" disabled>Setup Tether WDK</button>
+                    </span>
+                  </div>
                 </div>
-                <div className="settings-form-group">
-                  <label>Stored Time Remaining</label>
-                  <div className="settings-inner-content">{this.pinnedTimeRemaining()}</div>
+
+                {/* Preferences Section */}
+                <div className="settings-section">
+                  <h2 className="settings-section-title">Preferences</h2>
+
+                  <div className="settings-row">
+                    <span className="settings-label">
+                      Analytics
+                      <span className="settings-hint">Help improve Fairdrop</span>
+                    </span>
+                    <span className="settings-value">
+                      <Switch
+                        onChange={this.handleChangeAnalytics}
+                        checked={this.state.analyticsState}
+                        onColor="#5B8DEF"
+                        offColor="#666"
+                        height={24}
+                        width={48}
+                      />
+                    </span>
+                  </div>
                 </div>
-                <div className="settings-form-group">
-                  <label>Analytics</label>
-                  <Switch onChange={this.handleChangeAnalytics} checked={this.state.analyticsState} />
+
+                {/* Version Info */}
+                <div className="settings-footer">
+                  <span>Fairdrop v0.9.0</span>
+                  <span className="settings-footer-links">
+                    <a href="https://github.com/fairDataSociety/Fairdrop" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="https://fairdatasociety.org" target="_blank" rel="noopener noreferrer">Fair Data Society</a>
+                  </span>
                 </div>
-                { /*
-                <div className="settings-form-group">
-                  <label>Pin Files</label>
-                  <Switch onChange={this.handleChangePinFiles} checked={this.props.savedAppState && this.props.savedAppState.pinFiles} />
-                </div>
-                <div className="settings-form-group">
-                  <label>Honest Inbox</label>
-                  <Switch onChange={this.handleChangeHonestInbox} checked={this.props.savedAppState && this.props.savedAppState.honestInbox} />
-                </div>
-                */ }
               </div>
             }
           </div>

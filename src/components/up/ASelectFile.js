@@ -16,16 +16,17 @@
 
 import React, { Component } from 'react';
 import Dropzone from 'dropzone';
-// import DDrop from '../../lib/DDrop';
 import App from '../../App';
+import { track, Events } from '../../lib/analytics';
 
 class ASelectFile extends Component{
 
   getInitialState(){
     return {
       hasDropped: false,
-      willDragLeave0: true,
-      willDragLeave1: true
+      isDragging: false,
+      showModeModal: false,
+      pendingFile: null
     }
   }
 
@@ -35,8 +36,11 @@ class ASelectFile extends Component{
     this.handleClickSelectFile = this.handleClickSelectFile.bind(this);
     this.handleClickStoreFile = this.handleClickStoreFile.bind(this);
     this.handleClickQuickFile = this.handleClickQuickFile.bind(this);
+    this.handleModeSelect = this.handleModeSelect.bind(this);
 
-    // React 18 compatible refs
+    // Single unified dropzone
+    this.dtUnifiedDropzone = React.createRef();
+    // Hidden file inputs for click-to-select (used by menu items)
     this.dtSelectSaveFile = React.createRef();
     this.dtSelectStoreFile = React.createRef();
     this.dtSelectQuickFile = React.createRef();
@@ -53,37 +57,110 @@ class ASelectFile extends Component{
 
   componentDidMount(){
     App.aSelectFile = this;
-    this.dropZone();
+    this.initUnifiedDropzone();
+    this.initHiddenDropzones();
 
+    // Handle menu-initiated file selections
     if(this.props.isSendingFile){
       this.handleClickSelectFile();
-    }else
-    if(this.props.isStoringFile){
+    }else if(this.props.isStoringFile){
       this.handleClickStoreFile();
-    }else
-    if(this.props.isQuickFile){
+    }else if(this.props.isQuickFile){
       this.handleClickQuickFile();
     }
   }
 
-  initDropzone(element, isStoring=false, isQuick=false, i){
-    // let dd = new DDrop();
+  // Initialize the main unified dropzone for drag-and-drop
+  initUnifiedDropzone(){
     let self = this;
-    let multiple = isQuick === true;
+    let dropzone = new Dropzone(this.dtUnifiedDropzone.current, {
+      url: 'dummy://',
+      ignoreHiddenFiles: true,
+      previewsContainer: false,
+      maxFilesize: 1000,
+      uploadMultiple: false,
+      accept: function(file, done) {
+        window.files = [];
+        window.files.push(file);
+        self.props.setParentState({
+          selectedFileName: file.name,
+          selectedFileSize: file.size,
+        });
+      }
+    });
+
+    dropzone.on("dragenter", (event) => {
+      event.preventDefault();
+      this.setState({ isDragging: true });
+      this.props.setFileIsSelecting(true, 0);
+    });
+
+    dropzone.on("dragover", (event) => {
+      if (!this.state.isDragging) {
+        this.setState({ isDragging: true });
+        this.props.setFileIsSelecting(true, 0);
+      }
+      // Clear any pending drag leave
+      if (this.dragLeaveTimer) {
+        clearTimeout(this.dragLeaveTimer);
+      }
+      this.dragLeaveTimer = setTimeout(() => {
+        this.setState({ isDragging: false });
+        this.props.setFileIsSelecting(false, 0);
+      }, 100);
+    });
+
+    dropzone.on("drop", (event) => {
+      this.setState({ isDragging: false, hasDropped: true });
+      this.props.fileWasSelected(true);
+    });
+
+    dropzone.on("addedfile", (file) => {
+      // Check file size limits
+      const maxSize = localStorage.getItem('hasEnabledEasterEgg') === "true"
+        ? (1024 * 1024 * 500)
+        : (1024 * 1024 * 100);
+
+      if(file.size > maxSize){
+        const limitMB = maxSize / (1024 * 1024);
+        alert(`Sorry, proof of concept is restricted to ${limitMB}mb`);
+        this.resetToInitialState();
+        return false;
+      }
+
+      this.props.fileWasSelected(true);
+      this.setState({
+        hasDropped: true,
+        pendingFile: file,
+        showModeModal: true  // Show modal to select mode
+      });
+    });
+  }
+
+  // Hidden dropzones for menu-initiated click-to-select
+  initHiddenDropzones(){
+    this.initClickDropzone(this.dtSelectSaveFile.current, 'send');
+    this.initClickDropzone(this.dtSelectStoreFile.current, 'store');
+    this.initClickDropzone(this.dtSelectQuickFile.current, 'quick');
+  }
+
+  initClickDropzone(element, mode){
+    let self = this;
+    let isQuick = mode === 'quick';
+
     let dropzone = new Dropzone(element, {
-      url: 'dummy://', //dropzone requires a url even if we're not using it
+      url: 'dummy://',
       init: function(){
-          if(multiple){
-            this.hiddenFileInput.setAttribute("webkitdirectory", true);
-          }
+        if(isQuick){
+          this.hiddenFileInput.setAttribute("webkitdirectory", true);
+        }
       },
       ignoreHiddenFiles: true,
       previewsContainer: false,
       maxFilesize: 1000,
-      uploadMultiple: multiple,
-      // clickable: false,
+      uploadMultiple: isQuick,
       accept: function(file, done) {
-        if(isQuick === false){
+        if(!isQuick){
           window.files = [];
         }
         window.files.push(file);
@@ -101,176 +178,166 @@ class ASelectFile extends Component{
           self.props.setParentState({
             selectedFileName: `${totalCount} files`,
             selectedFileSize: totalSize,
-          });          
-        }        
+          });
+        }
       }
     });
 
-    dropzone.on("dragenter", (event) => {
-        event.preventDefault();
-        this.props.setFileIsSelecting(true, i);
-    });
+    dropzone.on("addedfile", (file) => {
+      const maxSize = localStorage.getItem('hasEnabledEasterEgg') === "true"
+        ? (1024 * 1024 * 500)
+        : (1024 * 1024 * 100);
 
-
-    dropzone.on("dragover", (event) => {
-      this.handleDragOver(i);
-    });
-
-    dropzone.on("drop", (event) => {
+      if(file.size > maxSize){
+        const limitMB = maxSize / (1024 * 1024);
+        alert(`Sorry, proof of concept is restricted to ${limitMB}mb`);
+        this.resetToInitialState();
+        return false;
+      }
 
       this.props.fileWasSelected(true);
       this.setState({ hasDropped: true });
-      if(isStoring === true){
-        this.props.setParentState({isSendingFile: false});
-        this.props.setParentState({isStoringFile: true});
-        this.props.setParentState({isQuickFile: false});  
-      }else
-      if(isQuick === true){
-        this.props.setParentState({isSendingFile: false});
-        this.props.setParentState({isStoringFile: false});
-        this.props.setParentState({isQuickFile: true});        
-      }else
-      {
-        this.props.setParentState({isSendingFile: true});
-        this.props.setParentState({isStoringFile: false});
-        this.props.setParentState({isQuickFile: false});
-      }
 
-    })
-
-    dropzone.on("addedfile", (file) => {
-      if(localStorage.getItem('hasEnabledEasterEgg') === "true"){
-        if(file.size > (1024 * 1024 * 500)){
-          alert('Sorry, proof of concept is restricted to 500mb');
-          this.resetToInitialState();
-          return false;
-        }
-      }else{
-        if(file.size > (1024 * 1024 * 100)){
-          alert('Sorry, proof of concept is restricted to 100mb');
-          this.resetToInitialState();
-          return false;
-        }
-      }
-
-        this.props.fileWasSelected(true);
-        if(this.state.hasDropped === false){
-          this.setState({ hasDropped: true });
-          // dd.drop('drop');
-        }
-
-        let newUIState;
-
-        // Use closure variables (isStoring, isQuick) instead of async state
-        if(isStoring === true){
-          //skip sign in if signed in
-          if(this.props.selectedMailbox === false){
-            newUIState = 1;
-          }else{
-            newUIState = 3;
-          }
-        }else if(isQuick === true){
-          //skip confirmation - go straight to upload (uiState 4)
-          newUIState = 4;
-        }else{
-          //select recipient (sending encrypted)
-          newUIState = 1;
-        }
-
-        setTimeout(()=>{
-          this.props.setFileIsSelecting(false);          
-          this.props.fileWasSelected(false);   
-          this.props.setParentState({
-            fileIsSelected: true,
-            uiState: newUIState
-          });
-        }, 555);
+      // Directly proceed with the pre-selected mode
+      this.proceedWithMode(mode);
     });
   }
 
-  handleDragOver(i){
-    //tricky but more robust fix because dragleave event does not work for dropzone in Safari
-    let p = `fileIsSelecting${i}`;
-      if(this.props[p] === false){
-        this.props.setFileIsSelecting(true, i);
-      }
-      if(this.t){
-        clearTimeout(this.t);
-      }
-      this.t = setTimeout(()=>{
-        this.props.setFileIsSelecting(false, i);
-      }, 100);
+  handleModeSelect(mode){
+    this.setState({ showModeModal: false });
+    // Track mode selection
+    track(Events.MODE_SELECTED, { mode });
+    this.proceedWithMode(mode);
   }
 
-  dropZone(){
-    this.initDropzone(this.dtSelectSaveFile.current, false, false, 0);
-    this.initDropzone(this.dtSelectStoreFile.current, true, false, 1);
-    this.initDropzone(this.dtSelectQuickFile.current, false, true, 2);
+  proceedWithMode(mode){
+    let newUIState;
+
+    if(mode === 'store'){
+      this.props.setParentState({isSendingFile: false, isStoringFile: true, isQuickFile: false});
+      newUIState = this.props.selectedMailbox === false ? 1 : 3;
+    } else if(mode === 'quick'){
+      this.props.setParentState({isSendingFile: false, isStoringFile: false, isQuickFile: true});
+      newUIState = 4;
+    } else {
+      // send
+      this.props.setParentState({isSendingFile: true, isStoringFile: false, isQuickFile: false});
+      newUIState = 1;
+    }
+
+    setTimeout(() => {
+      this.props.setFileIsSelecting(false);
+      this.props.fileWasSelected(false);
+      this.props.setParentState({
+        fileIsSelected: true,
+        uiState: newUIState
+      });
+    }, 300);
   }
 
   handleClickQuickFile(e){
-    if(e){
-      e.preventDefault();
-    }
+    if(e) e.preventDefault();
     this.props.setParentState({
       isQuickFile: true,
       isSendingFile: false,
       isStoringFile: false,
     });
-    this.setState({'isHandlingClick': true});
     this.dtSelectQuickFile.current.click();
   }
 
   handleClickSelectFile(e){
-    if(e){
-      e.preventDefault();
-    }
+    if(e) e.preventDefault();
     this.props.setParentState({
       isSendingFile: true,
       isStoringFile: false,
       isQuickFile: false,
     });
-    this.setState({'isHandlingClick': true});
     this.dtSelectSaveFile.current.click();
   }
 
   handleClickStoreFile(e){
-    if(e){
-      e.preventDefault();
-    }
+    if(e) e.preventDefault();
     this.props.setParentState({
       isStoringFile: true,
       isSendingFile: false,
       isQuickFile: false,
     });
-    this.setState({'isHandlingClick': true});
     this.dtSelectStoreFile.current.click();
   }
 
-  render(){
+  renderModeModal(){
+    if(!this.state.showModeModal) return null;
+
+    const fileName = this.props.parentState.selectedFileName || 'your file';
+
     return (
-      <div id="select-file" className={"select-file " + (this.props.parentState.fileIsSelected && "is-selected " + (this.props.parentState.uiState !== 1 ? "hidden" : "fade-in"))} >
-        <div className={"select-file-main hide-mobile drop " + ((this.props.fileIsSelecting0 || this.props.fileIsSelecting1) ? "is-selecting " : " ") + (this.state.hasDropped && "has-dropped")} > {/* this bit expands to fill the viewport */}
-          <div ref={this.dtSelectStoreFile} className="select-file-store no-events-mobile " style={{display: 'none'}}>
-            <div className="select-file-drop-inner">
-              <h2>Store encrypted</h2>
-              <div>Requires logging in to your mailbox</div>
-            </div>
+      <div className="mode-modal-overlay">
+        <div className="mode-modal">
+          <h2>What would you like to do with {fileName}?</h2>
+          <div className="mode-options">
+            <button
+              className="mode-option mode-option-send"
+              onClick={() => this.handleModeSelect('send')}
+            >
+              <span className="mode-icon">🔐</span>
+              <span className="mode-title">Send Encrypted</span>
+              <span className="mode-desc">Send securely to a recipient</span>
+            </button>
+            <button
+              className="mode-option mode-option-store"
+              onClick={() => this.handleModeSelect('store')}
+            >
+              <span className="mode-icon">📦</span>
+              <span className="mode-title">Store File</span>
+              <span className="mode-desc">Save encrypted for yourself</span>
+            </button>
+            <button
+              className="mode-option mode-option-quick"
+              onClick={() => this.handleModeSelect('quick')}
+            >
+              <span className="mode-icon">⚡</span>
+              <span className="mode-title">Quick Share</span>
+              <span className="mode-desc">Unencrypted, no login needed</span>
+            </button>
           </div>
-          <div ref={this.dtSelectSaveFile} className="select-file-send">
-            <div className="select-file-drop-inner">
-              <h2>Send encrypted</h2>
-              <div>Requires logging in to your mailbox</div>
-            </div>
-          </div>
-          <div ref={this.dtSelectQuickFile} className="select-file-quick">
-            <div className="select-file-drop-inner">
-              <h2>Send in a quick way</h2>
-              <div>Send a file or folder unencrypted - no mailboxes required</div>
+          <button
+            className="mode-cancel"
+            onClick={() => { this.setState({ showModeModal: false }); this.resetToInitialState(); }}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  render(){
+    const { isDragging, hasDropped, showModeModal } = this.state;
+    const { fileIsSelecting0, fileIsSelecting1, parentState } = this.props;
+    const isSelecting = isDragging || fileIsSelecting0 || fileIsSelecting1;
+
+    return (
+      <div id="select-file" className={"select-file " + (parentState.fileIsSelected && !showModeModal ? "is-selected " + (parentState.uiState !== 1 ? "hidden" : "fade-in") : "")}>
+
+        {/* Hidden dropzones for menu-initiated selections */}
+        <div ref={this.dtSelectStoreFile} style={{display: 'none'}}></div>
+        <div ref={this.dtSelectSaveFile} style={{display: 'none'}}></div>
+        <div ref={this.dtSelectQuickFile} style={{display: 'none'}}></div>
+
+        {/* Unified dropzone - full screen */}
+        <div
+          ref={this.dtUnifiedDropzone}
+          className={"select-file-main drop unified-dropzone " + (isSelecting ? "is-selecting " : "") + (hasDropped && !showModeModal ? "has-dropped" : "")}
+        >
+          <div className="dropzone-highlight">
+            <div className="dropzone-highlight-inner">
+              <h2>Drop your file here</h2>
             </div>
           </div>
         </div>
-        <div className={"select-file-instruction " + ((this.props.fileIsSelecting0 || this.props.fileIsSelecting1) && "is-selecting ") + (this.state.hasDropped && "has-dropped")}> {/* this bit is centered vertically in the surrounding div which overlays the other two siblings */}
+
+        {/* Instructions overlay */}
+        <div className={"select-file-instruction " + (isSelecting ? "is-selecting " : "") + (hasDropped && !showModeModal ? "has-dropped" : "")}>
           <div className="select-file-instruction-inner">
             <h2>
               An easy and secure way to send your files.
@@ -284,12 +351,15 @@ class ASelectFile extends Component{
               <img alt="click to select a file" src="assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={this.handleClickSelectFile}>select</span> or <img alt="drop file glyph" src="assets/images/fairdrop-drop.svg"/> drop a file
             </h3>
             <h3 className="show-mobile">
-              <button className="btn btn-white btn-lg send-file-unencrypted" onClick={this.handleClickQuickFile}>Send Unencrypted</button><br/>
+              <button className="btn btn-white btn-lg send-file-unencrypted" onClick={this.handleClickQuickFile}>Quick Share</button><br/>
               <button className="btn btn-white btn-lg send-file-encrypted" onClick={this.handleClickSelectFile}>Send Encrypted</button><br/>
-              <button className="btn btn-white btn-lg store-file-encrypted" onClick={this.handleClickStoreFile}>Store Encrypted</button>
-            </h3>            
+              <button className="btn btn-white btn-lg store-file-encrypted" onClick={this.handleClickStoreFile}>Store File</button>
+            </h3>
           </div>
         </div>
+
+        {/* Mode selection modal */}
+        {this.renderModeModal()}
       </div>
     )
   }

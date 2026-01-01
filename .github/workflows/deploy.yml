@@ -77,14 +77,13 @@ jobs:
           path: dist/
           retention-days: 1
 
-  deploy:
-    name: Deploy
+  release:
+    name: Release
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    environment:
-      name: production
-      url: https://fairdrop.xyz
+    permissions:
+      contents: write
 
     steps:
       - name: Download build artifacts
@@ -93,22 +92,37 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Setup SSH
+      - name: Create release archive
+        run: |
+          cd dist && tar -czf ../fairdrop-dist.tar.gz .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: deploy-${{ github.run_number }}
+          name: Deploy ${{ github.run_number }}
+          body: |
+            Automated deployment from commit ${{ github.sha }}
+
+            **To deploy on server:**
+            ```bash
+            cd /var/www/sites/fairdrop.xyz
+            curl -sL https://github.com/plur9/Fairdrop/releases/latest/download/fairdrop-dist.tar.gz | tar -xz
+            ```
+          files: fairdrop-dist.tar.gz
+
+      - name: Trigger server deployment
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 164.90.215.90 >> ~/.ssh/known_hosts
-
-      - name: Deploy via rsync
-        run: |
-          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key" dist/ deploy@164.90.215.90:/var/www/sites/fairdrop.xyz/
-          ssh -i ~/.ssh/deploy_key deploy@164.90.215.90 "echo 'Deployed at $(date)' && ls -la /var/www/sites/fairdrop.xyz/"
+          ssh -i ~/.ssh/deploy_key deploy@164.90.215.90 "/var/www/sites/fairdrop.xyz/deploy.sh"
 
       - name: Deployment summary
         run: |
-          echo "## Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "## Deployed to Production" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Target**: https://fairdrop.xyz" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release**: deploy-${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: https://fairdrop.xyz" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

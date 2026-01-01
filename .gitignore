@@ -1,33 +1,26 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-package-lock.json
+node_modules/
 
 # testing
-/coverage
-/test-results
-/playwright-report
+coverage/
+test-results/
+playwright-report/
 
-# production
-/build
+# build output
+build/
+dist/
+
+# environment (secrets)
+.env
+.env.local
+.env.testnet*
 
 # misc
 .DS_Store
-.env
-.env.local
-.env.production
-
+.npmrc
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.npmrc
-
-/ganache
-
-.env.production
-.env.testnet*
-.env.local
-dist/
-.env
+# legacy
+ganache/

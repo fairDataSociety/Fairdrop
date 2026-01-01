@@ -111,13 +111,14 @@ jobs:
             ```
           files: fairdrop-dist.tar.gz
 
-      - name: Trigger server deployment
+      - name: Deploy to server
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 164.90.215.90 >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/deploy_key deploy@164.90.215.90 "/var/www/sites/fairdrop.xyz/deploy.sh"
+          scp -i ~/.ssh/deploy_key fairdrop-dist.tar.gz deploy@164.90.215.90:/tmp/
+          ssh -i ~/.ssh/deploy_key deploy@164.90.215.90 "cd /var/www/sites/fairdrop.xyz && tar -xzf /tmp/fairdrop-dist.tar.gz && rm /tmp/fairdrop-dist.tar.gz && echo 'Deployed at $(date)'"
 
       - name: Deployment summary
         run: |

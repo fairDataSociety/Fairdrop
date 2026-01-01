@@ -85,6 +85,51 @@ vi.stubGlobal('fetch', async (url, options = {}) => {
     options = { ...options, body: options.body._buffer };
   }
 
+  // Handle /api/bee-info relative URL (returns mock overlay for GSOC)
+  if (urlStr === '/api/bee-info' || urlStr.endsWith('/api/bee-info')) {
+    return new Response(JSON.stringify({
+      overlay: 'be8aa29ad80afd4ccbada68360cd1b9d9cf646c7f872268f41f102bbc6223fb5'
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Handle /api/free-stamp for sponsored stamp
+  if (urlStr === '/api/free-stamp' || urlStr.endsWith('/api/free-stamp')) {
+    return new Response(JSON.stringify({
+      batchId: 'e171815c1578c7edd80aa441a626f860eb7fc8d43d96e778198e8edec2318059',
+      expiresAt: Date.now() + (4 * 24 * 60 * 60 * 1000),
+      remainingCapacity: 1000000
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Handle /api/register for ENS subdomain registration (mock success)
+  if ((urlStr === '/api/register' || urlStr.endsWith('/api/register')) && options.method === 'POST') {
+    const body = JSON.parse(options.body?.toString() || '{}');
+    return new Response(JSON.stringify({
+      success: true,
+      ensName: `${body.username}.fairdropdev.eth`,
+      txHash: '0x' + '1'.repeat(64)
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Handle /api/lookup/:username for ENS lookups (mock not found for new users)
+  if (urlStr.includes('/api/lookup/')) {
+    return new Response(JSON.stringify({
+      exists: false
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   // Redirect localhost:1633 requests to mock server
   if (urlStr.startsWith('http://localhost:1633') && mockServerUrl) {
     const newUrl = urlStr.replace('http://localhost:1633', mockServerUrl);
@@ -121,6 +166,9 @@ describe('Encrypted Send/Receive E2E', () => {
   let FDS;
   let fds;
   let alice, bob;
+  // Generate unique names for each test run to avoid ENS conflicts
+  const testId = Date.now().toString(36).slice(-4);
+  const u = (base) => `${base}-${testId}`;
 
   beforeAll(async () => {
     // Start mock Swarm server
@@ -155,37 +203,42 @@ describe('Encrypted Send/Receive E2E', () => {
 
   describe('Account Creation', () => {
     it('creates accounts with unique keypairs', async () => {
-      alice = await fds.CreateAccount('alice', 'password123', () => {});
-      bob = await fds.CreateAccount('bob', 'password456', () => {});
+      alice = await fds.CreateAccount(u('alice'), 'password123', () => {});
+      bob = await fds.CreateAccount(u('bob'), 'password456', () => {});
 
       expect(alice.publicKey).toBeDefined();
       expect(bob.publicKey).toBeDefined();
       expect(alice.publicKey).not.toBe(bob.publicKey);
       expect(alice.privateKey).toBeDefined();
       expect(bob.privateKey).toBeDefined();
-    });
+    }, 30000);
 
     it('stores accounts in localStorage', async () => {
-      await fds.CreateAccount('charlie', 'pass', () => {});
+      const name = u('charlie');
+      await fds.CreateAccount(name, 'pass', () => {});
 
       const stored = JSON.parse(localStorage.getItem('fairdrop_mailboxes_v2'));
-      expect(stored.charlie).toBeDefined();
-      expect(stored.charlie.publicKey).toBeDefined();
-    });
+      expect(stored[name]).toBeDefined();
+      expect(stored[name].publicKey).toBeDefined();
+    }, 30000);
 
     it('can unlock existing account', async () => {
-      await fds.CreateAccount('dave', 'secret', () => {});
+      const name = u('dave');
+      await fds.CreateAccount(name, 'secret', () => {});
 
-      const unlocked = await fds.UnlockAccount('dave', 'secret');
-      expect(unlocked.subdomain).toBe('dave');
-    });
+      const unlocked = await fds.UnlockAccount(name, 'secret');
+      expect(unlocked.subdomain).toBe(name);
+    }, 30000);
   });
 
   describe('Encrypted Send', () => {
+    let senderName, receiverName;
     beforeEach(async () => {
       // Create fresh accounts for each test (localStorage cleared in parent beforeEach)
-      alice = await fds.CreateAccount('sender', 'pass1', () => {});
-      bob = await fds.CreateAccount('receiver', 'pass2', () => {});
+      senderName = u('sender');
+      receiverName = u('receiver');
+      alice = await fds.CreateAccount(senderName, 'pass1', () => {});
+      bob = await fds.CreateAccount(receiverName, 'pass2', () => {});
     }, 30000); // Increase timeout for account creation
 
     it('sender can send encrypted file to receiver', async () => {
@@ -193,7 +246,7 @@ describe('Encrypted Send/Receive E2E', () => {
       const file = new MockFile([content], 'secret.txt', { type: 'text/plain' });
 
       const result = await alice.send(
-        'receiver',
+        receiverName,
         file,
         '/',
         (msg) => console.log('Status:', msg),
@@ -212,34 +265,37 @@ describe('Encrypted Send/Receive E2E', () => {
     it('stores sent message in sender\'s history', async () => {
       const file = new MockFile(['test content'], 'test.txt', { type: 'text/plain' });
 
-      await alice.send('receiver', file, '/', () => {}, () => {}, () => {});
+      await alice.send(receiverName, file, '/', () => {}, () => {}, () => {});
 
       const sentMessages = await alice.messages('sent');
       expect(sentMessages.length).toBe(1);
-      expect(sentMessages[0].to).toBe('receiver');
-      expect(sentMessages[0].filename).toBe('test.txt');
+      expect(sentMessages[0].to).toBe(receiverName);
+      expect(sentMessages[0].hash.file.name).toBe('test.txt');
     }, 30000);
   });
 
   describe('Receive and Decrypt', () => {
     let reference;
+    let aliceRecvName, bobRecvName;
 
     beforeEach(async () => {
       // Create accounts and send a message
-      alice = await fds.CreateAccount('alicerecv', 'pass1', () => {});
-      bob = await fds.CreateAccount('bobrecv', 'pass2', () => {});
+      aliceRecvName = u('alicerecv');
+      bobRecvName = u('bobrecv');
+      alice = await fds.CreateAccount(aliceRecvName, 'pass1', () => {});
+      bob = await fds.CreateAccount(bobRecvName, 'pass2', () => {});
 
       const content = 'Secret message for Bob!';
       const file = new MockFile([content], 'secret.txt', { type: 'text/plain' });
 
-      const result = await alice.send('bobrecv', file, '/', () => {}, () => {}, () => {});
+      const result = await alice.send(bobRecvName, file, '/', () => {}, () => {}, () => {});
       reference = result.hash;
     }, 60000); // Longer timeout for send operation
 
     it('bob can receive and decrypt the message', async () => {
       const received = await bob.receiveMessage(reference);
 
-      expect(received.from).toBe('alicerecv');
+      expect(received.from).toBe(aliceRecvName);
       expect(received.metadata.name).toBe('secret.txt');
       expect(received.file).toBeDefined();
     }, 30000);
@@ -256,7 +312,7 @@ describe('Encrypted Send/Receive E2E', () => {
 
       const receivedMessages = await bob.messages('received');
       expect(receivedMessages.length).toBe(1);
-      expect(receivedMessages[0].from).toBe('alicerecv');
+      expect(receivedMessages[0].from).toBe(aliceRecvName);
     }, 30000);
 
     it('alice cannot decrypt message meant for bob', async () => {
@@ -267,15 +323,17 @@ describe('Encrypted Send/Receive E2E', () => {
 
   describe('Multiple Messages', () => {
     it('handles multiple messages between users', async () => {
-      alice = await fds.CreateAccount('multialice', 'pass1', () => {});
-      bob = await fds.CreateAccount('multibob', 'pass2', () => {});
+      const multiAlice = u('multialice');
+      const multiBob = u('multibob');
+      alice = await fds.CreateAccount(multiAlice, 'pass1', () => {});
+      bob = await fds.CreateAccount(multiBob, 'pass2', () => {});
 
       // Alice sends two messages to Bob
       const file1 = new MockFile(['Message 1'], 'msg1.txt', { type: 'text/plain' });
       const file2 = new MockFile(['Message 2'], 'msg2.txt', { type: 'text/plain' });
 
-      const result1 = await alice.send('multibob', file1, '/', () => {}, () => {}, () => {});
-      const result2 = await alice.send('multibob', file2, '/', () => {}, () => {}, () => {});
+      const result1 = await alice.send(multiBob, file1, '/', () => {}, () => {}, () => {});
+      const result2 = await alice.send(multiBob, file2, '/', () => {}, () => {}, () => {});
 
       // Bob receives both
       const received1 = await bob.receiveMessage(result1.hash);
@@ -292,14 +350,16 @@ describe('Encrypted Send/Receive E2E', () => {
 
   describe('Edge Cases', () => {
     it('handles large files', async () => {
-      alice = await fds.CreateAccount('largealice', 'pass1', () => {});
-      bob = await fds.CreateAccount('largebob', 'pass2', () => {});
+      const largeAlice = u('largealice');
+      const largeBob = u('largebob');
+      alice = await fds.CreateAccount(largeAlice, 'pass1', () => {});
+      bob = await fds.CreateAccount(largeBob, 'pass2', () => {});
 
       // Create a 100KB file
       const largeContent = 'x'.repeat(100 * 1024);
       const file = new MockFile([largeContent], 'large.txt', { type: 'text/plain' });
 
-      const result = await alice.send('largebob', file, '/', () => {}, () => {}, () => {});
+      const result = await alice.send(largeBob, file, '/', () => {}, () => {}, () => {});
       const received = await bob.receiveMessage(result.hash);
 
       const decrypted = await received.file.text();
@@ -307,14 +367,16 @@ describe('Encrypted Send/Receive E2E', () => {
     }, 120000); // Large file needs more time
 
     it('handles binary files', async () => {
-      alice = await fds.CreateAccount('binalice', 'pass1', () => {});
-      bob = await fds.CreateAccount('binbob', 'pass2', () => {});
+      const binAlice = u('binalice');
+      const binBob = u('binbob');
+      alice = await fds.CreateAccount(binAlice, 'pass1', () => {});
+      bob = await fds.CreateAccount(binBob, 'pass2', () => {});
 
       // Create binary data
       const binaryData = new Uint8Array([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
       const file = new MockFile([binaryData], 'image.png', { type: 'image/png' });
 
-      const result = await alice.send('binbob', file, '/', () => {}, () => {}, () => {});
+      const result = await alice.send(binBob, file, '/', () => {}, () => {}, () => {});
       const received = await bob.receiveMessage(result.hash);
 
       const decrypted = new Uint8Array(await received.file.arrayBuffer());

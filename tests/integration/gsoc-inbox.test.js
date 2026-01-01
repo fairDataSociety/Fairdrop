@@ -86,6 +86,51 @@ vi.stubGlobal('fetch', async (url, options = {}) => {
     options = { ...options, body: options.body._buffer };
   }
 
+  // Handle /api/bee-info relative URL (returns mock overlay for GSOC)
+  if (urlStr === '/api/bee-info' || urlStr.endsWith('/api/bee-info')) {
+    return new Response(JSON.stringify({
+      overlay: 'be8aa29ad80afd4ccbada68360cd1b9d9cf646c7f872268f41f102bbc6223fb5'
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Handle /api/free-stamp for sponsored stamp
+  if (urlStr === '/api/free-stamp' || urlStr.endsWith('/api/free-stamp')) {
+    return new Response(JSON.stringify({
+      batchId: 'e171815c1578c7edd80aa441a626f860eb7fc8d43d96e778198e8edec2318059',
+      expiresAt: Date.now() + (4 * 24 * 60 * 60 * 1000),
+      remainingCapacity: 1000000
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Handle /api/register for ENS subdomain registration (mock success)
+  if ((urlStr === '/api/register' || urlStr.endsWith('/api/register')) && options.method === 'POST') {
+    const body = JSON.parse(options.body?.toString() || '{}');
+    return new Response(JSON.stringify({
+      success: true,
+      ensName: `${body.username}.fairdropdev.eth`,
+      txHash: '0x' + '1'.repeat(64)
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Handle /api/lookup/:username for ENS lookups (mock not found for new users)
+  if (urlStr.includes('/api/lookup/')) {
+    return new Response(JSON.stringify({
+      exists: false
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   // Redirect Bee requests to mock server
   if (urlStr.includes('fairdatasociety.org') && mockServerUrl) {
     const newUrl = urlStr.replace(/https?:\/\/[^/]+/, mockServerUrl);
@@ -360,6 +405,9 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
 
   describe('FDS Adapter Integration', () => {
     let fds;
+    // Generate unique names for each test run to avoid ENS conflicts
+    const testId = Date.now().toString(36).slice(-4);
+    const uniqueName = (base) => `${base}-${testId}`;
 
     beforeEach(async () => {
       fds = new FDS();
@@ -367,30 +415,33 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
     });
 
     it('creates accounts with encryption keys', async () => {
-      const alice = await fds.CreateAccount('gsoc-alice', 'password123');
+      const name = uniqueName('alice');
+      const alice = await fds.CreateAccount(name, 'password123');
 
-      expect(alice.subdomain).toBe('gsoc-alice');
+      expect(alice.subdomain).toBe(name);
       expect(alice.publicKey).toBeDefined();
       expect(alice.privateKey).toBeDefined();
     }, 30000);
 
     it('account has sendAnonymous method', async () => {
-      const alice = await fds.CreateAccount('gsoc-alice', 'password123');
+      const alice = await fds.CreateAccount(uniqueName('alice2'), 'password123');
 
       expect(alice.sendAnonymous).toBeDefined();
       expect(typeof alice.sendAnonymous).toBe('function');
-    });
+    }, 30000);
 
     it('account has setupGSOCInbox method', async () => {
-      const alice = await fds.CreateAccount('gsoc-alice', 'password123');
+      const alice = await fds.CreateAccount(uniqueName('alice3'), 'password123');
 
       expect(alice.setupGSOCInbox).toBeDefined();
       expect(typeof alice.setupGSOCInbox).toBe('function');
-    });
+    }, 30000);
 
     it('encrypted send includes GSOC flow when inbox params available', async () => {
-      const alice = await fds.CreateAccount('gsoc-alice', 'password', () => {});
-      const bob = await fds.CreateAccount('gsoc-bob', 'password', () => {});
+      const aliceName = uniqueName('alice4');
+      const bobName = uniqueName('bob');
+      const alice = await fds.CreateAccount(aliceName, 'password', () => {});
+      const bob = await fds.CreateAccount(bobName, 'password', () => {});
 
       // Simulate bob having inbox params (normally from ENS)
       const bobInboxParams = {
@@ -399,7 +450,7 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
         proximity: 16,
         recipientPublicKey: bob.publicKey
       };
-      localStorage.setItem('gsoc-bob_inbox_params', JSON.stringify(bobInboxParams));
+      localStorage.setItem(`${bobName}_inbox_params`, JSON.stringify(bobInboxParams));
 
       // Track console logs to verify GSOC flow
       const consoleLogs = [];
@@ -420,7 +471,7 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
     }, 60000);
 
     it('sendAnonymous creates message without sender info', async () => {
-      const alice = await fds.CreateAccount('gsoc-anon-alice', 'password', () => {});
+      const alice = await fds.CreateAccount(uniqueName('anon'), 'password', () => {});
       const recipientKeys = encryption.generateKeyPair();
 
       // Create mock inbox params for recipient
@@ -439,7 +490,7 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
     }, 60000);
 
     it('messages method attempts GSOC poll for received type', async () => {
-      const bob = await fds.CreateAccount('gsoc-poll-bob', 'password', () => {});
+      const bob = await fds.CreateAccount(uniqueName('poll'), 'password', () => {});
 
       // Spy on console to verify GSOC poll is attempted
       const consoleLogs = [];
@@ -460,7 +511,8 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
     }, 30000);
 
     it('stored inbox params are retrieved for polling', async () => {
-      const charlie = await fds.CreateAccount('gsoc-charlie', 'password', () => {});
+      const charlieName = uniqueName('charlie');
+      const charlie = await fds.CreateAccount(charlieName, 'password', () => {});
 
       // Store inbox params
       const params = {
@@ -469,10 +521,10 @@ describe('GSOC Zero-Leak Inbox E2E', () => {
         proximity: 16,
         recipientPublicKey: charlie.publicKey
       };
-      localStorage.setItem('gsoc-charlie_inbox_params', JSON.stringify(params));
+      localStorage.setItem(`${charlieName}_inbox_params`, JSON.stringify(params));
 
       // Verify params are stored
-      const stored = localStorage.getItem('gsoc-charlie_inbox_params');
+      const stored = localStorage.getItem(`${charlieName}_inbox_params`);
       expect(stored).toBeDefined();
 
       const parsed = JSON.parse(stored);

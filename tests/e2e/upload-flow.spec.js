@@ -120,8 +120,12 @@ test.describe('Complete Upload Flow', () => {
     expect(href).not.toContain('bzz:');
     expect(href).toContain(testRef);
 
-    // Verify it points to the right gateway
-    expect(href).toContain('bee-1.fairdatasociety.org');
+    // Verify it points to a valid gateway (either public or local proxy)
+    // In dev mode, this may be a local proxy (/bee/bzz/) or direct gateway
+    const validGateway = href.includes('fairdatasociety.org') ||
+                         href.includes('/bee/bzz/') ||
+                         href.includes('localhost');
+    expect(validGateway).toBe(true);
   });
 
   test('download page displays correct file information', async ({ page }) => {

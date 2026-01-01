@@ -2269,12 +2269,12 @@ a.show-received-alert:hover{
 }
 
 .inbox-nav button:hover{
-  color: #5B8DEF;
+  color: #333;
 }
 
 .inbox-nav button.active{
-  color: #5B8DEF;
-  font-weight: 500;
+  color: #000;
+  font-weight: 700;
 }
 
 .inbox-nav button.inactive{
@@ -2665,7 +2665,7 @@ a.show-received-alert:hover{
 .settings-section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #5B8DEF;
+  color: #333;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 16px;
@@ -2799,11 +2799,12 @@ a.show-received-alert:hover{
 }
 
 .settings-footer-links a {
-  color: #5B8DEF;
+  color: #666;
   text-decoration: none;
 }
 
 .settings-footer-links a:hover {
+  color: #333;
   text-decoration: underline;
 }
 

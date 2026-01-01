@@ -2655,7 +2655,7 @@ a.show-received-alert:hover{
 .settings-section {
   margin-bottom: 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
 }
 
 .settings-section:last-child {
@@ -2665,7 +2665,7 @@ a.show-received-alert:hover{
 .settings-section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #ccc;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 16px;
@@ -2676,8 +2676,8 @@ a.show-received-alert:hover{
 
 .settings-coming-soon {
   font-size: 10px;
-  background: #f0f0f0;
-  color: #888;
+  background: rgba(255,255,255,0.15);
+  color: #aaa;
   padding: 2px 8px;
   border-radius: 10px;
   font-weight: normal;
@@ -2697,7 +2697,7 @@ a.show-received-alert:hover{
 }
 
 .settings-label {
-  color: #333;
+  color: #aaa;
   font-size: 15px;
   display: flex;
   flex-direction: column;
@@ -2706,11 +2706,11 @@ a.show-received-alert:hover{
 
 .settings-hint {
   font-size: 12px;
-  color: #888;
+  color: #777;
 }
 
 .settings-value {
-  color: #666;
+  color: #ddd;
   font-size: 15px;
   display: flex;
   align-items: center;
@@ -2719,7 +2719,8 @@ a.show-received-alert:hover{
 
 .settings-value code {
   font-family: monospace;
-  background: #f5f5f5;
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 13px;
@@ -2747,36 +2748,36 @@ a.show-received-alert:hover{
 }
 
 .settings-domain {
-  color: #888;
+  color: #777;
 }
 
 .settings-placeholder {
-  color: #bbb;
+  color: #666;
   font-style: italic;
 }
 
 .settings-btn-outline {
   background: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid rgba(255,255,255,0.3);
   padding: 8px 16px;
   border-radius: 4px;
-  color: #666;
+  color: #aaa;
   cursor: not-allowed;
   font-size: 13px;
 }
 
 .settings-coming-soon-inline {
   font-size: 10px;
-  background: #f0f0f0;
-  color: #888;
+  background: rgba(255,255,255,0.15);
+  color: #aaa;
   padding: 2px 6px;
   border-radius: 8px;
   margin-left: 6px;
 }
 
 .settings-stamp-badge {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 13px;
@@ -2785,11 +2786,11 @@ a.show-received-alert:hover{
 .settings-footer {
   margin-top: 32px;
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255,255,255,0.15);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #888;
+  color: #777;
   font-size: 13px;
 }
 
@@ -2799,12 +2800,12 @@ a.show-received-alert:hover{
 }
 
 .settings-footer-links a {
-  color: #666;
+  color: #aaa;
   text-decoration: none;
 }
 
 .settings-footer-links a:hover {
-  color: #333;
+  color: #fff;
   text-decoration: underline;
 }
 

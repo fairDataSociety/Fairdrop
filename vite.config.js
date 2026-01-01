@@ -6,6 +6,12 @@ export default defineConfig({
   server: {
     port: 3001,
     proxy: {
+      // Proxy for local Bee node (CORS bypass)
+      '/bee': {
+        target: 'http://localhost:1633',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/bee/, '')
+      },
       // Proxy for FDS gateway (CORS bypass in development)
       '/api/swarm': {
         target: 'https://gateway.fairdatasociety.org',

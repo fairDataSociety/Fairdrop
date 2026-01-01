@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:full": "node tests/mocks/ens-server.js & vite",
+    "ens-server": "node tests/mocks/ens-server.js",
     "build": "vite build",
     "preview": "vite preview",
     "test": "playwright test",

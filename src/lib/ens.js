@@ -17,6 +17,9 @@ const INBOX_PROX_KEY = 'io.fairdrop.inbox.prox';
 // Use VITE_ENS_DOMAIN to override (e.g., "fairdropdev.eth" for testing)
 export const ENS_DOMAIN = import.meta.env.VITE_ENS_DOMAIN || 'fairdrop.eth';
 
+// Gasless registration API endpoint (backend service that owns the ENS domain)
+export const ENS_REGISTRATION_API = import.meta.env.VITE_ENS_REGISTRATION_API || null;
+
 // Fallback public RPC endpoints
 const RPC_ENDPOINTS = [
   'https://eth.llamarpc.com',
@@ -197,12 +200,37 @@ export const isENSName = (name) => {
 
 /**
  * Check if a Fairdrop subdomain exists and has a public key
+ * Checks registration API first (if configured), then falls back to direct ENS lookup
  * @param {string} username - Username to check (e.g., "alice" for alice.fairdrop.eth)
  * @returns {Promise<{exists: boolean, publicKey: string|null}>}
  */
 export const checkFairdropSubdomain = async (username) => {
   const ensName = `${username}.${ENS_DOMAIN}`;
 
+  // Try registration API first (faster, includes inbox params)
+  if (ENS_REGISTRATION_API) {
+    try {
+      const apiBase = ENS_REGISTRATION_API.replace('/register', '');
+      const response = await fetch(`${apiBase}/lookup/${username}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.exists) {
+          console.log(`[ENS] Found ${username} via registration API`);
+          return {
+            exists: true,
+            ensName: data.ensName || ensName,
+            address: '0x' + '0'.repeat(40), // Mock address
+            publicKey: data.publicKey?.replace('0x', '') || null,
+            inboxParams: data.inboxParams || null
+          };
+        }
+      }
+    } catch (error) {
+      console.log('[ENS] Registration API lookup failed, trying direct ENS:', error.message);
+    }
+  }
+
+  // Fall back to real ENS
   try {
     const publicKey = await getFairdropPublicKey(ensName);
     const address = await resolveENSName(ensName);
@@ -266,7 +294,8 @@ export const resolveRecipient = async (recipient) => {
   if (/^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$/.test(cleaned.toLowerCase())) {
     const result = await checkFairdropSubdomain(cleaned.toLowerCase());
     if (result.publicKey) {
-      const inboxParams = await getInboxParams(result.ensName);
+      // Use inboxParams from registration API if available, otherwise fetch from ENS
+      const inboxParams = result.inboxParams || await getInboxParams(result.ensName);
       return { publicKey: result.publicKey, method: 'fairdrop-subdomain', ensName: result.ensName, inboxParams };
     }
     if (result.exists) {
@@ -275,6 +304,289 @@ export const resolveRecipient = async (recipient) => {
   }
 
   return { publicKey: null, method: 'not-found', ensName: null, inboxParams: null };
+};
+
+/**
+ * Register a Fairdrop subdomain via gasless API
+ * No wallet required - backend service handles the transaction
+ *
+ * @param {string} username - Username for subdomain (e.g., "alice" for alice.fairdropdev.eth)
+ * @param {string} publicKey - Public key (hex) to register
+ * @param {Object} options - Optional: gsocParams for inbox
+ * @returns {Promise<{success: boolean, ensName: string, error?: string}>}
+ */
+export const registerSubdomainGasless = async (username, publicKey, options = {}) => {
+  const ensName = `${username}.${ENS_DOMAIN}`;
+
+  if (!ENS_REGISTRATION_API) {
+    console.log('[ENS] No registration API configured, skipping gasless registration');
+    return {
+      success: false,
+      ensName,
+      error: 'No registration API configured'
+    };
+  }
+
+  try {
+    console.log(`[ENS] Registering ${ensName} via API...`);
+
+    const response = await fetch(ENS_REGISTRATION_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        publicKey: publicKey.startsWith('0x') ? publicKey : `0x${publicKey}`,
+        inboxParams: options.gsocParams || null
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Registration failed: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(`[ENS] Registered ${ensName} successfully`);
+
+    return {
+      success: true,
+      ensName,
+      txHash: result.txHash
+    };
+  } catch (error) {
+    console.error('[ENS] Gasless registration error:', error);
+    return {
+      success: false,
+      ensName,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Register a Fairdrop subdomain with public key on ENS
+ * Tries gasless API first, falls back to wallet if available
+ *
+ * @param {string} username - Username for subdomain (e.g., "alice" for alice.fairdrop.eth)
+ * @param {string} publicKey - Public key (hex) to register
+ * @param {Object} options - Optional: gsocParams for inbox
+ * @returns {Promise<{success: boolean, ensName: string, txHash?: string, error?: string}>}
+ */
+export const registerFairdropSubdomain = async (username, publicKey, options = {}) => {
+  // Try gasless API first (preferred - no user interaction needed)
+  if (ENS_REGISTRATION_API) {
+    const gaslessResult = await registerSubdomainGasless(username, publicKey, options);
+    if (gaslessResult.success) {
+      return gaslessResult;
+    }
+    console.log('[ENS] Gasless registration failed, trying wallet...');
+  }
+
+  // Fall back to wallet-based registration
+  const ensName = `${username}.${ENS_DOMAIN}`;
+
+  try {
+    // Check if MetaMask/wallet is available
+    if (typeof window === 'undefined' || !window.ethereum) {
+      throw new Error('Wallet not connected. Please connect MetaMask to register on ENS.');
+    }
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
+    console.log(`[ENS] Registering ${ensName} for ${signerAddress}`);
+
+    // Get ENS registry contract
+    const ensRegistry = new ethers.Contract(
+      '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e', // ENS Registry (mainnet)
+      [
+        'function resolver(bytes32 node) view returns (address)',
+        'function owner(bytes32 node) view returns (address)',
+        'function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl)'
+      ],
+      signer
+    );
+
+    // Calculate namehash for parent and subdomain
+    const parentNode = ethers.namehash(ENS_DOMAIN);
+    const labelHash = ethers.keccak256(ethers.toUtf8Bytes(username));
+    const subdomainNode = ethers.namehash(ensName);
+
+    // Check if subdomain already exists
+    const existingOwner = await ensRegistry.owner(subdomainNode);
+    if (existingOwner !== ethers.ZeroAddress && existingOwner.toLowerCase() !== signerAddress.toLowerCase()) {
+      throw new Error(`Subdomain ${ensName} is already owned by another address`);
+    }
+
+    // Get parent resolver
+    const parentResolver = await ensRegistry.resolver(parentNode);
+    if (parentResolver === ethers.ZeroAddress) {
+      throw new Error(`Parent domain ${ENS_DOMAIN} has no resolver`);
+    }
+
+    // If subdomain doesn't exist, create it
+    if (existingOwner === ethers.ZeroAddress) {
+      console.log(`[ENS] Creating subdomain ${ensName}...`);
+      const tx = await ensRegistry.setSubnodeRecord(
+        parentNode,
+        labelHash,
+        signerAddress,
+        parentResolver,
+        0 // TTL
+      );
+      await tx.wait();
+      console.log(`[ENS] Subdomain created: ${tx.hash}`);
+    }
+
+    // Set text record for public key
+    const resolverContract = new ethers.Contract(
+      parentResolver,
+      [
+        'function setText(bytes32 node, string key, string value)'
+      ],
+      signer
+    );
+
+    console.log(`[ENS] Setting public key for ${ensName}...`);
+    const cleanKey = publicKey.startsWith('0x') ? publicKey : `0x${publicKey}`;
+    const tx = await resolverContract.setText(subdomainNode, FAIRDROP_KEY, cleanKey);
+    await tx.wait();
+    console.log(`[ENS] Public key set: ${tx.hash}`);
+
+    // Optionally set GSOC inbox params
+    if (options.gsocParams) {
+      await setInboxParams(ensName, options.gsocParams, signer);
+    }
+
+    return {
+      success: true,
+      ensName,
+      txHash: tx.hash
+    };
+  } catch (error) {
+    console.error('[ENS] Registration error:', error);
+    return {
+      success: false,
+      ensName,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Set GSOC inbox params on ENS text records
+ *
+ * @param {string} ensName - ENS name to update
+ * @param {Object} gsocParams - { targetOverlay, baseIdentifier, proximity }
+ * @param {ethers.Signer} signer - Optional signer (will get from window.ethereum if not provided)
+ * @returns {Promise<{success: boolean, txHashes?: string[]}>}
+ */
+export const setInboxParams = async (ensName, gsocParams, signer = null) => {
+  try {
+    if (!signer) {
+      if (typeof window === 'undefined' || !window.ethereum) {
+        throw new Error('Wallet not connected');
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+    }
+
+    const node = ethers.namehash(ensName);
+
+    // Get resolver for this name
+    const provider = signer.provider || new ethers.BrowserProvider(window.ethereum);
+    const resolver = await provider.getResolver(ensName);
+    if (!resolver) {
+      throw new Error(`No resolver found for ${ensName}`);
+    }
+
+    const resolverContract = new ethers.Contract(
+      resolver.address,
+      ['function setText(bytes32 node, string key, string value)'],
+      signer
+    );
+
+    const txHashes = [];
+
+    // Set overlay
+    if (gsocParams.targetOverlay) {
+      console.log(`[ENS] Setting inbox overlay for ${ensName}...`);
+      const tx = await resolverContract.setText(node, INBOX_OVERLAY_KEY, gsocParams.targetOverlay);
+      await tx.wait();
+      txHashes.push(tx.hash);
+    }
+
+    // Set base identifier
+    if (gsocParams.baseIdentifier) {
+      console.log(`[ENS] Setting inbox ID for ${ensName}...`);
+      const tx = await resolverContract.setText(node, INBOX_ID_KEY, gsocParams.baseIdentifier);
+      await tx.wait();
+      txHashes.push(tx.hash);
+    }
+
+    // Set proximity
+    if (gsocParams.proximity) {
+      console.log(`[ENS] Setting inbox proximity for ${ensName}...`);
+      const tx = await resolverContract.setText(node, INBOX_PROX_KEY, gsocParams.proximity.toString());
+      await tx.wait();
+      txHashes.push(tx.hash);
+    }
+
+    console.log(`[ENS] Inbox params set for ${ensName}`);
+    return { success: true, txHashes };
+  } catch (error) {
+    console.error('[ENS] Set inbox params error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Check if user has permission to register subdomains on fairdrop.eth
+ * @returns {Promise<{canRegister: boolean, reason?: string}>}
+ */
+export const canRegisterSubdomain = async () => {
+  try {
+    if (typeof window === 'undefined' || !window.ethereum) {
+      return { canRegister: false, reason: 'No wallet connected' };
+    }
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
+    // Check if user owns fairdrop.eth or has approval
+    const ensRegistry = new ethers.Contract(
+      '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      [
+        'function owner(bytes32 node) view returns (address)',
+        'function isApprovedForAll(address owner, address operator) view returns (bool)'
+      ],
+      provider
+    );
+
+    const parentNode = ethers.namehash(ENS_DOMAIN);
+    const parentOwner = await ensRegistry.owner(parentNode);
+
+    if (parentOwner.toLowerCase() === signerAddress.toLowerCase()) {
+      return { canRegister: true };
+    }
+
+    // Check if approved
+    const isApproved = await ensRegistry.isApprovedForAll(parentOwner, signerAddress);
+    if (isApproved) {
+      return { canRegister: true };
+    }
+
+    return {
+      canRegister: false,
+      reason: `Only the owner of ${ENS_DOMAIN} can register subdomains`
+    };
+  } catch (error) {
+    return { canRegister: false, reason: error.message };
+  }
 };
 
 export default {
@@ -286,8 +598,13 @@ export default {
   isENSName,
   checkFairdropSubdomain,
   resolveRecipient,
+  registerFairdropSubdomain,
+  registerSubdomainGasless,
+  setInboxParams,
+  canRegisterSubdomain,
   FAIRDROP_KEY,
   ENS_DOMAIN,
+  ENS_REGISTRATION_API,
   INBOX_OVERLAY_KEY,
   INBOX_ID_KEY,
   INBOX_PROX_KEY

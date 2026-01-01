@@ -54,7 +54,9 @@ export const createInbox = async (name, options = {}) => {
     try {
       const bee = getBee()
       const addresses = await bee.getNodeAddresses()
-      targetOverlay = addresses.overlay
+      // Convert PeerAddress object to hex string
+      const overlay = addresses.overlay
+      targetOverlay = typeof overlay === 'string' ? overlay : overlay.toHex()
       console.log('[Multibox] Got overlay from local Bee:', targetOverlay?.slice(0, 10))
     } catch (error) {
       console.warn('[Multibox] Could not get Bee overlay:', error.message)

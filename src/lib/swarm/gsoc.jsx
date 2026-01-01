@@ -69,7 +69,10 @@ export const deriveInboxKey = (params) => {
  */
 export const getInboxOwner = (params) => {
   const gsocKey = deriveInboxKey(params)
-  return ethers.computeAddress('0x' + gsocKey.toHex())
+  // Use bee-js built-in method: privateKey -> publicKey -> address
+  const publicKey = gsocKey.publicKey()
+  const ethAddress = publicKey.address()
+  return '0x' + ethAddress.toHex()
 }
 
 /**
@@ -246,28 +249,49 @@ export const readInboxSlot = async (params, index) => {
 
 /**
  * Poll inbox for all messages starting from an index
- * Stops after 5 consecutive empty slots
+ * Uses parallel requests for speed, stops after consecutive empty slots
  *
  * @param {Object} params - Inbox params
  * @param {number} lastKnownIndex - Start scanning from this index (default 0)
- * @param {number} maxScan - Maximum slots to scan (default 100)
+ * @param {number} maxScan - Maximum slots to scan (default 20)
  * @returns {Promise<Array>} Array of messages with their indices
  */
-export const pollInbox = async (params, lastKnownIndex = 0, maxScan = 100) => {
-  const messages = []
-  let emptyCount = 0
+export const pollInbox = async (params, lastKnownIndex = 0, maxScan = 20) => {
+  const BATCH_SIZE = 5 // Request 5 slots in parallel
+  const MAX_EMPTY_BATCHES = 2 // Stop after 2 batches with no messages
 
-  for (let i = lastKnownIndex; i < lastKnownIndex + maxScan && emptyCount < 5; i++) {
-    const msg = await readInboxSlot(params, i)
-    if (msg) {
-      messages.push({ ...msg, index: i })
-      emptyCount = 0
-    } else {
-      emptyCount++
+  const messages = []
+  let emptyBatches = 0
+  let currentIndex = lastKnownIndex
+
+  while (currentIndex < lastKnownIndex + maxScan && emptyBatches < MAX_EMPTY_BATCHES) {
+    // Create batch of parallel requests
+    const batchPromises = []
+    for (let i = 0; i < BATCH_SIZE && currentIndex + i < lastKnownIndex + maxScan; i++) {
+      const idx = currentIndex + i
+      batchPromises.push(
+        readInboxSlot(params, idx)
+          .then(msg => msg ? { ...msg, index: idx } : null)
+          .catch(() => null)
+      )
     }
+
+    // Wait for batch to complete
+    const results = await Promise.all(batchPromises)
+    const batchMessages = results.filter(m => m !== null)
+
+    if (batchMessages.length === 0) {
+      emptyBatches++
+    } else {
+      emptyBatches = 0
+      messages.push(...batchMessages)
+    }
+
+    currentIndex += BATCH_SIZE
   }
 
-  return messages
+  // Sort by index to ensure order
+  return messages.sort((a, b) => a.index - b.index)
 }
 
 /**

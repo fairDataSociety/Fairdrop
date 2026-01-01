@@ -66,6 +66,20 @@ export function createMockSwarmServer(port = 0) {
       return;
     }
 
+    // GET /addresses - Node addresses (for GSOC inbox setup)
+    if (req.method === 'GET' && url.pathname === '/addresses') {
+      // Return mock overlay address for GSOC mining
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        overlay: '9ddba3215ebe6532ac4456c7a29a2c96e8c30d5726e48c96ac4b6f7f1234567890',
+        underlay: ['/ip4/127.0.0.1/tcp/1634/p2p/mock-peer-id'],
+        ethereum: '0x1234567890abcdef1234567890abcdef12345678',
+        publicKey: '0x' + '04'.padEnd(130, 'ab'),
+        pssPublicKey: '0x' + '02'.padEnd(66, 'cd')
+      }));
+      return;
+    }
+
     // GET /bytes/{reference} - Download raw data (bee-js downloadData)
     if (req.method === 'GET' && url.pathname.startsWith('/bytes/')) {
       handleBytesDownload(req, res, url.pathname);

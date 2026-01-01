@@ -80,12 +80,18 @@ class App extends Component {
          return false;
        }
 
-       let availiable = await fds.Account.isMailboxNameAvailable(this.state.recipient);
+       // Use proper recipient lookup that checks localStorage AND ENS
+       let recipientInfo;
+       try {
+         recipientInfo = await fds.Account.lookupAccount(this.state.recipient);
+       } catch (e) {
+         console.log('[Dropbox] Recipient lookup failed:', e.message);
+       }
 
-       if(availiable === true){
+       if (!recipientInfo || !recipientInfo.exists) {
          this.setState({
            found: false,
-           feedback: 'Error: Account not found',
+           feedback: 'Error: Account not found. Recipient must be registered locally or on ENS.',
          });
          return false;
        }
@@ -101,7 +107,8 @@ class App extends Component {
         let account = await fds.CreateAccount(
           `${random}-swarmhole-throwaway`,
           '',
-          this.setFeedback.bind(this)
+          this.setFeedback.bind(this),
+          { throwaway: true } // Skip ENS registration for anonymous sending
         );
 
         //send file to server

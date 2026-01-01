@@ -11,7 +11,7 @@ import { generateKeyPair, encryptFile, decryptFile, encryptData, decryptData, he
 import { getAllStamps, getStamp, requestSponsoredStamp, isStampUsable } from './swarm/stamps';
 import { getBeeUrl } from './swarm/client';
 import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet';
-import { resolveRecipient, isENSName, checkFairdropSubdomain, getInboxParams } from './ens';
+import { resolveRecipient, isENSName, checkFairdropSubdomain, getInboxParams, registerFairdropSubdomain, registerSubdomainGasless, setInboxParams as setENSInboxParams, ENS_DOMAIN } from './ens';
 import { writeToInbox, findNextSlot, pollInbox, decryptMetadata } from './swarm/gsoc';
 
 // Storage keys
@@ -109,8 +109,14 @@ class Account {
       // Write to recipient's GSOC inbox (if they have one set up)
       if (recipientInfo.inboxParams) {
         feedbackCb?.('Notifying recipient...');
+        console.log('[GSOC] Writing to inbox with params:', {
+          baseId: recipientInfo.inboxParams.baseIdentifier?.slice(0, 20),
+          overlay: recipientInfo.inboxParams.targetOverlay?.slice(0, 20),
+          proximity: recipientInfo.inboxParams.proximity
+        });
         try {
           const slot = await findNextSlot(recipientInfo.inboxParams);
+          console.log('[GSOC] Found slot:', slot);
           await writeToInbox(recipientInfo.inboxParams, slot, {
             reference,
             senderInfo: {
@@ -118,13 +124,13 @@ class Account {
               filename: file.name
             }
           }, { anonymous: false });
-          console.log(`[GSOC] Wrote to inbox slot ${slot} for ${recipient}`);
+          console.log(`[GSOC] SUCCESS - Wrote to inbox slot ${slot} for ${recipient}`);
         } catch (gsocError) {
           // Log but don't fail - message is still stored on Swarm
-          console.warn('[GSOC] Failed to write to inbox:', gsocError);
+          console.error('[GSOC] FAILED to write to inbox:', gsocError);
         }
       } else {
-        console.log('[GSOC] Recipient has no inbox params - message stored on Swarm only');
+        console.warn('[GSOC] Recipient has no inbox params - message stored on Swarm only');
       }
 
       progressCb?.(100);
@@ -287,7 +293,41 @@ class Account {
       }
 
       const stored = localStorage.getItem(key);
-      return stored ? JSON.parse(stored) : [];
+      const messages = stored ? JSON.parse(stored) : [];
+
+      // Transform messages to expected format for Mailbox component
+      // Expected: { hash: { address, file: { name, size }, time }, from, saveAs }
+      const self = this;
+      return messages.map(msg => ({
+        hash: {
+          address: msg.reference || msg.hash?.address || '',
+          file: {
+            name: msg.filename || msg.hash?.file?.name || 'unknown',
+            size: msg.size || msg.hash?.file?.size || 0
+          },
+          time: msg.timestamp || msg.hash?.time || Date.now()
+        },
+        from: msg.from || 'anonymous',
+        to: msg.to || msg.recipient || '',
+        saveAs: async function() {
+          try {
+            // Download and decrypt the file
+            const result = await self.receiveMessage(msg.reference || msg.hash?.address);
+            // Trigger download
+            const url = URL.createObjectURL(result.file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = result.metadata?.name || msg.filename || 'download';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error('Download failed:', error);
+            alert('Download failed: ' + error.message);
+          }
+        }
+      }));
     } catch {
       return [];
     }
@@ -355,36 +395,46 @@ class Account {
   }
 
   /**
-   * Get this account's inbox params (from ENS or local storage)
+   * Get this account's inbox params (from ENS API or local storage)
+   * IMPORTANT: Uses ENS API as source of truth to match what senders see
    */
   async _getMyInboxParams() {
-    // Check localStorage for locally stored inbox params
     const paramsKey = `${this.subdomain}_inbox_params`;
-    console.log('[GSOC] Getting my inbox params, key:', paramsKey);
+    console.log('[GSOC] Getting inbox params for:', this.subdomain);
+
+    // Try ENS API first (this is what senders use, so we need to match)
+    try {
+      const { checkFairdropSubdomain } = await import('./ens');
+      const result = await checkFairdropSubdomain(this.subdomain);
+      console.log('[GSOC] ENS API result:', {
+        exists: result.exists,
+        hasInboxParams: !!result.inboxParams,
+        baseId: result.inboxParams?.baseIdentifier?.slice(0, 20)
+      });
+
+      if (result.inboxParams) {
+        // Use ENS params (source of truth for senders)
+        return result.inboxParams;
+      }
+    } catch (e) {
+      console.warn('[GSOC] ENS API lookup failed:', e.message);
+    }
+
+    // Fall back to localStorage
     try {
       const stored = localStorage.getItem(paramsKey);
-      console.log('[GSOC] Stored params found:', !!stored);
       if (stored) {
         const params = JSON.parse(stored);
-        console.log('[GSOC] Parsed params:', { overlay: params.targetOverlay?.slice(0, 10), hasBaseId: !!params.baseIdentifier });
+        console.log('[GSOC] Using LOCAL params (fallback):', {
+          baseId: params.baseIdentifier?.slice(0, 20)
+        });
         return params;
       }
     } catch (e) {
       console.warn('[GSOC] Failed to parse stored params:', e);
     }
 
-    // Try to look up from ENS (if user has set up their ENS record)
-    try {
-      const params = await getInboxParams(`${this.subdomain}.fairdrop.eth`);
-      if (params) {
-        // Cache locally
-        localStorage.setItem(paramsKey, JSON.stringify(params));
-        return params;
-      }
-    } catch (error) {
-      console.log('[GSOC] No ENS inbox params found:', error);
-    }
-
+    console.log('[GSOC] No inbox params found');
     return null;
   }
 
@@ -444,6 +494,107 @@ class Account {
   }
 
   /**
+   * Register account on ENS (automatic, gasless)
+   * Uses backend API - no wallet or user interaction required
+   *
+   * @param {Object} options - Registration options
+   * @param {boolean} options.includeInbox - Also set GSOC inbox params (default: true)
+   * @returns {Promise<{success: boolean, ensName: string, error?: string}>}
+   */
+  async registerOnENS(options = {}) {
+    const { includeInbox = true } = options;
+    const ensName = `${this.subdomain}.${ENS_DOMAIN}`;
+
+    try {
+      // Get inbox params if we should include them
+      let gsocParams = null;
+      if (includeInbox) {
+        const paramsKey = `${this.subdomain}_inbox_params`;
+        const stored = localStorage.getItem(paramsKey);
+        if (stored) {
+          gsocParams = JSON.parse(stored);
+        }
+      }
+
+      // Register via gasless API (no user interaction)
+      const result = await registerFairdropSubdomain(
+        this.subdomain,
+        this.publicKey,
+        { gsocParams }
+      );
+
+      if (result.success) {
+        console.log(`[ENS] Registered ${result.ensName} - discoverable by anyone!`);
+        // Mark as registered in local storage
+        this._updateLocalData({ ensRegistered: true, ensName: result.ensName });
+      }
+
+      return result;
+    } catch (error) {
+      console.error('[ENS] Registration error:', error);
+      return {
+        success: false,
+        ensName,
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Update GSOC inbox params on ENS
+   * Call this after setupGSOCInbox to publish params
+   *
+   * @returns {Promise<{success: boolean}>}
+   */
+  async updateENSInboxParams() {
+    try {
+      const paramsKey = `${this.subdomain}_inbox_params`;
+      const stored = localStorage.getItem(paramsKey);
+      if (!stored) {
+        throw new Error('No inbox params found. Call setupGSOCInbox first.');
+      }
+
+      const params = JSON.parse(stored);
+      const ensName = `${this.subdomain}.fairdrop.eth`;
+
+      const result = await setENSInboxParams(ensName, params);
+      return result;
+    } catch (error) {
+      console.error('[ENS] Update inbox params error:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Check if this account is registered on ENS
+   * @returns {Promise<{registered: boolean, publicKey: string|null}>}
+   */
+  async checkENSRegistration() {
+    try {
+      const result = await checkFairdropSubdomain(this.subdomain);
+      return {
+        registered: result.exists && result.publicKey !== null,
+        publicKey: result.publicKey,
+        address: result.address,
+        ensName: result.ensName
+      };
+    } catch (error) {
+      return { registered: false, publicKey: null };
+    }
+  }
+
+  /**
+   * Update local account data
+   */
+  _updateLocalData(updates) {
+    const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
+    if (mailboxes[this.subdomain]) {
+      mailboxes[this.subdomain] = { ...mailboxes[this.subdomain], ...updates };
+      localStorage.setItem(STORAGE_KEYS.MAILBOXES, JSON.stringify(mailboxes));
+    }
+  }
+
+  /**
    * Get Bee node overlay address
    */
   async _getBeeOverlay() {
@@ -451,7 +602,9 @@ class Account {
       const { getBee } = await import('./swarm/client');
       const bee = getBee();
       const addresses = await bee.getNodeAddresses();
-      return addresses.overlay;
+      // Convert PeerAddress object to hex string
+      const overlay = addresses.overlay;
+      return typeof overlay === 'string' ? overlay : overlay.toHex();
     } catch (error) {
       console.log('[GSOC] Could not get Bee overlay:', error);
       return null;
@@ -559,23 +712,25 @@ class Account {
       // 1. Download encrypted payload from Swarm
       const { data } = await downloadFile(reference);
 
-      // Handle different data formats (Uint8Array, Buffer, string, ArrayBuffer)
+      // Handle different data formats (Uint8Array, string, ArrayBuffer)
       let payloadText;
       if (typeof data === 'string') {
         payloadText = data;
       } else if (data instanceof ArrayBuffer) {
         payloadText = new TextDecoder().decode(new Uint8Array(data));
-      } else if (data && data.buffer instanceof ArrayBuffer) {
-        // Uint8Array or similar TypedArray
+      } else if (data instanceof Uint8Array) {
         payloadText = new TextDecoder().decode(data);
-      } else if (Buffer.isBuffer(data)) {
-        payloadText = data.toString('utf-8');
+      } else if (data && data.buffer instanceof ArrayBuffer) {
+        // TypedArray view
+        payloadText = new TextDecoder().decode(new Uint8Array(data.buffer, data.byteOffset, data.byteLength));
+      } else if (data?.bytes instanceof Uint8Array) {
+        // bee-js Bytes class
+        payloadText = new TextDecoder().decode(data.bytes);
       } else {
-        // Try to extract bytes from bee-js Bytes class or similar
-        const bytes = data?.bytes || data;
-        if (bytes instanceof Uint8Array) {
-          payloadText = new TextDecoder().decode(bytes);
-        } else {
+        // Last resort - try to decode whatever we have
+        try {
+          payloadText = new TextDecoder().decode(new Uint8Array(data));
+        } catch {
           throw new Error(`Unsupported data type: ${typeof data}`);
         }
       }
@@ -706,11 +861,66 @@ class Account {
 
     try {
       const messages = JSON.parse(localStorage.getItem(key) || '[]');
+
+      // Check for duplicates by reference
+      const ref = message.reference || message.hash?.address;
+      const isDuplicate = messages.some(m =>
+        (m.reference || m.hash?.address) === ref
+      );
+
+      if (isDuplicate) {
+        console.log('[Messages] Skipping duplicate:', ref?.slice(0, 16));
+        return;
+      }
+
       messages.unshift(message); // Add to beginning
       localStorage.setItem(key, JSON.stringify(messages.slice(0, 100))); // Keep last 100
     } catch (e) {
       console.error('Error saving message:', e);
     }
+  }
+
+  /**
+   * Remove duplicate messages from storage (one-time cleanup)
+   * Call this to fix existing duplicates
+   */
+  deduplicateMessages(type = 'received') {
+    const key = type === 'sent' ? this._sentKey :
+                type === 'received' ? this._receivedKey :
+                this._storedKey;
+
+    try {
+      const messages = JSON.parse(localStorage.getItem(key) || '[]');
+      const seen = new Set();
+      const unique = messages.filter(m => {
+        const ref = m.reference || m.hash?.address;
+        if (!ref || seen.has(ref)) return false;
+        seen.add(ref);
+        return true;
+      });
+
+      console.log(`[Messages] Deduplicated ${type}: ${messages.length} -> ${unique.length}`);
+      localStorage.setItem(key, JSON.stringify(unique));
+      return unique.length;
+    } catch (e) {
+      console.error('Error deduplicating messages:', e);
+      return 0;
+    }
+  }
+
+  /**
+   * Clear all messages of a type
+   */
+  clearMessages(type = 'received') {
+    const key = type === 'sent' ? this._sentKey :
+                type === 'received' ? this._receivedKey :
+                this._storedKey;
+    localStorage.removeItem(key);
+    // Also reset the polled index
+    if (type === 'received') {
+      localStorage.removeItem(`${this.subdomain}_gsoc_last_index`);
+    }
+    console.log(`[Messages] Cleared ${type} messages for ${this.subdomain}`);
   }
 }
 
@@ -793,6 +1003,16 @@ class AccountManager {
     return { exists: false, publicKey: null };
   }
 
+  /**
+   * Look up an account (alias for lookupRecipient)
+   * Used by Dropbox component to check if recipient exists
+   * @param {string} name - Mailbox name, ENS name, or public key
+   * @returns {Promise<{exists: boolean, publicKey: string|null}>}
+   */
+  static async lookupAccount(name) {
+    return AccountManager.lookupRecipient(name);
+  }
+
   static Store = {
     /**
      * Upload files without encryption (quick upload)
@@ -865,8 +1085,15 @@ class FDS {
 
   /**
    * Create new account (mailbox)
+   * @param {string} subdomain - Account name
+   * @param {string} password - Password (can be empty for throwaway)
+   * @param {Function} feedbackCb - Progress callback
+   * @param {Object} options - Optional settings
+   * @param {boolean} options.throwaway - Skip ENS/inbox setup for anonymous sending
    */
-  async CreateAccount(subdomain, password, feedbackCb) {
+  async CreateAccount(subdomain, password, feedbackCb, options = {}) {
+    const { throwaway = false } = options;
+
     try {
       feedbackCb?.('Validating name...');
 
@@ -874,19 +1101,22 @@ class FDS {
         throw new Error('Invalid mailbox name');
       }
 
-      const available = await AccountManager.isMailboxNameAvailable(subdomain);
-      if (!available) {
-        throw new Error('Mailbox name already taken');
+      // Skip availability check for throwaway accounts (they're random anyway)
+      if (!throwaway) {
+        const available = await AccountManager.isMailboxNameAvailable(subdomain);
+        if (!available) {
+          throw new Error('Mailbox name already taken');
+        }
       }
 
       feedbackCb?.('Generating keypair...');
-      await delay(300);
+      await delay(throwaway ? 50 : 300); // Faster for throwaway
 
       // Generate new keypair
       const keyPair = generateKeyPair();
 
       feedbackCb?.('Creating account...');
-      await delay(200);
+      await delay(throwaway ? 50 : 200);
 
       // Store account
       const accountData = {
@@ -894,13 +1124,20 @@ class FDS {
         publicKey: bytesToHex(keyPair.publicKey),
         privateKey: bytesToHex(keyPair.privateKey),
         passwordHash: hashPassword(password),
-        created: Date.now()
+        created: Date.now(),
+        throwaway // Mark as throwaway for later reference
       };
 
       this._saveAccount(accountData);
 
       // Create and set as current account
       this.currentAccount = new Account(accountData);
+
+      // Skip inbox and ENS setup for throwaway accounts (anonymous senders)
+      if (throwaway) {
+        console.log('[Account] Throwaway account created - skipping ENS/inbox setup');
+        return this.currentAccount;
+      }
 
       // Try to set up GSOC inbox automatically (if Bee node available)
       feedbackCb?.('Setting up inbox...');
@@ -910,6 +1147,17 @@ class FDS {
       } catch (error) {
         console.warn('[GSOC] Could not set up inbox automatically:', error.message);
         // Don't fail account creation - inbox can be set up later
+      }
+
+      // Register on ENS automatically (gasless, no user interaction)
+      try {
+        const ensResult = await this.currentAccount.registerOnENS({ includeInbox: true });
+        if (ensResult.success) {
+          feedbackCb?.(`Registered as ${ensResult.ensName}`);
+        }
+      } catch (error) {
+        // Silent fail - ENS registration is optional
+        console.log('[ENS] Registration skipped:', error.message);
       }
 
       feedbackCb?.('Account created!');
@@ -1035,6 +1283,51 @@ class FDS {
     mailboxes[accountData.subdomain] = accountData;
     localStorage.setItem(STORAGE_KEYS.MAILBOXES, JSON.stringify(mailboxes));
   }
+
+  /**
+   * Debug helper - call from browser console: FDS.debug()
+   */
+  static debug() {
+    console.log('=== GSOC Debug Info ===');
+
+    // All mailboxes
+    const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
+    console.log('Mailboxes:', Object.keys(mailboxes));
+
+    // Check inbox params for each
+    for (const name of Object.keys(mailboxes)) {
+      const paramsKey = `${name}_inbox_params`;
+      const params = localStorage.getItem(paramsKey);
+      console.log(`  ${name}:`);
+      console.log(`    - has publicKey: ${!!mailboxes[name].publicKey}`);
+      console.log(`    - inbox params in mailbox: ${!!mailboxes[name].inboxParams}`);
+      console.log(`    - inbox params in ${paramsKey}: ${!!params}`);
+      if (params) {
+        try {
+          const p = JSON.parse(params);
+          console.log(`    - overlay: ${p.targetOverlay?.slice(0, 16)}...`);
+          console.log(`    - baseId: ${p.baseIdentifier?.slice(0, 16)}...`);
+        } catch (e) {
+          console.log(`    - INVALID JSON: ${e.message}`);
+        }
+      }
+    }
+
+    // Honest inboxes
+    const inboxes = JSON.parse(localStorage.getItem('fairdrop_inboxes') || '{}');
+    console.log('Honest Inboxes:', Object.keys(inboxes));
+    for (const name of Object.keys(inboxes)) {
+      console.log(`  ${name}:`);
+      console.log(`    - has gsocParams: ${!!inboxes[name].gsocParams}`);
+    }
+
+    return { mailboxes: Object.keys(mailboxes), inboxes: Object.keys(inboxes) };
+  }
+}
+
+// Expose debug helper globally
+if (typeof window !== 'undefined') {
+  window.FDS_DEBUG = FDS.debug;
 }
 
 export default FDS;

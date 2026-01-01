@@ -28,7 +28,11 @@ const INBOX_PREFIX = 'fairdrop-inbox-v2'
  * @returns {Object} { privateKey, params: { targetOverlay, baseIdentifier, proximity } }
  */
 export const mineInboxKey = async (targetOverlay, proximity = 16) => {
+  console.log('[GSOC mineInboxKey] Starting with overlay:', targetOverlay?.slice(0, 16))
+  console.log('[GSOC mineInboxKey] Proximity:', proximity)
+
   const bee = getBee()
+  console.log('[GSOC mineInboxKey] Got Bee instance, URL:', bee.url)
 
   // Generate unique base identifier for this inbox
   const baseIdentifier = ethers.keccak256(
@@ -36,7 +40,20 @@ export const mineInboxKey = async (targetOverlay, proximity = 16) => {
   )
 
   // Mine GSOC key - bee-js gsocMine returns a PrivateKey instance
-  const gsocKey = bee.gsocMine(targetOverlay, baseIdentifier, proximity)
+  console.log('[GSOC mineInboxKey] Calling bee.gsocMine with:')
+  console.log('  - targetOverlay:', targetOverlay)
+  console.log('  - baseIdentifier:', baseIdentifier)
+  console.log('  - proximity:', proximity)
+
+  let gsocKey
+  try {
+    gsocKey = bee.gsocMine(targetOverlay, baseIdentifier, proximity)
+    console.log('[GSOC mineInboxKey] gsocMine succeeded')
+  } catch (error) {
+    console.error('[GSOC mineInboxKey] gsocMine FAILED:', error.message)
+    console.error('[GSOC mineInboxKey] Error stack:', error.stack)
+    throw error
+  }
 
   return {
     privateKey: gsocKey,

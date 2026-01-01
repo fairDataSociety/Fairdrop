@@ -11,6 +11,10 @@ const config = {
   defaultStampId: import.meta.env.VITE_DEFAULT_STAMP_ID || null
 }
 
+// Debug: Log the configured BEE URL at startup
+console.log('[Bee Client] Configured BEE URL:', config.beeUrl)
+console.log('[Bee Client] Default Stamp ID:', config.defaultStampId ? config.defaultStampId.slice(0, 16) + '...' : 'none')
+
 // Singleton Bee instance
 let beeInstance = null
 
@@ -20,7 +24,26 @@ let beeInstance = null
  */
 export const getBee = () => {
   if (!beeInstance) {
-    beeInstance = new Bee(config.beeUrl)
+    console.log('[Bee Client] Creating new Bee instance with URL:', config.beeUrl)
+    console.log('[Bee Client] URL type:', typeof config.beeUrl)
+    console.log('[Bee Client] URL length:', config.beeUrl?.length)
+
+    try {
+      // Test URL validation before Bee constructor
+      const testUrl = new URL(config.beeUrl)
+      console.log('[Bee Client] URL parsed successfully - protocol:', testUrl.protocol, 'host:', testUrl.host)
+    } catch (urlError) {
+      console.error('[Bee Client] URL parse failed:', urlError.message)
+    }
+
+    try {
+      beeInstance = new Bee(config.beeUrl)
+      console.log('[Bee Client] Bee instance created successfully')
+    } catch (beeError) {
+      console.error('[Bee Client] Bee constructor failed:', beeError.message)
+      console.error('[Bee Client] Error stack:', beeError.stack)
+      throw beeError
+    }
   }
   return beeInstance
 }

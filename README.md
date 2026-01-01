@@ -1,100 +1,92 @@
-# Readme - Fairdrop
+# Fairdrop
 
-## About Fairdrop
-Fairdrop is a free, decentralised, private and secure file transfer dapp contributed to Fair Data Society by Datafund. It is the first blockchain product based on Fair Data Society principles. This means that Fairdrop completely respects your privacy and doesn’t need or collect any personal data. It runs on the Ethereum network and uses Swarm’s decentralised storage system for file storing and sending. This means:
+[![Deploy to Production](https://github.com/plur9/Fairdrop/actions/workflows/deploy.yml/badge.svg)](https://github.com/plur9/Fairdrop/actions/workflows/deploy.yml)
 
-* No central servers.
-* No tracking.
-* No backdoors.
+A free, decentralized, private and secure file transfer application built on Swarm.
 
-It also comes with a built-in 256-bit ECDSA signature algorithm and the ability.
+**Live Site:** https://fairdrop.xyz
 
-An official hosted beta version of Fairdrop is available for you at fairdrop.xyz - it's free to use and all of your data is encrypted before it leaves your browser!
+## Features
 
-You are also able to run your own copy of the code which you may download from the [github repository](http://github.com/fairDataSociety/Fairdrop)
+- **Decentralized Storage** - Files stored on the Swarm network
+- **End-to-End Encryption** - AES-256-GCM with secp256k1 key exchange
+- **No Tracking** - Zero personal data collection
+- **Private Inbox** - GSOC-based zero-knowledge messaging
+- **ENS Identity** - Optional username registration
 
-![header image](https://raw.github.com/fairdatasociety/fairdrop/master/fairdrop.gif)
+## Quick Start
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for  development and testing purposes.
-
-
-For technical issues, use this project's [issue tracking](https://github.com/fairDataSociety/Fairdrop/issues).
-
-
-### Dependencies
-
-Before we get started, you'll need to install `npm` package manager. 
-
-
-```
-npm install
-```
-
-
-
-### First time setup
-
-The first step to running Fairdrop locally is downloading the code by cloning the repository:
-
-
-```
-git clone git@github.com:fairDataSociety/Fairdrop.git
-```
-
-If you get Permission denied error using `ssh` refer [here](https://help.github.com/en/github/authenticating-to-github/error-permission-denied-publickey) or use https link as a fallback.
-
-```
-git clone https://github.com/fairDataSociety/Fairdrop.git
-```
-Go to project root directory
-```
+```bash
+# Clone repository
+git clone https://github.com/plur9/Fairdrop.git
 cd Fairdrop
+
+# Install dependencies
+npm install
+
+# Copy environment template
+cp .env.example .env.local
+
+# Start development server
+npm run dev
 ```
 
-Now run the devserver
+Open http://localhost:5173
 
+## Requirements
+
+- Node.js 20+
+- A Bee node (local or remote)
+- Postage stamp for uploads
+
+For local development, install [Swarm Desktop](https://desktop.ethswarm.org/) or run bee-factory.
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](specs/architecture.md) | System overview, components, data flows |
+| [API Reference](specs/api-reference.md) | Endpoints, data formats, errors |
+| [Security Model](specs/security.md) | Encryption, key management, threats |
+| [Environment](specs/environment.md) | Configuration variables |
+| [Deployment](DEPLOYMENT.md) | Server setup and operations |
+
+## Scripts
+
+```bash
+npm run dev          # Development server
+npm run build        # Production build
+npm run test         # E2E tests (Playwright)
+npm run test:unit    # Unit tests (Vitest)
 ```
-npm run start
-```
 
-To build static assets for deployment in ./build
-```
-npm build
-```
+## Technology Stack
 
-
-You can see your app running on http://localhost:3000/
-
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
+- **Frontend:** React 18, Vite, TailwindCSS
+- **Storage:** Swarm (bee-js v10.1.1)
+- **Encryption:** @noble/secp256k1, AES-256-GCM
+- **Identity:** ENS (ethers.js v6)
 
 ## Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via [issue](https://github.com/fairDataSociety/Fairdrop/issues), email, or any other method with the owners of this repository before making a change.
-
 1. Fork the repository
-1. Clone the repository (`git clone git@github.com:your_username/Fairdrop.git`)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Add changes to the branch (`git add <list names of changed files>`)
-4. Commit your changes (`git commit -m 'Add some feature'`)
-5. Push to the branch (`git push origin my-new-feature`)
-6. Submit your changes for review (`Create new Pull Request`)
+2. Create feature branch (`git checkout -b feature/my-feature`)
+3. Commit changes (`git commit -m 'Add feature'`)
+4. Push branch (`git push origin feature/my-feature`)
+5. Open Pull Request
 
+For issues, use [GitHub Issues](https://github.com/plur9/Fairdrop/issues).
 
 ## Authors
 
-@significance
-@crtahlin
-@gasperx93
+- @significance
+- @crtahlin
+- @gasperx93
 
 ## License
 
-<<<<<<< HEAD
-This project is licensed under the GPL3 License -
-=======
-This project is licensed under the GPL3 License - 
->>>>>>> master
+GPL-3.0 License - see [LICENSE](LICENSE) for details.
+
+---
+
+Built by [Datafund](https://datafund.io) for [Fair Data Society](https://fairdatasociety.org)

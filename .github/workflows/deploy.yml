@@ -93,18 +93,17 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Deploy to production server
-        uses: easingthemes/ssh-deploy@v4
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
-          REMOTE_HOST: 164.90.215.90
-          REMOTE_USER: deploy
-          SOURCE: "dist/"
-          TARGET: /var/www/sites/fairdrop.xyz/
-          ARGS: "-avz --delete"
-          SCRIPT_AFTER: |
-            echo "Deployed at $(date)"
-            ls -la /var/www/sites/fairdrop.xyz/
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 164.90.215.90 >> ~/.ssh/known_hosts
+
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key" dist/ deploy@164.90.215.90:/var/www/sites/fairdrop.xyz/
+          ssh -i ~/.ssh/deploy_key deploy@164.90.215.90 "echo 'Deployed at $(date)' && ls -la /var/www/sites/fairdrop.xyz/"
 
       - name: Deployment summary
         run: |

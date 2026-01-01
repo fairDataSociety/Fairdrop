@@ -246,7 +246,7 @@ test.describe('Mobile UI', () => {
     const encryptedBtn = page.locator('.send-file-encrypted');
     const storeBtn = page.locator('.store-file-encrypted');
 
-    await expect(quickBtn).toHaveText(/Unencrypted/i);
+    await expect(quickBtn).toHaveText(/Quick Share/i);
     await expect(encryptedBtn).toHaveText(/Encrypted/i);
     await expect(storeBtn).toHaveText(/Store/i);
   });
@@ -333,8 +333,8 @@ test.describe('Dropzone Areas', () => {
     await expect(quickZone).toBeVisible();
 
     const text = await quickZone.textContent();
-    expect(text).toContain('quick');
-    expect(text).toContain('unencrypted');
+    expect(text).toContain('Quick');
+    expect(text).toContain('Share');
   });
 
   test('store encrypted dropzone exists', async ({ page }) => {

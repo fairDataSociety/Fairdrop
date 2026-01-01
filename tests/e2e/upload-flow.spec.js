@@ -208,7 +208,7 @@ test.describe('UI Responsiveness', () => {
 
     // Button should have correct text
     const btnText = await quickBtn.textContent();
-    expect(btnText).toContain('Unencrypted');
+    expect(btnText).toContain('Quick Share');
   });
 
   test('encrypted send button is present', async ({ page }) => {

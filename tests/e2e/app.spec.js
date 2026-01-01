@@ -64,50 +64,46 @@ test.describe('Account Creation', () => {
 
 });
 
-test.describe('File Upload - Quick Send', () => {
+test.describe('File Upload - Unified Dropzone', () => {
 
-  test('can access quick upload', async ({ page }) => {
+  test('can access upload area', async ({ page }) => {
     await page.goto('/');
 
-    // Look for quick send option
-    const quickSend = page.locator('.send-file-unencrypted');
-
-    if (await quickSend.isVisible()) {
-      await quickSend.click();
-      await page.waitForTimeout(500);
-    }
+    // Look for unified dropzone
+    const dropzone = page.locator('.unified-dropzone');
+    await expect(dropzone).toBeVisible();
   });
 
   test('dropzone is functional', async ({ page }) => {
     await page.goto('/');
 
-    // Check dropzone elements exist
-    const dropzone = page.locator('.select-file-send');
+    // Check unified dropzone exists
+    const dropzone = page.locator('.unified-dropzone');
     await expect(dropzone).toBeVisible();
   });
 
-  test('quick send button exists', async ({ page }) => {
+  test('select file instruction exists', async ({ page }) => {
     await page.goto('/');
 
-    // Check for quick send button
-    const quickBtn = page.locator('.select-file-quick');
-    await expect(quickBtn).toBeVisible();
+    // Check for select file instruction
+    const instruction = page.locator('.select-file-instruction');
+    await expect(instruction).toBeVisible();
   });
 
 });
 
-test.describe('Quick Upload Flow', () => {
+test.describe('Upload Flow', () => {
 
-  test('quick upload zone is clickable', async ({ page }) => {
+  test('unified dropzone is clickable', async ({ page }) => {
     await page.goto('/');
 
-    // Quick upload dropzone should be visible and clickable
-    const quickZone = page.locator('.select-file-quick');
-    await expect(quickZone).toBeVisible();
+    // Unified dropzone should be visible
+    const dropzone = page.locator('.unified-dropzone');
+    await expect(dropzone).toBeVisible();
 
     // Check it has the upload instruction text
-    const text = await quickZone.textContent();
-    expect(text).toContain('quick');
+    const text = await page.locator('.select-file-instruction').textContent();
+    expect(text).toContain('select');
   });
 
   test('in-progress screen has correct structure', async ({ page }) => {
@@ -184,13 +180,13 @@ test.describe('Upload Flow Integration', () => {
   test('file upload UI responds to interaction', async ({ page }) => {
     await page.goto('/');
 
-    // Click on the main upload area
-    const uploadArea = page.locator('.select-file-send');
+    // Click on the main upload area (unified dropzone)
+    const uploadArea = page.locator('.unified-dropzone');
     await expect(uploadArea).toBeVisible();
 
-    // Verify text content
-    const text = await uploadArea.textContent();
-    expect(text).toContain('encrypted');
+    // Verify instruction text content
+    const text = await page.locator('.select-file-instruction').textContent();
+    expect(text).toContain('select');
   });
 
   test('page has no console errors on load', async ({ page }) => {
@@ -211,7 +207,8 @@ test.describe('Upload Flow Integration', () => {
       !e.includes('net::ERR') &&
       !e.includes('localhost:1633') &&  // Bee node not running is OK for tests
       !e.includes('Failed to fetch') &&  // Network errors OK in test env
-      !e.includes('string ref')          // React deprecation warning in legacy code
+      !e.includes('string ref') &&       // React deprecation warning in legacy code
+      !e.includes('posthog')             // PostHog errors OK in test env
     );
 
     // Log errors for debugging
@@ -313,44 +310,28 @@ test.describe('Completed Screen Structure', () => {
 
 });
 
-test.describe('Dropzone Areas', () => {
+test.describe('Unified Dropzone Structure', () => {
 
-  test('send encrypted dropzone has correct content', async ({ page }) => {
+  test('unified dropzone is visible on homepage', async ({ page }) => {
     await page.goto('/');
 
-    const sendZone = page.locator('.select-file-send');
-    await expect(sendZone).toBeVisible();
-
-    const text = await sendZone.textContent();
-    expect(text).toContain('Send encrypted');
-    expect(text).toContain('mailbox');
+    const dropzone = page.locator('.unified-dropzone');
+    await expect(dropzone).toBeVisible();
   });
 
-  test('quick send dropzone has correct content', async ({ page }) => {
-    await page.goto('/');
-
-    const quickZone = page.locator('.select-file-quick');
-    await expect(quickZone).toBeVisible();
-
-    const text = await quickZone.textContent();
-    expect(text).toContain('Quick');
-    expect(text).toContain('Share');
-  });
-
-  test('store encrypted dropzone exists', async ({ page }) => {
-    await page.goto('/');
-
-    // Store zone is hidden by default but should exist
-    const storeZone = page.locator('.select-file-store');
-    expect(await storeZone.count()).toBe(1);
-  });
-
-  test('main instruction area has select action', async ({ page }) => {
+  test('instruction area has select action', async ({ page }) => {
     await page.goto('/');
 
     const selectAction = page.locator('.select-file-action');
     await expect(selectAction).toBeVisible();
     await expect(selectAction).toHaveText(/select/i);
+  });
+
+  test('unified dropzone contains instruction text', async ({ page }) => {
+    await page.goto('/');
+
+    const instruction = page.locator('.select-file-instruction');
+    await expect(instruction).toBeVisible();
   });
 
 });

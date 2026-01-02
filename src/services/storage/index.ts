@@ -209,3 +209,46 @@ export function clearAllData(): void {
     localStorage.removeItem(`${subdomain}_stored`)
   })
 }
+
+// Password hashing
+
+const SALT = 'fairdrop-v2-salt'
+
+/**
+ * Hash a password using Web Crypto API (SHA-256)
+ * Returns a hex string
+ */
+export async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(password + SALT)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+/**
+ * Synchronous password hash for quick verification
+ * Uses a simple deterministic hash (not cryptographically secure, but matches async version concept)
+ * For actual security, always use hashPassword and store the result
+ */
+export function hashPasswordSync(password: string): string {
+  const str = password + SALT
+  let hash = 0
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash + char) | 0
+  }
+
+  // Convert to positive hex
+  return (hash >>> 0).toString(16).padStart(8, '0')
+}
+
+/**
+ * Verify a password against a stored hash
+ * Uses async hash for security
+ */
+export async function verifyPassword(password: string, storedHash: string): Promise<boolean> {
+  const hash = await hashPassword(password)
+  return hash === storedHash
+}

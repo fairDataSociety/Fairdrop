@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-dark-50 text-dark-900;
+  }
+
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  /* Card component */
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-dark-200 p-6;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-2 border border-dark-300 rounded-lg
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-200
+           transition-colors;
+  }
+
+  /* Button variants */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors
+           focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white
+           hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply btn bg-dark-100 text-dark-700
+           hover:bg-dark-200 focus:ring-dark-500;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-primary-600
+           hover:bg-primary-50 focus:ring-primary-500;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  /* Dropzone styles */
+  .dropzone {
+    @apply border-2 border-dashed border-dark-300 rounded-xl p-8
+           hover:border-primary-400 transition-colors cursor-pointer
+           flex flex-col items-center justify-center text-center;
+  }
+
+  .dropzone-active {
+    @apply border-primary-500 bg-primary-50;
+  }
+}

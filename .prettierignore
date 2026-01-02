@@ -2,5 +2,6 @@ node_modules
 dist
 build
 coverage
+src-v1
 *.min.js
-public
+*.min.css

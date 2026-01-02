@@ -28,6 +28,7 @@ import DisclaimerSplash3 from "./components/DisclaimerSplash3"
 import Menu from "./components/Menu"
 import Content from "./components/Content"
 import Download from "./components/Download";
+import ShareHandler, { checkPendingShare } from "./components/ShareHandler";
 
 import FairdropLogo from "./components/Shared/svg/FairdropLogo.js"
 import MailboxGlyph from "./components/Shared/svg/MailboxGlyph.js"
@@ -81,7 +82,8 @@ class App extends Component {
       appRoot: this.props.appRoot,
       receivedMessages: [],
       showReceivedAlert: false,
-      isLoading: false  
+      isLoading: false,
+      showShareHandler: checkPendingShare()
     };
   }
 
@@ -175,12 +177,50 @@ class App extends Component {
     this.updateBalance = this.updateBalance.bind(this);
     this.getAppState = this.getAppState.bind(this);
     this.initSentry = this.initSentry.bind(this);
+    this.handleSharedFile = this.handleSharedFile.bind(this);
+    this.closeShareHandler = this.closeShareHandler.bind(this);
 
     this.state = this.getInitialState();
   }
 
   initSentry(){
     // Sentry not used - kept for compatibility
+  }
+
+  /**
+   * Handle a file shared via PWA Share Target
+   * @param {File} file - The shared file
+   * @param {string} mode - 'send', 'store', or 'quick'
+   */
+  handleSharedFile(file, mode) {
+    // Add the file to window.files for the upload component
+    window.files = [file];
+
+    // Navigate to home and trigger the appropriate flow
+    this.props.history.push('/');
+
+    // Trigger the appropriate upload mode
+    setTimeout(() => {
+      if (this.uploadComponent.current) {
+        this.uploadComponent.current.resetToInitialState();
+
+        // Set file and trigger appropriate mode
+        if (mode === 'send') {
+          this.setState({ isSendingFile: true });
+        } else if (mode === 'store') {
+          this.setState({ isStoringFile: true });
+        } else if (mode === 'quick') {
+          this.setState({ isQuickFile: true });
+        }
+
+        // The upload component will pick up the file from window.files
+        this.setState({ fileWasSelected: true });
+      }
+    }, 100);
+  }
+
+  closeShareHandler() {
+    this.setState({ showShareHandler: false });
   }
 
   componentDidMount(){
@@ -486,6 +526,14 @@ class App extends Component {
   render() {
     return (
       <div>
+        {/* PWA Share Target Handler */}
+        {this.state.showShareHandler && (
+          <ShareHandler
+            onFile={this.handleSharedFile}
+            onClose={this.closeShareHandler}
+          />
+        )}
+
         <div
           className={
           "parent-wrapper "

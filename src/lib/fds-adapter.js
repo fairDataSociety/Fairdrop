@@ -10,7 +10,7 @@ import { downloadFile, downloadData, triggerDownload } from './swarm/download';
 import { generateKeyPair, encryptFile, decryptFile, encryptData, decryptData, hexToBytes, bytesToHex } from './swarm/encryption';
 import { getAllStamps, getStamp, requestSponsoredStamp, isStampUsable } from './swarm/stamps';
 import { getBeeUrl } from './swarm/client';
-import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet';
+import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet-legacy';
 import { resolveRecipient, isENSName, checkFairdropSubdomain, getInboxParams, registerFairdropSubdomain, registerSubdomainGasless, setInboxParams as setENSInboxParams, ENS_DOMAIN } from './ens';
 import { writeToInbox, findNextSlot, pollInbox, decryptMetadata } from './swarm/gsoc';
 

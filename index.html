@@ -8,6 +8,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/images/fairdrop-icon-192.png">
+
     <!--     
       <meta property="og:title" content="Fairdrop">
       <meta property="og:description" content="Offering tour packages for individuals or groups.">
@@ -202,5 +206,20 @@
         <img class="splash-hidden" src="/assets/images/fairdrop-drop.svg"/>
     </div>
     <script type="module" src="/src/index.jsx"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('[App] Service worker registered:', registration.scope);
+            })
+            .catch(error => {
+              console.error('[App] Service worker registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

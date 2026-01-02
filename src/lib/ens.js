@@ -589,6 +589,150 @@ export const canRegisterSubdomain = async () => {
   }
 };
 
+/**
+ * Migrate from fairdrop.eth subdomain to a custom ENS domain
+ * Copies public key and inbox params to the new domain
+ *
+ * @param {string} customDomain - Target ENS domain (e.g., "alice.eth")
+ * @param {string} sourceUsername - Current fairdrop.eth username
+ * @param {Object} wallet - Wallet instance from wallet abstraction layer
+ * @returns {Promise<{success: boolean, error?: string, txHashes?: string[]}>}
+ */
+export const migrateToCustomDomain = async (customDomain, sourceUsername, wallet) => {
+  try {
+    if (!wallet) {
+      throw new Error('Wallet not connected');
+    }
+
+    // Verify wallet owns the target domain
+    const signer = wallet.getSigner();
+    const signerAddress = await signer.getAddress();
+    const domainAddress = await resolveENSName(customDomain);
+
+    if (!domainAddress) {
+      throw new Error(`Domain ${customDomain} not found on ENS`);
+    }
+
+    if (domainAddress.toLowerCase() !== signerAddress.toLowerCase()) {
+      throw new Error(`You don't own ${customDomain}. Connect the wallet that owns it.`);
+    }
+
+    // Get current fairdrop.eth data
+    const sourceName = `${sourceUsername}.${ENS_DOMAIN}`;
+    const [publicKey, inboxParams] = await Promise.all([
+      getFairdropPublicKey(sourceName),
+      getInboxParams(sourceName)
+    ]);
+
+    if (!publicKey) {
+      throw new Error(`No public key found on ${sourceName}`);
+    }
+
+    const txHashes = [];
+
+    // Get resolver for target domain
+    const provider = wallet.getProvider();
+    const resolver = await provider.getResolver(customDomain);
+    if (!resolver) {
+      throw new Error(`No resolver found for ${customDomain}. Please set up a resolver first.`);
+    }
+
+    const node = ethers.namehash(customDomain);
+    const resolverContract = new ethers.Contract(
+      resolver.address,
+      ['function setText(bytes32 node, string key, string value)'],
+      signer
+    );
+
+    // Set public key
+    console.log(`[ENS] Setting public key on ${customDomain}...`);
+    const cleanKey = publicKey.startsWith('0x') ? publicKey : `0x${publicKey}`;
+    const tx1 = await resolverContract.setText(node, FAIRDROP_KEY, cleanKey);
+    await tx1.wait();
+    txHashes.push(tx1.hash);
+    console.log(`[ENS] Public key migrated: ${tx1.hash}`);
+
+    // Set inbox params if available
+    if (inboxParams) {
+      console.log(`[ENS] Migrating inbox params to ${customDomain}...`);
+
+      if (inboxParams.targetOverlay) {
+        const tx = await resolverContract.setText(node, INBOX_OVERLAY_KEY, inboxParams.targetOverlay);
+        await tx.wait();
+        txHashes.push(tx.hash);
+      }
+
+      if (inboxParams.baseIdentifier) {
+        const tx = await resolverContract.setText(node, INBOX_ID_KEY, inboxParams.baseIdentifier);
+        await tx.wait();
+        txHashes.push(tx.hash);
+      }
+
+      if (inboxParams.proximity) {
+        const tx = await resolverContract.setText(node, INBOX_PROX_KEY, inboxParams.proximity.toString());
+        await tx.wait();
+        txHashes.push(tx.hash);
+      }
+
+      console.log(`[ENS] Inbox params migrated`);
+    }
+
+    return {
+      success: true,
+      txHashes,
+      oldDomain: sourceName,
+      newDomain: customDomain
+    };
+  } catch (error) {
+    console.error('[ENS] Migration error:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Check if username is available on fairdrop.eth
+ * @param {string} username - Username to check
+ * @returns {Promise<{available: boolean, reason?: string}>}
+ */
+export const checkUsernameAvailability = async (username) => {
+  // Validate username format
+  if (!username || typeof username !== 'string') {
+    return { available: false, reason: 'Invalid username' };
+  }
+
+  const cleaned = username.toLowerCase().trim();
+
+  // Check length (3-32 characters)
+  if (cleaned.length < 3) {
+    return { available: false, reason: 'Username must be at least 3 characters' };
+  }
+  if (cleaned.length > 32) {
+    return { available: false, reason: 'Username must be 32 characters or less' };
+  }
+
+  // Check characters (alphanumeric and hyphens, no leading/trailing hyphens)
+  if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(cleaned) && !/^[a-z0-9]$/.test(cleaned)) {
+    return { available: false, reason: 'Username can only contain letters, numbers, and hyphens' };
+  }
+
+  // Reserved usernames
+  const reserved = ['admin', 'root', 'system', 'api', 'www', 'mail', 'ftp', 'help', 'support', 'info'];
+  if (reserved.includes(cleaned)) {
+    return { available: false, reason: 'This username is reserved' };
+  }
+
+  // Check if already registered
+  const result = await checkFairdropSubdomain(cleaned);
+  if (result.exists) {
+    return { available: false, reason: 'Username is already taken' };
+  }
+
+  return { available: true };
+};
+
 export default {
   resolveENSName,
   getENSTextRecord,
@@ -602,6 +746,8 @@ export default {
   registerSubdomainGasless,
   setInboxParams,
   canRegisterSubdomain,
+  migrateToCustomDomain,
+  checkUsernameAvailability,
   FAIRDROP_KEY,
   ENS_DOMAIN,
   ENS_REGISTRATION_API,

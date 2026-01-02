@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 import Utils from '../../services/Utils';
 import Switch from "react-switch";
 import { isEnabled as analyticsIsEnabled, setEnabled as setAnalyticsEnabled } from '../../lib/analytics';
+import { Wallet, WalletType, WalletState } from '../../lib/wallet';
 
 
 //deal with xbrowser copy paste issues
@@ -33,11 +34,92 @@ class Settings extends Component{
 
     this.state = {
       analyticsState: this.analyticsState(),
-      addressCopied: false
+      addressCopied: false,
+      // Wallet state
+      externalWallet: null,
+      embeddedWallet: null,
+      walletConnecting: null, // 'external' | 'embedded' | null
+      walletError: null,
+      showMnemonic: false,
+      mnemonic: null
     }
 
     this.handleChangeAnalytics = this.handleChangeAnalytics.bind(this);
     this.handleCopyAddress = this.handleCopyAddress.bind(this);
+    this.handleConnectExternal = this.handleConnectExternal.bind(this);
+    this.handleConnectEmbedded = this.handleConnectEmbedded.bind(this);
+    this.handleDisconnectWallet = this.handleDisconnectWallet.bind(this);
+  }
+
+  componentDidMount() {
+    // Try to reconnect previously connected wallet
+    this.tryReconnectWallet();
+  }
+
+  async tryReconnectWallet() {
+    try {
+      const wallet = await Wallet.reconnect();
+      if (wallet) {
+        if (wallet.type === WalletType.EXTERNAL) {
+          this.setState({ externalWallet: wallet });
+        } else {
+          this.setState({ embeddedWallet: wallet });
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to reconnect wallet:', error);
+    }
+  }
+
+  async handleConnectExternal() {
+    this.setState({ walletConnecting: 'external', walletError: null });
+
+    try {
+      const wallet = await Wallet.connect({ type: WalletType.EXTERNAL });
+      this.setState({
+        externalWallet: wallet,
+        walletConnecting: null
+      });
+    } catch (error) {
+      this.setState({
+        walletConnecting: null,
+        walletError: error.message
+      });
+    }
+  }
+
+  async handleConnectEmbedded() {
+    this.setState({ walletConnecting: 'embedded', walletError: null });
+
+    try {
+      const wallet = await Wallet.connect({ type: WalletType.EMBEDDED });
+
+      // Check if this is a new wallet with mnemonic to backup
+      const result = wallet.adapter._lastConnectResult;
+
+      this.setState({
+        embeddedWallet: wallet,
+        walletConnecting: null,
+        // Show mnemonic if it's a new wallet
+        showMnemonic: result?.isNew && result?.mnemonic,
+        mnemonic: result?.mnemonic
+      });
+    } catch (error) {
+      this.setState({
+        walletConnecting: null,
+        walletError: error.message
+      });
+    }
+  }
+
+  handleDisconnectWallet(type) {
+    if (type === 'external' && this.state.externalWallet) {
+      this.state.externalWallet.disconnect();
+      this.setState({ externalWallet: null });
+    } else if (type === 'embedded' && this.state.embeddedWallet) {
+      this.state.embeddedWallet.disconnect();
+      this.setState({ embeddedWallet: null });
+    }
   }
 
   handleCopyAddress(){
@@ -106,6 +188,95 @@ class Settings extends Component{
 
   analyticsState(){
     return analyticsIsEnabled();
+  }
+
+  renderWalletSection() {
+    const { externalWallet, embeddedWallet, walletConnecting, walletError } = this.state;
+
+    return (
+      <div className="settings-section">
+        <h2 className="settings-section-title">Wallet</h2>
+
+        {walletError && (
+          <div className="settings-error">
+            {walletError}
+          </div>
+        )}
+
+        {/* External Wallet */}
+        <div className="settings-row">
+          <span className="settings-label">
+            External Wallet
+            <span className="settings-hint">MetaMask, WalletConnect</span>
+          </span>
+          <span className="settings-value">
+            {externalWallet ? (
+              <>
+                <code>{externalWallet.formatAddress()}</code>
+                <button
+                  className="settings-btn-disconnect"
+                  onClick={() => this.handleDisconnectWallet('external')}
+                >
+                  Disconnect
+                </button>
+              </>
+            ) : (
+              <button
+                className="settings-btn-primary"
+                onClick={this.handleConnectExternal}
+                disabled={walletConnecting === 'external'}
+              >
+                {walletConnecting === 'external' ? 'Connecting...' : 'Connect Wallet'}
+              </button>
+            )}
+          </span>
+        </div>
+
+        {/* Embedded Wallet */}
+        <div className="settings-row">
+          <span className="settings-label">
+            Embedded Wallet
+            <span className="settings-hint">Self-custodial, in-browser</span>
+          </span>
+          <span className="settings-value">
+            {embeddedWallet ? (
+              <>
+                <code>{embeddedWallet.formatAddress()}</code>
+                <button
+                  className="settings-btn-disconnect"
+                  onClick={() => this.handleDisconnectWallet('embedded')}
+                >
+                  Lock
+                </button>
+              </>
+            ) : (
+              <button
+                className="settings-btn-primary"
+                onClick={this.handleConnectEmbedded}
+                disabled={walletConnecting === 'embedded'}
+              >
+                {walletConnecting === 'embedded' ? 'Setting up...' : 'Create Wallet'}
+              </button>
+            )}
+          </span>
+        </div>
+
+        {/* Mnemonic backup notice */}
+        {this.state.showMnemonic && this.state.mnemonic && (
+          <div className="settings-mnemonic-notice">
+            <strong>Backup your recovery phrase!</strong>
+            <p>Write down these 12 words and keep them safe. You will need them to recover your wallet.</p>
+            <code className="settings-mnemonic">{this.state.mnemonic}</code>
+            <button
+              className="settings-btn-primary"
+              onClick={() => this.setState({ showMnemonic: false, mnemonic: null })}
+            >
+              I've saved my recovery phrase
+            </button>
+          </div>
+        )}
+      </div>
+    );
   }
 
   render(){
@@ -208,27 +379,8 @@ class Settings extends Component{
                   </div>
                 </div>
 
-                {/* Wallet Section - Roadmap Placeholder */}
-                <div className="settings-section">
-                  <h2 className="settings-section-title">
-                    Wallet
-                    <span className="settings-coming-soon">Coming Soon</span>
-                  </h2>
-
-                  <div className="settings-row settings-disabled">
-                    <span className="settings-label">External Wallet</span>
-                    <span className="settings-value">
-                      <button className="settings-btn-outline" disabled>Connect MetaMask</button>
-                    </span>
-                  </div>
-
-                  <div className="settings-row settings-disabled">
-                    <span className="settings-label">Embedded Wallet</span>
-                    <span className="settings-value">
-                      <button className="settings-btn-outline" disabled>Setup Tether WDK</button>
-                    </span>
-                  </div>
-                </div>
+                {/* Wallet Section - Now functional */}
+                {this.renderWalletSection()}
 
                 {/* Preferences Section */}
                 <div className="settings-section">

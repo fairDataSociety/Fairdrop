@@ -20,6 +20,8 @@
   "dependencies": {
     "@ethersphere/bee-js": "^10.1.1",
     "@noble/secp256k1": "^3.0.0",
+    "@reown/appkit": "^1.8.15",
+    "@reown/appkit-adapter-ethers": "^1.8.15",
     "axios": "^1.6.0",
     "bootstrap": "^4.6.2",
     "dropzone": "^5.9.3",

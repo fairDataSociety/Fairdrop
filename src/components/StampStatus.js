@@ -1,15 +1,17 @@
 /**
  * StampStatus Component
  * Shows postage stamp status and remaining free uploads
+ * Provides clear visibility into storage limits with upgrade prompts
  */
 
 import React, { Component } from 'react';
-import { getAllStamps, requestSponsoredStamp } from '../lib/swarm/stamps';
+import { getAllStamps, isStampUsable, requestSponsoredStamp } from '../lib/swarm/stamps';
 
 // Rate limit tracking
 const RATE_LIMIT_KEY = 'fairdrop_upload_count';
 const RATE_LIMIT_DATE_KEY = 'fairdrop_upload_date';
-const FREE_UPLOADS_PER_DAY = 5;
+const FREE_UPLOADS_PER_DAY = 10;
+const FREE_MAX_FILE_SIZE_MB = 50;
 
 class StampStatus extends Component {
   constructor(props) {
@@ -186,6 +188,48 @@ StampStatus.recordUpload = function() {
     const count = parseInt(localStorage.getItem(RATE_LIMIT_KEY) || '0');
     localStorage.setItem(RATE_LIMIT_KEY, String(count + 1));
   }
+};
+
+// Static method to check file size against free tier limit
+StampStatus.checkFileSize = async function(sizeBytes) {
+  try {
+    const stamps = await getAllStamps();
+    const hasOwnStamp = stamps.some(s => isStampUsable(s));
+
+    if (hasOwnStamp) {
+      return { allowed: true };
+    }
+
+    const sizeMB = sizeBytes / (1024 * 1024);
+    if (sizeMB > FREE_MAX_FILE_SIZE_MB) {
+      return {
+        allowed: false,
+        reason: `File size ${sizeMB.toFixed(1)} MB exceeds free tier limit of ${FREE_MAX_FILE_SIZE_MB} MB`
+      };
+    }
+
+    return { allowed: true };
+  } catch {
+    return { allowed: true };
+  }
+};
+
+// Static method to get remaining uploads
+StampStatus.getRemainingUploads = function() {
+  const today = new Date().toDateString();
+  const savedDate = localStorage.getItem(RATE_LIMIT_DATE_KEY);
+
+  if (savedDate !== today) {
+    return FREE_UPLOADS_PER_DAY;
+  }
+
+  const count = parseInt(localStorage.getItem(RATE_LIMIT_KEY) || '0');
+  return Math.max(0, FREE_UPLOADS_PER_DAY - count);
+};
+
+// Static method to check if near limit (for warning)
+StampStatus.isNearLimit = function() {
+  return StampStatus.getRemainingUploads() <= 3;
 };
 
 export default StampStatus;

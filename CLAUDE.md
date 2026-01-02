@@ -177,7 +177,32 @@ npx playwright test --ui   # Interactive test runner
 - [x] Confirmed both already use shared subcomponents
 - [x] Further splitting would add complexity without benefit
 
-### Phase 4: Dead Code Removal - Future
+### Phase 4: DX Improvements ✅ COMPLETE (2026-01-02)
+- [x] Removed unused moment.js dependency
+- [x] Added ESLint configuration (.eslintrc.json)
+- [x] Added Prettier configuration (.prettierrc)
+- [x] Replaced moment.js with native Date functions in Mailbox.js, Utils.js
+
+### Phase 5: Swarm Integration Review ✅ VERIFIED (2026-01-02)
+- [x] bee-js already at latest (10.1.1)
+- [x] GSOC uses native bee-js methods (gsocMine, gsocSend, makeSOCReader)
+- [x] Beeport integration exists (src/lib/beeport/)
+- [x] ENS integration follows best practices (ethers v6, text records, gasless API)
+
+**Finding**: GSOC docs recommend `bee.gsocSubscribe()` WebSocket for real-time updates instead of polling. Current `pollInbox()` works but could be optimized in future.
+
+### Phase 6: React Router Upgrade - Deferred
+- [ ] Upgrade react-router-dom v5 → v6
+
+**Why deferred**: Routes use regex-like patterns (e.g., `/bzz\:\/.+/`) for Swarm protocol support that React Router v6 doesn't support. Migration requires:
+1. Refactoring routes to use multiple Route elements or custom matching
+2. Creating withRouter HOC wrapper for class components
+3. Updating render props to element props
+4. Testing all route combinations including bzz:// protocol routes
+
+**Current status**: v5.3.4 works correctly. Upgrade when time permits.
+
+### Phase 7: Dead Code Removal - Future
 - [ ] Reduce verbose console.log statements (51 in fds-adapter)
 - [ ] Audit unused exports with `npx knip`
 - [ ] Consider code splitting for large chunks (>500KB warning)

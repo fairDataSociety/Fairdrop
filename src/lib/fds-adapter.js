@@ -14,32 +14,10 @@ import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedA
 import { resolveRecipient, isENSName, checkFairdropSubdomain, getInboxParams, registerFairdropSubdomain, registerSubdomainGasless, setInboxParams as setENSInboxParams, ENS_DOMAIN } from './ens';
 import { writeToInbox, findNextSlot, pollInbox, decryptMetadata } from './swarm/gsoc';
 
-// Storage keys
-const STORAGE_KEYS = {
-  MAILBOXES: 'fairdrop_mailboxes_v2',
-  APP_STATE: 'fairdrop_app_state_v2'
-};
-
-/**
- * Utility: Simple password hashing (for local storage only, not cryptographic security)
- */
-function hashPassword(password) {
-  return btoa(password + '_fairdrop_salt');
-}
-
-/**
- * Utility: Generate unique ID
- */
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-/**
- * Utility: Delay helper
- */
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// Utilities extracted to separate module
+import { hashPassword, generateId, delay, STORAGE_KEYS } from './utils';
+// AccountManager extracted to separate module
+import AccountManager from './account-manager';
 
 /**
  * Account class - represents a single mailbox/account
@@ -952,133 +930,6 @@ class Account {
 }
 
 /**
- * AccountManager - Static methods for account operations
- */
-class AccountManager {
-  static isMailboxNameValid(name) {
-    if (!name || typeof name !== 'string') return false;
-    if (name.length < 3 || name.length > 32) return false;
-    return /^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$/.test(name);
-  }
-
-  static async isMailboxNameAvailable(name) {
-    // Check local registry
-    const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
-    if (mailboxes[name]) {
-      return false;
-    }
-
-    // Check if fairdrop.eth subdomain is taken
-    try {
-      const result = await checkFairdropSubdomain(name);
-      if (result.exists) {
-        console.log(`[ENS] Subdomain ${result.ensName} already registered`);
-        return false;
-      }
-    } catch (error) {
-      // ENS check failed, allow registration locally
-      console.error('[ENS] Availability check error:', error);
-    }
-
-    return true;
-  }
-
-  /**
-   * Look up a recipient's public key
-   * Used for validating recipients before sending
-   * @param {string} recipient - Mailbox name, ENS name, or public key
-   * @returns {Promise<{exists: boolean, publicKey: string|null}>}
-   */
-  static async lookupRecipient(recipient) {
-    // First check local mailboxes
-    const mailboxes = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAILBOXES) || '{}');
-    console.log('[lookupRecipient] Searching for:', recipient);
-    console.log('[lookupRecipient] Local mailboxes:', Object.keys(mailboxes));
-
-    // Check with case-insensitive matching
-    const recipientLower = recipient.toLowerCase();
-    const matchedKey = Object.keys(mailboxes).find(k => k.toLowerCase() === recipientLower);
-
-    if (matchedKey && mailboxes[matchedKey]) {
-      console.log('[lookupRecipient] Found local mailbox:', matchedKey);
-      return { exists: true, publicKey: mailboxes[matchedKey].publicKey };
-    }
-
-    // If recipient looks like a hex public key, use it directly
-    if (recipient.length === 66 && recipient.startsWith('0x')) {
-      return { exists: true, publicKey: recipient.slice(2) };
-    }
-    if (recipient.length === 64 && /^[a-fA-F0-9]+$/.test(recipient)) {
-      return { exists: true, publicKey: recipient };
-    }
-
-    // Try ENS resolution
-    try {
-      const result = await resolveRecipient(recipient);
-      if (result.publicKey) {
-        console.log(`[ENS] Resolved ${recipient} via ${result.method}${result.ensName ? ` (${result.ensName})` : ''}`);
-        return { exists: true, publicKey: result.publicKey };
-      }
-      if (result.method === 'ens-no-key' || result.method === 'fairdrop-no-key') {
-        console.log(`[ENS] Found ${result.ensName} but no Fairdrop public key set`);
-        return { exists: false, publicKey: null, reason: 'no-public-key' };
-      }
-    } catch (error) {
-      console.error('[ENS] Resolution error:', error);
-    }
-
-    return { exists: false, publicKey: null };
-  }
-
-  /**
-   * Look up an account (alias for lookupRecipient)
-   * Used by Dropbox component to check if recipient exists
-   * @param {string} name - Mailbox name, ENS name, or public key
-   * @returns {Promise<{exists: boolean, publicKey: string|null}>}
-   */
-  static async lookupAccount(name) {
-    return AccountManager.lookupRecipient(name);
-  }
-
-  static Store = {
-    /**
-     * Upload files without encryption (quick upload)
-     */
-    async storeFilesUnencrypted(files, progressCallback, statusCallback) {
-      console.log('[FDS Adapter] storeFilesUnencrypted called with', files.length, 'files');
-      try {
-        const file = files[0]; // Handle first file
-        console.log('[FDS Adapter] Uploading file:', file.name, file.size);
-        statusCallback?.('Uploading to Swarm...');
-
-        const reference = await uploadFile(file, {
-          onProgress: (p) => progressCallback?.(p),
-          onStatusChange: (s) => statusCallback?.(s)
-        });
-
-        console.log('[FDS Adapter] Upload complete, reference:', reference);
-        statusCallback?.('Upload complete!');
-        progressCallback?.(100);
-
-        const result = {
-          address: reference,
-          file: {
-            name: file.name,
-            size: file.size,
-            type: file.type
-          }
-        };
-        console.log('[FDS Adapter] Returning:', result);
-        return result;
-      } catch (error) {
-        console.error('[FDS Adapter] Unencrypted upload error:', error);
-        throw error;
-      }
-    }
-  };
-}
-
-/**
  * FDS Main Class - Entry point for all FDS operations
  */
 class FDS {
@@ -1360,4 +1211,11 @@ if (typeof window !== 'undefined') {
   window.FDS_DEBUG = FDS.debug;
 }
 
+// Named exports for direct access
+export { Account, AccountManager, FDS };
+
+// Re-export utilities for convenience
+export { hashPassword, generateId, delay, STORAGE_KEYS } from './utils';
+
+// Default export maintains backward compatibility
 export default FDS;

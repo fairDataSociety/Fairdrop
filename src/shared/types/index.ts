@@ -35,7 +35,7 @@ export interface InboxParams {
   targetOverlay: string
   baseIdentifier: string
   proximity: number
-  recipientPublicKey?: string
+  recipientPublicKey?: string | Uint8Array
 }
 
 // Honest Inbox
@@ -70,7 +70,7 @@ export interface WalletState {
   type?: WalletType
 }
 
-// Stamp types
+// Stamp types (compatible with bee-js PostageBatch)
 export interface PostageStamp {
   batchID: string
   utilization: number
@@ -81,7 +81,7 @@ export interface PostageStamp {
   bucketDepth: number
   blockNumber: number
   immutableFlag: boolean
-  batchTTL: number
+  batchTTL?: number // Optional - not always present in bee-js responses
 }
 
 // Error types

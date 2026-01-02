@@ -312,6 +312,188 @@ export const pollInbox = async (params, lastKnownIndex = 0, maxScan = 20) => {
 }
 
 /**
+ * Subscribe to inbox for real-time message notifications via WebSocket.
+ * Uses bee.gsocSubscribe() for instant delivery instead of polling.
+ *
+ * This is a hybrid approach:
+ * - Use pollInbox() on app start to get all existing messages
+ * - Use subscribeToInbox() for real-time notifications of NEW messages
+ *
+ * The subscription automatically chains to the next slot when a message arrives.
+ *
+ * @param {Object} params - Inbox params { targetOverlay, baseIdentifier, proximity }
+ * @param {number} startIndex - Start subscribing from this slot index
+ * @param {Object} callbacks - { onMessage, onError, onClose }
+ * @param {Function} callbacks.onMessage - Called with (message, index) when a message arrives
+ * @param {Function} callbacks.onError - Called with (error) on subscription errors
+ * @param {Function} callbacks.onClose - Called when subscription is closed
+ * @returns {Object} { cancel: () => void, getCurrentIndex: () => number }
+ *
+ * @example
+ * // First, poll to get existing messages and find the next index
+ * const existingMessages = await pollInbox(params, 0)
+ * const nextIndex = existingMessages.length > 0
+ *   ? existingMessages[existingMessages.length - 1].index + 1
+ *   : 0
+ *
+ * // Then subscribe for real-time updates
+ * const subscription = subscribeToInbox(params, nextIndex, {
+ *   onMessage: (message, index) => {
+ *     console.log('New message at slot', index, message)
+ *   },
+ *   onError: (error) => {
+ *     console.error('Subscription error:', error)
+ *   },
+ *   onClose: () => {
+ *     console.log('Subscription closed')
+ *   }
+ * })
+ *
+ * // Later, to stop:
+ * subscription.cancel()
+ */
+export const subscribeToInbox = (params, startIndex, callbacks) => {
+  const bee = getBee()
+  const owner = getInboxOwner(params)
+
+  let currentIndex = startIndex
+  let currentSubscription = null
+  let cancelled = false
+  let reconnectAttempts = 0
+  const MAX_RECONNECT_ATTEMPTS = 5
+  const RECONNECT_DELAY_MS = 2000
+
+  /**
+   * Parse message bytes into structured message object
+   * Handles various payload formats from bee-js
+   */
+  const parseMessage = (messageBytes) => {
+    // Convert to Uint8Array if needed
+    let bytes
+    if (messageBytes instanceof Uint8Array) {
+      bytes = messageBytes
+    } else if (messageBytes?.toUint8Array) {
+      bytes = messageBytes.toUint8Array()
+    } else if (typeof messageBytes === 'string') {
+      return JSON.parse(messageBytes)
+    } else {
+      bytes = new Uint8Array(messageBytes)
+    }
+
+    const decoded = new TextDecoder().decode(bytes)
+
+    try {
+      return JSON.parse(decoded)
+    } catch {
+      // Handle binary prefixes from real Bee nodes
+      const jsonStart = decoded.indexOf('{"version":')
+      if (jsonStart >= 0) {
+        let braceCount = 0
+        let jsonEnd = -1
+        for (let i = jsonStart; i < decoded.length; i++) {
+          if (decoded[i] === '{') braceCount++
+          if (decoded[i] === '}') braceCount--
+          if (braceCount === 0) {
+            jsonEnd = i + 1
+            break
+          }
+        }
+        if (jsonEnd > jsonStart) {
+          return JSON.parse(decoded.slice(jsonStart, jsonEnd))
+        }
+      }
+      throw new Error('Invalid message format')
+    }
+  }
+
+  /**
+   * Subscribe to a specific slot index
+   */
+  const subscribeToSlot = (index) => {
+    if (cancelled) return
+
+    const identifier = getIndexedIdentifier(params.baseIdentifier, index)
+    console.log('[GSOC subscribe] Subscribing to slot', index)
+
+    try {
+      currentSubscription = bee.gsocSubscribe(owner, identifier, {
+        onMessage: (messageBytes) => {
+          try {
+            const message = parseMessage(messageBytes)
+            console.log('[GSOC subscribe] Message received at slot', index)
+            reconnectAttempts = 0 // Reset on successful message
+
+            // Notify callback
+            callbacks.onMessage?.({ ...message, index })
+
+            // Subscribe to next slot for continuous monitoring
+            currentIndex = index + 1
+            subscribeToSlot(currentIndex)
+          } catch (error) {
+            console.error('[GSOC subscribe] Failed to parse message:', error)
+            callbacks.onError?.(error)
+          }
+        },
+        onError: (error) => {
+          console.error('[GSOC subscribe] Subscription error at slot', index, ':', error.message)
+
+          // Attempt reconnection with exponential backoff
+          if (!cancelled && reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+            reconnectAttempts++
+            const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1)
+            console.log(`[GSOC subscribe] Reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`)
+            setTimeout(() => subscribeToSlot(index), delay)
+          } else {
+            callbacks.onError?.(error)
+          }
+        },
+        onClose: () => {
+          console.log('[GSOC subscribe] Subscription closed for slot', index)
+          if (!cancelled) {
+            // Unexpected close - attempt reconnection
+            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+              reconnectAttempts++
+              const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1)
+              console.log(`[GSOC subscribe] Reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`)
+              setTimeout(() => subscribeToSlot(index), delay)
+            } else {
+              callbacks.onClose?.()
+            }
+          } else {
+            callbacks.onClose?.()
+          }
+        }
+      })
+    } catch (error) {
+      console.error('[GSOC subscribe] Failed to create subscription:', error)
+      callbacks.onError?.(error)
+    }
+  }
+
+  // Start subscription
+  subscribeToSlot(currentIndex)
+
+  return {
+    /**
+     * Cancel the subscription
+     */
+    cancel: () => {
+      console.log('[GSOC subscribe] Cancelling subscription')
+      cancelled = true
+      currentSubscription?.cancel?.()
+    },
+    /**
+     * Get the current slot index being watched
+     */
+    getCurrentIndex: () => currentIndex,
+    /**
+     * Check if subscription is active
+     */
+    isActive: () => !cancelled
+  }
+}
+
+/**
  * Find the next available slot for writing
  * Uses binary search for efficiency
  *
@@ -368,6 +550,7 @@ export default {
   writeToInbox,
   readInboxSlot,
   pollInbox,
+  subscribeToInbox,
   findNextSlot,
   hasMessages,
   INBOX_PREFIX

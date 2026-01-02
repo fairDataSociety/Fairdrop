@@ -183,13 +183,15 @@ npx playwright test --ui   # Interactive test runner
 - [x] Added Prettier configuration (.prettierrc)
 - [x] Replaced moment.js with native Date functions in Mailbox.js, Utils.js
 
-### Phase 5: Swarm Integration Review ✅ VERIFIED (2026-01-02)
+### Phase 5: Swarm Integration Review ✅ COMPLETE (2026-01-02)
 - [x] bee-js already at latest (10.1.1)
 - [x] GSOC uses native bee-js methods (gsocMine, gsocSend, makeSOCReader)
 - [x] Beeport integration exists (src/lib/beeport/)
 - [x] ENS integration follows best practices (ethers v6, text records, gasless API)
-
-**Finding**: GSOC docs recommend `bee.gsocSubscribe()` WebSocket for real-time updates instead of polling. Current `pollInbox()` works but could be optimized in future.
+- [x] Added `subscribeToInbox()` using bee.gsocSubscribe() for real-time WebSocket updates
+- [x] Polling (`pollInbox()`) kept as fallback for initial load and catch-up
+- [x] Account class has `subscribeToInbox()`, `unsubscribeFromInbox()`, `isSubscribedToInbox()` methods
+- [x] SDK exports `subscribeToInbox` for programmatic access
 
 ### Phase 6: React Router Upgrade - Deferred
 - [ ] Upgrade react-router-dom v5 → v6

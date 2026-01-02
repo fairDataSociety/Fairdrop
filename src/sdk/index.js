@@ -32,7 +32,7 @@ export { RateLimiter, RateLimitError, SignatureValidator };
 export { upload, uploadData, getShareableLink } from './operations/upload';
 export { download, downloadData } from './operations/download';
 export { send, sendEncrypted } from './operations/send';
-export { getInbox, pollInbox, markAsRead } from './operations/inbox';
+export { getInbox, pollInbox, subscribeToInbox, markAsRead } from './operations/inbox';
 
 // Default export
 export default FairdropSDK;

@@ -12,7 +12,7 @@ import { getAllStamps, getStamp, requestSponsoredStamp, isStampUsable } from './
 import { getBeeUrl } from './swarm/client';
 import { connectMetaMask, deriveEncryptionKeys, isWalletConnected, getConnectedAddress, disconnectWallet, formatAddress } from './wallet-legacy';
 import { resolveRecipient, isENSName, checkFairdropSubdomain, getInboxParams, registerFairdropSubdomain, registerSubdomainGasless, setInboxParams as setENSInboxParams, ENS_DOMAIN } from './ens';
-import { writeToInbox, findNextSlot, pollInbox, decryptMetadata } from './swarm/gsoc';
+import { writeToInbox, findNextSlot, pollInbox, subscribeToInbox as gsocSubscribe, decryptMetadata } from './swarm/gsoc';
 
 // Utilities extracted to separate module
 import { hashPassword, generateId, delay, STORAGE_KEYS } from './utils';
@@ -35,6 +35,10 @@ class Account {
     this._receivedKey = `${this.subdomain}_received`;
     this._storedKey = `${this.subdomain}_stored`;
     this._valuesKey = `${this.subdomain}_values`;
+
+    // WebSocket subscription for real-time inbox updates
+    this._inboxSubscription = null;
+    this._onMessageCallback = null;
   }
 
   /**
@@ -333,39 +337,9 @@ class Account {
 
       console.log(`[GSOC] Found ${newMessages.length} new messages`);
 
-      // Process each message
+      // Process each message using shared helper
       for (const msg of newMessages) {
-        try {
-          // Download and decrypt the file
-          const received = await this.receiveMessage(msg.reference);
-
-          // Decrypt sender info if present (Mode 1: Encrypted Send)
-          let senderInfo = { from: 'anonymous', filename: 'unknown' };
-          if (msg.encryptedMeta && this.privateKey) {
-            try {
-              senderInfo = await decryptMetadata(msg.encryptedMeta, hexToBytes(this.privateKey));
-            } catch (e) {
-              console.warn('[GSOC] Failed to decrypt sender metadata:', e);
-            }
-          }
-
-          // Store message with GSOC metadata
-          const message = {
-            reference: msg.reference,
-            from: senderInfo.from || received.from || 'anonymous',
-            filename: senderInfo.filename || received.metadata?.name || 'unknown',
-            size: received.metadata?.size || 0,
-            timestamp: msg.timestamp,
-            receivedAt: Date.now(),
-            gsocIndex: msg.index
-          };
-          this._addMessage('received', message);
-
-          // Update last polled index
-          this._setLastPolledIndex(msg.index + 1);
-        } catch (error) {
-          console.error(`[GSOC] Failed to process message at index ${msg.index}:`, error);
-        }
+        await this._processGSOCMessage(msg);
       }
     } catch (error) {
       console.error('[GSOC] Inbox poll error:', error);
@@ -434,6 +408,131 @@ class Account {
   _setLastPolledIndex(index) {
     const key = `${this.subdomain}_gsoc_last_index`;
     localStorage.setItem(key, index.toString());
+  }
+
+  /**
+   * Process a single GSOC message (shared between polling and subscription)
+   * @param {Object} msg - Raw GSOC message with reference, encryptedMeta, index, timestamp
+   * @returns {Promise<Object|null>} Processed message or null if failed
+   */
+  async _processGSOCMessage(msg) {
+    try {
+      // Download and decrypt the file
+      const received = await this.receiveMessage(msg.reference);
+
+      // Decrypt sender info if present (Mode 1: Encrypted Send)
+      let senderInfo = { from: 'anonymous', filename: 'unknown' };
+      if (msg.encryptedMeta && this.privateKey) {
+        try {
+          senderInfo = await decryptMetadata(msg.encryptedMeta, hexToBytes(this.privateKey));
+        } catch (e) {
+          console.warn('[GSOC] Failed to decrypt sender metadata:', e);
+        }
+      }
+
+      // Create message object
+      const message = {
+        reference: msg.reference,
+        from: senderInfo.from || received.from || 'anonymous',
+        filename: senderInfo.filename || received.metadata?.name || 'unknown',
+        size: received.metadata?.size || 0,
+        timestamp: msg.timestamp,
+        receivedAt: Date.now(),
+        gsocIndex: msg.index
+      };
+
+      // Store message
+      this._addMessage('received', message);
+
+      // Update last polled index
+      this._setLastPolledIndex(msg.index + 1);
+
+      return message;
+    } catch (error) {
+      console.error(`[GSOC] Failed to process message at index ${msg.index}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Subscribe to real-time inbox updates via WebSocket
+   * Uses bee.gsocSubscribe() for instant message delivery instead of polling.
+   *
+   * This method:
+   * 1. First polls to get any existing messages (catch-up)
+   * 2. Then subscribes for real-time updates on the next slot
+   * 3. Automatically chains subscriptions as messages arrive
+   *
+   * @param {Function} onMessage - Callback when new message arrives: (message) => void
+   * @param {Function} onError - Callback on subscription errors: (error) => void
+   * @returns {Promise<Object>} Subscription handle { cancel(), isActive() }
+   *
+   * @example
+   * const subscription = await account.subscribeToInbox(
+   *   (message) => console.log('New message:', message),
+   *   (error) => console.error('Subscription error:', error)
+   * );
+   *
+   * // Later, to stop:
+   * subscription.cancel();
+   */
+  async subscribeToInbox(onMessage, onError) {
+    // Cancel any existing subscription
+    this.unsubscribeFromInbox();
+
+    const inboxParams = await this._getMyInboxParams();
+    if (!inboxParams) {
+      console.log('[GSOC] No inbox configured for this account');
+      return { cancel: () => {}, isActive: () => false };
+    }
+
+    // First, poll to get existing messages and determine next index
+    console.log('[GSOC] Catching up with existing messages...');
+    await this._pollGSOCInbox();
+    const nextIndex = this._getLastPolledIndex();
+    console.log('[GSOC] Starting subscription from index:', nextIndex);
+
+    // Store callback for reuse
+    this._onMessageCallback = onMessage;
+
+    // Subscribe for real-time updates
+    this._inboxSubscription = gsocSubscribe(inboxParams, nextIndex, {
+      onMessage: async (rawMessage) => {
+        console.log('[GSOC] Real-time message received at index:', rawMessage.index);
+        const message = await this._processGSOCMessage(rawMessage);
+        if (message && this._onMessageCallback) {
+          this._onMessageCallback(message);
+        }
+      },
+      onError: (error) => {
+        console.error('[GSOC] Subscription error:', error);
+        onError?.(error);
+      },
+      onClose: () => {
+        console.log('[GSOC] Subscription closed');
+      }
+    });
+
+    return this._inboxSubscription;
+  }
+
+  /**
+   * Unsubscribe from real-time inbox updates
+   */
+  unsubscribeFromInbox() {
+    if (this._inboxSubscription) {
+      console.log('[GSOC] Cancelling inbox subscription');
+      this._inboxSubscription.cancel();
+      this._inboxSubscription = null;
+      this._onMessageCallback = null;
+    }
+  }
+
+  /**
+   * Check if currently subscribed to real-time inbox updates
+   */
+  isSubscribedToInbox() {
+    return this._inboxSubscription?.isActive?.() ?? false;
   }
 
   /**

@@ -4,7 +4,7 @@
  * SDK wrapper for inbox/message functionality
  */
 
-import { pollInbox as libPollInbox, decryptMetadata } from '../../lib/swarm/gsoc';
+import { pollInbox as libPollInbox, subscribeToInbox as libSubscribe, decryptMetadata } from '../../lib/swarm/gsoc';
 import { decryptData } from '../../lib/swarm/encryption';
 import { downloadData } from '../../lib/swarm/download';
 
@@ -169,9 +169,81 @@ function isMessageRead(id) {
   return getReadMessages().has(id.toString());
 }
 
+/**
+ * Subscribe to real-time inbox updates via WebSocket
+ *
+ * Uses bee.gsocSubscribe() for instant message delivery instead of polling.
+ * This is more efficient than polling and provides real-time notifications.
+ *
+ * @param {Object} account - Fairdrop account with gsocParams
+ * @param {Object} options - Subscription options
+ * @param {number} options.startIndex - Start from this slot index (default: 0)
+ * @param {Function} options.onMessage - Callback when new message arrives
+ * @param {Function} options.onError - Callback on subscription errors
+ * @returns {Object} Subscription handle { cancel(), isActive(), getCurrentIndex() }
+ *
+ * @example
+ * const subscription = subscribeToInbox(account, {
+ *   onMessage: (message) => console.log('New message:', message),
+ *   onError: (error) => console.error('Error:', error)
+ * });
+ *
+ * // Later, to stop:
+ * subscription.cancel();
+ */
+export function subscribeToInbox(account, options = {}) {
+  if (!account || !account.gsocParams) {
+    throw new Error('Account with GSOC params required');
+  }
+
+  const { startIndex = 0, onMessage, onError } = options;
+  const { targetOverlay, baseIdentifier, proximity } = account.gsocParams;
+
+  const params = { targetOverlay, baseIdentifier, proximity };
+
+  return libSubscribe(params, startIndex, {
+    onMessage: async (rawMessage) => {
+      try {
+        // Decrypt message metadata
+        const decryptedMeta = await decryptMetadata(rawMessage.data || rawMessage, account.privateKey);
+        const meta = typeof decryptedMeta === 'string' ? JSON.parse(decryptedMeta) : decryptedMeta;
+
+        const message = {
+          id: rawMessage.index.toString(),
+          index: rawMessage.index,
+          ...meta,
+          read: false,
+          raw: rawMessage
+        };
+
+        onMessage?.(message);
+      } catch (err) {
+        console.warn('[SDK] Failed to process message:', err);
+        // Still notify about new message even if decryption fails
+        onMessage?.({
+          id: rawMessage.index.toString(),
+          index: rawMessage.index,
+          reference: rawMessage.reference,
+          timestamp: rawMessage.timestamp,
+          read: false,
+          raw: rawMessage
+        });
+      }
+    },
+    onError: (error) => {
+      console.error('[SDK] Subscription error:', error);
+      onError?.(error);
+    },
+    onClose: () => {
+      console.log('[SDK] Subscription closed');
+    }
+  });
+}
+
 export default {
   getInbox,
   pollInbox,
+  subscribeToInbox,
   markAsRead,
   getMessageContent
 };

@@ -15,7 +15,6 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import Crypto from 'crypto';
-import moment from 'moment';
 
 function generatePassword (){
     return new Promise((resolve, reject)=>{
@@ -25,11 +24,23 @@ function generatePassword (){
     })
   }
 
+/**
+ * Convert seconds to human-readable duration string
+ * Replaces moment.duration().humanize()
+ */
 function humanTime(seconds) {
-  if(typeof seconds === 'undefined'){
+  if(typeof seconds === 'undefined' || seconds === null){
     return ' - '
   }
-  return moment.duration(seconds, 'seconds').humanize();
+
+  const sec = Math.abs(seconds);
+
+  if (sec < 60) return `${Math.round(sec)} seconds`;
+  if (sec < 3600) return `${Math.round(sec / 60)} minutes`;
+  if (sec < 86400) return `${Math.round(sec / 3600)} hours`;
+  if (sec < 2592000) return `${Math.round(sec / 86400)} days`;
+  if (sec < 31536000) return `${Math.round(sec / 2592000)} months`;
+  return `${Math.round(sec / 31536000)} years`;
 }
 
 function humanFileSize(size) {

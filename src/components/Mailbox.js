@@ -21,8 +21,45 @@ import Utils from '../services/Utils';
 import UnlockMailbox from './Shared/UnlockMailbox'
 import AddMailbox from './Shared/AddMailbox'
 
-import Moment from 'moment';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
+
+/**
+ * Format timestamp to 'D/MM/YYYY HH:mm' format
+ * Replaces Moment(time).format('D/MM/YYYY HH:mm')
+ */
+function formatDateTime(timestamp) {
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+/**
+ * Calculate days until expiry (14 days from timestamp)
+ * Replaces Moment(time).add(14, 'days').diff(Moment(), 'days')
+ */
+function daysUntilExpiry(timestamp) {
+  const expiryDate = new Date(timestamp);
+  expiryDate.setDate(expiryDate.getDate() + 14);
+  const now = new Date();
+  const diffMs = expiryDate - now;
+  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Format expiry date (14 days from timestamp) as 'D/MM/YYYY'
+ */
+function formatExpiryDate(timestamp) {
+  const date = new Date(timestamp);
+  date.setDate(date.getDate() + 14);
+  const day = date.getDate();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
 
 class Mailbox extends Component{
 
@@ -636,7 +673,7 @@ class Mailbox extends Component{
                                     <td className="col-name" onClick={ ()=>{ return message.saveAs(); } }><div className="no-overflow">{ message.hash.file.name }</div></td>
                                     <td className="col-pin hide-mobile"></td>
                                     <td className="col-recipient"><div className="no-overflow">{ message.to }</div></td>
-                                    <td className="col-time hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY HH:mm') }</div></td>
+                                    <td className="col-time hide-mobile"><div className="no-overflow">{ formatDateTime(message.hash.time) }</div></td>
                                     <td className="col-size">{ Utils.humanFileSize(message.hash.file.size) }</td>
                                     <td className="col-actions hide-mobile">
                                       <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); message.saveAs(); }} title="Download">
@@ -658,7 +695,7 @@ class Mailbox extends Component{
                                     <td className="col-name" onClick={ ()=>{ return message.saveAs(); } }><div className="no-overflow">{ message.hash.file.name }</div></td>
                                     <td className="col-pin hide-mobile"></td>
                                     <td className="col-recipient"><div className="no-overflow">{ message.from }</div></td>
-                                    <td className="col-time hide-mobile"><div className="no-overflow">{ Moment(message.hash.time).format('D/MM/YYYY HH:mm') }</div></td>
+                                    <td className="col-time hide-mobile"><div className="no-overflow">{ formatDateTime(message.hash.time) }</div></td>
                                     <td className="col-size">{ Utils.humanFileSize(message.hash.file.size) }</td>
                                     <td className="col-actions hide-mobile">
                                       <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); message.saveAs(); }} title="Download">
@@ -673,8 +710,7 @@ class Mailbox extends Component{
                             }
                             case 'stored':
                               return this.state.shownMessages.map((hash, i)=>{
-                                const expiryDate = Moment(hash.time).add(14, 'days');
-                                const isExpiringSoon = expiryDate.diff(Moment(), 'days') <= 3;
+                                const isExpiringSoon = daysUntilExpiry(hash.time) <= 3;
                                 return <tr
                                   className={
                                     "message-list "
@@ -700,10 +736,10 @@ class Mailbox extends Component{
                                       }
                                     </td>
                                     <td className={"col-recipient" + (isExpiringSoon ? " expiry-warning" : "")}>
-                                      <span className="expiry-date">{ expiryDate.format('D/MM/YYYY') }</span>
+                                      <span className="expiry-date">{ formatExpiryDate(hash.time) }</span>
                                       {isExpiringSoon && <button className="btn-topup" onClick={(e)=>{ e.stopPropagation(); }} disabled>Extend</button>}
                                     </td>
-                                    <td className="col-time hide-mobile">{ Moment(hash.time).format('D/MM/YYYY HH:mm') }</td>
+                                    <td className="col-time hide-mobile">{ formatDateTime(hash.time) }</td>
                                     <td className="col-size">{ Utils.humanFileSize(hash.file.size) }</td>
                                     <td className="col-actions hide-mobile">
                                       <button className="action-btn" onClick={(e)=>{ e.stopPropagation(); hash.saveAs(); }} title="Download">

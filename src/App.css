@@ -1,3 +1,85 @@
+/* ==========================================================================
+   CSS Custom Properties (Design Tokens)
+   ========================================================================== */
+:root {
+  /* Colors - Primary */
+  --color-primary: #5B8DEF;
+  --color-primary-hover: #4a7de0;
+  --color-accent: #37bd72;
+  --color-accent-hover: #2eab64;
+
+  /* Colors - Status */
+  --color-success: #37bd72;
+  --color-error: #FB4A36;
+  --color-warning: #f5a623;
+
+  /* Colors - Neutral */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray-100: #f5f5f5;
+  --color-gray-300: #ccc;
+  --color-gray-400: #aaa;
+  --color-gray-500: #888;
+  --color-gray-600: #666;
+  --color-gray-700: #444;
+  --color-gray-800: #333;
+  --color-gray-900: #222;
+
+  /* Colors - Background */
+  --color-bg-dark: #181a1e;
+  --color-bg-surface: #23272f;
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "SF Mono", Consolas, monospace;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* Z-index layers */
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+}
+
+/* ==========================================================================
+   Global Box-Sizing Reset
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body{
   overscroll-behavior: none;
 }
@@ -268,11 +350,15 @@ input:-webkit-autofill {
   height: 0px;
 }
 
+.form-group.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .form-group.toggle input {
   width: 30px;
-  float: left;
-  position: relative;
-  top: -3px;
+  flex-shrink: 0;
 }
 
 .form-two-inputs input {
@@ -355,20 +441,22 @@ input:-webkit-autofill {
   color: #000;
 }
 
+.btn-grp{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-bottom: 75px;
+  width: 100%;
+}
+
 .btn-float-left {
-  float: left;
+  /* Left-aligned in flex container - default behavior */
 }
 
 .btn-float-right {
-  float: right;
-}
-
-
-.btn-grp{
-  clear: both;
-  margin-bottom: 75px;
-  width: 100%;
-  display: block;
+  margin-left: auto; /* Push to right in flex container */
 }
 
 .btn:disabled{
@@ -692,16 +780,7 @@ input:disabled{
 }
 
 .settings-inner label{
-  clear: left;
   display: block;
-  float:left;
-  width: 50%;
-  text-align: left;
-}
-
-.settings-inner label{
-  display: block;
-  float:left;
   width: 50%;
   text-align: left;
 }
@@ -713,42 +792,41 @@ input:disabled{
 }
 
 .settings-form-group{
-  clear:both;
-  margin-top: 15px;
+  margin-top: var(--spacing-md);
 }
 
 .settings-form-address-input{
   position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
 }
 
 .settings-form-address-input input{
-  width:80%;
-  color:white !important;
-  float:left;
+  flex: 1 1 80%;
+  min-width: 200px;
+  color: var(--color-white) !important;
 }
 
 .mailbox-balance-input{
-  float: left;
+  /* Part of flex container */
 }
 
 .settings-form-group .settings-copy-address{
-  float: left;
-  color: white;
+  color: var(--color-white);
   cursor: pointer;
   text-align: left;
   text-decoration: underline;
-  margin-left: 10px;
-  margin-top: 9px;
+  margin-left: var(--spacing-sm);
 }
 
 .settings-form-group .settings-get-more{
-  float: left;
-  color: white;
+  color: var(--color-white);
   cursor: pointer;
   text-align: left;
   text-decoration: underline;
-  margin-left: 10px;
-  margin-top: 9px;
+  margin-left: var(--spacing-sm);
 }
 
 .mailbox-balance-input{
@@ -773,8 +851,7 @@ input:disabled{
 }
 
 .settings-dropdown-wrapper{
-  width: 50%;
-  float: left;
+  flex: 1 1 50%;
   min-width: 235px;
 }
 
@@ -921,13 +998,20 @@ input:disabled{
 }
 
 .menu-header-item-left{
-  float: left;
-  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-lg);
 }
 
 .menu-header-item-right{
-  float: right;
-  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  margin-left: var(--spacing-lg);
+}
+
+/* Push first right item to the right */
+.menu-header-item-left ~ .menu-header-item-right:first-of-type {
+  margin-left: auto;
 }
 
 .menu-header-spacer{
@@ -988,13 +1072,15 @@ input:disabled{
   width: 100%;
   height: 60px;
   padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .menu-footer-item{
   height: 40px;
-  width: 20%;
+  flex: 1 1 20%;
   text-align: center;
-  float: left;
 }
 
 .menu-footer-item img{
@@ -1116,10 +1202,14 @@ input:disabled{
   position: absolute;
   width: 100%;
   z-index: 10;
-  padding: 20px;
-  padding-bottom: 0px;
+  padding: var(--spacing-lg);
+  padding-bottom: 0;
   opacity: 1;
-  transition: opacity 1s;  
+  transition: opacity 1s;
+  /* Flexbox layout - replaces float-based layout */
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .nav-disabled .nav-header{
@@ -1153,8 +1243,9 @@ input:disabled{
 }*/
 
 .nav-header-item-left{
-  float: left;
-  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-lg);
 }
 
 .nav-log-in-link{
@@ -1162,8 +1253,15 @@ input:disabled{
 }
 
 .nav-header-item-right{
-  float: right;
-  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  margin-left: var(--spacing-lg);
+}
+
+/* Push first right item and all following to the right */
+.nav-header-item-right:first-of-type,
+.nav-header-item-left ~ .nav-header-item-right:first-of-type {
+  margin-left: auto;
 }
 
 .nav-header-spacer{
@@ -1173,16 +1271,15 @@ input:disabled{
 }
 
 .nav-header .version-number{
-  position: relative;
-  top: 12px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  /* No position hacks needed - flexbox handles alignment */
 }
 
 .nav-header .loading-icon{
-  position: relative;
-  top: 2px;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--transition-fast);
+  /* No position hacks needed - flexbox handles alignment */
 }
 
 .nav-header .loading-icon.is-loading{
@@ -1387,13 +1484,13 @@ a.show-received-alert:hover{
 .click-to-dismiss{
   font-size: 15px;
   margin: 3px;
-  float: right;
+  margin-left: auto; /* Push to right - works in flex container */
   cursor: pointer;
-  background: red;
-  color: white;
-  border-radius: 25px;
+  background: var(--color-error);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
   font-family: helvetica, arial, sans-serif;
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   padding: 6px 12px;
   margin-top: 17px;
   margin-bottom: 15px;
@@ -1695,13 +1792,11 @@ a.show-received-alert:hover{
 }
 
 .select-mailbox-mailboxes {
-    /*width: 470px;*/
     width: 100%;
-    float: left;
 }
 
 .select-mailbox-label{
-  float: right;
+  text-align: right;
 }
 
 .mailbox-name{
@@ -1765,13 +1860,19 @@ a.show-received-alert:hover{
   border-bottom: 0;
 }
 
+/* Confirm UI uses flexbox for type/value pairs */
+.confirm-ui-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .confirm-ui-item .confirm-ui-type{
-  float: left;
+  flex-shrink: 0;
 }
 
 .confirm-ui-item .confirm-ui-value{
-  float: right;
-  width: 228px;
+  max-width: 228px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1779,11 +1880,7 @@ a.show-received-alert:hover{
 }
 
 .confirm .confirm-upload-unencrypted{
-  float:left;
-}
-
-.confirm .confirm-upload-unencrypted{
-  float:left;
+  /* Removed float - use flexbox parent */
 }
 
 /* progress */
@@ -2168,11 +2265,13 @@ a.show-received-alert:hover{
 .icon-group {
   padding: 5vw 10vw;
   height: 63vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
 }
 
 .icon-group .icon {
-  float: left;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .icon-group .icon img{
@@ -2234,16 +2333,9 @@ a.show-received-alert:hover{
 }
 
 .inbox-action{
-  width: 33%;
-  float:left;
+  flex: 1 1 33%;
   text-align: center;
-  margin-bottom:20px;
-}
-
-.inbox-action:after{
-  clear:left;
-  display: table;
-  content: "";
+  margin-bottom: var(--spacing-lg);
 }
 
 
@@ -2376,14 +2468,16 @@ a.show-received-alert:hover{
 
 .mobile-inbox-nav {
   margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .mobile-inbox-nav-cell {
-  width: 29vw;
-  float: left;
-  font-size: 11px;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  flex: 1 1 29%;
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
   font-family: 'Lunchtype24-Medium-Expanded';
 }
 

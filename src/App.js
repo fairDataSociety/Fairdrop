@@ -15,7 +15,7 @@
 // along with the FairDataSociety library. If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import { withRouter, Link, Route, Switch} from 'react-router-dom'
+import { withRouter, Link, Route, Switch } from 'react-router-dom'
 import FDS from './lib/fds-adapter';
 import JSZip from 'jszip';
 import { saveAs as FileSaverSaveAs } from 'file-saver';

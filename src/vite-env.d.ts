@@ -17,13 +17,22 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
+/**
+ * Extended Ethereum provider interface
+ */
+interface ExtendedEip1193Provider extends Eip1193Provider {
+  isMetaMask?: boolean
+  isCoinbaseWallet?: boolean
+  on?: (event: string, callback: (data: unknown) => void) => void
+  removeListener?: (event: string, callback: (data: unknown) => void) => void
+  removeAllListeners?: (event: string) => void
+  selectedAddress?: string | null
+}
+
 // Extend Window interface for Ethereum wallet
 declare global {
   interface Window {
-    ethereum?: Eip1193Provider & {
-      isMetaMask?: boolean
-      isCoinbaseWallet?: boolean
-    }
+    ethereum?: ExtendedEip1193Provider
   }
 }
 

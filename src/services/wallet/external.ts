@@ -78,10 +78,11 @@ export class ExternalWalletAdapter implements WalletAdapter {
     }
 
     try {
-      this.provider = new BrowserProvider(window.ethereum as Eip1193Provider)
+      const ethereum = window.ethereum as unknown as Eip1193Provider
+      this.provider = new BrowserProvider(ethereum)
 
       // Request accounts
-      await window.ethereum.request?.({ method: 'eth_requestAccounts' })
+      await ethereum.request({ method: 'eth_requestAccounts' })
 
       this.signer = await this.provider.getSigner()
       this._address = await this.signer.getAddress()
@@ -198,7 +199,7 @@ export class ExternalWalletAdapter implements WalletAdapter {
   private _setupInjectedListeners(): void {
     if (typeof window === 'undefined' || !window.ethereum) return
 
-    const ethereum = window.ethereum as Eip1193Provider & {
+    const ethereum = window.ethereum as unknown as Eip1193Provider & {
       on?: (event: string, callback: (data: unknown) => void) => void
       removeAllListeners?: (event: string) => void
     }
@@ -230,7 +231,7 @@ export class ExternalWalletAdapter implements WalletAdapter {
 
     // Remove listeners
     if (typeof window !== 'undefined' && window.ethereum) {
-      const ethereum = window.ethereum as Eip1193Provider & {
+      const ethereum = window.ethereum as unknown as Eip1193Provider & {
         removeAllListeners?: (event: string) => void
       }
       ethereum.removeAllListeners?.('accountsChanged')
@@ -308,10 +309,11 @@ export class ExternalWalletAdapter implements WalletAdapter {
       throw new Error('No wallet connected')
     }
 
+    const ethereum = window.ethereum as unknown as Eip1193Provider
     const hexChainId = `0x${chainId.toString(16)}`
 
     try {
-      await window.ethereum.request?.({
+      await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: hexChainId }],
       })
@@ -339,7 +341,8 @@ export class ExternalWalletAdapter implements WalletAdapter {
       throw new Error('No wallet connected')
     }
 
-    await window.ethereum.request?.({
+    const ethereum = window.ethereum as unknown as Eip1193Provider
+    await ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [
         {

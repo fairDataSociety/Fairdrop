@@ -87,7 +87,7 @@ export interface MigrationResult {
 export function getProvider(): EthersProvider {
   // If MetaMask is connected, use it
   if (typeof window !== 'undefined' && window.ethereum) {
-    return new BrowserProvider(window.ethereum as ethers.Eip1193Provider)
+    return new BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider)
   }
 
   // Use cached provider if available
@@ -420,7 +420,7 @@ export async function registerFairdropSubdomain(
       throw new Error('Wallet not connected. Please connect MetaMask to register on ENS.')
     }
 
-    const provider = new BrowserProvider(window.ethereum as ethers.Eip1193Provider)
+    const provider = new BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider)
     const signer = await provider.getSigner()
     const signerAddress = await signer.getAddress()
 
@@ -512,7 +512,7 @@ export async function setInboxParams(
       throw new Error('Wallet not connected')
     }
 
-    const provider = new BrowserProvider(window.ethereum as ethers.Eip1193Provider)
+    const provider = new BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider)
     const signer = await provider.getSigner()
 
     const node = namehash(ensName)
@@ -579,7 +579,7 @@ export async function canRegisterSubdomain(): Promise<CanRegisterResult> {
       return { canRegister: false, reason: 'No wallet connected' }
     }
 
-    const provider = new BrowserProvider(window.ethereum as ethers.Eip1193Provider)
+    const provider = new BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider)
     const signer = await provider.getSigner()
     const signerAddress = await signer.getAddress()
 
@@ -662,7 +662,7 @@ export async function migrateToCustomDomain(
       throw new Error('Wallet not connected')
     }
 
-    const provider = new BrowserProvider(window.ethereum as ethers.Eip1193Provider)
+    const provider = new BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider)
     const signer = await provider.getSigner()
     const signerAddress = await signer.getAddress()
     const domainAddress = await resolveENSName(customDomain)

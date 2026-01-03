@@ -3,6 +3,10 @@
  *
  * Main inbox container that orchestrates navigation,
  * message list, and sync functionality.
+ *
+ * Login page matches original fairdrop.xyz design with:
+ * - Dropdown to select existing accounts (+ "new mailbox" option)
+ * - Either unlock form OR add form based on selection
  */
 
 import { useState, useCallback, useEffect } from 'react'
@@ -10,7 +14,6 @@ import { useInbox, type MessageTab } from '../hooks/useInbox'
 import { InboxNav } from './InboxNav'
 import { MessageList } from './MessageList'
 import { Button } from '@/shared/components'
-import { CreateAccountModal, UnlockModal } from '@/features/account/components'
 import { useAccountList } from '@/features/account/hooks/useAccountList'
 import type { Message } from '@/shared/types'
 
@@ -51,12 +54,18 @@ export function InboxLayout({
   onMessageDownload,
 }: InboxLayoutProps) {
   const [activeTab, setActiveTab] = useState<MessageTab>(initialTab)
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showUnlockModal, setShowUnlockModal] = useState(false)
-  const [selectedAccountToUnlock, setSelectedAccountToUnlock] = useState<string | null>(null)
 
-  // Get account list for login UI
-  const { accounts, hasAccounts } = useAccountList()
+  // Login form state
+  const [isAddingMailbox, setIsAddingMailbox] = useState(false)
+  const [selectedMailbox, setSelectedMailbox] = useState<string>('')
+  const [password, setPassword] = useState('')
+  const [passwordVerify, setPasswordVerify] = useState('')
+  const [newMailboxName, setNewMailboxName] = useState('')
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  // Get account list and unlock function
+  const { accounts, hasAccounts, createAccount, unlockAccount } = useAccountList()
 
   const {
     received,
@@ -123,75 +132,217 @@ export function InboxLayout({
     stored: stored.length,
   }
 
-  // Handle unlock account click
-  const handleUnlockAccount = useCallback((subdomain: string) => {
-    setSelectedAccountToUnlock(subdomain)
-    setShowUnlockModal(true)
+  // Initialize selected mailbox when accounts load
+  useEffect(() => {
+    if (hasAccounts && !selectedMailbox && accounts[0]) {
+      setSelectedMailbox(accounts[0].subdomain)
+      setIsAddingMailbox(false)
+    } else if (!hasAccounts) {
+      setIsAddingMailbox(true)
+    }
+  }, [hasAccounts, accounts, selectedMailbox])
+
+  // Handle dropdown change
+  const handleSelectMailbox = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
+    if (value === 'new-mailbox') {
+      setIsAddingMailbox(true)
+      setSelectedMailbox('')
+      setFeedbackMessage('')
+    } else {
+      setIsAddingMailbox(false)
+      setSelectedMailbox(value)
+      setFeedbackMessage('')
+    }
   }, [])
 
-  // No account state - show login/register UI
+  // Handle unlock mailbox
+  const handleUnlockMailbox = useCallback(async (e?: React.FormEvent) => {
+    e?.preventDefault()
+    if (!selectedMailbox || !password) {
+      setFeedbackMessage('Please select a mailbox and enter password')
+      return
+    }
+
+    setIsProcessing(true)
+    setFeedbackMessage('Unlocking mailbox...')
+
+    try {
+      await unlockAccount(selectedMailbox, password)
+      setFeedbackMessage('Mailbox unlocked!')
+    } catch (err) {
+      setFeedbackMessage('Password invalid, please try again.')
+    } finally {
+      setIsProcessing(false)
+    }
+  }, [selectedMailbox, password, unlockAccount])
+
+  // Handle add mailbox
+  const handleAddMailbox = useCallback(async (e?: React.FormEvent) => {
+    e?.preventDefault()
+
+    if (!newMailboxName) {
+      setFeedbackMessage('Please enter a mailbox name')
+      return
+    }
+    if (!password) {
+      setFeedbackMessage('Please enter a password')
+      return
+    }
+    if (password !== passwordVerify) {
+      setFeedbackMessage('Passwords must match')
+      return
+    }
+
+    setIsProcessing(true)
+    setFeedbackMessage('Creating mailbox...')
+
+    try {
+      const account = await createAccount(newMailboxName.toLowerCase(), password)
+      setFeedbackMessage('Mailbox created! Unlocking...')
+      await unlockAccount(account.subdomain, password)
+      setFeedbackMessage('Mailbox unlocked!')
+    } catch (err) {
+      setFeedbackMessage(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    } finally {
+      setIsProcessing(false)
+    }
+  }, [newMailboxName, password, passwordVerify, createAccount, unlockAccount])
+
+  // Cancel adding mailbox
+  const handleCancelAdd = useCallback(() => {
+    setIsAddingMailbox(false)
+    if (accounts[0]) {
+      setSelectedMailbox(accounts[0].subdomain)
+    }
+    setFeedbackMessage('')
+    setNewMailboxName('')
+    setPassword('')
+    setPasswordVerify('')
+  }, [accounts])
+
+  // No account state - show login/register UI (original fairdrop design)
   if (!hasAccount) {
     return (
-      <>
-        <div className="page-inner-centered">
+      <div id="select-mailbox" className="select-mailbox white page-wrapper fade-in">
+        <div className="select-mailbox-ui page-inner-centered">
+          <div className="mist"></div>
           <div className="page-inner-wrapper">
-            <h1>Welcome to your Fairdrop Inbox</h1>
-            <p style={{ marginBottom: '30px', marginTop: '15px' }}>
-              Log in to an existing account or create a new one to access your files.
-            </p>
-
-            {/* Existing accounts */}
-            {hasAccounts && (
-              <div className="mailbox-list" style={{ marginBottom: '20px' }}>
-                <h3 style={{ marginBottom: '15px' }}>Your Accounts</h3>
-                {accounts.map((account) => (
-                  <div key={account.subdomain} style={{ marginBottom: '10px' }}>
-                    <button
-                      className="btn btn-lg"
-                      onClick={() => handleUnlockAccount(account.subdomain)}
-                    >
-                      Unlock {account.subdomain}
-                    </button>
+            {/* Unlock existing mailbox */}
+            {!isAddingMailbox && (
+              <div className="unlock-mailbox">
+                <h1 className="select-account-header">Log In / Register</h1>
+                <div className="mailbox-unlock-ui">
+                  <h2 className="select-account-header">Select mailbox</h2>
+                  <div className="form-group clearfix">
+                    <div className="select-mailbox-mailboxes">
+                      <select
+                        className="Dropdown-control"
+                        value={selectedMailbox}
+                        onChange={handleSelectMailbox}
+                      >
+                        {accounts.map((acc) => (
+                          <option key={acc.subdomain} value={acc.subdomain}>
+                            {acc.subdomain}
+                          </option>
+                        ))}
+                        <option value="new-mailbox">new mailbox +</option>
+                      </select>
+                    </div>
                   </div>
-                ))}
+                  <div className="form-group form-group-last clearfix">
+                    <form onSubmit={handleUnlockMailbox}>
+                      <input
+                        id="mailbox-unlock-password"
+                        autoComplete="off"
+                        className="mailbox-unlock-password"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={isProcessing}
+                      />
+                    </form>
+                  </div>
+                </div>
+                <div className="ui-feedback">{feedbackMessage}</div>
+                <div className="actions btn-grp">
+                  <button
+                    className="btn btn-lg btn-green btn-float-left"
+                    onClick={handleUnlockMailbox}
+                    disabled={isProcessing}
+                  >
+                    Unlock Mailbox
+                  </button>
+                </div>
               </div>
             )}
 
-            {/* Create new account button */}
-            <div className="mailbox-actions">
-              <button
-                className="btn btn-lg"
-                onClick={() => setShowCreateModal(true)}
-              >
-                {hasAccounts ? 'Create Another Account' : 'Create New Account'}
-              </button>
-            </div>
+            {/* Add new mailbox */}
+            {isAddingMailbox && (
+              <div className="select-mailbox">
+                <h1 className="select-account-header">Log In / Register</h1>
+                <h2 className="select-account-header">Create mailbox</h2>
+                <div className="mailbox-add-ui">
+                  <form onSubmit={handleAddMailbox}>
+                    <div className="form-group">
+                      <input
+                        disabled={isProcessing}
+                        className="mailbox-add-name"
+                        type="text"
+                        autoComplete="new-name"
+                        placeholder="Mailbox name"
+                        value={newMailboxName}
+                        onChange={(e) => setNewMailboxName(e.target.value.toLowerCase())}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        disabled={isProcessing}
+                        className="mailbox-add-password"
+                        type="password"
+                        placeholder="Password"
+                        autoComplete="off"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group-last clearfix">
+                      <input
+                        disabled={isProcessing}
+                        autoComplete="off"
+                        className="mailbox-add-password-verification"
+                        type="password"
+                        placeholder="Verify password"
+                        value={passwordVerify}
+                        onChange={(e) => setPasswordVerify(e.target.value)}
+                      />
+                    </div>
+                  </form>
+                </div>
+                <div className="ui-feedback">{feedbackMessage}</div>
+                <div className="actions btn-grp">
+                  <button
+                    className="btn btn-lg btn-green btn-float-left"
+                    onClick={handleAddMailbox}
+                    disabled={isProcessing}
+                  >
+                    Add Mailbox
+                  </button>
+                  {hasAccounts && (
+                    <button
+                      className="btn btn-sm btn-black btn-link btn-float-right"
+                      onClick={handleCancelAdd}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Create Account Modal */}
-        <CreateAccountModal
-          isOpen={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          onCreated={() => setShowCreateModal(false)}
-        />
-
-        {/* Unlock Account Modal */}
-        {selectedAccountToUnlock && (
-          <UnlockModal
-            isOpen={showUnlockModal}
-            onClose={() => {
-              setShowUnlockModal(false)
-              setSelectedAccountToUnlock(null)
-            }}
-            subdomain={selectedAccountToUnlock}
-            onUnlocked={() => {
-              setShowUnlockModal(false)
-              setSelectedAccountToUnlock(null)
-            }}
-          />
-        )}
-      </>
+      </div>
     )
   }
 

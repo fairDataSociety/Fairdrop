@@ -103,7 +103,7 @@ test.describe('v2 Upload Wizard', () => {
 
 test.describe('v2 Account Flow', () => {
 
-  test('mailbox page shows welcome when no accounts', async ({ page }) => {
+  test('mailbox page shows login/register when no accounts', async ({ page }) => {
     // Navigate first, then clear storage
     await page.goto('/mailbox');
 
@@ -115,11 +115,14 @@ test.describe('v2 Account Flow', () => {
     // Reload to apply
     await page.reload();
 
-    // Should show welcome message
-    await expect(page.locator('text=Welcome to your Fairdrop Inbox')).toBeVisible();
+    // Should show login/register header
+    await expect(page.locator('text=Log In / Register')).toBeVisible();
 
-    // Should show create account button
-    await expect(page.locator('text=Create New Account')).toBeVisible();
+    // Should show create mailbox form (original design)
+    await expect(page.locator('text=Create mailbox')).toBeVisible();
+
+    // Should show add mailbox button
+    await expect(page.locator('text=Add Mailbox')).toBeVisible();
   });
 
   test('login/register link navigates to mailbox', async ({ page }) => {

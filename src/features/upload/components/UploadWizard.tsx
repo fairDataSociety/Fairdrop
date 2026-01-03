@@ -10,7 +10,7 @@ import { useUpload } from '../hooks/useUpload'
 import type { UploadMode } from '@/shared/types'
 import { FileSelection } from './FileSelection'
 import { RecipientInput } from './RecipientInput'
-import { ModeSelection } from './ModeSelection'
+import { ConfirmUpload } from './ConfirmUpload'
 import { UploadProgress } from './UploadProgress'
 import { UploadComplete } from './UploadComplete'
 import { Card } from '@/shared/components'
@@ -124,12 +124,12 @@ export function UploadWizard() {
     clearRecipient()
   }, [setMode, clearRecipient])
 
-  const handleModeBack = useCallback(() => {
+  const handleConfirmBack = useCallback(() => {
     if (mode === 'send') {
       // Go back to recipient input
       clearRecipient()
     } else {
-      // Go back to file selection
+      // Go back to file selection (homepage)
       setFile(null)
     }
   }, [mode, clearRecipient, setFile])
@@ -154,7 +154,7 @@ export function UploadWizard() {
         return 0
       case 'recipient':
         return 1
-      case 'mode':
+      case 'confirm':
         return mode === 'send' ? 2 : 1
       case 'progress':
         return mode === 'send' ? 3 : 2
@@ -198,14 +198,13 @@ export function UploadWizard() {
           />
         )}
 
-        {currentStep === 'mode' && file && (
-          <ModeSelection
+        {currentStep === 'confirm' && file && (
+          <ConfirmUpload
             mode={mode}
-            onModeChange={setMode}
             file={file}
             recipient={resolvedRecipient}
             onUpload={handleUpload}
-            onBack={handleModeBack}
+            onBack={handleConfirmBack}
             isUploading={isUploading}
           />
         )}

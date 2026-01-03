@@ -10,6 +10,9 @@ import { Layout } from './Layout'
 import { ErrorBoundary, PageLoading } from './components'
 
 // Lazy-loaded feature pages
+const ASelectFile = lazy(() =>
+  import('@/features/upload/components/ASelectFile').then((m) => ({ default: m.ASelectFile }))
+)
 const UploadWizard = lazy(() =>
   import('@/features/upload/components/UploadWizard').then((m) => ({ default: m.UploadWizard }))
 )
@@ -23,58 +26,6 @@ const DropboxPage = lazy(() =>
   import('@/features/dropbox/components/DropboxPage').then((m) => ({ default: m.DropboxPage }))
 )
 
-/**
- * Home page - matches fairdrop.xyz design using original CSS classes
- */
-function HomePage() {
-  const handleSelectClick = () => {
-    // Trigger file input
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
-        // Navigate to upload with file
-        window.location.href = '/upload'
-      }
-    }
-    input.click()
-  }
-
-  return (
-    <div id="select-file" className="select-file">
-      {/* Instructions overlay - uses original CSS class */}
-      <div className="select-file-instruction">
-        <div className="select-file-instruction-inner">
-          <h2>
-            An easy and secure way to send your files.
-          </h2>
-          <h2 className="last">
-            <span className="avoid-wrap">No central server.&nbsp;</span>
-            <span className="avoid-wrap">No tracking.&nbsp;</span>
-            <span className="avoid-wrap">No backdoors.&nbsp;</span>
-          </h2>
-          <h3 className="hide-mobile">
-            <img alt="click to select a file" src="/assets/images/fairdrop-select.svg"/> <span className="select-file-action" onClick={handleSelectClick}>select</span> or <img alt="drop file glyph" src="/assets/images/fairdrop-drop.svg"/> drop a file
-          </h3>
-          <h3 className="show-mobile">
-            <button className="btn btn-white btn-lg send-file-unencrypted" onClick={() => window.location.href = '/upload?mode=quick'}>
-              Quick Share
-            </button>
-            <br />
-            <button className="btn btn-white btn-lg send-file-encrypted" onClick={handleSelectClick}>
-              Send Encrypted
-            </button>
-            <br />
-            <button className="btn btn-white btn-lg store-file-encrypted" onClick={() => window.location.href = '/upload?mode=store'}>
-              Store File
-            </button>
-          </h3>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 /**
  * 404 page
@@ -104,7 +55,14 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           {/* Public routes */}
-          <Route index element={<HomePage />} />
+          <Route
+            index
+            element={
+              <Suspense fallback={<PageLoading />}>
+                <ASelectFile />
+              </Suspense>
+            }
+          />
 
           <Route
             path="upload"

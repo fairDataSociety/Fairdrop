@@ -4,20 +4,10 @@
  * File selection step with dropzone and file info display.
  */
 
-import { useCallback } from 'react'
+import { useCallback, useMemo, useEffect, useRef } from 'react'
 import { FileDropzone } from '@/shared/components'
 import { Button } from '@/shared/components'
-
-/**
- * Format file size for display
- */
-function formatSize(bytes: number): string {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
+import { formatFileSize } from '@/shared/utils/format'
 
 /**
  * Get file type icon
@@ -51,11 +41,39 @@ export function FileSelection({
   onContinue,
   maxSize = 100 * 1024 * 1024, // 100MB default
 }: FileSelectionProps) {
+  // Create object URL for image preview with proper cleanup
+  const previewUrlRef = useRef<string | null>(null)
+
+  const previewUrl = useMemo(() => {
+    // Revoke previous URL if exists
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    }
+
+    // Create new URL for image files
+    if (file?.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file)
+      previewUrlRef.current = url
+      return url
+    }
+    return null
+  }, [file])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current)
+      }
+    }
+  }, [])
+
   const handleFilesSelected = useCallback(
     (files: File[]) => {
-      const file = files[0]
-      if (file) {
-        onFileSelect(file)
+      const selectedFile = files[0]
+      if (selectedFile) {
+        onFileSelect(selectedFile)
       }
     },
     [onFileSelect]
@@ -96,7 +114,7 @@ export function FileSelection({
                 {file.name}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {formatSize(file.size)}
+                {formatFileSize(file.size)}
                 {file.type && ` · ${file.type}`}
               </p>
             </div>
@@ -108,10 +126,10 @@ export function FileSelection({
           </div>
 
           {/* Preview for images */}
-          {file.type.startsWith('image/') && (
+          {previewUrl && (
             <div className="mt-4 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
               <img
-                src={URL.createObjectURL(file)}
+                src={previewUrl}
                 alt={file.name}
                 className="max-h-48 w-full object-contain"
               />

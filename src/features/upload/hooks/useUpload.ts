@@ -12,8 +12,9 @@ import type { UploadMode, UploadStatus } from '@/shared/types'
 
 /**
  * Upload wizard steps
+ * Note: Mode is determined by drop zone on homepage, not a separate step
  */
-export type UploadStep = 'file' | 'recipient' | 'mode' | 'progress' | 'complete'
+export type UploadStep = 'file' | 'recipient' | 'confirm' | 'progress' | 'complete'
 
 /**
  * Upload hook return type
@@ -93,8 +94,8 @@ function determineStep(
     return 'recipient'
   }
 
-  // Mode selection (also serves as confirmation step)
-  return 'mode'
+  // Confirmation step before upload
+  return 'confirm'
 }
 
 /**
@@ -163,8 +164,8 @@ export function useUpload(): UseUploadReturn {
         return file !== null
       case 'recipient':
         return resolvedRecipient !== null
-      case 'mode':
-        return true // Can always proceed from mode selection
+      case 'confirm':
+        return true // Can always proceed from confirmation
       case 'progress':
         return false // Can't proceed while uploading
       case 'complete':

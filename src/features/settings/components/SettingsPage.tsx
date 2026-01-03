@@ -113,12 +113,12 @@ export function SettingsPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 bg-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <p className="text-gray-500 mt-1">
             Manage your account, stamps, wallet, and ENS settings
           </p>
         </div>
@@ -134,15 +134,13 @@ export function SettingsPage() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                       activeTab === tab.id
-                        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     <span
                       className={
-                        activeTab === tab.id
-                          ? 'text-primary-600 dark:text-primary-400'
-                          : 'text-gray-400 dark:text-gray-500'
+                        activeTab === tab.id ? 'text-[#F97068]' : 'text-gray-400'
                       }
                     >
                       {tab.icon}

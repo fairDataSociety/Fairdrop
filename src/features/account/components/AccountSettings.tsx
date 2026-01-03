@@ -93,17 +93,15 @@ export function AccountSettings({ onLock, onDelete }: AccountSettingsProps) {
 
   if (!account) {
     return (
-      <Card padding="lg" className="text-center">
-        <div className="py-8">
-          <div className="text-5xl mb-4">🔒</div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            No Account Active
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400">
-            Select or create an account to view settings.
-          </p>
-        </div>
-      </Card>
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <div className="text-5xl mb-4">🔒</div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          No Account Active
+        </h2>
+        <p className="text-gray-500">
+          Select or create an account to view settings.
+        </p>
+      </div>
     )
   }
 

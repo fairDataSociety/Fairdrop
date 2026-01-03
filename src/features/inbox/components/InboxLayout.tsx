@@ -10,6 +10,8 @@ import { useInbox, type MessageTab } from '../hooks/useInbox'
 import { InboxNav } from './InboxNav'
 import { MessageList } from './MessageList'
 import { Button, Card } from '@/shared/components'
+import { CreateAccountModal, UnlockModal, AccountSelector } from '@/features/account/components'
+import { useAccountList } from '@/features/account/hooks/useAccountList'
 import type { Message } from '@/shared/types'
 
 /**
@@ -49,6 +51,12 @@ export function InboxLayout({
   onMessageDownload,
 }: InboxLayoutProps) {
   const [activeTab, setActiveTab] = useState<MessageTab>(initialTab)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showUnlockModal, setShowUnlockModal] = useState(false)
+  const [selectedAccountToUnlock, setSelectedAccountToUnlock] = useState<string | null>(null)
+
+  // Get account list for login UI
+  const { accounts, hasAccounts } = useAccountList()
 
   const {
     received,
@@ -115,20 +123,73 @@ export function InboxLayout({
     stored: stored.length,
   }
 
-  // No account state
+  // Handle unlock account click
+  const handleUnlockAccount = useCallback((subdomain: string) => {
+    setSelectedAccountToUnlock(subdomain)
+    setShowUnlockModal(true)
+  }, [])
+
+  // No account state - show login/register UI
   if (!hasAccount) {
     return (
-      <Card padding="lg" className="text-center">
-        <div className="py-8">
-          <div className="text-5xl mb-4">🔒</div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Account Required
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">
-            Create or unlock an account to view your inbox.
-          </p>
+      <>
+        <div className="dropbox content-honest-inbox">
+          <div className="dropbox-center">
+            <h2>Welcome to your Fairdrop Inbox</h2>
+            <p style={{ marginBottom: '30px' }}>Log in to an existing account or create a new one to access your files.</p>
+
+            {/* Existing accounts */}
+            {hasAccounts && (
+              <div className="mailbox-list" style={{ marginBottom: '20px' }}>
+                <h3 style={{ marginBottom: '15px' }}>Your Accounts</h3>
+                {accounts.map((account) => (
+                  <div key={account.subdomain} style={{ marginBottom: '10px' }}>
+                    <button
+                      className="btn btn-lg btn-white"
+                      onClick={() => handleUnlockAccount(account.subdomain)}
+                    >
+                      Unlock {account.subdomain}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Create new account button */}
+            <div className="mailbox-actions">
+              <button
+                className="btn btn-lg btn-white"
+                onClick={() => setShowCreateModal(true)}
+              >
+                {hasAccounts ? 'Create Another Account' : 'Create New Account'}
+              </button>
+            </div>
+          </div>
         </div>
-      </Card>
+
+        {/* Create Account Modal */}
+        <CreateAccountModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => setShowCreateModal(false)}
+        />
+
+        {/* Unlock Account Modal */}
+        {selectedAccountToUnlock && (
+          <UnlockModal
+            isOpen={showUnlockModal}
+            onClose={() => {
+              setShowUnlockModal(false)
+              setSelectedAccountToUnlock(null)
+            }}
+            subdomain={selectedAccountToUnlock}
+            onUnlocked={() => {
+              setShowUnlockModal(false)
+              setSelectedAccountToUnlock(null)
+            }}
+          />
+        )}
+      </>
     )
   }
 

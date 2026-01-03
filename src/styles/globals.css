@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lunchtype24 fonts are loaded from original.css (base64 embedded) */
+
 /* Custom base styles */
 @layer base {
   html {
@@ -9,12 +11,13 @@
   }
 
   body {
-    @apply bg-dark-50 text-dark-900;
+    @apply bg-[#FB4A36] text-white;
+    font-family: 'Lunchtype24-Light-Expanded', 'Comfortaa', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   /* Focus styles for accessibility */
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary-500;
+    @apply outline-2 outline-offset-2 outline-white;
   }
 }
 
@@ -75,4 +78,36 @@
   .dropzone-active {
     @apply border-primary-500 bg-primary-50;
   }
+}
+
+/* Navigation overrides - use flexbox like v1 App.css */
+.nav-header {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.nav-header-item-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-header-item-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Push first right item and all following to the right */
+.nav-header-item-right:first-of-type,
+.nav-header-item-left ~ .nav-header-item-right:first-of-type {
+  margin-left: auto;
+}
+
+/* Override Tailwind preflight display:block for inline images */
+/* These images should be inline with text, not block elements */
+.select-file-instruction img {
+  display: inline;
+}
+
+.menu-footer-item img {
+  display: inline;
 }

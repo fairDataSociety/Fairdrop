@@ -33,3 +33,6 @@ export {
   type ToastVariant,
   type ToastPosition,
 } from './Toast'
+
+// SVG Components
+export { FairdropLogo } from './svg/FairdropLogo'

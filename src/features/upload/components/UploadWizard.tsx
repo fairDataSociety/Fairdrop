@@ -4,8 +4,10 @@
  * Main upload wizard container that orchestrates all upload steps.
  */
 
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useUpload } from '../hooks/useUpload'
+import type { UploadMode } from '@/shared/types'
 import { FileSelection } from './FileSelection'
 import { RecipientInput } from './RecipientInput'
 import { ModeSelection } from './ModeSelection'
@@ -45,6 +47,8 @@ function StepIndicator({
  * UploadWizard component
  */
 export function UploadWizard() {
+  const [searchParams] = useSearchParams()
+
   const {
     // File state
     file,
@@ -78,6 +82,14 @@ export function UploadWizard() {
     currentStep,
     isUploading,
   } = useUpload()
+
+  // Set mode from URL parameter on mount
+  useEffect(() => {
+    const urlMode = searchParams.get('mode')
+    if (urlMode && ['send', 'store', 'quick'].includes(urlMode)) {
+      setMode(urlMode as UploadMode)
+    }
+  }, [searchParams, setMode])
 
   // Step navigation handlers
   const handleFileSelected = useCallback(

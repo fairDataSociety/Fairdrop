@@ -7,7 +7,7 @@
 import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Layout } from './Layout'
-import { ErrorBoundary, ProtectedRoute, PageLoading } from './components'
+import { ErrorBoundary, PageLoading } from './components'
 
 // Lazy-loaded feature pages
 const UploadWizard = lazy(() =>

@@ -7,7 +7,7 @@
  */
 
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { useState, useCallback, lazy, Suspense } from 'react'
+import { useState, useCallback, lazy, Suspense, useEffect } from 'react'
 import { UnlockModal, CreateAccountModal } from '@/features/account/components'
 import { useAccount } from '@/features/account/hooks/useAccount'
 import { FairdropLogo } from '@/shared/components'
@@ -33,6 +33,23 @@ export function Layout() {
 
   // Determine theme based on route - mailbox uses white, others use red
   const isWhiteTheme = location.pathname.startsWith('/mailbox')
+
+  // Prevent browser from opening files dropped outside dropzone
+  useEffect(() => {
+    const preventDefault = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    // Prevent browser default behavior for drag/drop
+    document.addEventListener('dragover', preventDefault)
+    document.addEventListener('drop', preventDefault)
+
+    return () => {
+      document.removeEventListener('dragover', preventDefault)
+      document.removeEventListener('drop', preventDefault)
+    }
+  }, [])
 
   // Handle settings click (opens slide-out panel)
   const handleSettingsClick = useCallback(() => {

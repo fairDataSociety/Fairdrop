@@ -133,10 +133,12 @@ export function InboxLayout({
   if (!hasAccount) {
     return (
       <>
-        <div className="dropbox content-honest-inbox">
-          <div className="dropbox-center">
-            <h2>Welcome to your Fairdrop Inbox</h2>
-            <p style={{ marginBottom: '30px' }}>Log in to an existing account or create a new one to access your files.</p>
+        <div className="page-inner-centered">
+          <div className="page-inner-wrapper">
+            <h1>Welcome to your Fairdrop Inbox</h1>
+            <p style={{ marginBottom: '30px', marginTop: '15px' }}>
+              Log in to an existing account or create a new one to access your files.
+            </p>
 
             {/* Existing accounts */}
             {hasAccounts && (
@@ -145,7 +147,7 @@ export function InboxLayout({
                 {accounts.map((account) => (
                   <div key={account.subdomain} style={{ marginBottom: '10px' }}>
                     <button
-                      className="btn btn-lg btn-white"
+                      className="btn btn-lg"
                       onClick={() => handleUnlockAccount(account.subdomain)}
                     >
                       Unlock {account.subdomain}
@@ -158,7 +160,7 @@ export function InboxLayout({
             {/* Create new account button */}
             <div className="mailbox-actions">
               <button
-                className="btn btn-lg btn-white"
+                className="btn btn-lg"
                 onClick={() => setShowCreateModal(true)}
               >
                 {hasAccounts ? 'Create Another Account' : 'Create New Account'}

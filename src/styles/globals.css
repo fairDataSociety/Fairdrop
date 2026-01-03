@@ -80,27 +80,8 @@
   }
 }
 
-/* Navigation overrides - use flexbox like v1 App.css */
-.nav-header {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.nav-header-item-left {
-  display: flex;
-  align-items: center;
-}
-
-.nav-header-item-right {
-  display: flex;
-  align-items: center;
-}
-
-/* Push first right item and all following to the right */
-.nav-header-item-right:first-of-type,
-.nav-header-item-left ~ .nav-header-item-right:first-of-type {
-  margin-left: auto;
-}
+/* Navigation uses original.css float-based layout */
+/* No overrides needed - original CSS handles alignment */
 
 /* Override Tailwind preflight display:block for inline images */
 /* These images should be inline with text, not block elements */
